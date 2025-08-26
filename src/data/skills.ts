@@ -5,6 +5,18 @@ export const skills = [
     description: "Designing scalable, resilient services, clear boundaries, and data models; pragmatic trade‑offs documented via ADRs/RFCs.",
   },
   {
+  icon: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 1H7C5.9 1 5 1.9 5 3v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 18H7V5h10v14zM12 21.3c-.7 0-1.3-.6-1.3-1.3s.6-1.3 1.3-1.3 1.3.6 1.3 1.3-.6 1.3-1.3 1.3z"/></svg>`,
+  title: "Mobile App Development",
+  description: "Cross-platform apps with Flutter and React Native, delivering seamless performance and modern UI across iOS and Android.",
+},
+
+  {
+  icon: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 018 8h-8V4zm0 16a8 8 0 01-8-8h8v8z"/></svg>`,
+  title: "UI/UX & Design Systems",
+  description: "Designing intuitive interfaces and component libraries; accessibility, theming, and consistency across web and mobile apps.",
+},
+
+  {
     icon: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 17l-5-5 5-5v3l-2 2 2 2v3zm8-10l5 5-5 5v-3l2-2-2-2V7z"/></svg>`,
     title: "Full‑Stack Development",
     description: "End‑to‑end features with React/Next.js, Node.js, and TypeScript, with strong UX, accessibility, and performance.",
