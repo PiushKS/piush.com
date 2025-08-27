@@ -10,6 +10,31 @@ export const workIcons = {
 };
 
 export const work = [
+
+	{
+    title: "Founder, Solopreneur",
+    company: "Self-Employed",
+    region: "Remote",
+    description:
+      "Built and scaled a profitable online business from the ground up, launched multiple digital products serving thousands of users, drove growth through SEO and content marketing, automated operations with custom tools, and managed end-to-end product design, development, and customer success.",
+    technologies: [
+  "Linear",                // modern alternative to Jira for product/project mgmt
+  "Asana",                 // advanced task & workflow mgmt
+  "Monday.com",            // cross-team project & ops visibility
+  "Miro",                  // whiteboarding & system design collaboration
+  "Confluence",            // documentation & knowledge base
+  "Notion AI",             // AI-driven productivity/knowledge mgmt
+  "ClickUp Automations",   // workflow automation at scale
+  "Airtable Interfaces",   // no-code dashboards for data & ops
+  "Tableau",               // data visualization & business intelligence
+  "Mixpanel",              // product analytics & user behavior tracking
+  "Intercom",              // customer engagement & support
+  "Zapier + Make (Integromat)", // complex business process automation
+  "HubSpot (Advanced CRM)", // full sales/marketing pipeline mgmt
+]
+
+  },
+
   {
     title: "Senior Software Engineer",
     company: "Acme Cloud",
