@@ -1,0 +1,83 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/sections/Footer.astro';
+import Header from '../components/sections/Header.astro';
+import { getCollection } from 'astro:content';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+// Get all blog posts
+const posts = await getCollection('blog');
+
+// Extract all unique tags
+const allTags = new Set<string>();
+posts.forEach(post => {
+  if (post.data.tags) {
+    post.data.tags.forEach(tag => allTags.add(tag));
+  }
+});
+
+// Convert to array and sort alphabetically
+const sortedTags = Array.from(allTags).sort();
+
+// Count posts per tag
+const tagCounts = new Map<string, number>();
+sortedTags.forEach(tag => {
+  const count = posts.filter(post => post.data.tags?.includes(tag)).length;
+  tagCounts.set(tag, count);
+});
+
+const pageTitle = 'Tags';
+const pageDescription = 'Browse all blog tags and categories';
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark" class="dark">
+	<head>
+		<BaseHead title={`${pageTitle} - ${SITE_TITLE}`} description={pageDescription} />
+	</head>
+	<body>
+		<Header />
+		<main class="use-utility-layout mx-auto max-w-5xl px-3 py-5">
+			<header class="text-center mb-8">
+				<h1 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
+					<span class="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dark)] bg-clip-text text-transparent">
+						{pageTitle}
+					</span>
+				</h1>
+				<p class="text-lg text-[color:var(--color-text-secondary)] max-w-2xl mx-auto">
+					Dive into all the tags from my blog posts and explore what interests you most.
+				</p>
+			</header>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				{sortedTags.map(tag => (
+					<a 
+						href={`/blog/tag/${tag}/`}
+						class="group block p-6 rounded-lg border border-[color:var(--color-border)] hover:border-[color:var(--accent)] transition-colors duration-200 hover:shadow-lg"
+					>
+						<div class="flex items-center justify-between mb-2">
+							<h2 class="text-xl font-semibold text-foreground group-hover:text-[color:var(--accent)] transition-colors">
+								#{tag}
+							</h2>
+							<span class="text-sm text-[color:var(--color-text-muted)] bg-[color:var(--color-bg-secondary)] px-2 py-1 rounded-full">
+								{tagCounts.get(tag)} posts
+							</span>
+						</div>
+						<p class="text-[color:var(--color-text-secondary)] text-sm">
+							View all posts tagged with "{tag}"
+						</p>
+					</a>
+				))}
+			</div>
+
+			{sortedTags.length === 0 && (
+				<div class="text-center py-12">
+					<p class="text-[color:var(--color-text-secondary)] text-lg">
+						No tags found. Check back later for tagged content!
+					</p>
+				</div>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html> 

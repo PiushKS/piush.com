@@ -24,8 +24,9 @@ const inoreaderUrl = `https://www.inoreader.com/?add_feed=${feedUrl}`;
 
 <footer id="contact" class="py-12 px-4 text-center">
   <h2 class="text-2xl md:text-3xl font-semibold text-foreground">Want to work with me?</h2>
-  <p class="mt-2 text-[color:var(--color-text-muted)]">Let's build something together!</p>
-  <div class="mt-6 flex justify-center">
+           <p class="mt-2 text-[color:var(--color-text-muted)]">Let's build something together!</p>
+         
+         <div class="mt-6 flex justify-center">
     <Button href="mailto:hi@piush.com" variant="secondary" size="md" >
       <span class="inline-flex" aria-hidden="true" set:html={contactIcon} />
       Get in touch
@@ -51,5 +52,7 @@ const inoreaderUrl = `https://www.inoreader.com/?add_feed=${feedUrl}`;
         setTimeout(() => { target.textContent = original; }, 1500);
       }
     });
+
+
   </script>
 </footer>

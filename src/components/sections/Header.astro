@@ -15,6 +15,7 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
                 <HeaderLink href="/portfolio" class="px-2 py-3 text-[color:var(--color-text-secondary)] no-underline">Portfolio</HeaderLink>
                 <HeaderLink href="/about" class="px-2 py-3 text-[color:var(--color-text-secondary)] no-underline">About</HeaderLink>
                 <HeaderLink href="/blog" class="px-2 py-3 text-[color:var(--color-text-secondary)] no-underline">Blog</HeaderLink>
+                <HeaderLink href="/tags" class="px-2 py-3 text-[color:var(--color-text-secondary)] no-underline">Tags</HeaderLink>
                 <a href="#contact" class="px-2 py-3 text-[color:var(--color-text-secondary)] no-underline">Contact</a>
             </div>
         </div>
@@ -51,6 +52,7 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
                 <HeaderLink href="/portfolio" class="px-2 py-3">Portfolio</HeaderLink>
                 <HeaderLink href="/about" class="px-2 py-3">About</HeaderLink>
                 <HeaderLink href="/blog" class="px-2 py-3">Blog</HeaderLink>
+                <HeaderLink href="/tags" class="px-2 py-3">Tags</HeaderLink>
                 <a href="#contact" class="px-2 py-3">Contact</a>
             </div>
             <div class="flex items-center gap-4 pt-2">
@@ -99,9 +101,11 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
     </div>
 </header>
 
-<script is:inline>
+<script>
+  // Mobile menu toggle
   const btn = document.querySelector('[data-menu-btn]');
   const panel = document.getElementById('mobile-menu');
+  
   function toggleMenu() {
     if (!panel || !btn) return;
     const isOpen = !panel.classList.contains('hidden');
@@ -113,14 +117,24 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
       btn.setAttribute('aria-expanded', 'true');
     }
   }
+
+  // Mobile menu toggle event
   btn?.addEventListener('click', toggleMenu);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') {
-    if (!panel?.classList.contains('hidden')) toggleMenu();
-  }});
+  
+  // Close mobile menu when clicking outside
   document.addEventListener('click', (e) => {
     if (!panel || !btn) return;
     const target = e.target;
     const clickedInside = panel.contains(target) || btn.contains(target);
-    if (!clickedInside && !panel.classList.contains('hidden')) toggleMenu();
+    if (!clickedInside && !panel.classList.contains('hidden')) {
+      toggleMenu();
+    }
+  });
+
+  // Close mobile menu with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !panel?.classList.contains('hidden')) {
+      toggleMenu();
+    }
   });
 </script>
