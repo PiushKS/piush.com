@@ -1,26 +1,35 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
 import GlowLineSeparator from '@/components/ui/separator/GlowLineSeparator.astro';
+import { author } from '@/data/author';
 const pageTitle = 'About Me';
 const pageDescription = 'Learn more about my background and approach to software engineering.';
 ---
 
-<Layout title={pageTitle} description={pageDescription} pubDate={new Date()} showHeader={false}>
+<Layout title={pageTitle} description={pageDescription} pubDate={new Date()} showHeader={false} author={author.name}>
   <p>
-    Hey! I'm a senior software engineer who loves designing reliable systems and shipping products that feel great to use.
+    Hi, I'm <strong>{author.name}</strong>, a software engineer and solopreneur passionate about building reliable mobile apps, scalable platforms, and digital products that people love to use.
   </p>
   <p>
-    I work across the stack with Kotlin, Swift, Flutter, TypeScript, Node.js, React/Next.js, and PostgreSQL. I care deeply about readable code,
-    strong tests, and observability. My approach: ship small, iterate quickly, measure outcomes.
+    I started my career in 2016 as an iOS intern, working with Objective-C, UIKit, and Storyboards to build custom components, connect apps to REST APIs, and support App Store releases. That experience gave me a solid foundation in mobile development and taught me what it takes to deliver real products into users’ hands.
   </p>
   <p>
-    Recent highlights include leading a migration from a monolith to well‑scoped services, improving p95 latency,
-    and introducing CI/CD with preview environments and quality gates.
+    In 2017 I moved into Android development, building end-to-end features using Java, XML layouts, and the Android SDK. I learned how to integrate APIs with Retrofit, manage data with SQLite and Room, and use Firebase for authentication and analytics. Setting up CI/CD pipelines with Jenkins and experimenting with feature flags gave me early exposure to building reliable release processes. Over time I began contributing across both Android and iOS, owning the design system, improving performance, and creating reusable UI components that made apps faster and more accessible.
   </p>
   <p>
-    Outside of feature work, I enjoy mentoring, documentation, and building design‑system components that make teams faster.
-    Always learning—and always happy to collaborate on meaningful problems.
+    As my career grew, I shifted into senior roles where I focused on mobile systems at scale. I worked on complex payment workflows that required reliability and fault tolerance, adding retry mechanisms, idempotency, and asynchronous processing. I enforced API versioning and introduced better observability through structured logs and tracing. Along the way I built apps using Kotlin, Jetpack Compose, Swift, SwiftUI, React Native, and Flutter, while also expanding into backend and infrastructure with GraphQL, gRPC, Kafka, PostgreSQL, Redis, AWS, and Firebase. These experiences pushed me to think beyond just features, and to focus on resilience, scalability, and long-term maintainability.
   </p>
+  <p>
+    Freelance projects added another dimension to my work. I led the development of a multi-tenant platform, breaking a monolith into services, reducing latency, and setting up practices like service-level objectives and on-call rotations. I also mentored junior engineers and helped define engineering processes. My stack here included TypeScript, Node.js, React, PostgreSQL, Redis, AWS, Docker, Kubernetes, and Terraform, which gave me hands-on experience with cloud-native systems and modern DevOps.
+  </p>
+  <p>
+    Eventually I moved into entrepreneurship, building my own online business from scratch. I launched digital products that served thousands of users, grew traffic through SEO and content marketing, and automated operations with custom workflows and no-code tools. I handled everything from product design and development to customer success, learning not only the technical side but also growth, operations, and business strategy.
+  </p>
+  <p>
+    Looking back, I see a common thread in everything I’ve done: I enjoy creating products that feel good to use, whether they are mobile apps, full-stack platforms, or digital tools. I care about writing clean, maintainable code, setting up strong test coverage, and delivering measurable impact. Just as much, I enjoy mentoring, documenting, and collaborating with teams. For me, the real reward is building something meaningful and seeing it make a difference.
+  </p>
+  <p></p>
+  <p></p>
 
   <GlowLineSeparator />
 
