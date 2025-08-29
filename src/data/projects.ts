@@ -4,49 +4,56 @@ import SupabaseIcon from '../assets/logos/Supabase-logo.svg?raw';
 import PosthogIcon from '../assets/logos/posthog-logo.svg?raw';
 import PythonIcon from '../assets/logos/Python-logo.svg?raw';
 import TailwindIcon from '../assets/logos/Tailwind-logo.svg?raw';
-
+import DartIcon from '../assets/logos/dart.svg?raw';
+import KotlinIcon from '../assets/logos/kotlin.svg?raw';
+import SwiftIcon from '../assets/logos/swift.svg?raw';
 
 export const projects = [
 	{
-		title: "Workflow Automation Orchestrator (n8n)",
-		techStack: "n8n • Node.js • TypeScript • PostgreSQL",
-		description: "Event‑driven workflows for data sync, notifications, and back‑office automation. Custom nodes, secrets management, retries, and metrics.",
-		ctaText: "View Repo →",
-		ctaLink: "#",
-		icon: N8nIcon
+	  title: "Workflow Automation Orchestrator",
+	  techStack: "n8n • Node.js • TypeScript • PostgreSQL",
+	  description: "Built event-driven workflows to handle data synchronization, notifications, and back-office automation. Features include custom nodes, secure secrets management, automated retries, and detailed metrics.",
+	  ctaText: "Explore Repo →",
+	  ctaLink: "#",
+	  icon: N8nIcon
 	},
+
 	{
-		title: "SaaS API Starter (Auth, Billing, RBAC)",
-		techStack: "Node.js • TypeScript • PostgreSQL • Supabase • Stripe",
-		description: "Production‑ready REST/GraphQL API with JWT auth, role‑based access, Stripe subscriptions, and rate‑limited endpoints.",
-		ctaText: "Get Source < / >",
-		ctaLink: "#",
-		icon: SupabaseIcon
+	  title: "SaaS API Starter Kit",
+	  techStack: "Node.js • TypeScript • PostgreSQL • Supabase • Stripe",
+	  description: "A production-ready REST/GraphQL API boilerplate featuring JWT authentication, role-based access control, Stripe-powered subscriptions, and rate-limited endpoints.",
+	  ctaText: "View Project →",
+	  ctaLink: "#",
+	  icon: SupabaseIcon
 	},
+
 	{
-		title: "Realtime Chat Service",
-		techStack: "Phoenix • WebSockets • Redis • Docker",
-		description: "Low‑latency chat with channels, presence, and backpressure handling. Includes load tests and horizontal scaling notes.",
-		ctaText: "Live Demo →",
-		ctaLink: "#",
-		icon: PhoenixIcon
-	},
-	{
-		title: "Product Analytics Pipeline",
-		techStack: "Node.js • PostHog • PostgreSQL • ClickHouse",
-		description: "Event ingestion, batching, and replay; user properties and cohorts; dashboards for funnels, retention, and feature adoption.",
-		ctaText: "Read Case Study →",
-		ctaLink: "#",
-		icon: PosthogIcon
-	},
-	{
-		title: "Data Ingestion & ETL",
-		techStack: "Python • Airflow • PostgreSQL • S3",
-		description: "Scheduled extract/transform/load with schema migrations, data quality checks, and partitioned tables for analytics.",
-		ctaText: "View Repo →",
-		ctaLink: "#",
-		icon: PythonIcon
-	},
+  title: "AI Study Companion",
+  techStack: "Flutter • Dart • Firebase • OpenAI API",
+  description: "Cross-platform mobile app for Android and iOS that delivers AI-powered flashcards, quizzes, and personalized study plans. Includes offline sync, push notifications, and analytics.",
+  ctaText: "View Project →",
+  ctaLink: "#",
+  icon: DartIcon
+},
+
+		{
+		  title: "Smart Expense Tracker",
+		  techStack: "Kotlin • Jetpack Compose • Room DB • Hilt",
+		  description: "Android app with modern architecture for expense tracking. Features category insights, budget alerts, biometric auth, and cloud backup with seamless offline support.",
+		  ctaText: "GitHub Repo →",
+		  ctaLink: "#",
+		  icon: KotlinIcon
+		},
+
+		{
+		  title: "Health & Fitness Monitor",
+		  techStack: "Swift • SwiftUI • Core Data • HealthKit",
+		  description: "iOS app that integrates with Apple HealthKit to track workouts, nutrition, and sleep. Offers interactive charts, reminders, and iCloud sync for a seamless user experience.",
+		  ctaText: "Explore App →",
+		  ctaLink: "#",
+		  icon: SwiftIcon
+		},
+
 	{
 		title: "Design System",
 		techStack: "React • TypeScript • Tailwind CSS • Storybook",

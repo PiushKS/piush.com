@@ -1,0 +1,72 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  type?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+}
+
+const { 
+  title = 'Piush - Web Developer & Designer',
+  description = 'Personal website of Piush, a web developer and designer',
+  image = '/images/og-image.jpg',
+  canonical,
+  type = 'website',
+  publishedTime,
+  modifiedTime,
+  tags = []
+} = Astro.props;
+
+const fullTitle = title.includes('Piush') ? title : `${title} | Piush`;
+const fullUrl = new URL(Astro.url.pathname, 'https://piush.com').toString();
+const fullCanonical = canonical ? new URL(canonical, 'https://piush.com').toString() : fullUrl;
+const fullImage = new URL(image, 'https://piush.com').toString();
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={fullCanonical} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={fullUrl} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullImage} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={fullUrl} />
+    <meta property="twitter:title" content={fullTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={fullImage} />
+    
+    <title>{fullTitle}</title>
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#ffffff">
+    
+    <!-- Preload fonts -->
+    <link rel="preload" href="/fonts/atkinson-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/atkinson-bold.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <slot name="head" />
+  </head>
+  <body class="bg-background text-foreground font-sans antialiased min-h-screen flex flex-col">
+    <slot />
+  </body>
+</html>
