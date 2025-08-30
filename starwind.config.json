@@ -3,7 +3,14 @@
   "tailwind": {
     "css": "src/styles/starwind.css",
     "baseColor": "neutral",
-    "cssVariables": true
+    "cssVariables": true,
+    "theme": {
+      "extend": {
+        "fontFamily": {
+          "atkinson": ["Atkinson Hyperlegible", "sans-serif"]
+        }
+      }
+    }
   },
   "componentDir": "src/components",
   "components": []
