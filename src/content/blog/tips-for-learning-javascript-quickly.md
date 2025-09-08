@@ -4,6 +4,7 @@ description: 'Learn JavaScript quickly with these practical tips and strategies.
 pubDate: 'Dec 08 2022'
 heroImage: '../../assets/images/learn-javascript.jpeg'
 tags: ['JavaScript']
+author: Piush KS
 ---
 
 Start by learning the basics. JavaScript is a programming language, so you'll need to learn the fundamentals of programming, such as data types, variables, loops, and functions.

@@ -4,6 +4,7 @@ description: 'React Native vs Flutter: An in-depth 2025 guide for developers and
 pubDate: 'Aug 30 2025'
 heroImage: '../../assets/images/react-native-vs-flutter.png'
 tags: ['flutter', 'react-native']
+author: Piush KS
 ---
 
 So, you're embarking on a new mobile app project, or perhaps you're looking to re-platform an existing one. And like many developers and businesses today, you're probably facing that age-old dilemma: React Native or Flutter? In the fast-evolving world of cross-platform development, this isn't just a technical choice; it's a strategic one that can impact your budget, timeline, and even your team's sanity!
