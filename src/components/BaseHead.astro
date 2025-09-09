@@ -37,6 +37,15 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
 />
 <meta name="generator" content={Astro.generator} />
 
+    <!-- ✅ Umami Analytics -->
+    <script
+      is:inline
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="a20b757f-1391-4280-908f-a846b9734e76">
+    </script>
+
+
 <!-- Font preloads -->
 <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
 <link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
@@ -72,4 +81,4 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
 <meta property="twitter:url" content={absoluteUrl} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-      <meta property="twitter:image" content={imageUrl} />
+<meta property="twitter:image" content={imageUrl} />
