@@ -3,7 +3,7 @@ title: 'Here are some tips for learning JavaScript quickly :'
 description: 'Learn JavaScript quickly with these practical tips and strategies. Discover the best ways to master JS fundamentals, practice coding, and build projects to boost your skills faster.'
 pubDate: 'Dec 08 2022'
 heroImage: '../../assets/images/learn-javascript.jpeg'
-tags: ['JavaScript']
+tags: ['javascript']
 author: Piush KS
 ---
 

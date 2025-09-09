@@ -3,7 +3,7 @@ title: '"Hello World" In Different Programming Languages'
 description: 'Here are some examples of how to write a "Hello, world!" program in various programming languages:'
 pubDate: 'Mar 21 2023'
 heroImage: '../../assets/images/hello_world.png'
-tags: ['Hello World']
+tags: ['helloworld']
 author: Piush KS
 ---
 
