@@ -1,0 +1,127 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/sections/Header.astro";
+import Footer from "../components/sections/Footer.astro";
+
+// Sections
+import HeroSection from "../components/sections/HeroSection.astro";
+import SkillsSection from "../components/sections/SkillsSection.astro";
+import WorkExperience from "../components/sections/WorkExperience.astro";
+import Studies from "../components/sections/Studies.astro";
+import ProjectsSection from "../components/sections/Projects.astro";
+
+// UI components
+import Badge from "../components/ui/badge/Badge.astro";
+import Button from "../components/ui/button/Button.astro";
+import Card from "../components/ui/card/Card.astro";
+import FeaturedPost from "../components/ui/card/FeaturedPost.astro";
+import PostCard from "../components/ui/card/PostCard.astro";
+import Carousel from "../components/ui/carousel/Carousel.astro";
+import PostMeta from "../components/ui/meta/PostMeta.astro";
+import PostNav from "../components/ui/nav/PostNav.astro";
+import BlogPagination from "../components/ui/nav/BlogPagination.astro";
+import ArrowSeparator from "../components/ui/separator/ArrowSeparator.astro";
+import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astro";
+import ShareButtons from "../components/ui/share/ShareButtons.astro";
+import Timeline from "../components/ui/timeline/Timeline.astro";
+
+// Data
+import { logos } from "../data/logos";
+import { skills } from "../data/skills";
+import { work, workIcons } from "../data/work";
+import { studies } from "../data/studies";
+
+// Content
+import { getCollection } from 'astro:content';
+const pageTitle = "Privacy Policy";
+const pageDescription = "Effective Date: [01/11/2021]";
+const posts = await getCollection('blog');
+const [firstPost, secondPost, thirdPost] = posts.slice(0, 3);
+---
+
+<html lang="en" data-theme="dark" class="dark">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+  </head>
+  <body>
+    <Header />
+    <main class="mx-auto max-w-6xl px-4 py-10 space-y-10">
+      <section class="space-y-4">
+        <h1 class="text-4xl font-bold">{pageTitle}</h1>
+        <p class="text-lg text-[color:var(--color-text-muted)]">{pageDescription}</p>
+      </section>
+
+      <p>At <b>piush.com</b>, your privacy is very important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you visit or interact with our website. By using Piush.com, you agree to the practices described in this policy.</p>
+
+  <h2>1. Information We Collect</h2>
+  <h3>a. Personal Information (voluntarily provided)</h3>
+  <ul>
+    <li>Name</li>
+    <li>Email address</li>
+    <li>Contact details (if you choose to share them)</li>
+    <li>Any information you provide through forms, comments, or direct communication</li>
+  </ul>
+
+  <h3>b. Non-Personal Information (automatically collected)</h3>
+  <ul>
+    <li>IP address</li>
+    <li>Browser type and version</li>
+    <li>Device type and operating system</li>
+    <li>Pages you visit on our site and the time spent</li>
+    <li>Referring websites</li>
+  </ul>
+
+  <h3>c. Cookies &amp; Tracking Technologies</h3>
+  <p>We use cookies and similar technologies to improve user experience, analyze site traffic, and personalize content. You may disable cookies in your browser settings, but some features of the site may not work properly.</p>
+
+  <h2>2. How We Use Your Information</h2>
+  <ul>
+    <li>Improving website functionality and user experience</li>
+    <li>Responding to your inquiries and support requests</li>
+    <li>Sending updates, newsletters, or promotional content (only if you opt in)</li>
+    <li>Monitoring analytics to understand website performance</li>
+    <li>Ensuring compliance with legal obligations</li>
+  </ul>
+
+  <h2>3. Sharing of Information</h2>
+  <p>We do <strong>not</strong> sell, trade, or rent your personal information to third parties. We may share your information only in the following cases:</p>
+  <ul>
+    <li>With trusted third-party service providers (e.g., hosting, analytics, email services)</li>
+    <li>If required by law, regulation, or legal process</li>
+    <li>To protect against fraud, unauthorized transactions, or security threats</li>
+  </ul>
+
+  <h2>4. Data Security</h2>
+  <p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure.</p>
+
+  <h2>5. Third-Party Links</h2>
+  <p>Piush.com may contain links to third-party websites. We are not responsible for the privacy practices or content of these external sites. We encourage you to read their privacy policies before providing any personal information.</p>
+
+  <h2>6. Your Rights</h2>
+  <p>Depending on your location, you may have the right to:</p>
+  <ul>
+    <li>Access the personal information we hold about you</li>
+    <li>Request corrections or updates to your data</li>
+    <li>Request deletion of your personal information</li>
+    <li>Opt-out of newsletters or marketing emails</li>
+    <li>Restrict or object to certain data processing activities</li>
+  </ul>
+  <p>To exercise these rights, contact us at <strong>hi[at]piush.com</strong>.</p>
+
+  <h2>7. Children’s Privacy</h2>
+  <p>Our website is not directed toward individuals under 13 years of age. We do not knowingly collect personal data from children. If we discover that we have unintentionally collected such information, we will delete it promptly.</p>
+
+  <h2>8. Updates to This Privacy Policy</h2>
+  <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or legal requirements. Updates will be posted on this page with a revised <strong>Effective Date</strong>.</p>
+
+  <h2>9. Contact Us</h2>
+  <p>If you have any questions or concerns regarding this Privacy Policy, please contact us:</p>
+  <p>Email: <strong>hi[at]piush.com</strong><br>
+     Website: <strong>www.piush.com</strong></p>
+      
+    </main>
+    <Footer />
+  </body>
+</html>
+
+
