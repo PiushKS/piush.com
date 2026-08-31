@@ -1,76 +1,80 @@
 /* Dark theme tokens. Applied when an ancestor sets [data-theme="dark"] or .dark */
 [data-theme="dark"],
 .dark {
-  /* Primary Brand Colors (Flowing Orange) */
-  --accent: #FF8A4C;
-  --accent-dark: #F97316;
-  --accent-rgb: 255, 138, 76;
+  /* Brand Accent */
+  --accent: #FF7B3D;
+  --accent-light: #FFA06E;
+  --accent-dark: #F05315;
+  --accent-rgb: 255, 123, 61;
+  --accent-glow: rgba(255, 123, 61, 0.3);
+  --accent-gradient: linear-gradient(135deg, #FF5E1E 0%, #FF8A4C 50%, #FFB74D 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(255, 123, 61, 0.15) 0%, rgba(255, 154, 94, 0.04) 100%);
 
-  /* Neutral Colors */
-  --black: 255, 255, 255;
-  --gray: 171, 178, 191;
-  --gray-light: 40, 44, 52;
-  --gray-dark: 220, 223, 228;
-  --background: #050505;
+  /* Neutrals */
+  --black: 248, 250, 252;
+  --gray: 148, 163, 184;
+  --gray-light: 30, 41, 59;
+  --gray-dark: 226, 232, 240;
+  --background: #080b11;
 
   /* Semantic Color Tokens */
-  --color-text-primary: rgb(var(--black));
-  --color-text-secondary: rgb(var(--gray-dark));
-  --color-text-muted: rgb(var(--gray));
-  --color-bg-primary: var(--background);
-  --color-bg-secondary: rgba(255, 255, 255, 0.05);
-  --color-bg-tertiary: rgba(255, 255, 255, 0.08);
-  --color-border: rgba(var(--gray-light), 0.3);
-  --color-border-light: rgba(var(--gray-light), 0.1);
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-bg-primary: #080b11;
+  --color-bg-secondary: rgba(255, 255, 255, 0.04);
+  --color-bg-tertiary: rgba(255, 255, 255, 0.07);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-light: rgba(255, 255, 255, 0.06);
+  --color-border-glow: rgba(255, 123, 61, 0.35);
   --color-accent-text: var(--accent);
-  --color-accent-bg: rgba(var(--accent), 0.15);
+  --color-accent-bg: rgba(var(--accent-rgb), 0.12);
 
-  /* Translucent surfaces */
-  --surface-100: rgba(255, 255, 255, 0.05);
-  --surface-200: rgba(255, 255, 255, 0.08);
-  --surface-300: rgba(255, 255, 255, 0.12);
+  /* Translucent Glass surfaces */
+  --surface-100: rgba(255, 255, 255, 0.03);
+  --surface-200: rgba(255, 255, 255, 0.06);
+  --surface-300: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(13, 18, 28, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 16px;
 
-  /* Shadows (heavier for dark mode) */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.18);
-  --shadow-md: 0 6px 14px rgba(0, 0, 0, 0.28);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.35);
-  --shadow-xl: 0 18px 44px rgba(0, 0, 0, 0.42);
-  --shadow-2xl: 0 30px 80px rgba(0, 0, 0, 0.5);
+  /* Dark mode shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.7);
+  --shadow-2xl: 0 30px 70px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 30px rgba(255, 123, 61, 0.25);
 
-  /* Component Specific Shadows */
   --box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.4),
-    0 8px 24px rgba(0, 0, 0, 0.2),
-    0 16px 32px rgba(0, 0, 0, 0.2);
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.4);
 
-  /* Map to Starwind token variables */
-  --background: #1E1E1E;
-  --foreground: rgb(243, 244, 246);
-  /* Translucent card surface on dark bg */
-  --card: rgba(255, 255, 255, 0.04);
-  --card-foreground: rgb(243, 244, 246);
-  --popover: #282c34;
-  --popover-foreground: rgb(243, 244, 246);
-  --primary: #FF8A4C;
-  --primary-foreground: #0f1219;
-  --secondary: #FFB36B;
-  --secondary-foreground: rgb(243, 244, 246);
-  --muted: rgba(255, 255, 255, 0.06);
-  --muted-foreground: rgb(171, 178, 191);
-  --accent-foreground: #0f1219;
-  /* Semantic colors from old project */
+  /* Starwind tokens mapped */
+  --foreground: #f8fafc;
+  --card: rgba(14, 20, 32, 0.7);
+  --card-foreground: #f8fafc;
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+  --primary: #FF7B3D;
+  --primary-foreground: #ffffff;
+  --secondary: #FF9E66;
+  --secondary-foreground: #080b11;
+  --muted: rgba(255, 255, 255, 0.05);
+  --muted-foreground: #94a3b8;
+  --accent-foreground: #ffffff;
+  
   --success: #10b981;
   --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
+  --error: #f43f5e;
+  --info: #38bdf8;
   --info-foreground: #082f49;
   --success-foreground: #052e16;
   --warning-foreground: #451a03;
   --error-foreground: #ffffff;
-  /* Slightly softer borders on translucent surfaces */
-  --border: var(--surface-300);
-  --input: var(--surface-300);
-  --outline: #F97316;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --outline: #FF7B3D;
 }
-
-

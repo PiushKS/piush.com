@@ -1,49 +1,98 @@
 ---
 import Button from "../ui/button/Button.astro";
+
 interface Cta {
   text: string;
   href: string;
 }
 
 interface Props {
-  title: string;
+  title?: string;
+  badge?: string;
   subtitle?: string;
   showCTA?: boolean;
   primaryCTA?: Cta;
   secondaryCTA?: Cta;
+  showHighlights?: boolean;
 }
 
 const {
-  title,
-  subtitle,
+  title = "Piush KS",
+  badge = "Available for High-Impact Projects",
+  subtitle = "Software Engineer & Solopreneur crafting high-performance mobile apps, scalable cloud platforms, and delightful digital products.",
   showCTA = false,
   primaryCTA,
-  secondaryCTA
+  secondaryCTA,
+  showHighlights = false,
 } = Astro.props as Props;
 ---
 
-<section class="w-full py-6 md:py-10">
-  <div class="mx-auto max-w-5xl px-4 text-center">
-    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
-      <span class="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dark)] bg-clip-text text-transparent">{title}</span>
+<section class="relative w-full py-12 md:py-20 overflow-hidden">
+  <!-- Atmospheric Ambient Glow Orbs -->
+  <div class="ambient-glow-orb -top-24 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-gradient-to-tr from-[#FF5E1E] via-[#FF8A4C] to-[#8B5CF6] opacity-20 pointer-events-none"></div>
+  <div class="ambient-glow-orb top-32 -left-20 w-[300px] h-[300px] bg-[#FF5E1E] opacity-15 pointer-events-none"></div>
+  <div class="ambient-glow-orb top-32 -right-20 w-[300px] h-[300px] bg-[#8B5CF6] opacity-15 pointer-events-none"></div>
+
+  <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 text-center">
+    <!-- Status Badge -->
+    {badge && (
+      <div class="inline-flex mb-6 animate-fade-in">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>{badge}</span>
+        </div>
+      </div>
+    )}
+
+    <!-- Main Title with Gradient -->
+    <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1]">
+      <span class="bg-gradient-to-r from-[#FF5E1E] via-[#FF8A4C] to-[#FFB74D] bg-clip-text text-transparent">
+        {title}
+      </span>
     </h1>
+
+    <!-- Subtitle -->
     {subtitle && (
-      <p class="mt-4 text-lg md:text-xl text-[color:var(--color-text-secondary)] max-w-2xl mx-auto">
+      <p class="mt-6 text-lg sm:text-xl md:text-2xl text-[var(--color-text-secondary)] max-w-2xl mx-auto font-normal leading-relaxed">
         {subtitle}
       </p>
     )}
+
+    <!-- Call to Actions -->
     {showCTA && (primaryCTA || secondaryCTA) && (
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
         {primaryCTA && (
-          <Button href={primaryCTA.href} variant="primary" size="md">{primaryCTA.text}</Button>
+          <Button href={primaryCTA.href} variant="primary" size="lg">
+            <span>{primaryCTA.text}</span>
+            <svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor" class="transition-transform duration-200 group-hover:translate-x-0.5">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </Button>
         )}
         {secondaryCTA && (
-          <Button href={secondaryCTA.href} variant="secondary" size="md">{secondaryCTA.text}</Button>
+          <Button href={secondaryCTA.href} variant="secondary" size="lg">
+            {secondaryCTA.text}
+          </Button>
         )}
       </div>
     )}
+
+    <!-- Highlights Strip -->
+    {showHighlights && (
+      <div class="mt-12 pt-8 border-t border-[var(--color-border)]/60 grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+        <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+          <div class="text-2xl font-bold text-[var(--accent)]">8+ Years</div>
+          <div class="text-xs text-[var(--color-text-muted)] font-medium mt-0.5">Engineering Experience</div>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+          <div class="text-2xl font-bold text-foreground">Mobile & Cloud</div>
+          <div class="text-xs text-[var(--color-text-muted)] font-medium mt-0.5">iOS, Android & Full-Stack</div>
+        </div>
+        <div class="col-span-2 sm:col-span-1 p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+          <div class="text-2xl font-bold text-[var(--accent)]">Solopreneur</div>
+          <div class="text-xs text-[var(--color-text-muted)] font-medium mt-0.5">Building Digital Products</div>
+        </div>
+      </div>
+    )}
   </div>
-  
 </section>
-
-

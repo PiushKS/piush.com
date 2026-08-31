@@ -5,10 +5,8 @@ import Header from '../components/sections/Header.astro';
 import { getCollection } from 'astro:content';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
-// Get all blog posts
 const posts = await getCollection('blog');
 
-// Extract all unique tags
 const allTags = new Set<string>();
 posts.forEach(post => {
   if (post.data.tags) {
@@ -16,68 +14,71 @@ posts.forEach(post => {
   }
 });
 
-// Convert to array and sort alphabetically
 const sortedTags = Array.from(allTags).sort();
 
-// Count posts per tag
 const tagCounts = new Map<string, number>();
 sortedTags.forEach(tag => {
   const count = posts.filter(post => post.data.tags?.includes(tag)).length;
   tagCounts.set(tag, count);
 });
 
-const pageTitle = 'Tags';
-const pageDescription = 'Browse all blog tags and categories';
+const pageTitle = 'Tags & Topics';
+const pageDescription = 'Explore articles across mobile engineering, architecture, frontend, and backend systems.';
 ---
 
 <!doctype html>
 <html lang="en" data-theme="dark" class="dark">
 	<head>
-		<BaseHead title={`${pageTitle} - ${SITE_TITLE}`} description={pageDescription} />
+		<BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
 	</head>
-	<body>
+	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
 		<Header />
-		<main class="use-utility-layout mx-auto max-w-5xl px-3 py-5">
-			<header class="text-center mb-8">
-				<h1 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
-					<span class="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dark)] bg-clip-text text-transparent">
+		<main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10">
+			<header class="text-center max-w-2xl mx-auto mb-10 space-y-3">
+        <div class="inline-flex">
+          <span class="status-pill">
+            Explore Categories
+          </span>
+        </div>
+				<h1 class="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight m-0">
+					<span class="bg-gradient-to-r from-[#FF5E1E] via-[#FF8A4C] to-[#FFB74D] bg-clip-text text-transparent">
 						{pageTitle}
 					</span>
 				</h1>
-				<p class="text-lg text-[color:var(--color-text-secondary)] max-w-2xl mx-auto">
-					Dive into all the tags from my blog posts and explore what interests you most.
+				<p class="text-base sm:text-lg text-[var(--color-text-secondary)]">
+					Browse all topic collections, tutorials, and engineering deep dives.
 				</p>
 			</header>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
 				{sortedTags.map(tag => (
 					<a 
-						href={`/blog/tag/${tag}/`}
-						class="group block p-6 rounded-lg border border-[color:var(--color-border)] hover:border-[color:var(--accent)] transition-colors duration-200 hover:shadow-lg"
+						href={`/blog/tag/${tag.toLowerCase()}/`}
+						class="card-surface p-5 block group no-underline"
 					>
 						<div class="flex items-center justify-between mb-2">
-							<h2 class="text-xl font-semibold text-foreground group-hover:text-[color:var(--accent)] transition-colors">
+							<h2 class="text-lg font-bold text-foreground group-hover:text-[var(--accent)] transition-colors m-0">
 								#{tag}
 							</h2>
-							<span class="text-sm text-[color:var(--color-text-muted)] bg-[color:var(--color-bg-secondary)] px-2 py-1 rounded-full">
-								{tagCounts.get(tag)} posts
+							<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)]">
+								{tagCounts.get(tag)} {tagCounts.get(tag) === 1 ? 'post' : 'posts'}
 							</span>
 						</div>
-						<p class="text-[color:var(--color-text-secondary)] text-sm">
-							View all posts tagged with "{tag}"
+						<p class="text-xs sm:text-sm text-[var(--color-text-muted)] m-0">
+							Explore all guides tagged with <span class="text-[var(--color-text-secondary)]">"{tag}"</span>
 						</p>
 					</a>
 				))}
 			</div>
 
 			{sortedTags.length === 0 && (
-				<div class="text-center py-12">
-					<p class="text-[color:var(--color-text-secondary)] text-lg">
-						No tags found. Check back later for tagged content!
+				<div class="card-surface p-12 text-center">
+					<p class="text-[var(--color-text-secondary)] text-base m-0">
+						No tags found. Check back later for new content!
 					</p>
 				</div>
 			)}
 		</main>
 		<Footer />
 	</body>
-</html> 
+</html>

@@ -7,20 +7,25 @@ import HeroSection from "../components/sections/HeroSection.astro";
 import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astro";
 ---
 
-
+<!doctype html>
 <html lang="en" data-theme="dark" class="dark">
   <head>
-    <BaseHead title="Portfolio" description="Selected projects and playbooks" />
+    <BaseHead
+      title="Portfolio – Piush KS"
+      description="Explore selected projects, mobile applications, orchestrations, and full-stack systems built by Piush KS."
+    />
   </head>
-  <body>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main>
-      <HeroSection title="A glimpse into my apps, templates, and playbooks." />
+    <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <HeroSection
+        badge="Portfolio & Selected Works"
+        title="Apps, Systems & Playbooks"
+        subtitle="A curated showcase of engineering architecture, cross-platform mobile apps, workflow orchestrations, and developer tools."
+      />
       <Projects />
       <GlowLineSeparator />
     </main>
     <Footer />
   </body>
 </html>
-
-

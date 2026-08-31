@@ -1,42 +1,69 @@
 ---
 import Carousel from '../ui/carousel/Carousel.astro';
 import { logos } from '../../data/logos';
+
 interface SkillItem {
-  icon: string; // inline SVG
+  icon: string;
   title: string;
   description: string;
 }
 
 interface Props {
   title?: string;
+  subtitle?: string;
   skills: SkillItem[];
 }
 
-const { title, skills } = Astro.props as Props;
+const {
+  title = "Skills & Expertise",
+  subtitle = "Technologies, frameworks, and methodologies I leverage to architect resilient digital systems.",
+  skills
+} = Astro.props as Props;
 ---
 
-<section class="w-full py-8">
-  <div class="mx-auto max-w-6xl px-4">
-    {title && (
-      <h2 class="text-3xl md:text-4xl font-semibold text-center mb-6 text-foreground">{title}</h2>
-    )}
+<section class="w-full py-12 md:py-16">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <!-- Header -->
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      {title && (
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+          <span class="bg-gradient-to-r from-foreground via-foreground to-[var(--color-text-secondary)] bg-clip-text">
+            {title}
+          </span>
+        </h2>
+      )}
+      {subtitle && (
+        <p class="mt-3 text-base text-[var(--color-text-muted)]">
+          {subtitle}
+        </p>
+      )}
+    </div>
   
-    <div class="mb-6">
-      <Carousel tools={logos} />
+    <!-- Tech stack logo strip marquee -->
+    <div class="mb-10">
+      <Carousel tools={logos} speedMs={40000} />
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+    <!-- 2-Column High-Craft Skill Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 max-w-5xl mx-auto">
       {skills.map((skill) => (
-        <div class="card-surface p-6 group transition-transform duration-200 hover:-translate-y-1 hover:elevate-lg">
-          <div class="flex flex-col items-center text-center">
-            <div class="mb-4 rounded-xl size-[48px] flex items-center justify-center text-[var(--accent)] opacity-90 transition-all duration-300 will-change-transform group-hover:scale-110 group-hover:opacity-100 [&>svg]:w-6 [&>svg]:h-6" style="background: rgba(var(--accent-rgb),0.08);" set:html={skill.icon} />
-            <h3 class="text-xl font-semibold text-foreground mb-2">{skill.title}</h3>
-            <p class="text-[color:var(--color-text-muted)] leading-relaxed max-w-prose">{skill.description}</p>
+        <div class="card-surface p-6 sm:p-7 group flex flex-col justify-between">
+          <div class="flex items-start gap-4">
+            <div
+              class="shrink-0 size-12 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)] group-hover:scale-105 group-hover:bg-[rgba(var(--accent-rgb),0.16)] group-hover:border-[var(--accent)] transition-all duration-300 shadow-sm [&>svg]:size-6"
+              set:html={skill.icon}
+            />
+            <div>
+              <h3 class="text-lg font-bold text-foreground mb-1.5 group-hover:text-[var(--accent)] transition-colors">
+                {skill.title}
+              </h3>
+              <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed m-0">
+                {skill.description}
+              </p>
+            </div>
           </div>
         </div>
       ))}
     </div>
   </div>
 </section>
-
-

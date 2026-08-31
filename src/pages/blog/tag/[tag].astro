@@ -17,18 +17,38 @@ const { tag } = Astro.params;
 const posts = (await getCollection('blog')).filter((p) => (p.data.tags || []).some(t => slugifyTag(t) === tag));
 const meta = getTagMeta(tag);
 ---
+
+<!doctype html>
 <html lang="en" data-theme="dark" class="dark">
   <head>
-    <BaseHead title={meta.title} description={meta.description} />
+    <BaseHead title={`${meta.title} – Piush KS`} description={meta.description} />
     <link rel="alternate" type="application/rss+xml" title={`Tag: ${tag} feed`} href={`/rss/tag/${tag}.xml`} />
   </head>
-  <body>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="mx-auto max-w-6xl px-4 py-10 space-y-6">
-      <div class="flex items-center justify-between gap-3">
-        <h1 class="text-3xl font-bold">{meta.title}</h1>
-        <a class="sw-btn-sm" href={`/rss/tag/${tag}.xml`}>Subscribe</a>
+    <main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-border)] pb-6">
+        <div>
+          <div class="inline-flex mb-2">
+            <span class="status-pill text-xs">Tag Collection</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight m-0">
+            #{tag}
+          </h1>
+          <p class="text-sm text-[var(--color-text-muted)] mt-1 m-0">
+            Showing {posts.length} {posts.length === 1 ? 'article' : 'articles'} in this topic
+          </p>
+        </div>
+        <a class="sw-btn-sm self-start sm:self-auto" href={`/rss/tag/${tag}.xml`}>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+          <span>RSS Feed</span>
+        </a>
       </div>
+
       <div class="blog-grid">
         {posts.map((p) => (
           <PostCard post={p} />
@@ -38,5 +58,3 @@ const meta = getTagMeta(tag);
     <Footer />
   </body>
 </html>
-
-

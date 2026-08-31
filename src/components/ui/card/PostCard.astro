@@ -5,46 +5,72 @@ import FormattedDate from '../../FormattedDate.astro';
 import { calculateReadingTimeFromMarkdown } from '../../../lib/reading';
 import { slugifyTag as slugify } from '../../../lib/slug';
 
-interface Props { post: CollectionEntry<'blog'> }
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
 const { post } = Astro.props as Props;
-// Estimate reading time from raw body (Markdown/MDX)
+
 let readingTimeMin = 0;
 try {
-  // @ts-ignore - body may not exist until rendered; fallback to data.description
   const md = (post as any).body ?? '';
   readingTimeMin = calculateReadingTimeFromMarkdown(md || post.data.description || '');
 } catch {}
 ---
 
-<article class="card-surface p-4 h-full flex flex-col gap-3 relative">
-  {post.data.heroImage && (
-    <Image width={640} height={360} src={post.data.heroImage} alt={post.data.title} />
-  )}
-  <h3 class="text-xl font-semibold text-[color:var(--color-text-primary)]">{post.data.title}</h3>
-  <p class="text-[color:var(--color-text-muted)]">{post.data.description}</p>
-  <div class="flex flex-col text-sm text-[color:var(--color-text-muted)] gap-1">
-    <div class="flex items-center gap-1">
-		<a href={`/blog/author/${slugify(post.data.author || 'Piush KS')}/`} class="hover:text-[color:var(--accent)] interactive-link">{post.data.author || 'Piush KS'}</a>
+<article class="card-surface p-5 h-full flex flex-col justify-between group relative">
+  <div>
+    {post.data.heroImage && (
+      <div class="relative overflow-hidden rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] mb-4 aspect-[16/9]">
+        <Image
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          width={600}
+          height={338}
+          src={post.data.heroImage}
+          alt={post.data.title}
+        />
+      </div>
+    )}
+
+    <h3 class="text-xl font-bold text-foreground group-hover:text-[var(--accent)] transition-colors leading-snug m-0">
+      {post.data.title}
+    </h3>
+
+    {post.data.description && (
+      <p class="mt-2 text-sm text-[var(--color-text-secondary)] line-clamp-2 leading-relaxed m-0">
+        {post.data.description}
+      </p>
+    )}
+  </div>
+
+  <div class="mt-4 pt-3 border-t border-[var(--color-border)] space-y-3">
+    <!-- Meta details -->
+    <div class="flex items-center justify-between text-xs text-[var(--color-text-muted)]">
+      <div class="flex items-center gap-2">
+        <FormattedDate date={post.data.pubDate} />
+      </div>
+      {readingTimeMin > 0 && (
+        <div class="flex items-center gap-1">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 3"/>
+          </svg>
+          {readingTimeMin} min read
+        </div>
+      )}
     </div>
-    <div class="flex items-center gap-1">
-      <FormattedDate date={post.data.pubDate} />
-    </div>
-    {readingTimeMin > 0 && (
-      <div class="flex items-center gap-1">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 7v5l3 3"/>
-        </svg>
-        {readingTimeMin} min read
+
+    <!-- Tags -->
+    {post.data.tags && post.data.tags.length > 0 && (
+      <div class="flex gap-1.5 flex-wrap">
+        {post.data.tags.map((t) => (
+          <span class="tech-chip text-[0.7rem]">
+            #{t}
+          </span>
+        ))}
       </div>
     )}
   </div>
-  {post.data.tags && post.data.tags.length > 0 && (
-    <div class="flex gap-2 flex-wrap">
-      {post.data.tags.map((t) => <a href={`/blog/tag/${t.replace(/\s+/g,'-').toLowerCase()}/`} class="sw-tag interactive-link">{t}</a>)}
-    </div>
-  )}
+
   <a href={`/blog/${post.id}/`} class="stretched-link" aria-label={post.data.title}></a>
 </article>
-
-

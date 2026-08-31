@@ -20,14 +20,27 @@ const { slug } = Astro.params;
 const posts = (await getCollection('blog')).filter((p) => slugify(p.data.author || 'Piush KS') === slug);
 const authorName = posts[0]?.data.author || 'Piush KS';
 ---
+
+<!doctype html>
 <html lang="en" data-theme="dark" class="dark">
   <head>
-    <BaseHead title={`Articles by ${authorName}`} description={`Posts written by ${authorName}`} />
+    <BaseHead title={`Articles by ${authorName} – Piush KS`} description={`Posts and guides written by ${authorName}`} />
   </head>
-  <body>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="mx-auto max-w-6xl px-4 py-10 space-y-6">
-      <h1 class="text-3xl font-bold">Articles by {authorName}</h1>
+    <main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+      <div class="border-b border-[var(--color-border)] pb-6">
+        <div class="inline-flex mb-2">
+          <span class="status-pill text-xs">Author Archive</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight m-0">
+          Articles by <span class="text-[var(--accent)]">{authorName}</span>
+        </h1>
+        <p class="text-sm text-[var(--color-text-muted)] mt-1 m-0">
+          {posts.length} {posts.length === 1 ? 'published article' : 'published articles'}
+        </p>
+      </div>
+
       <div class="blog-grid">
         {posts.map((p) => (
           <PostCard post={p} />
@@ -37,5 +50,3 @@ const authorName = posts[0]?.data.author || 'Piush KS';
     <Footer />
   </body>
 </html>
-
-

@@ -2,26 +2,47 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/sections/Header.astro';
 import Footer from '../components/sections/Footer.astro';
+import Button from '../components/ui/button/Button.astro';
 ---
 
+<!doctype html>
 <html lang="en" data-theme="dark" class="dark">
   <head>
-    <BaseHead title="404 – Page not found" description="The page you are looking for doesn’t exist." />
+    <BaseHead title="404 – Page Not Found | Piush KS" description="The page you are looking for doesn’t exist or has been moved." />
   </head>
-  <body>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="mx-auto max-w-6xl px-4 py-16">
-      <section class="card-surface p-8 text-center space-y-4">
-        <h1 class="text-4xl font-bold text-[color:var(--color-text-primary)]">404</h1>
-        <p class="text-lg text-[color:var(--color-text-secondary)]">The page you are looking for doesn’t exist or has moved.</p>
-        <div class="mt-4 flex items-center justify-center gap-3">
-          <a href="/" class="sw-btn">Go to Home</a>
-          <a href="/blog/" class="sw-btn">Read the Blog</a>
+    <main class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-20 flex items-center justify-center">
+      <section class="card-surface p-10 sm:p-14 text-center space-y-6 max-w-xl mx-auto relative overflow-hidden">
+        <div class="ambient-glow-orb -top-16 left-1/2 -translate-x-1/2 size-40 bg-[var(--accent)] opacity-20 pointer-events-none"></div>
+        
+        <div class="inline-flex">
+          <span class="status-pill text-xs">Error 404</span>
+        </div>
+
+        <h1 class="text-6xl sm:text-7xl font-extrabold tracking-tight">
+          <span class="bg-gradient-to-r from-[#FF5E1E] via-[#FF8A4C] to-[#FFB74D] bg-clip-text text-transparent">
+            404
+          </span>
+        </h1>
+
+        <div class="space-y-2">
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground m-0">Page Not Found</h2>
+          <p class="text-sm sm:text-base text-[var(--color-text-secondary)] m-0">
+            The page you are looking for doesn't exist, has been removed, or moved to another URL.
+          </p>
+        </div>
+
+        <div class="pt-4 flex flex-wrap items-center justify-center gap-3">
+          <Button href="/" variant="primary" size="md">
+            Back to Home
+          </Button>
+          <Button href="/blog" variant="secondary" size="md">
+            Explore Blog
+          </Button>
         </div>
       </section>
     </main>
     <Footer />
   </body>
 </html>
-
-

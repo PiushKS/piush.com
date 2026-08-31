@@ -1,93 +1,134 @@
 ---
-const today = new Date();
-import contactIconRaw from "../../assets/icons/contact-icon.svg?raw";
 import Button from "../ui/button/Button.astro";
 
-function sanitizeToWhite(svg: string, size = 18) {
-  let s = svg
-    .replace(/<\?xml[\s\S]*?\?>/g, "")
-    .replace(/<!--([\s\S]*?)-->/g, "")
-    .replace(/width=\"[^\"]*\"/g, "")
-    .replace(/height=\"[^\"]*\"/g, "")
-    // Ensure shapes are visible: use white via currentColor on fill, drop strokes
-    .replace(/fill=\"[^\"]*\"/gi, 'fill="currentColor"')
-    .replace(/stroke=\"[^\"]*\"/gi, 'stroke="none"');
-  s = s.replace(/<svg([^>]*)>/, (m, attrs) => `<svg${attrs} width="${size}" height="${size}">`);
-  return s;
-}
-
-const contactIcon = sanitizeToWhite(contactIconRaw);
-const feedUrl = new URL('rss.xml', Astro.site).toString();
-const feedlyUrl = `https://feedly.com/i/subscription/feed/${feedUrl}`;
-const inoreaderUrl = `https://www.inoreader.com/?add_feed=${feedUrl}`;
+const today = new Date();
+const feedUrl = new URL('rss.xml', Astro.site || 'https://piush.com').toString();
 ---
 
-<footer id="contact" class="py-12 px-4 text-center">
-  <h2 class="text-2xl md:text-3xl font-semibold text-foreground">Want to work with me?</h2>
-           <p class="mt-2 text-[color:var(--color-text-muted)]">Let's build something together!</p>
-         
-         <div class="mt-6 flex justify-center">
-    <Button href="mailto:hi@piush.com" variant="secondary" size="md" >
-      <span class="inline-flex" aria-hidden="true" set:html={contactIcon} />
-      Get in touch
-    </Button>
-	
+<footer id="contact" class="w-full mt-auto border-t border-[var(--color-border)] bg-[var(--color-bg-primary)]/90 py-12 sm:py-16 px-4 sm:px-6 relative overflow-hidden">
+  <!-- Subtle ambient glow background -->
+  <div class="ambient-glow-orb bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-gradient-to-t from-[var(--accent)]/15 via-[#8B5CF6]/10 to-transparent pointer-events-none"></div>
+
+  <div class="relative z-10 mx-auto max-w-4xl text-center space-y-8">
+    <!-- CTA Card Section -->
+    <div class="card-surface p-8 sm:p-12 relative overflow-hidden">
+      <div class="inline-flex mb-3">
+        <span class="status-pill text-xs">
+          <span class="status-dot"></span>
+          Open to Opportunities
+        </span>
+      </div>
+
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight m-0">
+        Want to build something extraordinary?
+      </h2>
+      <p class="mt-3 text-base sm:text-lg text-[var(--color-text-secondary)] max-w-lg mx-auto leading-relaxed">
+        Let's discuss mobile architectures, scalable cloud systems, or product engineering.
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <Button href="mailto:hi@piush.com" variant="primary" size="lg">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+          <span>Get in touch</span>
+        </Button>
+        <Button href="https://x.com/piushks" variant="secondary" size="lg" target="_blank" rel="noopener noreferrer">
+          <span>DM on X</span>
+        </Button>
+      </div>
+    </div>
+
+    <!-- Social Media Links -->
+    <div class="flex justify-center items-center gap-4">
+      <a
+        href="https://x.com/piushks"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="size-10 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] hover:bg-[rgba(var(--accent-rgb),0.1)] text-[var(--color-text-secondary)] hover:text-[var(--accent)] flex items-center justify-center transition-all duration-200"
+        aria-label="Follow on X (Twitter)"
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+          <path d="M18.146 3H21l-7.5 8.574L22.5 21h-6.297l-4.93-5.597L5.5 21H3l8.106-9.266L3 3h6.453l4.466 5.07L18.146 3Zm-1.103 16.2h1.705L7.05 4.64H5.272l11.771 14.56Z"/>
+        </svg>
+      </a>
+
+      <a
+        href="https://github.com/piushks"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="size-10 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] hover:bg-[rgba(var(--accent-rgb),0.1)] text-[var(--color-text-secondary)] hover:text-[var(--accent)] flex items-center justify-center transition-all duration-200"
+        aria-label="View GitHub profile"
+      >
+        <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+      </a>
+
+      <a
+        href="https://linkedin.com/in/piushks/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="size-10 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] hover:bg-[rgba(var(--accent-rgb),0.1)] text-[var(--color-text-secondary)] hover:text-[var(--accent)] flex items-center justify-center transition-all duration-200"
+        aria-label="Connect on LinkedIn"
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.413v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+      </a>
+      
+      <a
+        href="https://instagram.com/piushks"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="size-10 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] hover:bg-[rgba(var(--accent-rgb),0.1)] text-[var(--color-text-secondary)] hover:text-[var(--accent)] flex items-center justify-center transition-all duration-200"
+        aria-label="Follow on Instagram"
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.17.056 1.97.24 2.427.403a4.92 4.92 0 0 1 1.77 1.153 4.92 4.92 0 0 1 1.153 1.77c.163.457.347 1.257.403 2.427.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.056 1.17-.24 1.97-.403 2.427a4.92 4.92 0 0 1-1.153 1.77 4.92 4.92 0 0 1-1.77 1.153c-.457.163-1.257.347-2.427.403-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.056-1.97-.24-2.427-.403a4.92 4.92 0 0 1-1.77-1.153 4.92 4.92 0 0 1-1.153-1.77c-.163-.457-.347-1.257-.403-2.427C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.056-1.17.24-1.97.403-2.427a4.92 4.92 0 0 1 1.153-1.77 4.92 4.92 0 0 1 1.77-1.153c.457-.163 1.257-.347 2.427-.403C8.416 2.175 8.796 2.163 12 2.163Zm0 1.62c-3.17 0-3.548.012-4.795.07-.999.046-1.54.21-1.896.348-.477.185-.82.406-1.178.764a3.302 3.302 0 0 0-.764 1.178c-.138.356-.302.897-.348 1.896-.058 1.247-.07 1.625-.07 4.795s.012 3.548.07 4.795c.046.999.21 1.54.348 1.896.185.477.406.82.764 1.178.358.358.701.579 1.178.764.356.138.897.302 1.896.348 1.247.058 1.625.07 4.795.07s3.548-.012 4.795-.07c.999-.046 1.54-.21 1.896-.348a3.302 3.302 0 0 0 1.178-.764c.358-.358.579-.701.764-1.178.138-.356.302-.897.348-1.896.058-1.247.07-1.625.07-4.795s-.012-3.548-.07-4.795c-.046-.999-.21-1.54-.348-1.896a3.302 3.302 0 0 0-.764-1.178 3.302 3.302 0 0 0-1.178-.764c-.356-.138-.897-.302-1.896-.348-1.247-.058-1.625-.07-4.795-.07Zm0 3.905a5.932 5.932 0 1 1 0 11.864 5.932 5.932 0 0 1 0-11.864Zm0 9.8a3.868 3.868 0 1 0 0-7.736 3.868 3.868 0 0 0 0 7.736Zm7.406-10.738a1.386 1.386 0 1 1 0-2.772 1.386 1.386 0 0 1 0 2.772Z"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Quick Footer Links -->
+    <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm">
+      <button class="sw-btn-sm" type="button" data-copy={feedUrl} aria-label="Copy RSS link">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 11a9 9 0 0 1 9 9"/>
+          <path d="M4 4a16 16 0 0 1 16 16"/>
+          <circle cx="5" cy="19" r="1"/>
+        </svg>
+        <span class="btn-copy-text">Copy RSS link</span>
+      </button>
+      <a class="sw-btn-sm" href="/blog/" aria-label="Browse all posts">All Articles</a>
+      <a class="sw-btn-sm" href="/tags/" aria-label="Explore tags">Tags</a>
+      <a class="sw-btn-sm" href="/privacy-policy/" aria-label="Privacy Policy">Privacy Policy</a>
+    </div>
+
+    <!-- Copyright -->
+    <div class="text-xs text-[var(--color-text-muted)] pt-4 border-t border-[var(--color-border)] flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="m-0">© {today.getFullYear()} Piush KS. All rights reserved.</p>
+      <p class="m-0">Designed & engineered with Astro & Tailwind CSS.</p>
+    </div>
   </div>
 
-  
-  <!-- Social Media Icons -->
-  <div class="mt-4 flex justify-center gap-4">
-    <a href="https://x.com/piushks" target="_blank" rel="noopener noreferrer" class="group text-[color:var(--color-text-secondary)] hover:text-[color:var(--accent)] transition-colors">
-      <span class="sr-only">Follow on X (Twitter)</span>
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <path fill="currentColor" d="M18.146 3H21l-7.5 8.574L22.5 21h-6.297l-4.93-5.597L5.5 21H3l8.106-9.266L3 3h6.453l4.466 5.07L18.146 3Zm-1.103 16.2h1.705L7.05 4.64H5.272l11.771 14.56Z"/>
-      </svg>
-    </a>
-    
-    <a href="https://instagram.com/piushks" target="_blank" rel="noopener noreferrer" class="group text-[color:var(--color-text-secondary)] hover:text-[color:var(--accent)] transition-colors">
-      <span class="sr-only">Follow on Instagram</span>
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 1.17.056 1.97.24 2.427.403a4.92 4.92 0 0 1 1.77 1.153 4.92 4.92 0 0 1 1.153 1.77c.163.457.347 1.257.403 2.427.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.056 1.17-.24 1.97-.403 2.427a4.92 4.92 0 0 1-1.153 1.77 4.92 4.92 0 0 1-1.77 1.153c-.457.163-1.257.347-2.427.403-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.056-1.97-.24-2.427-.403a4.92 4.92 0 0 1-1.77-1.153 4.92 4.92 0 0 1-1.153-1.77c-.163-.457-.347-1.257-.403-2.427C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.056-1.17.24-1.97.403-2.427a4.92 4.92 0 0 1 1.153-1.77 4.92 4.92 0 0 1 1.77-1.153c.457-.163 1.257-.347 2.427-.403C8.416 2.175 8.796 2.163 12 2.163Zm0 1.62c-3.17 0-3.548.012-4.795.07-.999.046-1.54.21-1.896.348-.477.185-.82.406-1.178.764a3.302 3.302 0 0 0-.764 1.178c-.138.356-.302.897-.348 1.896-.058 1.247-.07 1.625-.07 4.795s.012 3.548.07 4.795c.046.999.21 1.54.348 1.896.185.477.406.82.764 1.178.358.358.701.579 1.178.764.356.138.897.302 1.896.348 1.247.058 1.625.07 4.795.07s3.548-.012 4.795-.07c.999-.046 1.54-.21 1.896-.348a3.302 3.302 0 0 0 1.178-.764c.358-.358.579-.701.764-1.178.138-.356.302-.897.348-1.896.058-1.247.07-1.625.07-4.795s-.012-3.548-.07-4.795c-.046-.999-.21-1.54-.348-1.896a3.302 3.302 0 0 0-.764-1.178 3.302 3.302 0 0 0-1.178-.764c-.356-.138-.897-.302-1.896-.348-1.247-.058-1.625-.07-4.795-.07Zm0 3.905a5.932 5.932 0 1 1 0 11.864 5.932 5.932 0 0 1 0-11.864Zm0 9.8a3.868 3.868 0 1 0 0-7.736 3.868 3.868 0 0 0 0 7.736Zm7.406-10.738a1.386 1.386 0 1 1 0-2.772 1.386 1.386 0 0 1 0 2.772Z"/>
-      </svg>
-    </a>
-    
-    <a href="https://linkedin.com/in/piushks" target="_blank" rel="noopener noreferrer" class="group text-[color:var(--color-text-secondary)] hover:text-[color:var(--accent)] transition-colors">
-      <span class="sr-only">Connect on LinkedIn</span>
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.413v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-      </svg>
-    </a>
-    
-    <a href="https://github.com/piushks" target="_blank" rel="noopener noreferrer" class="group text-[color:var(--color-text-secondary)] hover:text-[color:var(--accent)] transition-colors">
-      <span class="sr-only">View GitHub profile</span>
-      <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true">
-        <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-      </svg>
-    </a>
-  </div>
-  
-    <div class="mt-6 text-sm text-[color:var(--color-text-muted)]">Made by: <a href="/about" class="hover:text-[color:var(--accent)]">piush</a>.</div>
-
-  <div class="mt-6 flex items-center justify-center gap-4 text-sm">
-    <button class="sw-btn-sm" type="button" data-copy={feedUrl} aria-label="Copy RSS link">Copy RSS link</button>
-    <a class="sw-btn-sm" href="/blog/" aria-label="Browse all posts">All posts</a>
-	<a class="sw-btn-sm" href="https://tutorialssite.com/" aria-label="Tutorials Site">Learn Code</a>
-	<a class="sw-btn-sm" href="/privacy-policy/" aria-label="Privacy Policy">Privacy Policy</a>
-  </div>
   <script type="module">
     document.addEventListener('click', (e) => {
       const target = e.target;
       if (!(target instanceof HTMLElement)) return;
-      if (target.matches('button[data-copy]')) {
-        const url = target.getAttribute('data-copy');
+      const btn = target.closest('button[data-copy]');
+      if (btn) {
+        const url = btn.getAttribute('data-copy');
         if (!url) return;
         navigator.clipboard?.writeText(url);
-        const original = target.textContent || 'Copy RSS link';
-        target.textContent = 'Copied!';
-        setTimeout(() => { target.textContent = original; }, 1500);
+        const textSpan = btn.querySelector('.btn-copy-text');
+        if (textSpan) {
+          const original = textSpan.textContent;
+          textSpan.textContent = 'Copied to Clipboard!';
+          setTimeout(() => { textSpan.textContent = original; }, 2000);
+        }
       }
     });
-
-
   </script>
 </footer>

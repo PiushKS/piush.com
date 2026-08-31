@@ -6,6 +6,8 @@ interface Props {
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   class?: string;
+  target?: string;
+  rel?: string;
 }
 
 const {
@@ -15,22 +17,26 @@ const {
   type = 'button',
   disabled = false,
   class: className,
+  target,
+  rel,
   ...rest
 } = Astro.props as Props;
 
 const Tag = href ? 'a' : 'button';
 
-const base = 'inline-flex items-center justify-center rounded-lg font-semibold starwind-transition-colors no-underline';
+const base = 'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer no-underline active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none';
+
 const sizes: Record<string, string> = {
-  sm: 'px-3 py-2 text-sm',
-  md: 'px-4 py-2.5 text-base',
-  lg: 'px-5 py-3 text-lg',
+  sm: 'px-3.5 py-1.5 text-xs rounded-lg gap-1.5',
+  md: 'px-5 py-2.5 text-sm rounded-xl gap-2 shadow-sm',
+  lg: 'px-6 py-3.5 text-base rounded-xl gap-2.5 shadow-md',
 };
+
 const variants: Record<string, string> = {
-  primary: 'text-white !text-white hover:!text-white focus:!text-white active:!text-white bg-[var(--primary)] hover:opacity-90 shadow-sm',
-  secondary: 'text-[var(--accent)] border border-[var(--accent)] bg-transparent hover:bg-[color:var(--color-accent-bg)]',
-  ghost: 'text-[color:var(--color-text-secondary)] bg-transparent hover:bg-[var(--accent)]/10',
-  outline: 'text-foreground border border-[var(--border)] bg-transparent hover:bg-[color:var(--color-bg-secondary)]',
+  primary: 'text-white !text-white bg-gradient-to-r from-[#FF5E1E] via-[#FF7B3D] to-[#FF9E66] hover:brightness-110 shadow-[0_4px_14px_rgba(255,112,52,0.35)] hover:shadow-[0_6px_20px_rgba(255,112,52,0.45)] border border-white/20',
+  secondary: 'text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.3)] bg-[rgba(var(--accent-rgb),0.06)] hover:bg-[rgba(var(--accent-rgb),0.14)] hover:border-[var(--accent)] backdrop-blur-sm',
+  outline: 'text-foreground border border-[var(--color-border)] bg-[var(--card)] hover:border-[rgba(var(--accent-rgb),0.4)] hover:text-[var(--accent)] backdrop-blur-sm',
+  ghost: 'text-[color:var(--color-text-secondary)] bg-transparent hover:bg-[rgba(var(--accent-rgb),0.08)] hover:text-[var(--accent)]',
 };
 
 const classes = [base, sizes[size], variants[variant], className].filter(Boolean).join(' ');
@@ -40,10 +46,10 @@ const classes = [base, sizes[size], variants[variant], className].filter(Boolean
   class={classes}
   href={href}
   type={!href ? type : undefined}
+  target={target}
+  rel={rel}
   aria-disabled={disabled ? 'true' : undefined}
   {...rest}
 >
   <slot />
 </Tag>
-
-
