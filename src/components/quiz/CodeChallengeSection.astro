@@ -207,18 +207,6 @@ console.log(a.length);</code></pre>
               <span>Share</span>
             </button>
 
-            <a
-              id="quiz-try-playground-btn"
-              href="/tools/playground"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hidden items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-mono font-medium border border-[var(--color-border)] bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] hover:border-[var(--accent)] text-[var(--accent)] transition-all cursor-pointer no-underline"
-              title="Open this snippet in the Code Playground"
-            >
-              <span>⚡</span>
-              <span>Try in Playground &rarr;</span>
-            </a>
-
             <button
               type="button"
               id="quiz-next-btn"
@@ -367,7 +355,6 @@ console.log(a.length);</code></pre>
     const optionsContainer = document.getElementById("quiz-options-container");
     const submitBtn = document.getElementById("quiz-submit-btn") as HTMLButtonElement | null;
     const nextBtn = document.getElementById("quiz-next-btn") as HTMLButtonElement | null;
-    const tryPlaygroundBtn = document.getElementById("quiz-try-playground-btn") as HTMLAnchorElement | null;
     const walkthroughBtn = document.getElementById("quiz-walkthrough-btn");
     const walkthroughPanel = document.getElementById("quiz-walkthrough-panel");
     const walkthroughStepsEl = document.getElementById("quiz-walkthrough-steps");
@@ -492,7 +479,6 @@ console.log(a.length);</code></pre>
       if (walkthroughBtn) walkthroughBtn.classList.add("hidden");
       if (shareBtn) shareBtn.classList.add("hidden");
       if (nextBtn) nextBtn.classList.add("hidden");
-      if (tryPlaygroundBtn) tryPlaygroundBtn.classList.add("hidden");
 
       if (submitBtn) {
         submitBtn.classList.remove("hidden");
@@ -607,13 +593,7 @@ console.log(a.length);</code></pre>
         walkthroughBtn.classList.add("inline-flex");
       }
 
-      // Show Share, Next & Try in Playground button
-      if (tryPlaygroundBtn) {
-        const encCode = 'b64:' + btoa(unescape(encodeURIComponent(q.code)));
-        tryPlaygroundBtn.href = `/tools/playground?lang=${encodeURIComponent(q.language)}&c=${encodeURIComponent(encCode)}`;
-        tryPlaygroundBtn.classList.remove("hidden");
-        tryPlaygroundBtn.classList.add("inline-flex");
-      }
+      // Show Share & Next button
       if (shareBtn) {
         shareBtn.classList.remove("hidden");
         shareBtn.classList.add("inline-flex");

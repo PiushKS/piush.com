@@ -373,18 +373,6 @@ const description = "Test your programming logic with code output challenges acr
                     <span>🔍 Walk Through</span>
                   </button>
 
-                  <a
-                    id="active-try-playground-btn"
-                    href="/tools/playground"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono font-medium border border-[var(--color-border)] bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] hover:border-[var(--accent)] text-[var(--accent)] transition-all cursor-pointer no-underline"
-                    title="Open this snippet in the Code Playground"
-                  >
-                    <span>⚡</span>
-                    <span>Try in Playground &rarr;</span>
-                  </a>
-
                   <button
                     type="button"
                     id="active-next-btn"
@@ -609,7 +597,6 @@ const description = "Test your programming logic with code output challenges acr
         const optionsContainer = document.getElementById("active-options-container");
         const submitBtn = document.getElementById("active-submit-btn") as HTMLButtonElement | null;
         const nextBtn = document.getElementById("active-next-btn") as HTMLButtonElement | null;
-        const tryPlaygroundBtn = document.getElementById("active-try-playground-btn") as HTMLAnchorElement | null;
         const walkthroughBtn = document.getElementById("active-walkthrough-btn");
         const explanationCard = document.getElementById("active-explanation-card");
         const resultTitleEl = document.getElementById("active-result-title");
@@ -791,7 +778,6 @@ const description = "Test your programming logic with code output challenges acr
           if (walkthroughPanel) walkthroughPanel.classList.add("hidden");
           if (walkthroughBtn) walkthroughBtn.classList.add("hidden");
           if (nextBtn) nextBtn.classList.add("hidden");
-          if (tryPlaygroundBtn) tryPlaygroundBtn.classList.add("hidden");
 
           if (submitBtn) {
             submitBtn.classList.remove("hidden");
@@ -904,13 +890,6 @@ const description = "Test your programming logic with code output challenges acr
           if (q.walkthrough && q.walkthrough.length > 0 && walkthroughBtn) {
             walkthroughBtn.classList.remove("hidden");
             walkthroughBtn.classList.add("inline-flex");
-          }
-
-          if (tryPlaygroundBtn) {
-            const encCode = 'b64:' + btoa(unescape(encodeURIComponent(q.code)));
-            tryPlaygroundBtn.href = `/tools/playground?lang=${encodeURIComponent(q.language)}&c=${encodeURIComponent(encCode)}`;
-            tryPlaygroundBtn.classList.remove("hidden");
-            tryPlaygroundBtn.classList.add("inline-flex");
           }
 
           if (submitBtn) submitBtn.classList.add("hidden");
