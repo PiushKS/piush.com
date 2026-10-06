@@ -11,6 +11,7 @@
     "build": "astro build",
     "build:quiz": "node scripts/build-quiz-database.mjs",
     "validate:quiz": "node scripts/validate-quiz.mjs",
+    "validate:seo": "node scripts/validate-seo.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

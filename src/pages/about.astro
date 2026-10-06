@@ -8,14 +8,39 @@ import LottieAnimation from '../components/ui/lottie/LottieAnimation.astro';
 import { author } from '../data/author';
 import { SITE_TITLE } from '../consts';
 
-const pageTitle = `About ${author.name}`;
-const pageDescription = 'Learn more about my background, technical philosophy, and approach to software engineering.';
+const pageTitle = "About Piush KS – Mobile & Full-Stack Developer | Piush";
+const pageDescription = "Learn about Piush KS, mobile and full-stack developer building native Android, iOS, Flutter and web applications with craft and production resilience.";
 ---
 
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
-    <BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <!-- Structured Data: AboutPage & BreadcrumbList -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ProfilePage",
+          "name": pageTitle,
+          "description": pageDescription,
+          "url": new URL('/about', Astro.site || 'https://piush.com').toString(),
+          "mainEntity": {
+            "@type": "Person",
+            "name": "Piush KS",
+            "jobTitle": "Mobile & Full-Stack Developer",
+            "url": new URL('/', Astro.site || 'https://piush.com').toString()
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": new URL('/', Astro.site || 'https://piush.com').toString() },
+            { "@type": "ListItem", "position": 2, "name": "About", "item": new URL('/about', Astro.site || 'https://piush.com').toString() }
+          ]
+        }
+      ]
+    })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />

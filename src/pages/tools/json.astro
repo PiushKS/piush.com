@@ -5,24 +5,36 @@ import Footer from '../../components/sections/Footer.astro';
 import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
 
 const pageTitle = "JSON Formatter, Validator & Minifier Online | Piush";
-const pageDescription = "Free browser-based JSON formatter, validator, minifier and viewer. Format and validate JSON instantly without uploading your data.";
+const pageDescription = "Format, validate, minify and inspect JSON directly in your browser with a fast, privacy-friendly JSON toolkit.";
 ---
 
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
     <BaseHead title={pageTitle} description={pageDescription} />
-    <!-- Structured Data: WebApplication -->
+    <!-- Structured Data: WebApplication & BreadcrumbList -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      name: 'JSON Toolkit',
-      applicationCategory: 'DeveloperApplication',
-      operatingSystem: 'All',
-      browserRequirements: 'Requires JavaScript',
-      url: new URL('/tools/json', Astro.site || 'https://piush.com').toString(),
-      description: pageDescription,
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+      '@graph': [
+        {
+          '@type': 'WebApplication',
+          name: 'JSON Toolkit',
+          applicationCategory: 'DeveloperApplication',
+          operatingSystem: 'All',
+          browserRequirements: 'Requires JavaScript',
+          url: new URL('/tools/json', Astro.site || 'https://piush.com').toString(),
+          description: pageDescription,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Tools', item: new URL('/tools', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: 'JSON Toolkit', item: new URL('/tools/json', Astro.site || 'https://piush.com').toString() }
+          ]
+        }
+      ]
     })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
@@ -360,6 +372,96 @@ const pageDescription = "Free browser-based JSON formatter, validator, minifier 
           <span>→</span>
         </a>
       </div>
+
+      <!-- Educational Content & FAQs for SEO and Developer Guidance -->
+      <section class="card-surface p-6 sm:p-8 space-y-8 rounded-2xl border border-[var(--color-border)] mt-6">
+        <div class="space-y-3">
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground tracking-tight m-0">
+            About the Online JSON Formatter, Validator & Minifier
+          </h2>
+          <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed m-0">
+            JSON (JavaScript Object Notation) is the ubiquitous standard for serializing structured data across REST APIs, configuration files, and document databases. This toolkit gives software engineers, QA teams, and backend developers an instant browser sandbox to format, validate, minify, sort keys, and inspect JSON payloads without risking credential leaks.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">✓</span>
+              Strict Syntax Validation
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Instantly detects syntax errors including unquoted keys, trailing commas, single-quoted strings, unescaped characters, and mismatched brackets with exact line and column coordinates.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">⚡</span>
+              Minification & Payload Optimization
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Strips unnecessary whitespace, line breaks, and indentation to produce the most compact JSON string possible, ideal for reducing network payload size in production HTTP requests.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🔍</span>
+              Key Sorting & Hierarchical Tree
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Sorts object keys alphabetically for deterministic schema diffs, and renders an interactive tree inspector with node collapsing, type badges, and real-time element counting.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Accordion / Grid -->
+        <div class="space-y-4 pt-4 border-t border-[var(--color-border)]">
+          <h2 class="text-lg sm:text-xl font-bold text-foreground tracking-tight m-0">
+            Frequently Asked Questions
+          </h2>
+
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Is my JSON data uploaded to an external server?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                No. All validation, formatting, minification, and tree rendering executes 100% locally in your browser sandbox using standard JavaScript Web APIs. No network requests are made, making it completely safe for confidential payloads, JWT tokens, API authorization headers, and internal database records.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Why does JSON.parse fail on my input?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                The RFC 8259 JSON specification is strict: keys must be enclosed in double quotes (not single quotes), values cannot contain trailing commas after the final element in an array or object, and unescaped control characters are prohibited. This tool highlights the exact row and column where the syntax breaks so you can fix it immediately.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                When should I sort object keys?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                Sorting keys alphabetically is standard practice when creating reproducible JSON snapshots, comparing API responses in Git diffs, or verifying database migration fixtures. It ensures that two equivalent objects produce identical serialized strings.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Internal Links to Related Developer Tools -->
+        <div class="pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-4 text-xs">
+          <span class="font-medium text-[var(--color-text-muted)]">Related developer utilities:</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="/tools/text" class="text-[var(--accent)] hover:underline no-underline font-medium">Developer Text Toolkit &rarr;</a>
+            <a href="/tools/playground" class="text-[var(--accent)] hover:underline no-underline font-medium">Online Code Playground &rarr;</a>
+            <a href="/quiz" class="text-[var(--accent)] hover:underline no-underline font-medium">Code Output Quiz &rarr;</a>
+          </div>
+        </div>
+      </section>
 
       <GlowLineSeparator />
     </main>

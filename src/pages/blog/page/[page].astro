@@ -27,12 +27,12 @@ const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
-    <BaseHead title={`Blog - Page ${currentPage} – Piush KS`} description={`Explore blog page ${currentPage}`} />
+    <BaseHead title={`Articles – Page ${currentPage} | Piush`} description={`Read page ${currentPage} of engineering articles on mobile development, system design, and software craftsmanship by Piush KS.`} />
     {currentPage > 1 && (
-      <link rel="prev" href={currentPage === 2 ? `/blog/` : `/blog/page/${currentPage - 1}/`} />
+      <link rel="prev" href={currentPage === 2 ? `/blog` : `/blog/page/${currentPage - 1}`} />
     )}
     {currentPage < totalPages && (
-      <link rel="next" href={`/blog/page/${currentPage + 1}/`} />
+      <link rel="next" href={`/blog/page/${currentPage + 1}`} />
     )}
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">

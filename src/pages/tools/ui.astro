@@ -4,7 +4,7 @@ import Header from '../../components/sections/Header.astro';
 import Footer from '../../components/sections/Footer.astro';
 import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
 
-const pageTitle = "CSS & UI Generator – Visual UI Design Tools | Piush";
+const pageTitle = "CSS & UI Generator – Visual Design Tools | Piush";
 const pageDescription = "Create gradients, shadows, colors, buttons, cards, typography and CSS visually with instant preview and production-ready code.";
 ---
 
@@ -12,17 +12,29 @@ const pageDescription = "Create gradients, shadows, colors, buttons, cards, typo
 <html lang="en" data-theme="light">
   <head>
     <BaseHead title={pageTitle} description={pageDescription} />
-    <!-- Structured Data: WebApplication -->
+    <!-- Structured Data: WebApplication & BreadcrumbList -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      name: 'UI Design Lab',
-      applicationCategory: 'DesignApplication',
-      operatingSystem: 'All',
-      browserRequirements: 'Requires JavaScript',
-      url: new URL('/tools/ui', Astro.site || 'https://piush.com').toString(),
-      description: pageDescription,
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+      '@graph': [
+        {
+          '@type': 'WebApplication',
+          name: 'UI Design Lab',
+          applicationCategory: 'DesignApplication',
+          operatingSystem: 'All',
+          browserRequirements: 'Requires JavaScript',
+          url: new URL('/tools/ui', Astro.site || 'https://piush.com').toString(),
+          description: pageDescription,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Tools', item: new URL('/tools', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: 'UI Design Lab', item: new URL('/tools/ui', Astro.site || 'https://piush.com').toString() }
+          ]
+        }
+      ]
     })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
@@ -577,6 +589,96 @@ const pageDescription = "Create gradients, shadows, colors, buttons, cards, typo
         </div>
 
       </div>
+
+      <!-- Educational Content & FAQs for SEO and Frontend Engineering Guidance -->
+      <section class="card-surface p-6 sm:p-8 space-y-8 rounded-2xl border border-[var(--color-border)] mt-6">
+        <div class="space-y-3">
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground tracking-tight m-0">
+            About the Visual CSS & UI Component Generator
+          </h2>
+          <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed m-0">
+            Handcrafting modern CSS rules by typing raw numerical values can lead to tedious trial-and-error. UI Design Lab is a realtime visual studio to configure box shadows, multi-stop gradients, asymmetric border radiuses, interactive buttons, card surfaces, and keyframe animations with instant preview rendering and copy-ready CSS declarations.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">📐</span>
+              Elevation & Box Shadows
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Layer multiple ambient and directional shadow offsets, blur radiuses, and spread values to create smooth, natural depth instead of harsh single-layer drop shadows.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🌈</span>
+              Gradients & Color Blends
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Build linear, radial, and conic gradients with custom angle rotations and color stops, preventing muddy gray interpolation zones across modern UI elements.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🔘</span>
+              Buttons, Cards & Corners
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Fine-tune asymmetric border radiuses (top-left through bottom-right), interactive hover transitions, focus rings, and responsive padding for accessible component design.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="space-y-4 pt-4 border-t border-[var(--color-border)]">
+          <h2 class="text-lg sm:text-xl font-bold text-foreground tracking-tight m-0">
+            Frequently Asked Questions
+          </h2>
+
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Is the generated CSS code lightweight and framework-agnostic?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                Yes. The output consists of clean, standardized CSS properties without extra utility libraries or external dependencies. You can paste the code directly into Vanilla CSS files, CSS Modules, Styled Components, or map the values into Tailwind CSS theme configurations.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                How do multi-layer shadows create more realistic UI depth?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                In physical lighting, shadows consist of soft ambient occlusion combined with a directional key light. By combining a tight, darker shadow with a wider, softer diffuse shadow, elements appear elevated above the surface with realistic depth rather than an artificial muddy blur.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                How can I build complete color palettes for mobile apps?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                For systematic 50 to 950 color token generation with contrast ratio checking and exports to Flutter, Swift, and Jetpack Compose, use our specialized Color Studio.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Related links -->
+        <div class="pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-4 text-xs">
+          <span class="font-medium text-[var(--color-text-muted)]">Related design utilities:</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="/tools/colors" class="text-[var(--accent)] hover:underline no-underline font-medium">Color Studio &rarr;</a>
+            <a href="/tools/svg" class="text-[var(--accent)] hover:underline no-underline font-medium">SVG Studio &rarr;</a>
+            <a href="/tools/app-icon" class="text-[var(--accent)] hover:underline no-underline font-medium">App Icon Creator &rarr;</a>
+          </div>
+        </div>
+      </section>
 
       <GlowLineSeparator />
     </main>

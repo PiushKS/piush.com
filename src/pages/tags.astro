@@ -29,7 +29,7 @@ const pageDescription = 'Explore articles across mobile engineering, architectur
 <!doctype html>
 <html lang="en" data-theme="light">
 	<head>
-		<BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
+		<BaseHead title="Topic Collections & Tags | Piush" description={pageDescription} />
 	</head>
 	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
 		<Header />
@@ -53,7 +53,7 @@ const pageDescription = 'Explore articles across mobile engineering, architectur
 			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
 				{sortedTags.map(tag => (
 					<a 
-						href={`/blog/tag/${tag.toLowerCase()}/`}
+						href={`/blog/tag/${tag.toLowerCase()}`}
 						class="card-surface p-5 block group no-underline"
 					>
 						<div class="flex items-center justify-between mb-2">

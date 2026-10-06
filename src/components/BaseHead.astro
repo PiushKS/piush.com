@@ -1,16 +1,16 @@
 ---
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
-import '../styles/global.css';
-import type { ImageMetadata } from 'astro';
-import { ClientRouter } from 'astro:transitions';
-import FallbackImage from '../assets/images/blog-placeholder-1.jpg';
-import { SITE_TITLE } from '../consts';
+import "../styles/global.css";
+import type { ImageMetadata } from "astro";
+import { ClientRouter } from "astro:transitions";
+import FallbackImage from "../assets/images/blog-placeholder-1.jpg";
+import { SITE_TITLE } from "../consts";
 
 interface Props {
-	title: string;
-	description: string;
-	image?: ImageMetadata;
+  title: string;
+  description: string;
+  image?: ImageMetadata;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -28,13 +28,13 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
   (function () {
     function enforceLightMode() {
       try {
-        localStorage.removeItem('theme');
+        localStorage.removeItem("theme");
       } catch (_) {}
-      document.documentElement.dataset.theme = 'light';
-      document.documentElement.classList.remove('dark');
+      document.documentElement.dataset.theme = "light";
+      document.documentElement.classList.remove("dark");
     }
     enforceLightMode();
-    document.addEventListener('astro:after-swap', enforceLightMode);
+    document.addEventListener("astro:after-swap", enforceLightMode);
   })();
 </script>
 
@@ -45,28 +45,39 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="shortcut icon" href="/favicon.ico" />
 <link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="manifest" href="/site.webmanifest" />
 <link
-	rel="alternate"
-	type="application/rss+xml"
-	title={SITE_TITLE}
-	href={new URL('rss.xml', Astro.site)}
+  rel="alternate"
+  type="application/rss+xml"
+  title={SITE_TITLE}
+  href={new URL("rss.xml", Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
 
-    <!-- ✅ Umami Analytics -->
-    <script
-      is:inline
-      defer
-      src="https://cloud.umami.is/script.js"
-      data-website-id="a20b757f-1391-4280-908f-a846b9734e76">
-    </script>
-
+<!-- ✅ Umami Analytics -->
+<script
+  is:inline
+  defer
+  src="https://cloud.umami.is/script.js"
+  data-website-id="a20b757f-1391-4280-908f-a846b9734e76"
+></script>
 
 <!-- Font preloads -->
-<link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
-<link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+<link
+  rel="preload"
+  href="/fonts/atkinson-regular.woff"
+  as="font"
+  type="font/woff"
+  crossorigin
+/>
+<link
+  rel="preload"
+  href="/fonts/atkinson-bold.woff"
+  as="font"
+  type="font/woff"
+  crossorigin
+/>
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -75,17 +86,23 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
 <meta name="robots" content="index,follow,max-image-preview:large" />
 
 <!-- Theme color (supports dark/light - iPhone Green Palette) -->
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4fbf3" />
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1712" />
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  content="#f4fbf3"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  content="#0d1712"
+/>
 
 <!-- Primary Meta Tags -->
-<title>{title}</title>
-<meta name="title" content={title} />
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:site_name" content="Piush KS" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content={absoluteUrl} />
 <meta property="og:title" content={title} />
@@ -93,10 +110,14 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:alt" content={title} />
 
-<!-- Twitter -->
+<!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@piushks" />
-<meta property="twitter:url" content={absoluteUrl} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={imageUrl} />
+<meta name="twitter:creator" content="@piushks" />
+<meta name="twitter:url" content={absoluteUrl} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+<!-- Document Title -->
+<title>{title}</title>

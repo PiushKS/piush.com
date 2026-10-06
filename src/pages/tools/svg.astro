@@ -12,17 +12,29 @@ const pageDescription = "Edit, preview, optimize and convert SVG files directly 
 <html lang="en" data-theme="light">
   <head>
     <BaseHead title={pageTitle} description={pageDescription} />
-    <!-- Structured Data: WebApplication -->
+    <!-- Structured Data: WebApplication & BreadcrumbList -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      name: 'SVG Studio',
-      applicationCategory: 'DesignApplication',
-      operatingSystem: 'All',
-      browserRequirements: 'Requires JavaScript',
-      url: new URL('/tools/svg', Astro.site || 'https://piush.com').toString(),
-      description: pageDescription,
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+      '@graph': [
+        {
+          '@type': 'WebApplication',
+          name: 'SVG Studio',
+          applicationCategory: 'DesignApplication',
+          operatingSystem: 'All',
+          browserRequirements: 'Requires JavaScript',
+          url: new URL('/tools/svg', Astro.site || 'https://piush.com').toString(),
+          description: pageDescription,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Tools', item: new URL('/tools', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: 'SVG Studio', item: new URL('/tools/svg', Astro.site || 'https://piush.com').toString() }
+          ]
+        }
+      ]
     })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
@@ -363,6 +375,96 @@ const pageDescription = "Edit, preview, optimize and convert SVG files directly 
         </div>
 
       </div>
+
+      <!-- Educational Content & FAQs for SEO and Designer/Developer Guidance -->
+      <section class="card-surface p-6 sm:p-8 space-y-8 rounded-2xl border border-[var(--color-border)] mt-6">
+        <div class="space-y-3">
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground tracking-tight m-0">
+            About the Online SVG Editor, Optimizer & PNG Converter
+          </h2>
+          <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed m-0">
+            Scalable Vector Graphics (SVG) provide crisp resolution at any display density. However, raw exports from design software like Figma, Illustrator, or Sketch often contain bloated metadata, hidden editor layers, and redundant decimals. SVG Studio is a client-side vector workspace to inspect, edit, minify, recolor, and convert SVGs into production-ready web code and PNG raster assets.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">⚡</span>
+              SVG Optimizer & Minifier
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Strips XML declarations, doctypes, editor comments, empty groups, and metadata namespaces while rounding coordinate precision to dramatically reduce vector file sizes for faster page loads.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🖼️</span>
+              High-DPI PNG Rasterizer
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Convert vector icons to crisp PNGs at 1x, 2x, 3x, or 4x scale using HTML5 Canvas rasterization with pixel-perfect alpha transparency for mobile launchers, social cards, and favicon fallbacks.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🎨</span>
+              Visual Recolor & Transformations
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Instantly adjust fill and stroke colors, tweak stroke widths, scale dimensions, and rotate or flip icons with live preview rendering and direct copy-to-clipboard capabilities.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="space-y-4 pt-4 border-t border-[var(--color-border)]">
+          <h2 class="text-lg sm:text-xl font-bold text-foreground tracking-tight m-0">
+            Frequently Asked Questions
+          </h2>
+
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Are my vector graphics uploaded to any cloud server?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                No. All XML parsing, SVG sanitization, and raster canvas conversions are processed entirely inside your local browser. Your proprietary vector illustrations and branding graphics never leave your computer.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Why does minifying SVGs improve Core Web Vitals?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                Inline SVGs contribute directly to HTML payload size and DOM complexity. Unoptimized SVGs with excessive path precision or editor comments increase main-thread parse time and delay Largest Contentful Paint (LCP). Minifying SVGs reduces DOM node overhead and speeds up rendering.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Can I use this tool to create Android or iOS app icons?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                Yes. You can optimize your source vector artwork here, then open the App Icon Creator to generate full Android adaptive icon bundles and Xcode-ready iOS asset catalogs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Related links -->
+        <div class="pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-4 text-xs">
+          <span class="font-medium text-[var(--color-text-muted)]">Related design utilities:</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="/tools/app-icon" class="text-[var(--accent)] hover:underline no-underline font-medium">App Icon Creator &rarr;</a>
+            <a href="/tools/ui" class="text-[var(--accent)] hover:underline no-underline font-medium">UI Design Lab &rarr;</a>
+            <a href="/tools/colors" class="text-[var(--accent)] hover:underline no-underline font-medium">Color Studio &rarr;</a>
+          </div>
+        </div>
+      </section>
 
       <GlowLineSeparator />
     </main>

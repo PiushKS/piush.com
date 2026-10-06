@@ -20,20 +20,50 @@ import GlowLineSeparator from '../components/ui/separator/GlowLineSeparator.astr
 <html lang="en" data-theme="light">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <!-- JSON-LD: Person & Organization -->
+    <!-- JSON-LD: Person & WebSite Entities -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'Person',
-      name: 'Piush KS',
-      jobTitle: 'Senior Software Engineer & Solopreneur',
-      url: new URL('/', Astro.site).toString(),
-      image: new URL('/favicon.png', Astro.site).toString(),
-      sameAs: [
-        'https://x.com/piushks',
-        'https://instagram.com/piushks',
-        'https://www.linkedin.com/in/piushks/',
-        'https://github.com/piushks'
-      ],
+      '@graph': [
+        {
+          '@type': 'Person',
+          '@id': new URL('/#person', Astro.site || 'https://piush.com').toString(),
+          name: 'Piush KS',
+          jobTitle: 'Mobile & Full-Stack Developer',
+          description: SITE_DESCRIPTION,
+          url: new URL('/', Astro.site || 'https://piush.com').toString(),
+          image: new URL('/favicon.png', Astro.site || 'https://piush.com').toString(),
+          sameAs: [
+            'https://github.com/piushks',
+            'https://www.linkedin.com/in/piushks/',
+            'https://x.com/piushks',
+            'https://instagram.com/piushks'
+          ],
+          knowsAbout: [
+            'Android Development',
+            'Kotlin',
+            'Jetpack Compose',
+            'iOS Development',
+            'Swift',
+            'SwiftUI',
+            'Flutter',
+            'Dart',
+            'TypeScript',
+            'React',
+            'Node.js',
+            'System Architecture'
+          ]
+        },
+        {
+          '@type': 'WebSite',
+          '@id': new URL('/#website', Astro.site || 'https://piush.com').toString(),
+          name: 'Piush KS',
+          url: new URL('/', Astro.site || 'https://piush.com').toString(),
+          description: SITE_DESCRIPTION,
+          publisher: {
+            '@id': new URL('/#person', Astro.site || 'https://piush.com').toString()
+          }
+        }
+      ]
     })} />
 	</head>
 	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">

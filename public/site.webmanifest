@@ -1,0 +1,23 @@
+{
+  "name": "Piush KS – Mobile & Full-Stack Developer",
+  "short_name": "Piush KS",
+  "description": "Portfolio of Piush KS, mobile & full-stack developer building Android, iOS, Flutter and web products.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4fbf3",
+  "theme_color": "#1B5448",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

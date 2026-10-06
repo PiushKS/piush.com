@@ -5,8 +5,8 @@ import Footer from '../../components/sections/Footer.astro';
 import Button from '../../components/ui/button/Button.astro';
 import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
 
-const pageTitle = "Free Developer & Design Tools | Piush";
-const pageDescription = "Fast, privacy-friendly utilities for developers and designers: JSON formatter, text case converter, SVG editor, UI design lab, OKLCH color studio, and Android/iOS app icon generator. 100% client-side.";
+const pageTitle = "Free Developer Tools & Online Utilities | Piush";
+const pageDescription = "Free browser-based developer tools for formatting JSON, testing code, creating app icons, working with colors, SVGs, UI styles and more.";
 
 const toolCategories = [
   {
@@ -29,6 +29,14 @@ const toolCategories = [
         chips: ['10 Case Formats', 'Base64 UTF-8', 'URL & HTML', 'Deduplication', 'Metrics'],
         iconType: 'text',
         badge: 'Instant execution'
+      },
+      {
+        title: 'Code Playground',
+        description: 'Write, compile and run code online across 12+ programming languages.',
+        href: '/tools/playground',
+        chips: ['Python', 'C/C++', 'JavaScript', 'Java', 'Go', 'Rust'],
+        iconType: 'code',
+        badge: 'Isolated Execution'
       }
     ]
   },
@@ -148,7 +156,7 @@ const toolCategories = [
       <!-- DATA-DRIVEN CATEGORIES SECTION -->
       {toolCategories.map((category) => (
         <section class="space-y-4" aria-labelledby={`heading-${category.id}`}>
-          <div class="flex items-center gap-2 border-b border-[var(--color-border)] pb-2">
+          <div class="flex items-center gap-2 border-b border-[var(--color-border)] pb-2" id={`heading-${category.id}`}>
             <span class="text-xs font-mono font-bold text-[var(--accent)] tracking-wider uppercase">{category.name}</span>
             <span class="text-xs text-[var(--color-text-muted)]">· {category.subtitle}</span>
           </div>
@@ -164,6 +172,12 @@ const toolCategories = [
                       )}
                       {t.iconType === 'text' && (
                         <span class="font-serif font-bold text-lg leading-none">Aa</span>
+                      )}
+                      {t.iconType === 'code' && (
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="16 18 22 12 16 6"/>
+                          <polyline points="8 6 2 12 8 18"/>
+                        </svg>
                       )}
                       {t.iconType === 'svg' && (
                         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -201,7 +215,7 @@ const toolCategories = [
                   </div>
 
                   <div>
-                    <h2 class="text-xl font-bold text-foreground group-hover:text-[var(--accent)] transition-colors tracking-tight m-0" id={`heading-${category.id}`}>
+                    <h2 class="text-xl font-bold text-foreground group-hover:text-[var(--accent)] transition-colors tracking-tight m-0">
                       {t.title}
                     </h2>
                     <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed mt-1 m-0">

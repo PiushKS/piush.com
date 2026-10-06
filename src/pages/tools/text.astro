@@ -12,17 +12,29 @@ const pageDescription = "Free browser-based developer text tools: convert camelC
 <html lang="en" data-theme="light">
   <head>
     <BaseHead title={pageTitle} description={pageDescription} />
-    <!-- Structured Data: WebApplication -->
+    <!-- Structured Data: WebApplication & BreadcrumbList -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      name: 'Developer Text Toolkit',
-      applicationCategory: 'DeveloperApplication',
-      operatingSystem: 'All',
-      browserRequirements: 'Requires JavaScript',
-      url: new URL('/tools/text', Astro.site || 'https://piush.com').toString(),
-      description: pageDescription,
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+      '@graph': [
+        {
+          '@type': 'WebApplication',
+          name: 'Developer Text Toolkit',
+          applicationCategory: 'DeveloperApplication',
+          operatingSystem: 'All',
+          browserRequirements: 'Requires JavaScript',
+          url: new URL('/tools/text', Astro.site || 'https://piush.com').toString(),
+          description: pageDescription,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Tools', item: new URL('/tools', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: 'Developer Text Toolkit', item: new URL('/tools/text', Astro.site || 'https://piush.com').toString() }
+          ]
+        }
+      ]
     })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
@@ -289,6 +301,96 @@ const pageDescription = "Free browser-based developer text tools: convert camelC
           <span>→</span>
         </a>
       </div>
+
+      <!-- Educational Content & FAQs for SEO and Developer Guidance -->
+      <section class="card-surface p-6 sm:p-8 space-y-8 rounded-2xl border border-[var(--color-border)] mt-6">
+        <div class="space-y-3">
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground tracking-tight m-0">
+            About Developer Text Tools & String Utilities
+          </h2>
+          <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed m-0">
+            Writing and refactoring code often requires converting identifier naming conventions, encoding payloads for HTTP transmission, and sanitizing raw string data. The Developer Text Toolkit provides instant, offline-ready transformations for case conversions, Base64 encoding/decoding, URL encoding, HTML entity escaping, and multi-line deduplication.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🔤</span>
+              Case Converter
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Instantly switch variables between camelCase, snake_case, PascalCase, kebab-case, CONSTANT_CASE, Title Case, and dot.notation across JavaScript, Python, Dart, Kotlin, and Rust idioms.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🔒</span>
+              Base64 & URL Encoder/Decoder
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Reliable Base64 encoding and decoding with full UTF-8 Unicode support, alongside standard RFC 3986 URL percent-encoding and HTML entity escaping for web safety.
+            </p>
+          </div>
+
+          <div class="space-y-2 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <h3 class="text-sm font-bold text-foreground m-0 flex items-center gap-1.5">
+              <span class="text-[var(--accent)]">🧹</span>
+              Line Hygiene & Utilities
+            </h3>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+              Clean up raw logs and lists: deduplicate lines, sort alphabetically or by length, strip empty rows, trim whitespace, and calculate word, character, and byte metrics.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="space-y-4 pt-4 border-t border-[var(--color-border)]">
+          <h2 class="text-lg sm:text-xl font-bold text-foreground tracking-tight m-0">
+            Frequently Asked Questions
+          </h2>
+
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Are my text inputs or tokens stored or uploaded?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                No. All string manipulation, Base64 conversion, and regex sanitization run 100% locally in your browser. No data ever leaves your device, making it safe for authentication secrets, base64 certificates, and proprietary data.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                Does the Base64 tool support non-ASCII Unicode characters and emojis?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                Yes. Standard browser <code>btoa()</code> throws an exception when encountering characters outside the Latin1 range. This toolkit uses modern TextEncoder and TextDecoder Web APIs to correctly encode and decode UTF-8 byte streams, safely preserving emojis and international scripts.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--card)]">
+              <h3 class="text-sm font-semibold text-foreground m-0">
+                What is the difference between encodeURI and encodeURIComponent?
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mt-1.5 mb-0">
+                <code>encodeURI</code> is intended for complete URLs and preserves protocol separators like colons, slashes, and question marks. <code>encodeURIComponent</code> encodes all reserved characters, making it suitable for individual query parameter values to prevent URL parameter injection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Related links -->
+        <div class="pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-4 text-xs">
+          <span class="font-medium text-[var(--color-text-muted)]">Related developer utilities:</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="/tools/json" class="text-[var(--accent)] hover:underline no-underline font-medium">JSON Toolkit &rarr;</a>
+            <a href="/tools/playground" class="text-[var(--accent)] hover:underline no-underline font-medium">Online Code Playground &rarr;</a>
+            <a href="/quiz" class="text-[var(--accent)] hover:underline no-underline font-medium">Programming Quiz &rarr;</a>
+          </div>
+        </div>
+      </section>
 
       <GlowLineSeparator />
     </main>

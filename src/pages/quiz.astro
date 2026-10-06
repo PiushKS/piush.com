@@ -5,22 +5,33 @@ import Footer from "../components/sections/Footer.astro";
 import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astro";
 import { quizManifest, LANGUAGE_META } from "../data/quiz/manifest";
 
-const title = "Programming Code Output Quiz – JavaScript, Python, Java, C++ & More | Piush";
-const description = "Test your programming logic with code output challenges across JavaScript, Python, Java, C, C++, Kotlin, Swift and Dart.";
+const title = "Programming Code Output Quiz – Test Your Coding Logic | Piush";
+const description = "Test your programming logic with code output questions across JavaScript, Python, Java, C, C++, Kotlin, Swift and Dart.";
 ---
 
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
     <BaseHead title={title} description={description} />
-    <!-- Structured Data for Interactive Learning / Quiz -->
+    <!-- Structured Data for Interactive Learning / Quiz & Breadcrumbs -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "Quiz",
-      "name": "Programming Code Output Quiz",
-      "description": description,
-      "educationalLevel": "Intermediate to Advanced",
-      "about": ["Computer Programming", "JavaScript", "Python", "Java", "C++", "C", "Kotlin", "Swift", "Dart"]
+      "@graph": [
+        {
+          "@type": "Quiz",
+          "name": "Programming Code Output Quiz",
+          "description": description,
+          "educationalLevel": "Intermediate to Advanced",
+          "about": ["Computer Programming", "JavaScript", "Python", "Java", "C++", "C", "Kotlin", "Swift", "Dart"]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": new URL('/', Astro.site || 'https://piush.com').toString() },
+            { "@type": "ListItem", "position": 2, "name": "Quiz", "item": new URL('/quiz', Astro.site || 'https://piush.com').toString() }
+          ]
+        }
+      ]
     })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
@@ -474,6 +485,14 @@ const description = "Test your programming logic with code output challenges acr
         <p>
           Every snippet is validated against official language standards (ECMAScript 2023, Python 3.10+, Java 17+, C11/C++20, Kotlin 1.9+, Swift 5.9+, Dart 3.0+). The questions deliberately avoid ambiguous compiler implementations or undefined behaviors unless specifically highlighted as a teaching point.
         </p>
+        <div class="pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-4 text-xs not-prose">
+          <span class="font-medium text-[var(--color-text-muted)]">Practice in an isolated environment:</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="/tools/playground" class="text-[var(--accent)] hover:underline no-underline font-medium">Online Compiler & Code Playground &rarr;</a>
+            <a href="/tools/json" class="text-[var(--accent)] hover:underline no-underline font-medium">JSON Toolkit &rarr;</a>
+            <a href="/portfolio" class="text-[var(--accent)] hover:underline no-underline font-medium">Developer Portfolio &rarr;</a>
+          </div>
+        </div>
       </article>
     </main>
 

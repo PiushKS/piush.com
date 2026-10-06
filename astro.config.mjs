@@ -11,7 +11,15 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'hover',
   },
-  integrations: [mdx(), sitemap()],
+  redirects: {
+    '/work': '/portfolio',
+  },
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes('/demo') && !page.includes('/404'),
+    }),
+  ],
   markdown: {
     shikiConfig: {
       themes: {
