@@ -1,0 +1,2419 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/sections/Header.astro';
+import Footer from '../../components/sections/Footer.astro';
+import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
+
+const pageTitle = "Android & iOS App Icon Generator | Piush";
+const pageDescription = "Create Android and iOS app icons online. Generate launcher icons, adaptive icons and Xcode-ready app icon assets from one design.";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'App Icon & Logo Creator',
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires JavaScript',
+      url: new URL('/tools/app-icon', Astro.site || 'https://piush.com').toString(),
+      description: pageDescription,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+    })} />
+  </head>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+    <Header />
+    <main class="flex-1 w-full px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-6 max-w-[1680px] mx-auto">
+      
+      <!-- Top Navigation & Breadcrumbs -->
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-3">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2">
+          <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+          <span>/</span>
+          <a href="/tools" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
+          <span>/</span>
+          <span class="text-[var(--accent)] font-medium">App Icon Creator</span>
+        </nav>
+        <div class="flex items-center gap-3 font-mono text-[11px] text-[var(--color-text-secondary)]">
+          <div class="flex items-center gap-1.5">
+            <span class="inline-flex size-2 rounded-full bg-[var(--accent)] animate-pulse"></span>
+            <span>100% Client-Side • Zero Server Uploads</span>
+          </div>
+          <button id="btn-clear-local" type="button" class="text-[var(--color-text-muted)] hover:text-red-400 transition-colors text-[10px] underline ml-2" title="Reset all settings to defaults">
+            Reset All
+          </button>
+        </div>
+      </div>
+
+      <!-- Header Title & Cross-Link -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <div class="size-9 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)]">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="4"/>
+                <path d="M3 9h18"/>
+                <path d="M9 21V9"/>
+              </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight m-0">
+              App Icon & Logo Creator
+            </h1>
+            <span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)]">
+              Android + iOS
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-[var(--color-text-muted)] mt-1 m-0">
+            Design master app icons, configure adaptive layers, simulate native device environments, and export complete Xcode & Android asset catalogs.
+          </p>
+        </div>
+
+        <!-- Cross-link Callout to Color Studio -->
+        <div class="flex items-center gap-2">
+          <a
+            href="/tools/colors"
+            class="sw-tool-btn text-xs font-semibold text-[var(--accent)] border-[rgba(var(--accent-rgb),0.35)] hover:bg-[rgba(var(--accent-rgb),0.12)]"
+            title="Open Color Studio to pick or generate palettes"
+          >
+            <span>Need the perfect color? Open Color Studio</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Notification Toast for Shared Artwork / Actions -->
+      <div id="shared-notice" class="hidden p-3 rounded-xl border border-[rgba(var(--accent-rgb),0.3)] bg-[rgba(var(--accent-rgb),0.08)] flex items-center justify-between text-xs text-foreground animate-fadeIn">
+        <div class="flex items-center gap-2">
+          <span class="text-[var(--accent)] font-bold">✨</span>
+          <span id="shared-notice-text">Imported artwork from session.</span>
+        </div>
+        <button id="btn-dismiss-notice" type="button" class="text-xs text-[var(--color-text-muted)] hover:text-foreground">✕</button>
+      </div>
+
+      <!-- MAIN STUDIO GRID: Controls (5 cols) & Live Preview / Validation / Export (7 cols) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        
+        <!-- ================= LEFT PANEL: ARTWORK & LAYER CONTROLS (5 cols) ================= -->
+        <div class="lg:col-span-5 space-y-4">
+          
+          <!-- Source Artwork Mode Selector -->
+          <div class="card-surface p-4 border border-[var(--color-border)] rounded-2xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
+                <span>🎨</span> 1. Source Artwork
+              </span>
+              <span class="text-[10px] font-mono text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] px-2 py-0.5 rounded border border-[rgba(var(--accent-rgb),0.2)]">
+                1024 × 1024 Master
+              </span>
+            </div>
+
+            <!-- Tabs: Upload vs Built-in Creator -->
+            <div class="grid grid-cols-2 p-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl gap-1 text-xs font-medium">
+              <button id="tab-src-upload" type="button" class="py-1.5 px-3 rounded-lg bg-[var(--color-card)] text-foreground shadow-xs font-semibold transition-all">
+                Upload Artwork
+              </button>
+              <button id="tab-src-creator" type="button" class="py-1.5 px-3 rounded-lg text-[var(--color-text-muted)] hover:text-foreground transition-all">
+                Built-in Creator
+              </button>
+            </div>
+
+            <!-- Upload Section -->
+            <div id="section-upload" class="space-y-3">
+              <div
+                id="drop-zone"
+                class="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--accent)] rounded-xl p-5 text-center cursor-pointer transition-colors bg-[var(--color-bg-secondary)]/50 group"
+              >
+                <input type="file" id="file-input" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" />
+                <div class="flex flex-col items-center justify-center space-y-2 pointer-events-none">
+                  <div class="size-10 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                  </div>
+                  <div class="text-xs font-semibold text-foreground">
+                    Drop PNG, SVG, WEBP, or JPG here
+                  </div>
+                  <div class="text-[11px] text-[var(--color-text-muted)]">
+                    or click to browse from device (1024×1024+ recommended)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Upload info / warning bar -->
+              <div id="upload-meta-bar" class="hidden p-2.5 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 truncate">
+                  <span id="upload-file-icon" class="text-[var(--accent)] font-bold">📄</span>
+                  <span id="upload-file-name" class="font-mono text-[11px] truncate max-w-[200px]">logo.png</span>
+                  <span id="upload-file-dims" class="text-[10px] text-[var(--color-text-muted)] font-mono">1024×1024</span>
+                </div>
+                <button id="btn-remove-upload" type="button" class="text-[11px] text-red-400 hover:underline">Remove</button>
+              </div>
+
+              <!-- Low resolution warning if needed -->
+              <div id="low-res-warn" class="hidden p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-300 flex items-center gap-2">
+                <span>⚠</span>
+                <span id="low-res-warn-msg">Your source image is smaller than recommended. For crisp icons across all densities, use at least 1024×1024.</span>
+              </div>
+            </div>
+
+            <!-- Built-in Creator Mode Controls -->
+            <div id="section-creator" class="hidden space-y-3">
+              <!-- Sub-tabs: Icon Library vs Letter Logo vs Shapes -->
+              <div class="grid grid-cols-3 p-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg gap-1 text-[11px] font-medium text-center">
+                <button id="subtab-icon" type="button" class="py-1 px-2 rounded bg-[var(--color-card)] text-foreground font-semibold shadow-xs">
+                  Icons (84)
+                </button>
+                <button id="subtab-letter" type="button" class="py-1 px-2 rounded text-[var(--color-text-muted)] hover:text-foreground">
+                  Letter Logo
+                </button>
+                <button id="subtab-shape" type="button" class="py-1 px-2 rounded text-[var(--color-text-muted)] hover:text-foreground">
+                  Shapes (9)
+                </button>
+              </div>
+
+              <!-- 1. ICON LIBRARY -->
+              <div id="creator-icon-panel" class="space-y-2.5">
+                <div class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    id="icon-search-input"
+                    placeholder="Search 84 icons (e.g., code, rocket, wallet, chart)..."
+                    class="sw-tool-input text-xs w-full py-1.5"
+                  />
+                  <select id="icon-category-select" class="sw-tool-select text-[11px] py-1.5 w-36" aria-label="Icon Category">
+                    <option value="all">All Categories</option>
+                    <option value="technology">Technology</option>
+                    <option value="business">Business</option>
+                    <option value="education">Education</option>
+                    <option value="finance">Finance</option>
+                    <option value="health">Health</option>
+                    <option value="travel">Travel</option>
+                    <option value="food">Food</option>
+                    <option value="music">Music</option>
+                    <option value="photography">Photography</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="sports">Sports</option>
+                    <option value="social">Social</option>
+                    <option value="tools">Tools</option>
+                    <option value="games">Games</option>
+                    <option value="weather">Weather</option>
+                  </select>
+                </div>
+
+                <!-- Icon Grid Display -->
+                <div id="icon-grid" class="grid grid-cols-6 sm:grid-cols-7 gap-1.5 max-h-48 overflow-y-auto p-1.5 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl scrollbar-thin">
+                  <!-- Injected via JavaScript -->
+                </div>
+                <div class="text-[10px] text-[var(--color-text-muted)] flex items-center justify-between">
+                  <span id="icon-status-label">Selected: Sparkles (Games)</span>
+                  <span>Click icon to select</span>
+                </div>
+              </div>
+
+              <!-- 2. LETTER LOGO -->
+              <div id="creator-letter-panel" class="hidden space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] text-[var(--color-text-muted)] block mb-1">Text / Initials</label>
+                    <input type="text" id="letter-text" value="P" maxlength="4" class="sw-tool-input font-bold text-center text-sm py-1" />
+                  </div>
+                  <div>
+                    <label class="text-[11px] text-[var(--color-text-muted)] block mb-1">Font Family</label>
+                    <select id="letter-font" class="sw-tool-select text-xs py-1 w-full">
+                      <option value="system-ui, -apple-system, sans-serif">Modern Sans</option>
+                      <option value="monospace">Monospace Code</option>
+                      <option value="serif">Classic Serif</option>
+                      <option value="'Impact', 'Arial Black', sans-serif">Impact / Bold</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                  <div>
+                    <label class="text-[11px] text-[var(--color-text-muted)] block mb-1">Font Weight</label>
+                    <select id="letter-weight" class="sw-tool-select text-xs py-1 w-full">
+                      <option value="400">Regular (400)</option>
+                      <option value="600">SemiBold (600)</option>
+                      <option value="700" selected>Bold (700)</option>
+                      <option value="900">Black (900)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[11px] text-[var(--color-text-muted)] block mb-1">Letter Color</label>
+                    <div class="flex items-center gap-1.5">
+                      <input type="color" id="letter-color" value="#ffffff" class="size-7 rounded cursor-pointer border border-[var(--color-border)] bg-transparent p-0" />
+                      <input type="text" id="letter-color-hex" value="#FFFFFF" class="sw-tool-input text-[10px] font-mono py-1 px-1.5 w-full uppercase" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-[11px] text-[var(--color-text-muted)] block mb-1">Alignment</label>
+                    <select id="letter-align" class="sw-tool-select text-xs py-1 w-full">
+                      <option value="center" selected>Center</option>
+                      <option value="top">Top</option>
+                      <option value="bottom">Bottom</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. SHAPE BUILDER -->
+              <div id="creator-shape-panel" class="hidden space-y-3">
+                <div>
+                  <label class="text-[11px] text-[var(--color-text-muted)] block mb-1.5">Shape Geometry</label>
+                  <div class="grid grid-cols-5 gap-1 text-[11px]">
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px] sw-tool-btn-primary" data-shape="circle">Circle</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="rounded-square">Squircle</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="square">Square</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="triangle">Triangle</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="diamond">Diamond</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="hexagon">Hexagon</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="star">Star</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="heart">Heart</button>
+                    <button type="button" class="btn-shape-select sw-tool-btn py-1 text-[10px]" data-shape="blob">Blob</button>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] text-[var(--color-text-muted)] block mb-1">Shape Fill</label>
+                    <div class="flex items-center gap-1.5">
+                      <input type="color" id="shape-fill-color" value="#ade1cd" class="size-7 rounded cursor-pointer border border-[var(--color-border)] bg-transparent p-0" />
+                      <input type="text" id="shape-fill-hex" value="#ADE1CD" class="sw-tool-input text-[10px] font-mono py-1 px-1.5 w-full uppercase" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-[11px] text-[var(--color-text-muted)] block mb-1">Stroke Color & Width</label>
+                    <div class="flex items-center gap-1.5">
+                      <input type="color" id="shape-stroke-color" value="#1B5448" class="size-7 rounded cursor-pointer border border-[var(--color-border)] bg-transparent p-0" />
+                      <input type="range" id="shape-stroke-width" min="0" max="30" value="0" class="w-full accent-[var(--accent)]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACKGROUND LAYER CONTROLS -->
+          <div class="card-surface p-4 border border-[var(--color-border)] rounded-2xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
+                <span>🖼️</span> 2. Background Layer
+              </span>
+              <div class="flex items-center gap-1">
+                <button id="btn-toggle-bg-visible" type="button" class="text-[11px] text-[var(--color-text-muted)] hover:text-foreground px-1" title="Toggle background visibility">
+                  👁️ Visible
+                </button>
+              </div>
+            </div>
+
+            <!-- Background Type Selector -->
+            <div class="grid grid-cols-4 p-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl gap-1 text-[11px] font-medium text-center">
+              <button id="bg-type-solid" type="button" class="py-1 px-1 rounded-lg bg-[var(--color-card)] text-foreground shadow-xs font-semibold">
+                Solid
+              </button>
+              <button id="bg-type-linear" type="button" class="py-1 px-1 rounded-lg text-[var(--color-text-muted)] hover:text-foreground">
+                Linear Grad
+              </button>
+              <button id="bg-type-radial" type="button" class="py-1 px-1 rounded-lg text-[var(--color-text-muted)] hover:text-foreground">
+                Radial Grad
+              </button>
+              <button id="bg-type-transparent" type="button" class="py-1 px-1 rounded-lg text-[var(--color-text-muted)] hover:text-foreground">
+                Transparent
+              </button>
+            </div>
+
+            <!-- Solid Color Controls -->
+            <div id="bg-solid-controls" class="space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <input type="color" id="bg-solid-color" value="#1B5448" class="size-8 rounded-lg cursor-pointer border border-[var(--color-border)] bg-transparent p-0" />
+                  <input type="text" id="bg-solid-hex" value="#1B5448" class="sw-tool-input text-xs font-mono py-1 px-2 w-28 uppercase" />
+                </div>
+                <!-- Presets -->
+                <div class="flex items-center gap-1">
+                  <button type="button" class="preset-color size-5 rounded-md border border-[var(--color-border)] hover:scale-110 transition-transform" style="background:#1B5448" data-color="#1B5448" title="#1B5448"></button>
+                  <button type="button" class="preset-color size-5 rounded-md border border-[var(--color-border)] hover:scale-110 transition-transform" style="background:#23382B" data-color="#23382B" title="#23382B"></button>
+                  <button type="button" class="preset-color size-5 rounded-md border border-[var(--color-border)] hover:scale-110 transition-transform" style="background:#0F172A" data-color="#0F172A" title="#0F172A"></button>
+                  <button type="button" class="preset-color size-5 rounded-md border border-[var(--color-border)] hover:scale-110 transition-transform" style="background:#18181B" data-color="#18181B" title="#18181B"></button>
+                  <button type="button" class="preset-color size-5 rounded-md border border-[var(--color-border)] hover:scale-110 transition-transform" style="background:#4e5850" data-color="#4e5850" title="#4e5850"></button>
+                  <button type="button" class="preset-color size-5 rounded-md border border-[var(--color-border)] hover:scale-110 transition-transform" style="background:#E1F8DC" data-color="#E1F8DC" title="#E1F8DC"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gradient Controls -->
+            <div id="bg-grad-controls" class="hidden space-y-2">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] text-[var(--color-text-muted)] block mb-1">Color 1 (Start)</label>
+                  <div class="flex items-center gap-1.5">
+                    <input type="color" id="bg-grad-color1" value="#1B5448" class="size-7 rounded cursor-pointer border border-[var(--color-border)] bg-transparent p-0" />
+                    <input type="text" id="bg-grad-hex1" value="#1B5448" class="sw-tool-input text-[10px] font-mono py-1 px-1.5 w-full uppercase" />
+                  </div>
+                </div>
+                <div>
+                  <label class="text-[10px] text-[var(--color-text-muted)] block mb-1">Color 2 (End)</label>
+                  <div class="flex items-center gap-1.5">
+                    <input type="color" id="bg-grad-color2" value="#ade1cd" class="size-7 rounded cursor-pointer border border-[var(--color-border)] bg-transparent p-0" />
+                    <input type="text" id="bg-grad-hex2" value="#ADE1CD" class="sw-tool-input text-[10px] font-mono py-1 px-1.5 w-full uppercase" />
+                  </div>
+                </div>
+              </div>
+
+              <div id="grad-angle-row" class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                  <span>Gradient Angle</span>
+                  <span id="grad-angle-val" class="font-mono text-foreground font-semibold">135°</span>
+                </div>
+                <input type="range" id="bg-grad-angle" min="0" max="360" value="135" class="w-full accent-[var(--accent)]" />
+              </div>
+
+              <!-- Gradient Presets -->
+              <div class="flex items-center gap-1.5 pt-1">
+                <span class="text-[10px] text-[var(--color-text-muted)]">Presets:</span>
+                <button type="button" class="btn-grad-preset text-[10px] px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)]" data-c1="#1B5448" data-c2="#ade1cd" data-angle="135">Forest Mint</button>
+                <button type="button" class="btn-grad-preset text-[10px] px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)]" data-c1="#0F172A" data-c2="#334155" data-angle="180">Dark Slate</button>
+                <button type="button" class="btn-grad-preset text-[10px] px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)]" data-c1="#23382B" data-c2="#1B5448" data-angle="90">Emerald Deep</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- FOREGROUND & POSITIONING CONTROLS -->
+          <div class="card-surface p-4 border border-[var(--color-border)] rounded-2xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
+                <span>📐</span> 3. Foreground & Transform
+              </span>
+              <div class="flex items-center gap-1">
+                <button id="btn-fg-center" type="button" class="sw-tool-btn text-[10px] py-0.5 px-2" title="Center artwork">Center</button>
+                <button id="btn-fg-fit" type="button" class="sw-tool-btn text-[10px] py-0.5 px-2" title="Fit to 66% Adaptive Safe Zone">Fit Safe Zone</button>
+                <button id="btn-fg-reset" type="button" class="sw-tool-btn text-[10px] py-0.5 px-2" title="Reset transforms">Reset</button>
+              </div>
+            </div>
+
+            <!-- Scale & Padding -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                  <span>Scale</span>
+                  <span id="fg-scale-val" class="font-mono text-foreground font-semibold">65%</span>
+                </div>
+                <input type="range" id="fg-scale" min="10" max="150" value="65" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                  <span>Rotation</span>
+                  <span id="fg-rotate-val" class="font-mono text-foreground font-semibold">0°</span>
+                </div>
+                <input type="range" id="fg-rotate" min="-180" max="180" value="0" class="w-full accent-[var(--accent)]" />
+              </div>
+            </div>
+
+            <!-- Position X & Y -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                  <span>Offset X</span>
+                  <span id="fg-x-val" class="font-mono text-foreground font-semibold">0px</span>
+                </div>
+                <input type="range" id="fg-x" min="-250" max="250" value="0" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                  <span>Offset Y</span>
+                  <span id="fg-y-val" class="font-mono text-foreground font-semibold">0px</span>
+                </div>
+                <input type="range" id="fg-y" min="-250" max="250" value="0" class="w-full accent-[var(--accent)]" />
+              </div>
+            </div>
+
+            <!-- Opacity & Tint/Color -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                  <span>Opacity</span>
+                  <span id="fg-opacity-val" class="font-mono text-foreground font-semibold">100%</span>
+                </div>
+                <input type="range" id="fg-opacity" min="5" max="100" value="100" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                  <span>Foreground Tint</span>
+                  <button id="btn-toggle-fg-tint" type="button" class="text-[10px] text-[var(--accent)] underline">Enable Tint</button>
+                </div>
+                <div class="flex items-center gap-1.5 opacity-50 pointer-events-none" id="fg-tint-box">
+                  <input type="color" id="fg-tint-color" value="#ffffff" class="size-7 rounded cursor-pointer border border-[var(--color-border)] bg-transparent p-0" />
+                  <input type="text" id="fg-tint-hex" value="#FFFFFF" class="sw-tool-input text-[10px] font-mono py-1 px-1.5 w-full uppercase" />
+                </div>
+              </div>
+            </div>
+            
+            <p class="text-[10px] text-[var(--color-text-muted)] m-0 flex items-center gap-1">
+              <span>💡 Tip:</span> You can also click and drag directly on the 1024×1024 master canvas to reposition the artwork.
+            </p>
+          </div>
+
+          <!-- SAFE ZONE & GUIDES OVERLAYS -->
+          <div class="card-surface p-3.5 border border-[var(--color-border)] rounded-2xl flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-foreground uppercase tracking-wider">
+              Overlay Guides
+            </span>
+            <div class="flex items-center gap-3 text-xs">
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="chk-guide-safezone" checked class="rounded border-[var(--color-border)] text-[var(--accent)] focus:ring-[var(--accent)]" />
+                <span class="text-[var(--color-text-secondary)]">Safe Area (66%)</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="chk-guide-grid" class="rounded border-[var(--color-border)] text-[var(--accent)] focus:ring-[var(--accent)]" />
+                <span class="text-[var(--color-text-secondary)]">Grid</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="chk-guide-center" class="rounded border-[var(--color-border)] text-[var(--accent)] focus:ring-[var(--accent)]" />
+                <span class="text-[var(--color-text-secondary)]">Crosshairs</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================= RIGHT PANEL: MASTER CANVAS, PREVIEWS & EXPORT (7 cols) ================= -->
+        <div class="lg:col-span-7 space-y-5">
+          
+          <!-- Master Canvas & Interactive Viewport -->
+          <div class="card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-border)] pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
+                  <span>📱</span> Master Canvas
+                </span>
+                <span class="text-[11px] font-mono text-[var(--color-text-muted)] bg-[var(--color-bg-secondary)] px-2 py-0.5 rounded border border-[var(--color-border)]">
+                  1024 × 1024 px Native
+                </span>
+              </div>
+
+              <!-- Quick Canvas Mask Toggle -->
+              <div class="flex items-center gap-1.5 text-xs">
+                <span class="text-[11px] text-[var(--color-text-muted)]">Mask:</span>
+                <button type="button" class="btn-canvas-mask sw-tool-btn py-0.5 px-2 text-[10px] sw-tool-btn-primary" data-mask="none">Square (Master)</button>
+                <button type="button" class="btn-canvas-mask sw-tool-btn py-0.5 px-2 text-[10px]" data-mask="squircle">iOS Squircle</button>
+                <button type="button" class="btn-canvas-mask sw-tool-btn py-0.5 px-2 text-[10px]" data-mask="circle">Android Circle</button>
+              </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative flex items-center justify-center p-4 bg-[var(--color-bg-secondary)]/60 rounded-xl border border-[var(--color-border)] overflow-hidden">
+              <!-- Transparency checkerboard background -->
+              <div class="relative size-64 sm:size-80 md:size-96 rounded-2xl shadow-xl overflow-hidden cursor-move select-none" id="canvas-wrapper">
+                <canvas
+                  id="master-canvas"
+                  width="1024"
+                  height="1024"
+                  class="size-full object-contain block transition-all"
+                ></canvas>
+
+                <!-- Overlay Safe Zone Ring (66% diameter = circle inside 1024) -->
+                <div id="overlay-safezone" class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <div class="size-[66%] rounded-full border-2 border-dashed border-emerald-400/80 shadow-[0_0_15px_rgba(16,185,129,0.25)] flex items-center justify-center">
+                    <span class="text-[9px] font-mono font-bold text-emerald-300 bg-black/60 px-1.5 py-0.5 rounded uppercase">Adaptive Safe Zone (66%)</span>
+                  </div>
+                </div>
+
+                <!-- Overlay Grid -->
+                <div id="overlay-grid" class="hidden absolute inset-0 pointer-events-none grid grid-cols-4 grid-rows-4">
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-r border-b border-white/20"></div>
+                  <div class="border-b border-white/20"></div>
+                  <div class="border-r border-white/20"></div>
+                  <div class="border-r border-white/20"></div>
+                  <div class="border-r border-white/20"></div>
+                  <div></div>
+                </div>
+
+                <!-- Overlay Center Guides -->
+                <div id="overlay-center" class="hidden absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <div class="w-full h-px bg-cyan-400/70"></div>
+                  <div class="h-full w-px bg-cyan-400/70 absolute"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verification & Health Warnings -->
+            <div id="verification-panel" class="space-y-2 pt-1">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-[var(--color-text-secondary)]">
+                <span class="flex items-center gap-1.5 uppercase">
+                  <span>🛡️</span> Asset Validation & Safety Checks
+                </span>
+                <span id="badge-all-clear" class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                  ✓ Checks Passing
+                </span>
+              </div>
+              <div id="validation-list" class="space-y-1.5 text-xs">
+                <!-- Injected via JavaScript based on canvas inspection -->
+              </div>
+            </div>
+          </div>
+
+          <!-- REAL-TIME DEVICE PREVIEWS (TABS: Android vs iOS vs Store) -->
+          <div class="card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-border)] pb-3">
+              <span class="text-xs font-mono font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <span>👁️</span> Real-Time Device Previews
+              </span>
+
+              <div class="flex items-center gap-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] p-1 rounded-xl text-xs font-medium">
+                <button id="tab-preview-android" type="button" class="py-1 px-3 rounded-lg bg-[var(--color-card)] text-foreground shadow-xs font-semibold">
+                  Android Masks & OS
+                </button>
+                <button id="tab-preview-ios" type="button" class="py-1 px-3 rounded-lg text-[var(--color-text-muted)] hover:text-foreground">
+                  iOS & Home Screen
+                </button>
+                <button id="tab-preview-store" type="button" class="py-1 px-3 rounded-lg text-[var(--color-text-muted)] hover:text-foreground">
+                  App Store & Master
+                </button>
+              </div>
+            </div>
+
+            <!-- 1. ANDROID PREVIEWS CONTAINER -->
+            <div id="preview-android-container" class="space-y-5">
+              <!-- Android Launcher Masks Row -->
+              <div>
+                <span class="text-xs font-mono font-bold text-[var(--color-text-secondary)] block mb-2 uppercase">
+                  Adaptive Icon Launcher Masks
+                </span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <!-- Circle Mask -->
+                  <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex flex-col items-center text-center space-y-2">
+                    <div class="size-16 rounded-full overflow-hidden shadow-md bg-zinc-900 border border-white/10 flex items-center justify-center">
+                      <canvas id="prev-android-circle" width="128" height="128" class="size-full object-cover"></canvas>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-foreground">Circle</div>
+                      <div class="text-[10px] text-[var(--color-text-muted)]">Pixel / Stock</div>
+                    </div>
+                  </div>
+
+                  <!-- Squircle Mask -->
+                  <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex flex-col items-center text-center space-y-2">
+                    <div class="size-16 rounded-[22px] overflow-hidden shadow-md bg-zinc-900 border border-white/10 flex items-center justify-center">
+                      <canvas id="prev-android-squircle" width="128" height="128" class="size-full object-cover"></canvas>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-foreground">Squircle</div>
+                      <div class="text-[10px] text-[var(--color-text-muted)]">Samsung OneUI</div>
+                    </div>
+                  </div>
+
+                  <!-- Rounded Square Mask -->
+                  <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex flex-col items-center text-center space-y-2">
+                    <div class="size-16 rounded-xl overflow-hidden shadow-md bg-zinc-900 border border-white/10 flex items-center justify-center">
+                      <canvas id="prev-android-rounded" width="128" height="128" class="size-full object-cover"></canvas>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-foreground">Rounded Square</div>
+                      <div class="text-[10px] text-[var(--color-text-muted)]">Xiaomi / ColorOS</div>
+                    </div>
+                  </div>
+
+                  <!-- Square Mask -->
+                  <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex flex-col items-center text-center space-y-2">
+                    <div class="size-16 rounded-sm overflow-hidden shadow-md bg-zinc-900 border border-white/10 flex items-center justify-center">
+                      <canvas id="prev-android-square" width="128" height="128" class="size-full object-cover"></canvas>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-foreground">Square</div>
+                      <div class="text-[10px] text-[var(--color-text-muted)]">Legacy Android</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Android Realistic Mockup (Home Screen + App Drawer + Settings) -->
+              <div class="p-4 rounded-xl bg-gradient-to-b from-zinc-950 to-zinc-900 border border-[var(--color-border)] space-y-4">
+                <div class="flex items-center justify-between text-xs text-zinc-400">
+                  <span class="font-mono font-bold uppercase text-zinc-300">Android System Simulation</span>
+                  <span>Approximate design preview</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                  <!-- Simulated Android Home Screen -->
+                  <div class="p-4 rounded-2xl bg-zinc-800/80 border border-white/10 shadow-inner space-y-4">
+                    <div class="flex items-center justify-between text-[11px] text-zinc-400 px-1 font-mono">
+                      <span>9:41</span>
+                      <div class="flex items-center gap-1.5">
+                        <span>5G</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+
+                    <!-- App Grid inside Home Screen -->
+                    <div class="grid grid-cols-4 gap-2 pt-2 text-center">
+                      <div class="flex flex-col items-center space-y-1">
+                        <div class="size-12 rounded-full overflow-hidden shadow bg-zinc-700/60 p-0.5 border border-white/10 ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-zinc-800">
+                          <canvas id="mock-android-home" width="96" height="96" class="size-full object-cover rounded-full"></canvas>
+                        </div>
+                        <span class="text-[10px] font-semibold text-white truncate max-w-[56px]">My App</span>
+                      </div>
+                      <div class="flex flex-col items-center space-y-1 opacity-60">
+                        <div class="size-12 rounded-full bg-blue-600/80 flex items-center justify-center text-white text-xs font-bold">G</div>
+                        <span class="text-[10px] text-zinc-300">Google</span>
+                      </div>
+                      <div class="flex flex-col items-center space-y-1 opacity-60">
+                        <div class="size-12 rounded-full bg-emerald-600/80 flex items-center justify-center text-white text-xs font-bold">W</div>
+                        <span class="text-[10px] text-zinc-300">Chat</span>
+                      </div>
+                      <div class="flex flex-col items-center space-y-1 opacity-60">
+                        <div class="size-12 rounded-full bg-amber-600/80 flex items-center justify-center text-white text-xs font-bold">C</div>
+                        <span class="text-[10px] text-zinc-300">Photos</span>
+                      </div>
+                    </div>
+
+                    <!-- Search Bar widget -->
+                    <div class="h-8 rounded-full bg-white/10 flex items-center px-3 text-[11px] text-zinc-400">
+                      <span>Search apps & web...</span>
+                    </div>
+                  </div>
+
+                  <!-- Android Settings List item -->
+                  <div class="space-y-2">
+                    <div class="text-[11px] font-mono text-zinc-400">Android Settings & Notifications</div>
+                    <div class="p-3 rounded-xl bg-zinc-800/60 border border-white/5 space-y-2">
+                      <div class="flex items-center gap-3">
+                        <div class="size-8 rounded-full overflow-hidden bg-zinc-900 border border-white/10 shrink-0">
+                          <canvas id="mock-android-settings" width="64" height="64" class="size-full object-cover rounded-full"></canvas>
+                        </div>
+                        <div class="truncate">
+                          <div class="text-xs font-bold text-white truncate">My App</div>
+                          <div class="text-[10px] text-zinc-400">Installed • 18.4 MB • App notifications enabled</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. iOS PREVIEWS CONTAINER -->
+            <div id="preview-ios-container" class="hidden space-y-5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-mono font-bold text-[var(--color-text-secondary)] uppercase">
+                  iOS Apple Continuous Squircle Previews
+                </span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[11px] text-[var(--color-text-muted)]">Wallpaper:</span>
+                  <button id="btn-ios-wall-dark" type="button" class="text-[10px] px-2 py-0.5 rounded bg-[var(--color-card)] border border-[var(--accent)] font-semibold text-foreground">Dark</button>
+                  <button id="btn-ios-wall-light" type="button" class="text-[10px] px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-muted)]">Light</button>
+                </div>
+              </div>
+
+              <!-- iPhone Home Screen Simulation -->
+              <div id="ios-wall-bg" class="p-5 rounded-2xl bg-gradient-to-b from-indigo-950 via-slate-900 to-zinc-950 border border-white/10 space-y-5 transition-colors">
+                <div class="flex items-center justify-between text-xs text-white/80 font-mono px-1">
+                  <span>9:41</span>
+                  <div class="flex items-center gap-2">
+                    <span>WiFi</span>
+                    <span>100%</span>
+                  </div>
+                </div>
+
+                <!-- iPhone Home Screen Icons -->
+                <div class="grid grid-cols-4 gap-4 text-center py-2">
+                  <div class="flex flex-col items-center space-y-1.5">
+                    <div class="size-16 rounded-[18px] overflow-hidden shadow-2xl bg-zinc-900 border border-white/15 ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-black">
+                      <canvas id="mock-ios-home" width="128" height="128" class="size-full object-cover"></canvas>
+                    </div>
+                    <span class="text-xs font-medium text-white truncate max-w-[64px]">My App</span>
+                  </div>
+                  <div class="flex flex-col items-center space-y-1.5 opacity-60">
+                    <div class="size-16 rounded-[18px] bg-blue-500/80 flex items-center justify-center text-white text-lg font-bold shadow-lg">✉</div>
+                    <span class="text-xs text-white/90">Mail</span>
+                  </div>
+                  <div class="flex flex-col items-center space-y-1.5 opacity-60">
+                    <div class="size-16 rounded-[18px] bg-amber-500/80 flex items-center justify-center text-white text-lg font-bold shadow-lg">📁</div>
+                    <span class="text-xs text-white/90">Files</span>
+                  </div>
+                  <div class="flex flex-col items-center space-y-1.5 opacity-60">
+                    <div class="size-16 rounded-[18px] bg-rose-500/80 flex items-center justify-center text-white text-lg font-bold shadow-lg">🎵</div>
+                    <span class="text-xs text-white/90">Music</span>
+                  </div>
+                </div>
+
+                <!-- Spotlight & Settings Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                  <div class="p-2.5 rounded-xl bg-black/40 backdrop-blur border border-white/10 flex items-center gap-2.5">
+                    <div class="size-8 rounded-[9px] overflow-hidden bg-zinc-900 border border-white/15 shrink-0">
+                      <canvas id="mock-ios-spotlight" width="64" height="64" class="size-full object-cover"></canvas>
+                    </div>
+                    <div class="truncate text-xs">
+                      <div class="font-bold text-white">My App</div>
+                      <div class="text-[10px] text-white/60">Spotlight Search Result</div>
+                    </div>
+                  </div>
+
+                  <div class="p-2.5 rounded-xl bg-black/40 backdrop-blur border border-white/10 flex items-center gap-2.5">
+                    <div class="size-7 rounded-[8px] overflow-hidden bg-zinc-900 border border-white/15 shrink-0">
+                      <canvas id="mock-ios-settings" width="58" height="58" class="size-full object-cover"></canvas>
+                    </div>
+                    <div class="truncate text-xs">
+                      <div class="font-bold text-white">My App</div>
+                      <div class="text-[10px] text-white/60">iOS Settings Row (29pt @2x)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. APP STORE & MASTER PREVIEW -->
+            <div id="preview-store-container" class="hidden space-y-5">
+              <div class="p-5 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] space-y-4">
+                <span class="text-xs font-mono font-bold text-[var(--color-text-secondary)] uppercase block">
+                  App Store & Google Play Presentation Card
+                </span>
+
+                <div class="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl bg-[var(--color-card)] border border-[var(--color-border)]">
+                  <div class="size-24 rounded-[22px] overflow-hidden shadow-2xl bg-zinc-900 border border-white/15 shrink-0">
+                    <canvas id="mock-store-art" width="256" height="256" class="size-full object-cover"></canvas>
+                  </div>
+                  <div class="space-y-1.5 text-center sm:text-left flex-1">
+                    <h4 class="text-base font-extrabold text-foreground m-0">My Awesome App</h4>
+                    <p class="text-xs text-[var(--color-text-muted)] m-0">Handcrafted Mobile Application • Utilities & Tools</p>
+                    <div class="flex items-center justify-center sm:justify-start gap-3 text-xs text-[var(--accent)] font-semibold pt-1">
+                      <span>★★★★★ 4.9</span>
+                      <span class="text-[var(--color-text-muted)]">•</span>
+                      <span>#1 Productivity</span>
+                    </div>
+                  </div>
+                  <button type="button" class="sw-tool-btn sw-tool-btn-primary px-4 py-1.5 text-xs font-bold rounded-full">
+                    GET
+                  </button>
+                </div>
+
+                <p class="text-[11px] text-[var(--color-text-muted)] m-0">
+                  Note: App Store and Google Play require unrounded, flat square master assets (1024×1024 and 512×512). The store platforms apply their own dynamic corner radiuses automatically.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= EXPORT ACTIONS & COMPLETE ASSET CATALOG ================= -->
+          <div class="card-surface p-5 border border-[rgba(var(--accent-rgb),0.35)] rounded-2xl space-y-4 shadow-lg">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-mono font-bold text-[var(--accent)] uppercase tracking-wider block">
+                  🚀 Complete Asset Catalog Export
+                </span>
+                <p class="text-xs text-[var(--color-text-secondary)] mt-0.5 m-0">
+                  100% verified, pixel-perfect PNG rasters, XML drawables, and Xcode Contents.json.
+                </p>
+              </div>
+
+              <!-- Main CTA: Download All App Icons -->
+              <button
+                id="btn-download-all"
+                type="button"
+                class="sw-tool-btn sw-tool-btn-primary py-2.5 px-5 text-xs font-bold shadow-md flex items-center gap-2 group"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Download All App Icons (ZIP)</span>
+                <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+              </button>
+            </div>
+
+            <!-- Export Summary Checklist -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs">
+              <div class="space-y-1">
+                <div class="font-bold text-foreground flex items-center justify-between">
+                  <span>ANDROID</span>
+                  <button id="btn-download-android" type="button" class="text-[10px] text-[var(--accent)] hover:underline">ZIP only</button>
+                </div>
+                <ul class="text-[11px] text-[var(--color-text-muted)] space-y-0.5 list-none p-0 m-0">
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Legacy icons (mdpi-xxxhdpi)</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> ic_launcher_round icons</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Adaptive foreground/background</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> XML mipmap-anydpi-v26</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <div class="font-bold text-foreground flex items-center justify-between">
+                  <span>iOS (XCODE)</span>
+                  <button id="btn-download-ios" type="button" class="text-[10px] text-[var(--accent)] hover:underline">ZIP only</button>
+                </div>
+                <ul class="text-[11px] text-[var(--color-text-muted)] space-y-0.5 list-none p-0 m-0">
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> AppIcon.appiconset structure</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Complete Contents.json metadata</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> iPhone (20, 29, 40, 60 @2x/@3x)</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> iPad (76, 83.5, etc.)</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <div class="font-bold text-foreground flex items-center justify-between">
+                  <span>MASTER / STORE</span>
+                  <button id="btn-download-master" type="button" class="text-[10px] text-[var(--accent)] hover:underline">PNG only</button>
+                </div>
+                <ul class="text-[11px] text-[var(--color-text-muted)] space-y-0.5 list-none p-0 m-0">
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Master (1024×1024 px PNG)</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Google Play Store (512×512 px)</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> App Store Marketing (1024×1024)</li>
+                  <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Unmasked, flat raster assets</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Individual Asset Download Drawer Toggle -->
+            <div class="pt-1">
+              <details class="group">
+                <summary class="text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--accent)] cursor-pointer list-none flex items-center justify-between p-2 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                  <span>Click to expand & download individual assets directly (48px – 1024px)</span>
+                  <span class="group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                
+                <div class="mt-2 p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl max-h-60 overflow-y-auto space-y-1.5 text-xs scrollbar-thin">
+                  <div class="grid grid-cols-3 sm:grid-cols-4 font-mono text-[10px] text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-1 mb-1">
+                    <span>Platform</span>
+                    <span>Dimension</span>
+                    <span>Target</span>
+                    <span class="text-right">Action</span>
+                  </div>
+
+                  <!-- Individual items -->
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">Master</span>
+                    <span class="font-mono text-[10px]">1024 × 1024</span>
+                    <span class="text-[var(--color-text-muted)]">Unmasked</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="1024" data-name="master-1024.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">Play Store</span>
+                    <span class="font-mono text-[10px]">512 × 512</span>
+                    <span class="text-[var(--color-text-muted)]">Store Icon</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="512" data-name="playstore-512.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">Android xxxhdpi</span>
+                    <span class="font-mono text-[10px]">192 × 192</span>
+                    <span class="text-[var(--color-text-muted)]">ic_launcher</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="192" data-name="ic_launcher_xxxhdpi.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">Android xxhdpi</span>
+                    <span class="font-mono text-[10px]">144 × 144</span>
+                    <span class="text-[var(--color-text-muted)]">ic_launcher</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="144" data-name="ic_launcher_xxhdpi.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">Android xhdpi</span>
+                    <span class="font-mono text-[10px]">96 × 96</span>
+                    <span class="text-[var(--color-text-muted)]">ic_launcher</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="96" data-name="ic_launcher_xhdpi.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">Android hdpi</span>
+                    <span class="font-mono text-[10px]">72 × 72</span>
+                    <span class="text-[var(--color-text-muted)]">ic_launcher</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="72" data-name="ic_launcher_hdpi.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">Android mdpi</span>
+                    <span class="font-mono text-[10px]">48 × 48</span>
+                    <span class="text-[var(--color-text-muted)]">ic_launcher</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="48" data-name="ic_launcher_mdpi.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 border-b border-[var(--color-border)]/50 text-[11px]">
+                    <span class="font-bold text-foreground">iPhone 60@3x</span>
+                    <span class="font-mono text-[10px]">180 × 180</span>
+                    <span class="text-[var(--color-text-muted)]">Home Screen</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="180" data-name="icon-60@3x.png">Download</button></div>
+                  </div>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 items-center py-1 text-[11px]">
+                    <span class="font-bold text-foreground">iPhone 60@2x</span>
+                    <span class="font-mono text-[10px]">120 × 120</span>
+                    <span class="text-[var(--color-text-muted)]">Home Screen</span>
+                    <div class="text-right"><button type="button" class="btn-single-dl text-[var(--accent)] hover:underline" data-size="120" data-name="icon-60@2x.png">Download</button></div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Educational & Privacy Architecture Info -->
+      <section class="card-surface p-5 sm:p-6 space-y-3 rounded-2xl border border-[var(--color-border)]">
+        <h3 class="text-base font-bold text-foreground m-0 flex items-center gap-2">
+          <span class="text-[var(--accent)]">🔒</span>
+          Zero-Upload Browser Guarantee & Android Adaptive Icon Specifications
+        </h3>
+        <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed m-0">
+          All image downsampling, vector rasterization, color transformations, and ZIP archive bundling are executed 100% locally on your machine via HTML5 Offscreen Canvas and JSZip. Your brand identity, confidential vector designs, and client artwork are never uploaded to any remote server or third-party cloud.
+        </p>
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed m-0">
+          <strong>Android Adaptive Icons:</strong> Introduced in Android 8.0 (API 26), adaptive icons require a 108×108dp canvas where only the inner 72×72dp circle (the 66% safe zone) is guaranteed not to be clipped by launcher masks such as circles, rounded rectangles, or squircle form factors. This tool separates foreground graphics from background layers to produce valid <code>mipmap-anydpi-v26</code> XML manifests.
+        </p>
+      </section>
+
+      <GlowLineSeparator />
+    </main>
+    <Footer />
+
+    <!-- CLIENT SCRIPT -->
+    <script>
+      import JSZip from 'jszip';
+
+      // ================= ICON LIBRARY DEFINITIONS (84 icons across 15 categories) =================
+      const ICON_LIBRARY = [
+        // Technology
+        { id: 'tech-cpu', name: 'CPU / Chip', category: 'technology', path: 'M4 4h16v16H4z M9 9h6v6H9z M9 1v3 M15 1v3 M9 20v3 M15 20v3 M1 9h3 M1 15h3 M20 9h3 M20 15h3' },
+        { id: 'tech-code', name: 'Code / Brackets', category: 'technology', path: 'M16 18l6-6-6-6 M8 6l-6 6 6 6' },
+        { id: 'tech-terminal', name: 'Terminal', category: 'technology', path: 'M4 17l6-6-6-6 M12 19h8 M2 3h20v18H2z' },
+        { id: 'tech-server', name: 'Server', category: 'technology', path: 'M2 4h20v6H2z M2 14h20v6H2z M6 7h.01 M6 17h.01' },
+        { id: 'tech-phone', name: 'Smartphone', category: 'technology', path: 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M12 18h.01' },
+        { id: 'tech-database', name: 'Database', category: 'technology', path: 'M12 3c4.97 0 9 1.34 9 3v12c0 1.66-4.03 3-9 3s-9-1.34-9-3V6c0-1.66 4.03-3 9-3z M3 10c0 1.66 4.03 3 9 3s9-1.34 9-3 M3 15c0 1.66 4.03 3 9 3s9-1.34 9-3' },
+
+        // Business
+        { id: 'biz-briefcase', name: 'Briefcase', category: 'business', path: 'M4 7h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2 M12 12v2' },
+        { id: 'biz-chart', name: 'Chart Bar', category: 'business', path: 'M18 20V10 M12 20V4 M6 20v-6' },
+        { id: 'biz-target', name: 'Target', category: 'business', path: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z M12 6a6 6 0 1 0 6 6 6 6 0 0 0-6-6z M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2z' },
+        { id: 'biz-building', name: 'Building', category: 'business', path: 'M3 21h18 M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16 M9 9h1 M9 13h1 M9 17h1 M14 9h1 M14 13h1 M14 17h1' },
+        { id: 'biz-award', name: 'Award Ribbon', category: 'business', path: 'M12 15a7 7 0 1 0-7-7 7 7 0 0 0 7 7z M8.21 13.89L7 23l5-3 5 3-1.21-9.12' },
+
+        // Education
+        { id: 'edu-cap', name: 'Graduation Cap', category: 'education', path: 'M22 10v6 M2 10l10-5 10 5-10 5z M6 12v5c0 2 3 3 6 3s6-1 6-3v-5' },
+        { id: 'edu-book', name: 'Book', category: 'education', path: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z' },
+        { id: 'edu-lightbulb', name: 'Lightbulb', category: 'education', path: 'M9 18h6 M10 22h4 M12 2a7 7 0 0 0-7 7c0 3 2 5 3 6h8c1-1 3-3 3-6a7 7 0 0 0-7-7z' },
+        { id: 'edu-pencil', name: 'Pencil', category: 'education', path: 'M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z' },
+
+        // Finance
+        { id: 'fin-wallet', name: 'Wallet', category: 'finance', path: 'M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z M16 12h4v4h-4z M4 5h14' },
+        { id: 'fin-coins', name: 'Coins / Currency', category: 'finance', path: 'M12 2a9 9 0 1 0 9 9 9 9 0 0 0-9-9z M12 6v12 M9 9h6 M9 15h6' },
+        { id: 'fin-card', name: 'Credit Card', category: 'finance', path: 'M2 5h20v14H2z M2 10h20 M6 15h4' },
+        { id: 'fin-trending', name: 'Trending Up', category: 'finance', path: 'M23 6l-9.5 9.5-5-5L1 18 M17 6h6v6' },
+
+        // Health
+        { id: 'hlth-pulse', name: 'Heart Pulse', category: 'health', path: 'M22 12h-4l-3 9L9 3l-3 9H2' },
+        { id: 'hlth-cross', name: 'Medical Cross', category: 'health', path: 'M9 3h6v6h6v6h-6v6H9v-6H3V9h6z' },
+        { id: 'hlth-pill', name: 'Pill / Medicine', category: 'health', path: 'M10.5 20.5a6 6 0 0 1-8.5-8.5l9-9a6 6 0 0 1 8.5 8.5l-9 9z M8 8l8 8' },
+        { id: 'hlth-shield', name: 'Shield Plus', category: 'health', path: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M12 8v8 M8 12h8' },
+
+        // Travel
+        { id: 'trv-plane', name: 'Airplane', category: 'travel', path: 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z' },
+        { id: 'trv-pin', name: 'Map Pin', category: 'travel', path: 'M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' },
+        { id: 'trv-compass', name: 'Compass', category: 'travel', path: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z' },
+        { id: 'trv-globe', name: 'Globe', category: 'travel', path: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z' },
+
+        // Food
+        { id: 'food-cup', name: 'Coffee Cup', category: 'food', path: 'M18 8h1a4 4 0 0 1 0 8h-1 M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z M6 1v3 M10 1v3 M14 1v3' },
+        { id: 'food-pizza', name: 'Pizza Slice', category: 'food', path: 'M12 2l10 18a12 12 0 0 1-20 0z M12 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z M9 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2z M15 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2z' },
+        { id: 'food-cake', name: 'Cake', category: 'food', path: 'M2 19h20v3H2z M3 13h18v6H3z M12 2v4 M8 4v2 M16 4v2' },
+
+        // Music
+        { id: 'mus-note', name: 'Music Note', category: 'music', path: 'M9 18V5l12-2v13 M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0z M21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z' },
+        { id: 'mus-phones', name: 'Headphones', category: 'music', path: 'M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3v-7a9 9 0 0 1 18 0v7h-3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3' },
+        { id: 'mus-mic', name: 'Microphone', category: 'music', path: 'M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v4 M8 23h8' },
+
+        // Photography
+        { id: 'photo-cam', name: 'Camera', category: 'photography', path: 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z' },
+        { id: 'photo-aperture', name: 'Aperture', category: 'photography', path: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z M14.31 8l5.74 9.94 M9.69 8h11.48 M7.38 12l5.74-9.94 M9.69 16L3.95 6.06 M14.31 16H2.83 M16.62 12l-5.74 9.94' },
+        { id: 'photo-image', name: 'Picture Frame', category: 'photography', path: 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z M21 15l-5-5L5 21' },
+
+        // Shopping
+        { id: 'shop-cart', name: 'Shopping Cart', category: 'shopping', path: 'M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6 M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z M20 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z' },
+        { id: 'shop-bag', name: 'Shopping Bag', category: 'shopping', path: 'M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z M3 6h18 M16 10a4 4 0 0 1-8 0' },
+        { id: 'shop-tag', name: 'Price Tag', category: 'shopping', path: 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z M7 7h.01' },
+
+        // Sports
+        { id: 'sprt-trophy', name: 'Trophy', category: 'sports', path: 'M8 21h8 M12 17v4 M6 4h12v4a6 6 0 0 1-12 0V4z M6 6H3a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4h1 M18 6h3a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4h-1' },
+        { id: 'sprt-flame', name: 'Flame / Fire', category: 'sports', path: 'M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z' },
+        { id: 'sprt-dumbbell', name: 'Dumbbell', category: 'sports', path: 'M6.5 6.5h11 M4 9h2v6H4z M18 9h2v6h-2z M2 10h2v4H2z M20 10h2v4h-2z M6.5 12h11' },
+
+        // Social
+        { id: 'soc-chat', name: 'Chat Bubble', category: 'social', path: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z' },
+        { id: 'soc-heart', name: 'Heart', category: 'social', path: 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z' },
+        { id: 'soc-user', name: 'User Profile', category: 'social', path: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z' },
+        { id: 'soc-share', name: 'Share Nodes', category: 'social', path: 'M18 5a3 3 0 1 0-3 3 3 3 0 0 0 .14-.85L8.59 10.4a3 3 0 1 0 0 3.2l6.55 3.25a3 3 0 1 0 .86-1.85l-6.55-3.25' },
+
+        // Tools
+        { id: 'tool-gear', name: 'Settings Gear', category: 'tools', path: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z' },
+        { id: 'tool-wrench', name: 'Wrench', category: 'tools', path: 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z' },
+        { id: 'tool-key', name: 'Key', category: 'tools', path: 'M21 2l-2 2m-1.5 1.5L12 11 M12 11a5 5 0 1 0-7 7 5 5 0 0 0 7-7z M18 8l3 3 M15 11l2 2' },
+
+        // Games
+        { id: 'game-pad', name: 'Gamepad', category: 'games', path: 'M6 12h4 M8 10v4 M15 11h.01 M18 13h.01 M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.104-.015.156L2 17a3 3 0 0 0 3 3c1.2 0 2.5-1 3.5-2.5l1-1.5h5l1 1.5c1 1.5 2.3 2.5 3.5 2.5a3 3 0 0 0 3-3l-.687-8.254c-.005-.052-.009-.104-.015-.156A4 4 0 0 0 17.32 5z' },
+        { id: 'game-sparkles', name: 'Sparkles', category: 'games', path: 'M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z' },
+        { id: 'game-crown', name: 'Crown', category: 'games', path: 'M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z' },
+
+        // Weather
+        { id: 'wthr-sun', name: 'Sun', category: 'weather', path: 'M12 1v2 M12 21v2 M4.22 4.22l1.42 1.42 M18.36 18.36l1.42 1.42 M1 12h2 M21 12h2 M4.22 19.78l1.42-1.42 M18.36 5.64l1.42-1.42 M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z' },
+        { id: 'wthr-moon', name: 'Moon', category: 'weather', path: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z' },
+        { id: 'wthr-cloud', name: 'Cloud', category: 'weather', path: 'M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z' },
+        { id: 'wthr-zap', name: 'Lightning', category: 'weather', path: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z' }
+      ];
+
+      // ================= APPLICATION STATE =================
+      const state = {
+        sourceMode: 'creator', // 'upload' | 'creator'
+        uploadedImage: null as HTMLImageElement | null,
+        uploadedSvgText: null as string | null,
+        uploadedFilename: '',
+        uploadedDims: { w: 0, h: 0 },
+
+        creatorSubmode: 'icon', // 'icon' | 'letter' | 'shape'
+        selectedIcon: ICON_LIBRARY.find(i => i.id === 'game-sparkles') || ICON_LIBRARY[0],
+        iconCategory: 'all',
+
+        letterText: 'P',
+        letterFont: 'system-ui, -apple-system, sans-serif',
+        letterWeight: '700',
+        letterColor: '#FFFFFF',
+        letterAlign: 'center',
+
+        shapeType: 'circle',
+        shapeFill: '#ADE1CD',
+        shapeStroke: '#1B5448',
+        shapeStrokeWidth: 0,
+
+        bgType: 'solid', // 'solid' | 'linear' | 'radial' | 'transparent'
+        bgSolid: '#1B5448',
+        bgGrad1: '#1B5448',
+        bgGrad2: '#ADE1CD',
+        bgGradAngle: 135,
+        bgVisible: true,
+
+        fgScale: 65,
+        fgRotate: 0,
+        fgX: 0,
+        fgY: 0,
+        fgOpacity: 100,
+        fgTintEnabled: false,
+        fgTintColor: '#FFFFFF',
+
+        showSafeZone: true,
+        showGrid: false,
+        showCenterGuides: false,
+        canvasMask: 'none' // 'none' | 'squircle' | 'circle'
+      };
+
+      // Dragging state on master canvas
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let initialFgX = 0;
+      let initialFgY = 0;
+
+      // ================= DOM ELEMENT REFERENCES =================
+      const masterCanvas = document.getElementById('master-canvas') as HTMLCanvasElement;
+      const ctx = masterCanvas?.getContext('2d');
+      const canvasWrapper = document.getElementById('canvas-wrapper');
+
+      // Previews
+      const prevAndroidCircle = document.getElementById('prev-android-circle') as HTMLCanvasElement;
+      const prevAndroidSquircle = document.getElementById('prev-android-squircle') as HTMLCanvasElement;
+      const prevAndroidRounded = document.getElementById('prev-android-rounded') as HTMLCanvasElement;
+      const prevAndroidSquare = document.getElementById('prev-android-square') as HTMLCanvasElement;
+      const mockAndroidHome = document.getElementById('mock-android-home') as HTMLCanvasElement;
+      const mockAndroidSettings = document.getElementById('mock-android-settings') as HTMLCanvasElement;
+
+      const mockIosHome = document.getElementById('mock-ios-home') as HTMLCanvasElement;
+      const mockIosSpotlight = document.getElementById('mock-ios-spotlight') as HTMLCanvasElement;
+      const mockIosSettings = document.getElementById('mock-ios-settings') as HTMLCanvasElement;
+      const mockStoreArt = document.getElementById('mock-store-art') as HTMLCanvasElement;
+
+      // Overlays
+      const overlaySafeZone = document.getElementById('overlay-safezone');
+      const overlayGrid = document.getElementById('overlay-grid');
+      const overlayCenter = document.getElementById('overlay-center');
+
+      // Sliders & Values
+      const fgScale = document.getElementById('fg-scale') as HTMLInputElement;
+      const fgRotate = document.getElementById('fg-rotate') as HTMLInputElement;
+      const fgX = document.getElementById('fg-x') as HTMLInputElement;
+      const fgY = document.getElementById('fg-y') as HTMLInputElement;
+      const fgOpacity = document.getElementById('fg-opacity') as HTMLInputElement;
+
+      const fgScaleVal = document.getElementById('fg-scale-val');
+      const fgRotateVal = document.getElementById('fg-rotate-val');
+      const fgXVal = document.getElementById('fg-x-val');
+      const fgYVal = document.getElementById('fg-y-val');
+      const fgOpacityVal = document.getElementById('fg-opacity-val');
+
+      // Verification
+      const validationList = document.getElementById('validation-list');
+      const badgeAllClear = document.getElementById('badge-all-clear');
+
+      // Notice
+      const sharedNotice = document.getElementById('shared-notice');
+      const sharedNoticeText = document.getElementById('shared-notice-text');
+      const btnDismissNotice = document.getElementById('btn-dismiss-notice');
+
+      // ================= MASTER RENDER PIPELINE (1024 x 1024) =================
+      function renderOffscreen(size: number, options: { mask?: 'none' | 'circle' | 'squircle' | 'round-rect', skipBg?: boolean, onlyFg?: boolean } = {}): HTMLCanvasElement {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = size;
+        offCanvas.height = size;
+        const offCtx = offCanvas.getContext('2d');
+        if (!offCtx) return offCanvas;
+
+        const ratio = size / 1024;
+
+        // Apply clip mask if requested
+        if (options.mask === 'circle') {
+          offCtx.beginPath();
+          offCtx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+          offCtx.closePath();
+          offCtx.clip();
+        } else if (options.mask === 'squircle') {
+          // Apple continuous rounded rectangle (approx rx = 22.37%)
+          const r = size * 0.2237;
+          offCtx.beginPath();
+          offCtx.roundRect(0, 0, size, size, r);
+          offCtx.closePath();
+          offCtx.clip();
+        } else if (options.mask === 'round-rect') {
+          const r = size * 0.16;
+          offCtx.beginPath();
+          offCtx.roundRect(0, 0, size, size, r);
+          offCtx.closePath();
+          offCtx.clip();
+        }
+
+        // 1. Render Background
+        if (!options.onlyFg && !options.skipBg && state.bgVisible && state.bgType !== 'transparent') {
+          if (state.bgType === 'solid') {
+            offCtx.fillStyle = state.bgSolid;
+            offCtx.fillRect(0, 0, size, size);
+          } else if (state.bgType === 'linear') {
+            const rad = (state.bgGradAngle * Math.PI) / 180;
+            const x1 = size / 2 - (Math.cos(rad) * size) / 2;
+            const y1 = size / 2 - (Math.sin(rad) * size) / 2;
+            const x2 = size / 2 + (Math.cos(rad) * size) / 2;
+            const y2 = size / 2 + (Math.sin(rad) * size) / 2;
+            const grad = offCtx.createLinearGradient(x1, y1, x2, y2);
+            grad.addColorStop(0, state.bgGrad1);
+            grad.addColorStop(1, state.bgGrad2);
+            offCtx.fillStyle = grad;
+            offCtx.fillRect(0, 0, size, size);
+          } else if (state.bgType === 'radial') {
+            const grad = offCtx.createRadialGradient(size / 2, size / 2, size * 0.05, size / 2, size / 2, size * 0.7);
+            grad.addColorStop(0, state.bgGrad2);
+            grad.addColorStop(1, state.bgGrad1);
+            offCtx.fillStyle = grad;
+            offCtx.fillRect(0, 0, size, size);
+          }
+        }
+
+        // 2. Render Shape Layer if in shape mode
+        if (state.sourceMode === 'creator' && state.creatorSubmode === 'shape') {
+          offCtx.save();
+          offCtx.translate(size / 2 + state.fgX * ratio, size / 2 + state.fgY * ratio);
+          offCtx.rotate((state.fgRotate * Math.PI) / 180);
+          offCtx.globalAlpha = (state.fgOpacity / 100);
+
+          const shapeR = (size * 0.35) * (state.fgScale / 65);
+          offCtx.fillStyle = state.shapeFill;
+          offCtx.strokeStyle = state.shapeStroke;
+          offCtx.lineWidth = state.shapeStrokeWidth * ratio;
+
+          offCtx.beginPath();
+          if (state.shapeType === 'circle') {
+            offCtx.arc(0, 0, shapeR, 0, Math.PI * 2);
+          } else if (state.shapeType === 'square') {
+            offCtx.rect(-shapeR, -shapeR, shapeR * 2, shapeR * 2);
+          } else if (state.shapeType === 'rounded-square') {
+            offCtx.roundRect(-shapeR, -shapeR, shapeR * 2, shapeR * 2, shapeR * 0.4);
+          } else if (state.shapeType === 'triangle') {
+            offCtx.moveTo(0, -shapeR);
+            offCtx.lineTo(shapeR, shapeR);
+            offCtx.lineTo(-shapeR, shapeR);
+            offCtx.closePath();
+          } else if (state.shapeType === 'diamond') {
+            offCtx.moveTo(0, -shapeR);
+            offCtx.lineTo(shapeR, 0);
+            offCtx.lineTo(0, shapeR);
+            offCtx.lineTo(-shapeR, 0);
+            offCtx.closePath();
+          } else if (state.shapeType === 'hexagon') {
+            for (let i = 0; i < 6; i++) {
+              const a = (i * Math.PI) / 3;
+              const x = shapeR * Math.cos(a);
+              const y = shapeR * Math.sin(a);
+              if (i === 0) offCtx.moveTo(x, y);
+              else offCtx.lineTo(x, y);
+            }
+            offCtx.closePath();
+          } else if (state.shapeType === 'star') {
+            const spikes = 5;
+            const outer = shapeR;
+            const inner = shapeR * 0.45;
+            for (let i = 0; i < spikes * 2; i++) {
+              const r = i % 2 === 0 ? outer : inner;
+              const a = (i * Math.PI) / spikes - Math.PI / 2;
+              const x = r * Math.cos(a);
+              const y = r * Math.sin(a);
+              if (i === 0) offCtx.moveTo(x, y);
+              else offCtx.lineTo(x, y);
+            }
+            offCtx.closePath();
+          } else if (state.shapeType === 'heart') {
+            const h = shapeR * 0.9;
+            offCtx.moveTo(0, h * 0.3);
+            offCtx.bezierCurveTo(-h * 0.8, -h * 0.5, -h * 1.2, h * 0.3, 0, h * 1.1);
+            offCtx.bezierCurveTo(h * 1.2, h * 0.3, h * 0.8, -h * 0.5, 0, h * 0.3);
+            offCtx.closePath();
+          } else {
+            // Blob
+            offCtx.moveTo(0, -shapeR);
+            offCtx.bezierCurveTo(shapeR * 1.2, -shapeR * 0.7, shapeR * 0.9, shapeR * 0.9, 0, shapeR);
+            offCtx.bezierCurveTo(-shapeR * 0.9, shapeR * 0.9, -shapeR * 1.2, -shapeR * 0.7, 0, -shapeR);
+            offCtx.closePath();
+          }
+
+          offCtx.fill();
+          if (state.shapeStrokeWidth > 0) offCtx.stroke();
+          offCtx.restore();
+        }
+
+        // 3. Render Uploaded Artwork
+        if (state.sourceMode === 'upload' && state.uploadedImage) {
+          offCtx.save();
+          offCtx.translate(size / 2 + state.fgX * ratio, size / 2 + state.fgY * ratio);
+          offCtx.rotate((state.fgRotate * Math.PI) / 180);
+          offCtx.globalAlpha = state.fgOpacity / 100;
+
+          const baseDim = size * (state.fgScale / 100);
+          const aspect = state.uploadedImage.width / (state.uploadedImage.height || 1);
+          let drawW = baseDim;
+          let drawH = baseDim;
+          if (aspect > 1) {
+            drawH = baseDim / aspect;
+          } else {
+            drawW = baseDim * aspect;
+          }
+
+          if (state.fgTintEnabled) {
+            // Tint via temporary canvas
+            const tintCanv = document.createElement('canvas');
+            tintCanv.width = drawW;
+            tintCanv.height = drawH;
+            const tCtx = tintCanv.getContext('2d');
+            if (tCtx) {
+              tCtx.drawImage(state.uploadedImage, 0, 0, drawW, drawH);
+              tCtx.globalCompositeOperation = 'source-in';
+              tCtx.fillStyle = state.fgTintColor;
+              tCtx.fillRect(0, 0, drawW, drawH);
+              offCtx.drawImage(tintCanv, -drawW / 2, -drawH / 2, drawW, drawH);
+            }
+          } else {
+            offCtx.drawImage(state.uploadedImage, -drawW / 2, -drawH / 2, drawW, drawH);
+          }
+          offCtx.restore();
+        }
+
+        // 4. Render Selected Built-in Icon
+        if (state.sourceMode === 'creator' && state.creatorSubmode === 'icon' && state.selectedIcon) {
+          offCtx.save();
+          offCtx.translate(size / 2 + state.fgX * ratio, size / 2 + state.fgY * ratio);
+          offCtx.rotate((state.fgRotate * Math.PI) / 180);
+          offCtx.globalAlpha = state.fgOpacity / 100;
+
+          const iconSize = size * (state.fgScale / 100);
+          const pathScale = iconSize / 24; // 24x24 viewBox
+
+          offCtx.translate(-iconSize / 2, -iconSize / 2);
+          offCtx.scale(pathScale, pathScale);
+
+          const p2d = new Path2D(state.selectedIcon.path);
+          offCtx.strokeStyle = state.fgTintEnabled ? state.fgTintColor : '#FFFFFF';
+          offCtx.lineWidth = 1.8;
+          offCtx.lineCap = 'round';
+          offCtx.lineJoin = 'round';
+          offCtx.stroke(p2d);
+
+          offCtx.restore();
+        }
+
+        // 5. Render Letter Logo
+        if (state.sourceMode === 'creator' && state.creatorSubmode === 'letter' && state.letterText) {
+          offCtx.save();
+          let yPos = size / 2;
+          if (state.letterAlign === 'top') yPos = size * 0.35;
+          if (state.letterAlign === 'bottom') yPos = size * 0.65;
+
+          offCtx.translate(size / 2 + state.fgX * ratio, yPos + state.fgY * ratio);
+          offCtx.rotate((state.fgRotate * Math.PI) / 180);
+          offCtx.globalAlpha = state.fgOpacity / 100;
+
+          const fontSize = Math.round(size * 0.45 * (state.fgScale / 65));
+          offCtx.font = `${state.letterWeight} ${fontSize}px ${state.letterFont}`;
+          offCtx.textAlign = 'center';
+          offCtx.textBaseline = 'middle';
+          offCtx.fillStyle = state.letterColor;
+          offCtx.fillText(state.letterText, 0, 0);
+
+          offCtx.restore();
+        }
+
+        return offCanvas;
+      }
+
+      // Render Master Canvas and all satellite previews
+      function renderAll() {
+        if (!ctx) return;
+
+        // 1. Render Master (1024)
+        ctx.clearRect(0, 0, 1024, 1024);
+        const masterOff = renderOffscreen(1024, { mask: state.canvasMask as any });
+        ctx.drawImage(masterOff, 0, 0);
+
+        // 2. Render Android Previews
+        if (prevAndroidCircle) {
+          const cCtx = prevAndroidCircle.getContext('2d');
+          if (cCtx) {
+            cCtx.clearRect(0, 0, 128, 128);
+            cCtx.drawImage(renderOffscreen(128, { mask: 'circle' }), 0, 0);
+          }
+        }
+        if (prevAndroidSquircle) {
+          const sCtx = prevAndroidSquircle.getContext('2d');
+          if (sCtx) {
+            sCtx.clearRect(0, 0, 128, 128);
+            sCtx.drawImage(renderOffscreen(128, { mask: 'squircle' }), 0, 0);
+          }
+        }
+        if (prevAndroidRounded) {
+          const rCtx = prevAndroidRounded.getContext('2d');
+          if (rCtx) {
+            rCtx.clearRect(0, 0, 128, 128);
+            rCtx.drawImage(renderOffscreen(128, { mask: 'round-rect' }), 0, 0);
+          }
+        }
+        if (prevAndroidSquare) {
+          const sqCtx = prevAndroidSquare.getContext('2d');
+          if (sqCtx) {
+            sqCtx.clearRect(0, 0, 128, 128);
+            sqCtx.drawImage(renderOffscreen(128, { mask: 'none' }), 0, 0);
+          }
+        }
+        if (mockAndroidHome) {
+          const hCtx = mockAndroidHome.getContext('2d');
+          if (hCtx) {
+            hCtx.clearRect(0, 0, 96, 96);
+            hCtx.drawImage(renderOffscreen(96, { mask: 'circle' }), 0, 0);
+          }
+        }
+        if (mockAndroidSettings) {
+          const stCtx = mockAndroidSettings.getContext('2d');
+          if (stCtx) {
+            stCtx.clearRect(0, 0, 64, 64);
+            stCtx.drawImage(renderOffscreen(64, { mask: 'circle' }), 0, 0);
+          }
+        }
+
+        // 3. Render iOS Previews
+        if (mockIosHome) {
+          const iCtx = mockIosHome.getContext('2d');
+          if (iCtx) {
+            iCtx.clearRect(0, 0, 128, 128);
+            iCtx.drawImage(renderOffscreen(128, { mask: 'squircle' }), 0, 0);
+          }
+        }
+        if (mockIosSpotlight) {
+          const spCtx = mockIosSpotlight.getContext('2d');
+          if (spCtx) {
+            spCtx.clearRect(0, 0, 64, 64);
+            spCtx.drawImage(renderOffscreen(64, { mask: 'squircle' }), 0, 0);
+          }
+        }
+        if (mockIosSettings) {
+          const setCtx = mockIosSettings.getContext('2d');
+          if (setCtx) {
+            setCtx.clearRect(0, 0, 58, 58);
+            setCtx.drawImage(renderOffscreen(58, { mask: 'squircle' }), 0, 0);
+          }
+        }
+        if (mockStoreArt) {
+          const stCtx = mockStoreArt.getContext('2d');
+          if (stCtx) {
+            stCtx.clearRect(0, 0, 256, 256);
+            stCtx.drawImage(renderOffscreen(256, { mask: 'squircle' }), 0, 0);
+          }
+        }
+
+        // 4. Run Verification Checks
+        runVerification();
+
+        // 5. Persist to localStorage
+        saveState();
+      }
+
+      // ================= VERIFICATION CHECKS =================
+      function runVerification() {
+        if (!validationList) return;
+        const warnings: { type: 'ok' | 'warn'; msg: string }[] = [];
+
+        // Check 1: Safe Zone (Android 66% circular mask = 676px radius 338px)
+        const radius = 338;
+        const currentScale = state.fgScale;
+        const offsetDist = Math.sqrt(state.fgX * state.fgX + state.fgY * state.fgY);
+        if (currentScale > 72 || offsetDist > 120) {
+          warnings.push({
+            type: 'warn',
+            msg: 'Artwork extends outside the 66% adaptive safe zone. It may be partially clipped by circular or squircle launcher masks.'
+          });
+        } else {
+          warnings.push({
+            type: 'ok',
+            msg: 'Safe zone: Foreground sits safely within the 66% Android Adaptive boundary.'
+          });
+        }
+
+        // Check 2: Background Transparency
+        if (state.bgType === 'transparent' || !state.bgVisible) {
+          warnings.push({
+            type: 'warn',
+            msg: 'Transparent background: Standard Android and iOS app icons require an opaque background. Apple & Google Play will reject transparent master icons.'
+          });
+        } else {
+          warnings.push({
+            type: 'ok',
+            msg: 'Background opacity: Solid background meets app store submission criteria.'
+          });
+        }
+
+        // Check 3: Scale too small
+        if (state.fgScale < 25) {
+          warnings.push({
+            type: 'warn',
+            msg: 'Foreground logo is very small (< 25% scale). It may become illegible on small notification or settings screens.'
+          });
+        }
+
+        // Check 4: Source Resolution
+        if (state.sourceMode === 'upload' && state.uploadedDims.w > 0) {
+          if (state.uploadedDims.w < 1024 || state.uploadedDims.h < 1024) {
+            warnings.push({
+              type: 'warn',
+              msg: `Uploaded artwork is ${state.uploadedDims.w}×${state.uploadedDims.h}. For maximum sharpness, use at least 1024×1024.`
+            });
+          }
+        }
+
+        // Render HTML
+        validationList.innerHTML = warnings.map(w => `
+          <div class="flex items-start gap-2 p-2 rounded-lg ${w.type === 'warn' ? 'bg-amber-500/10 border border-amber-500/20 text-amber-300' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-300'}">
+            <span class="font-bold shrink-0">${w.type === 'warn' ? '⚠' : '✓'}</span>
+            <span class="text-[11px] leading-tight">${w.msg}</span>
+          </div>
+        `).join('');
+
+        const hasWarn = warnings.some(w => w.type === 'warn');
+        if (badgeAllClear) {
+          if (hasWarn) {
+            badgeAllClear.textContent = '⚠ Review Warnings';
+            badgeAllClear.className = 'text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30';
+          } else {
+            badgeAllClear.textContent = '✓ All Checks Passing';
+            badgeAllClear.className = 'text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30';
+          }
+        }
+      }
+
+      // ================= LOCAL STORAGE PERSISTENCE =================
+      function saveState() {
+        try {
+          const serialized = {
+            sourceMode: state.sourceMode,
+            creatorSubmode: state.creatorSubmode,
+            selectedIconId: state.selectedIcon?.id,
+            letterText: state.letterText,
+            letterFont: state.letterFont,
+            letterWeight: state.letterWeight,
+            letterColor: state.letterColor,
+            shapeType: state.shapeType,
+            shapeFill: state.shapeFill,
+            shapeStroke: state.shapeStroke,
+            bgType: state.bgType,
+            bgSolid: state.bgSolid,
+            bgGrad1: state.bgGrad1,
+            bgGrad2: state.bgGrad2,
+            bgGradAngle: state.bgGradAngle,
+            fgScale: state.fgScale,
+            fgRotate: state.fgRotate,
+            fgX: state.fgX,
+            fgY: state.fgY,
+            fgOpacity: state.fgOpacity,
+            fgTintEnabled: state.fgTintEnabled,
+            fgTintColor: state.fgTintColor
+          };
+          localStorage.setItem('app_icon_state', JSON.stringify(serialized));
+        } catch (e) {
+          // ignore quota issues
+        }
+      }
+
+      function loadSavedState() {
+        try {
+          const raw = localStorage.getItem('app_icon_state');
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (data.sourceMode) state.sourceMode = data.sourceMode;
+            if (data.creatorSubmode) state.creatorSubmode = data.creatorSubmode;
+            if (data.selectedIconId) {
+              const f = ICON_LIBRARY.find(i => i.id === data.selectedIconId);
+              if (f) state.selectedIcon = f;
+            }
+            if (data.letterText) state.letterText = data.letterText;
+            if (data.shapeType) state.shapeType = data.shapeType;
+            if (data.shapeFill) state.shapeFill = data.shapeFill;
+            if (data.bgType) state.bgType = data.bgType;
+            if (data.bgSolid) state.bgSolid = data.bgSolid;
+            if (data.bgGrad1) state.bgGrad1 = data.bgGrad1;
+            if (data.bgGrad2) state.bgGrad2 = data.bgGrad2;
+            if (data.bgGradAngle) state.bgGradAngle = data.bgGradAngle;
+            if (data.fgScale) state.fgScale = data.fgScale;
+            if (data.fgRotate) state.fgRotate = data.fgRotate;
+            if (data.fgX) state.fgX = data.fgX;
+            if (data.fgY) state.fgY = data.fgY;
+            if (data.fgOpacity) state.fgOpacity = data.fgOpacity;
+            if (data.fgTintEnabled !== undefined) state.fgTintEnabled = data.fgTintEnabled;
+            if (data.fgTintColor) state.fgTintColor = data.fgTintColor;
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // Check for incoming shared artwork or color from Color Studio or SVG Studio
+      function checkSharedPayloads() {
+        try {
+          const raw = localStorage.getItem('app_icon_shared_artwork');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed.color) {
+              state.bgSolid = parsed.color;
+              state.bgType = 'solid';
+              showSharedToast(`Applied color ${parsed.color} from Color Studio.`);
+            } else if (parsed.svg) {
+              loadSvgString(parsed.svg, 'Imported SVG from SVG Studio');
+              showSharedToast('Loaded SVG from SVG Studio into foreground canvas.');
+            }
+            localStorage.removeItem('app_icon_shared_artwork');
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function showSharedToast(msg: string) {
+        if (sharedNotice && sharedNoticeText) {
+          sharedNoticeText.textContent = msg;
+          sharedNotice.classList.remove('hidden');
+        }
+      }
+
+      // Load SVG String onto Image
+      function loadSvgString(svgText: string, label: string) {
+        const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = () => {
+          state.uploadedImage = img;
+          state.sourceMode = 'upload';
+          state.uploadedFilename = label;
+          state.uploadedDims = { w: img.width || 1024, h: img.height || 1024 };
+
+          // Update UI
+          updateUploadMeta(label, img.width || 1024, img.height || 1024);
+          switchSourceMode('upload');
+          renderAll();
+        };
+        img.src = url;
+      }
+
+      function updateUploadMeta(name: string, w: number, h: number) {
+        const bar = document.getElementById('upload-meta-bar');
+        const fName = document.getElementById('upload-file-name');
+        const fDims = document.getElementById('upload-file-dims');
+        const lowRes = document.getElementById('low-res-warn');
+        const lowResMsg = document.getElementById('low-res-warn-msg');
+
+        if (bar && fName && fDims) {
+          bar.classList.remove('hidden');
+          fName.textContent = name;
+          fDims.textContent = `${w}×${h}`;
+        }
+        if (lowRes && lowResMsg) {
+          if (w < 1024 || h < 1024) {
+            lowRes.classList.remove('hidden');
+            lowResMsg.textContent = `Your source image is ${w} × ${h}. For crisp icons across all densities, use artwork at least 1024 × 1024.`;
+          } else {
+            lowRes.classList.add('hidden');
+          }
+        }
+      }
+
+      // ================= EXPORT PACKAGING (JSZIP ENGINE) =================
+      async function generateZip(type: 'all' | 'android' | 'ios' | 'master') {
+        const zip = new JSZip();
+
+        // 1. Android Asset Specification
+        const androidSizes = [
+          { folder: 'res/mipmap-mdpi', size: 48, name: 'ic_launcher.png' },
+          { folder: 'res/mipmap-mdpi', size: 48, name: 'ic_launcher_round.png' },
+          { folder: 'res/mipmap-hdpi', size: 72, name: 'ic_launcher.png' },
+          { folder: 'res/mipmap-hdpi', size: 72, name: 'ic_launcher_round.png' },
+          { folder: 'res/mipmap-xhdpi', size: 96, name: 'ic_launcher.png' },
+          { folder: 'res/mipmap-xhdpi', size: 96, name: 'ic_launcher_round.png' },
+          { folder: 'res/mipmap-xxhdpi', size: 144, name: 'ic_launcher.png' },
+          { folder: 'res/mipmap-xxhdpi', size: 144, name: 'ic_launcher_round.png' },
+          { folder: 'res/mipmap-xxxhdpi', size: 192, name: 'ic_launcher.png' },
+          { folder: 'res/mipmap-xxxhdpi', size: 192, name: 'ic_launcher_round.png' },
+          // Adaptive layers (432x432 for xxxhdpi)
+          { folder: 'res/mipmap-xxxhdpi', size: 432, name: 'ic_launcher_foreground.png', onlyFg: true },
+          { folder: 'res/mipmap-xxxhdpi', size: 432, name: 'ic_launcher_background.png', skipBg: false, onlyBg: true }
+        ];
+
+        // 2. iOS Asset Specification
+        const iosSizes = [
+          { size: 40, filename: 'icon-20@2x.png', idiom: 'iphone', scale: '2x', expected: '20x20' },
+          { size: 60, filename: 'icon-20@3x.png', idiom: 'iphone', scale: '3x', expected: '20x20' },
+          { size: 58, filename: 'icon-29@2x.png', idiom: 'iphone', scale: '2x', expected: '29x29' },
+          { size: 87, filename: 'icon-29@3x.png', idiom: 'iphone', scale: '3x', expected: '29x29' },
+          { size: 80, filename: 'icon-40@2x.png', idiom: 'iphone', scale: '2x', expected: '40x40' },
+          { size: 120, filename: 'icon-40@3x.png', idiom: 'iphone', scale: '3x', expected: '40x40' },
+          { size: 120, filename: 'icon-60@2x.png', idiom: 'iphone', scale: '2x', expected: '60x60' },
+          { size: 180, filename: 'icon-60@3x.png', idiom: 'iphone', scale: '3x', expected: '60x60' },
+          { size: 20, filename: 'icon-20@1x-ipad.png', idiom: 'ipad', scale: '1x', expected: '20x20' },
+          { size: 29, filename: 'icon-29@1x-ipad.png', idiom: 'ipad', scale: '1x', expected: '29x29' },
+          { size: 40, filename: 'icon-40@1x-ipad.png', idiom: 'ipad', scale: '1x', expected: '40x40' },
+          { size: 76, filename: 'icon-76@1x.png', idiom: 'ipad', scale: '1x', expected: '76x76' },
+          { size: 152, filename: 'icon-76@2x.png', idiom: 'ipad', scale: '2x', expected: '76x76' },
+          { size: 167, filename: 'icon-83.5@2x.png', idiom: 'ipad', scale: '2x', expected: '83.5x83.5' },
+          { size: 1024, filename: 'icon-1024.png', idiom: 'ios-marketing', scale: '1x', expected: '1024x1024' }
+        ];
+
+        // Helper: Convert canvas to Blob
+        function canvasToBlob(cv: HTMLCanvasElement): Promise<Blob> {
+          return new Promise((res) => cv.toBlob((b) => res(b || new Blob()), 'image/png'));
+        }
+
+        // Add Android assets
+        if (type === 'all' || type === 'android') {
+          const androidBase = type === 'all' ? 'app-icons/android/' : '';
+          
+          for (const item of androidSizes) {
+            const mask = item.name.includes('_round') ? 'circle' : 'none';
+            const cv = renderOffscreen(item.size, {
+              mask: mask as any,
+              onlyFg: (item as any).onlyFg,
+              skipBg: (item as any).onlyFg
+            });
+            const blob = await canvasToBlob(cv);
+            zip.file(`${androidBase}${item.folder}/${item.name}`, blob);
+          }
+
+          // XML Adaptive Icon Files
+          const icLauncherXml = `<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>`;
+
+          const icLauncherRoundXml = `<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>`;
+
+          const icBackgroundValuesXml = `<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">${state.bgSolid}</color>
+</resources>`;
+
+          zip.file(`${androidBase}res/mipmap-anydpi-v26/ic_launcher.xml`, icLauncherXml);
+          zip.file(`${androidBase}res/mipmap-anydpi-v26/ic_launcher_round.xml`, icLauncherRoundXml);
+          zip.file(`${androidBase}res/values/ic_launcher_background.xml`, icBackgroundValuesXml);
+        }
+
+        // Add iOS Assets
+        if (type === 'all' || type === 'ios') {
+          const iosBase = type === 'all' ? 'app-icons/ios/AppIcon.appiconset/' : 'AppIcon.appiconset/';
+          
+          // Contents.json
+          const contentsJson = {
+            images: iosSizes.map(s => ({
+              size: s.expected,
+              idiom: s.idiom,
+              filename: s.filename,
+              scale: s.scale
+            })),
+            info: {
+              version: 1,
+              author: 'xcode'
+            }
+          };
+
+          zip.file(`${iosBase}Contents.json`, JSON.stringify(contentsJson, null, 2));
+
+          for (const item of iosSizes) {
+            // Note: Apple Xcode requires unmasked square icons with opaque backgrounds
+            const cv = renderOffscreen(item.size, { mask: 'none' });
+            const blob = await canvasToBlob(cv);
+            zip.file(`${iosBase}${item.filename}`, blob);
+          }
+        }
+
+        // Add Master / Store Assets
+        if (type === 'all' || type === 'master') {
+          const masterBase = type === 'all' ? 'app-icons/master/' : '';
+          
+          // 1024 Master
+          const master1024 = renderOffscreen(1024, { mask: 'none' });
+          zip.file(`${masterBase}master-1024x1024.png`, await canvasToBlob(master1024));
+
+          // 512 Google Play Store
+          const store512 = renderOffscreen(512, { mask: 'none' });
+          zip.file(`${masterBase}playstore-512x512.png`, await canvasToBlob(store512));
+
+          // 1024 Apple App Store
+          const store1024 = renderOffscreen(1024, { mask: 'none' });
+          zip.file(`${masterBase}appstore-1024x1024.png`, await canvasToBlob(store1024));
+        }
+
+        // Download ZIP
+        const zipName = type === 'android'
+          ? 'android-app-icons.zip'
+          : type === 'ios'
+            ? 'ios-app-icons.zip'
+            : 'app-icons.zip';
+
+        const content = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(content);
+        a.download = zipName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+      }
+
+      // Download single PNG
+      function downloadSingleImage(size: number, filename: string) {
+        const cv = renderOffscreen(size, { mask: 'none' });
+        cv.toBlob((blob) => {
+          if (!blob) return;
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(a.href);
+        }, 'image/png');
+      }
+
+      // ================= UI SWITCHERS & CONTROLS =================
+      function switchSourceMode(mode: 'upload' | 'creator') {
+        state.sourceMode = mode;
+        const btnUpload = document.getElementById('tab-src-upload');
+        const btnCreator = document.getElementById('tab-src-creator');
+        const secUpload = document.getElementById('section-upload');
+        const secCreator = document.getElementById('section-creator');
+
+        if (mode === 'upload') {
+          btnUpload?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          btnUpload?.classList.remove('text-[var(--color-text-muted)]');
+          btnCreator?.classList.remove('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          btnCreator?.classList.add('text-[var(--color-text-muted)]');
+
+          secUpload?.classList.remove('hidden');
+          secCreator?.classList.add('hidden');
+        } else {
+          btnCreator?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          btnCreator?.classList.remove('text-[var(--color-text-muted)]');
+          btnUpload?.classList.remove('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          btnUpload?.classList.add('text-[var(--color-text-muted)]');
+
+          secCreator?.classList.remove('hidden');
+          secUpload?.classList.add('hidden');
+        }
+      }
+
+      function switchCreatorSubmode(submode: 'icon' | 'letter' | 'shape') {
+        state.creatorSubmode = submode;
+        const bIcon = document.getElementById('subtab-icon');
+        const bLetter = document.getElementById('subtab-letter');
+        const bShape = document.getElementById('subtab-shape');
+
+        const pIcon = document.getElementById('creator-icon-panel');
+        const pLetter = document.getElementById('creator-letter-panel');
+        const pShape = document.getElementById('creator-shape-panel');
+
+        [bIcon, bLetter, bShape].forEach(b => {
+          b?.classList.remove('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          b?.classList.add('text-[var(--color-text-muted)]');
+        });
+        [pIcon, pLetter, pShape].forEach(p => p?.classList.add('hidden'));
+
+        if (submode === 'icon') {
+          bIcon?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          bIcon?.classList.remove('text-[var(--color-text-muted)]');
+          pIcon?.classList.remove('hidden');
+        } else if (submode === 'letter') {
+          bLetter?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          bLetter?.classList.remove('text-[var(--color-text-muted)]');
+          pLetter?.classList.remove('hidden');
+        } else {
+          bShape?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          bShape?.classList.remove('text-[var(--color-text-muted)]');
+          pShape?.classList.remove('hidden');
+        }
+        renderAll();
+      }
+
+      function switchBgType(type: 'solid' | 'linear' | 'radial' | 'transparent') {
+        state.bgType = type;
+        const bSolid = document.getElementById('bg-type-solid');
+        const bLinear = document.getElementById('bg-type-linear');
+        const bRadial = document.getElementById('bg-type-radial');
+        const bTrans = document.getElementById('bg-type-transparent');
+
+        const secSolid = document.getElementById('bg-solid-controls');
+        const secGrad = document.getElementById('bg-grad-controls');
+        const angleRow = document.getElementById('grad-angle-row');
+
+        [bSolid, bLinear, bRadial, bTrans].forEach(b => {
+          b?.classList.remove('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          b?.classList.add('text-[var(--color-text-muted)]');
+        });
+
+        if (type === 'solid') {
+          bSolid?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          bSolid?.classList.remove('text-[var(--color-text-muted)]');
+          secSolid?.classList.remove('hidden');
+          secGrad?.classList.add('hidden');
+        } else if (type === 'linear') {
+          bLinear?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          bLinear?.classList.remove('text-[var(--color-text-muted)]');
+          secSolid?.classList.add('hidden');
+          secGrad?.classList.remove('hidden');
+          angleRow?.classList.remove('hidden');
+        } else if (type === 'radial') {
+          bRadial?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          bRadial?.classList.remove('text-[var(--color-text-muted)]');
+          secSolid?.classList.add('hidden');
+          secGrad?.classList.remove('hidden');
+          angleRow?.classList.add('hidden');
+        } else {
+          bTrans?.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          bTrans?.classList.remove('text-[var(--color-text-muted)]');
+          secSolid?.classList.add('hidden');
+          secGrad?.classList.add('hidden');
+        }
+
+        renderAll();
+      }
+
+      function populateIconGrid() {
+        const grid = document.getElementById('icon-grid');
+        if (!grid) return;
+
+        const cat = (document.getElementById('icon-category-select') as HTMLSelectElement)?.value || 'all';
+        const query = ((document.getElementById('icon-search-input') as HTMLInputElement)?.value || '').toLowerCase().trim();
+
+        const filtered = ICON_LIBRARY.filter(i => {
+          if (cat !== 'all' && i.category !== cat) return false;
+          if (query && !i.name.toLowerCase().includes(query) && !i.category.toLowerCase().includes(query)) return false;
+          return true;
+        });
+
+        grid.innerHTML = filtered.map(item => `
+          <button
+            type="button"
+            class="btn-pick-icon p-2 rounded-lg border ${state.selectedIcon?.id === item.id ? 'border-[var(--accent)] bg-[rgba(var(--accent-rgb),0.15)] text-[var(--accent)]' : 'border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-text-secondary)] hover:text-foreground hover:border-[var(--accent)]'} flex flex-col items-center justify-center transition-all group"
+            data-id="${item.id}"
+            title="${item.name} (${item.category})"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pointer-events-none group-hover:scale-110 transition-transform">
+              <path d="${item.path}" />
+            </svg>
+          </button>
+        `).join('');
+
+        // Attach clicks
+        grid.querySelectorAll('.btn-pick-icon').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = (e.currentTarget as HTMLElement).getAttribute('data-id');
+            const found = ICON_LIBRARY.find(i => i.id === id);
+            if (found) {
+              state.selectedIcon = found;
+              const lbl = document.getElementById('icon-status-label');
+              if (lbl) lbl.textContent = `Selected: ${found.name} (${found.category})`;
+              populateIconGrid();
+              renderAll();
+            }
+          });
+        });
+      }
+
+      // ================= ATTACH EVENT LISTENERS =================
+      function initAppIconCreator() {
+        loadSavedState();
+        checkSharedPayloads();
+
+        // 1. Source tabs
+        document.getElementById('tab-src-upload')?.addEventListener('click', () => switchSourceMode('upload'));
+        document.getElementById('tab-src-creator')?.addEventListener('click', () => switchSourceMode('creator'));
+
+        // 2. Creator sub-tabs
+        document.getElementById('subtab-icon')?.addEventListener('click', () => switchCreatorSubmode('icon'));
+        document.getElementById('subtab-letter')?.addEventListener('click', () => switchCreatorSubmode('letter'));
+        document.getElementById('subtab-shape')?.addEventListener('click', () => switchCreatorSubmode('shape'));
+
+        // 3. File upload & Drag/Drop
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input') as HTMLInputElement;
+
+        dropZone?.addEventListener('click', () => fileInput?.click());
+        dropZone?.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropZone.classList.add('border-[var(--accent)]', 'bg-[rgba(var(--accent-rgb),0.08)]');
+        });
+        dropZone?.addEventListener('dragleave', () => {
+          dropZone.classList.remove('border-[var(--accent)]', 'bg-[rgba(var(--accent-rgb),0.08)]');
+        });
+        dropZone?.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('border-[var(--accent)]', 'bg-[rgba(var(--accent-rgb),0.08)]');
+          if (e.dataTransfer?.files && e.dataTransfer.files[0]) {
+            handleFile(e.dataTransfer.files[0]);
+          }
+        });
+
+        fileInput?.addEventListener('change', () => {
+          if (fileInput.files && fileInput.files[0]) {
+            handleFile(fileInput.files[0]);
+          }
+        });
+
+        function handleFile(file: File) {
+          if (file.type === 'image/svg+xml' || file.name.endsWith('.svg')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const svgText = e.target?.result as string;
+              loadSvgString(svgText, file.name);
+            };
+            reader.readAsText(file);
+          } else {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const img = new Image();
+              img.onload = () => {
+                state.uploadedImage = img;
+                state.sourceMode = 'upload';
+                state.uploadedFilename = file.name;
+                state.uploadedDims = { w: img.width, h: img.height };
+                updateUploadMeta(file.name, img.width, img.height);
+                switchSourceMode('upload');
+                renderAll();
+              };
+              img.src = e.target?.result as string;
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+
+        document.getElementById('btn-remove-upload')?.addEventListener('click', () => {
+          state.uploadedImage = null;
+          state.uploadedDims = { w: 0, h: 0 };
+          document.getElementById('upload-meta-bar')?.classList.add('hidden');
+          document.getElementById('low-res-warn')?.classList.add('hidden');
+          switchSourceMode('creator');
+          renderAll();
+        });
+
+        // 4. Icon Search & Category
+        document.getElementById('icon-category-select')?.addEventListener('change', populateIconGrid);
+        document.getElementById('icon-search-input')?.addEventListener('input', populateIconGrid);
+        populateIconGrid();
+
+        // 5. Letter Logo inputs
+        const letterInput = document.getElementById('letter-text') as HTMLInputElement;
+        letterInput?.addEventListener('input', (e) => {
+          state.letterText = (e.target as HTMLInputElement).value || '';
+          renderAll();
+        });
+        document.getElementById('letter-font')?.addEventListener('change', (e) => {
+          state.letterFont = (e.target as HTMLSelectElement).value;
+          renderAll();
+        });
+        document.getElementById('letter-weight')?.addEventListener('change', (e) => {
+          state.letterWeight = (e.target as HTMLSelectElement).value;
+          renderAll();
+        });
+        document.getElementById('letter-color')?.addEventListener('input', (e) => {
+          state.letterColor = (e.target as HTMLInputElement).value;
+          const hex = document.getElementById('letter-color-hex') as HTMLInputElement;
+          if (hex) hex.value = state.letterColor.toUpperCase();
+          renderAll();
+        });
+        document.getElementById('letter-color-hex')?.addEventListener('change', (e) => {
+          state.letterColor = (e.target as HTMLInputElement).value;
+          renderAll();
+        });
+        document.getElementById('letter-align')?.addEventListener('change', (e) => {
+          state.letterAlign = (e.target as HTMLSelectElement).value;
+          renderAll();
+        });
+
+        // 6. Shapes inputs
+        document.querySelectorAll('.btn-shape-select').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.btn-shape-select').forEach(b => b.classList.remove('sw-tool-btn-primary'));
+            (e.currentTarget as HTMLElement).classList.add('sw-tool-btn-primary');
+            state.shapeType = (e.currentTarget as HTMLElement).getAttribute('data-shape') || 'circle';
+            renderAll();
+          });
+        });
+
+        document.getElementById('shape-fill-color')?.addEventListener('input', (e) => {
+          state.shapeFill = (e.target as HTMLInputElement).value;
+          const hex = document.getElementById('shape-fill-hex') as HTMLInputElement;
+          if (hex) hex.value = state.shapeFill.toUpperCase();
+          renderAll();
+        });
+        document.getElementById('shape-stroke-color')?.addEventListener('input', (e) => {
+          state.shapeStroke = (e.target as HTMLInputElement).value;
+          renderAll();
+        });
+        document.getElementById('shape-stroke-width')?.addEventListener('input', (e) => {
+          state.shapeStrokeWidth = parseInt((e.target as HTMLInputElement).value, 10);
+          renderAll();
+        });
+
+        // 7. Background Types & Controls
+        document.getElementById('bg-type-solid')?.addEventListener('click', () => switchBgType('solid'));
+        document.getElementById('bg-type-linear')?.addEventListener('click', () => switchBgType('linear'));
+        document.getElementById('bg-type-radial')?.addEventListener('click', () => switchBgType('radial'));
+        document.getElementById('bg-type-transparent')?.addEventListener('click', () => switchBgType('transparent'));
+
+        document.getElementById('bg-solid-color')?.addEventListener('input', (e) => {
+          state.bgSolid = (e.target as HTMLInputElement).value;
+          const hex = document.getElementById('bg-solid-hex') as HTMLInputElement;
+          if (hex) hex.value = state.bgSolid.toUpperCase();
+          renderAll();
+        });
+        document.getElementById('bg-solid-hex')?.addEventListener('change', (e) => {
+          state.bgSolid = (e.target as HTMLInputElement).value;
+          renderAll();
+        });
+
+        document.querySelectorAll('.preset-color').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const col = (e.currentTarget as HTMLElement).getAttribute('data-color') || '#1B5448';
+            state.bgSolid = col;
+            const picker = document.getElementById('bg-solid-color') as HTMLInputElement;
+            const hex = document.getElementById('bg-solid-hex') as HTMLInputElement;
+            if (picker) picker.value = col;
+            if (hex) hex.value = col.toUpperCase();
+            renderAll();
+          });
+        });
+
+        document.getElementById('bg-grad-color1')?.addEventListener('input', (e) => {
+          state.bgGrad1 = (e.target as HTMLInputElement).value;
+          const hex = document.getElementById('bg-grad-hex1') as HTMLInputElement;
+          if (hex) hex.value = state.bgGrad1.toUpperCase();
+          renderAll();
+        });
+        document.getElementById('bg-grad-color2')?.addEventListener('input', (e) => {
+          state.bgGrad2 = (e.target as HTMLInputElement).value;
+          const hex = document.getElementById('bg-grad-hex2') as HTMLInputElement;
+          if (hex) hex.value = state.bgGrad2.toUpperCase();
+          renderAll();
+        });
+        document.getElementById('bg-grad-angle')?.addEventListener('input', (e) => {
+          state.bgGradAngle = parseInt((e.target as HTMLInputElement).value, 10);
+          const lbl = document.getElementById('grad-angle-val');
+          if (lbl) lbl.textContent = `${state.bgGradAngle}°`;
+          renderAll();
+        });
+
+        document.querySelectorAll('.btn-grad-preset').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const target = e.currentTarget as HTMLElement;
+            state.bgGrad1 = target.getAttribute('data-c1') || '#1B5448';
+            state.bgGrad2 = target.getAttribute('data-c2') || '#ADE1CD';
+            state.bgGradAngle = parseInt(target.getAttribute('data-angle') || '135', 10);
+
+            const c1 = document.getElementById('bg-grad-color1') as HTMLInputElement;
+            const c2 = document.getElementById('bg-grad-color2') as HTMLInputElement;
+            const h1 = document.getElementById('bg-grad-hex1') as HTMLInputElement;
+            const h2 = document.getElementById('bg-grad-hex2') as HTMLInputElement;
+            const a = document.getElementById('bg-grad-angle') as HTMLInputElement;
+            const lbl = document.getElementById('grad-angle-val');
+
+            if (c1) c1.value = state.bgGrad1;
+            if (c2) c2.value = state.bgGrad2;
+            if (h1) h1.value = state.bgGrad1.toUpperCase();
+            if (h2) h2.value = state.bgGrad2.toUpperCase();
+            if (a) a.value = state.bgGradAngle.toString();
+            if (lbl) lbl.textContent = `${state.bgGradAngle}°`;
+
+            renderAll();
+          });
+        });
+
+        document.getElementById('btn-toggle-bg-visible')?.addEventListener('click', (e) => {
+          state.bgVisible = !state.bgVisible;
+          (e.currentTarget as HTMLElement).textContent = state.bgVisible ? '👁️ Visible' : '🚫 Hidden';
+          renderAll();
+        });
+
+        // 8. Sliders (Scale, Rotate, Offset, Opacity)
+        fgScale?.addEventListener('input', (e) => {
+          state.fgScale = parseInt((e.target as HTMLInputElement).value, 10);
+          if (fgScaleVal) fgScaleVal.textContent = `${state.fgScale}%`;
+          renderAll();
+        });
+        fgRotate?.addEventListener('input', (e) => {
+          state.fgRotate = parseInt((e.target as HTMLInputElement).value, 10);
+          if (fgRotateVal) fgRotateVal.textContent = `${state.fgRotate}°`;
+          renderAll();
+        });
+        fgX?.addEventListener('input', (e) => {
+          state.fgX = parseInt((e.target as HTMLInputElement).value, 10);
+          if (fgXVal) fgXVal.textContent = `${state.fgX}px`;
+          renderAll();
+        });
+        fgY?.addEventListener('input', (e) => {
+          state.fgY = parseInt((e.target as HTMLInputElement).value, 10);
+          if (fgYVal) fgYVal.textContent = `${state.fgY}px`;
+          renderAll();
+        });
+        fgOpacity?.addEventListener('input', (e) => {
+          state.fgOpacity = parseInt((e.target as HTMLInputElement).value, 10);
+          if (fgOpacityVal) fgOpacityVal.textContent = `${state.fgOpacity}%`;
+          renderAll();
+        });
+
+        // Transform helpers
+        document.getElementById('btn-fg-center')?.addEventListener('click', () => {
+          state.fgX = 0;
+          state.fgY = 0;
+          if (fgX) fgX.value = '0';
+          if (fgY) fgY.value = '0';
+          if (fgXVal) fgXVal.textContent = '0px';
+          if (fgYVal) fgYVal.textContent = '0px';
+          renderAll();
+        });
+
+        document.getElementById('btn-fg-fit')?.addEventListener('click', () => {
+          state.fgScale = 65; // standard 65-66% adaptive safe zone fit
+          state.fgX = 0;
+          state.fgY = 0;
+          state.fgRotate = 0;
+          if (fgScale) fgScale.value = '65';
+          if (fgScaleVal) fgScaleVal.textContent = '65%';
+          if (fgRotate) fgRotate.value = '0';
+          if (fgRotateVal) fgRotateVal.textContent = '0°';
+          if (fgX) fgX.value = '0';
+          if (fgY) fgY.value = '0';
+          if (fgXVal) fgXVal.textContent = '0px';
+          if (fgYVal) fgYVal.textContent = '0px';
+          renderAll();
+        });
+
+        document.getElementById('btn-fg-reset')?.addEventListener('click', () => {
+          state.fgScale = 65;
+          state.fgRotate = 0;
+          state.fgX = 0;
+          state.fgY = 0;
+          state.fgOpacity = 100;
+          if (fgScale) fgScale.value = '65';
+          if (fgRotate) fgRotate.value = '0';
+          if (fgX) fgX.value = '0';
+          if (fgY) fgY.value = '0';
+          if (fgOpacity) fgOpacity.value = '100';
+          if (fgScaleVal) fgScaleVal.textContent = '65%';
+          if (fgRotateVal) fgRotateVal.textContent = '0°';
+          if (fgXVal) fgXVal.textContent = '0px';
+          if (fgYVal) fgYVal.textContent = '0px';
+          if (fgOpacityVal) fgOpacityVal.textContent = '100%';
+          renderAll();
+        });
+
+        // Tint toggle
+        document.getElementById('btn-toggle-fg-tint')?.addEventListener('click', (e) => {
+          state.fgTintEnabled = !state.fgTintEnabled;
+          const box = document.getElementById('fg-tint-box');
+          if (box) {
+            box.classList.toggle('opacity-50', !state.fgTintEnabled);
+            box.classList.toggle('pointer-events-none', !state.fgTintEnabled);
+          }
+          (e.currentTarget as HTMLElement).textContent = state.fgTintEnabled ? 'Disable Tint' : 'Enable Tint';
+          renderAll();
+        });
+
+        document.getElementById('fg-tint-color')?.addEventListener('input', (e) => {
+          state.fgTintColor = (e.target as HTMLInputElement).value;
+          const hex = document.getElementById('fg-tint-hex') as HTMLInputElement;
+          if (hex) hex.value = state.fgTintColor.toUpperCase();
+          renderAll();
+        });
+
+        // 9. Overlay toggles
+        document.getElementById('chk-guide-safezone')?.addEventListener('change', (e) => {
+          state.showSafeZone = (e.target as HTMLInputElement).checked;
+          overlaySafeZone?.classList.toggle('hidden', !state.showSafeZone);
+        });
+        document.getElementById('chk-guide-grid')?.addEventListener('change', (e) => {
+          state.showGrid = (e.target as HTMLInputElement).checked;
+          overlayGrid?.classList.toggle('hidden', !state.showGrid);
+        });
+        document.getElementById('chk-guide-center')?.addEventListener('change', (e) => {
+          state.showCenterGuides = (e.target as HTMLInputElement).checked;
+          overlayCenter?.classList.toggle('hidden', !state.showCenterGuides);
+        });
+
+        // 10. Canvas Mask Buttons
+        document.querySelectorAll('.btn-canvas-mask').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.btn-canvas-mask').forEach(b => b.classList.remove('sw-tool-btn-primary'));
+            (e.currentTarget as HTMLElement).classList.add('sw-tool-btn-primary');
+            state.canvasMask = (e.currentTarget as HTMLElement).getAttribute('data-mask') || 'none';
+            renderAll();
+          });
+        });
+
+        // 11. Canvas Direct Dragging
+        canvasWrapper?.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          dragStartX = e.clientX;
+          dragStartY = e.clientY;
+          initialFgX = state.fgX;
+          initialFgY = state.fgY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - dragStartX;
+          const dy = e.clientY - dragStartY;
+          // Canvas wrapper is ~320px wide representing 1024px
+          const scaleFactor = 1024 / (canvasWrapper?.clientWidth || 320);
+          state.fgX = Math.round(initialFgX + dx * scaleFactor);
+          state.fgY = Math.round(initialFgY + dy * scaleFactor);
+
+          if (fgX) fgX.value = state.fgX.toString();
+          if (fgY) fgY.value = state.fgY.toString();
+          if (fgXVal) fgXVal.textContent = `${state.fgX}px`;
+          if (fgYVal) fgYVal.textContent = `${state.fgY}px`;
+          renderAll();
+        });
+
+        window.addEventListener('mouseup', () => {
+          isDragging = false;
+        });
+
+        // 12. Preview Tabs Switcher (Android / iOS / Store)
+        const tabPAndroid = document.getElementById('tab-preview-android');
+        const tabPIos = document.getElementById('tab-preview-ios');
+        const tabPStore = document.getElementById('tab-preview-store');
+
+        const secPAndroid = document.getElementById('preview-android-container');
+        const secPIos = document.getElementById('preview-ios-container');
+        const secPStore = document.getElementById('preview-store-container');
+
+        tabPAndroid?.addEventListener('click', () => {
+          [tabPAndroid, tabPIos, tabPStore].forEach(t => t?.classList.remove('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs'));
+          tabPAndroid.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          secPAndroid?.classList.remove('hidden');
+          secPIos?.classList.add('hidden');
+          secPStore?.classList.add('hidden');
+        });
+
+        tabPIos?.addEventListener('click', () => {
+          [tabPAndroid, tabPIos, tabPStore].forEach(t => t?.classList.remove('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs'));
+          tabPIos.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          secPIos?.classList.remove('hidden');
+          secPAndroid?.classList.add('hidden');
+          secPStore?.classList.add('hidden');
+        });
+
+        tabPStore?.addEventListener('click', () => {
+          [tabPAndroid, tabPIos, tabPStore].forEach(t => t?.classList.remove('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs'));
+          tabPStore.classList.add('bg-[var(--color-card)]', 'text-foreground', 'font-semibold', 'shadow-xs');
+          secPStore?.classList.remove('hidden');
+          secPAndroid?.classList.add('hidden');
+          secPIos?.classList.add('hidden');
+        });
+
+        // iOS Wallpaper switchers
+        document.getElementById('btn-ios-wall-dark')?.addEventListener('click', () => {
+          const wall = document.getElementById('ios-wall-bg');
+          if (wall) wall.className = 'p-5 rounded-2xl bg-gradient-to-b from-indigo-950 via-slate-900 to-zinc-950 border border-white/10 space-y-5 transition-colors';
+        });
+        document.getElementById('btn-ios-wall-light')?.addEventListener('click', () => {
+          const wall = document.getElementById('ios-wall-bg');
+          if (wall) wall.className = 'p-5 rounded-2xl bg-gradient-to-b from-amber-100 via-rose-100 to-teal-100 border border-black/10 space-y-5 transition-colors';
+        });
+
+        // 13. Export CTA Buttons
+        document.getElementById('btn-download-all')?.addEventListener('click', () => generateZip('all'));
+        document.getElementById('btn-download-android')?.addEventListener('click', () => generateZip('android'));
+        document.getElementById('btn-download-ios')?.addEventListener('click', () => generateZip('ios'));
+        document.getElementById('btn-download-master')?.addEventListener('click', () => generateZip('master'));
+
+        // Individual downloads
+        document.querySelectorAll('.btn-single-dl').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const size = parseInt((e.currentTarget as HTMLElement).getAttribute('data-size') || '1024', 10);
+            const name = (e.currentTarget as HTMLElement).getAttribute('data-name') || 'app-icon.png';
+            downloadSingleImage(size, name);
+          });
+        });
+
+        // Clear local data
+        document.getElementById('btn-clear-local')?.addEventListener('click', () => {
+          if (confirm('Reset all icon settings and artwork to default state?')) {
+            localStorage.removeItem('app_icon_state');
+            location.reload();
+          }
+        });
+
+        btnDismissNotice?.addEventListener('click', () => {
+          sharedNotice?.classList.add('hidden');
+        });
+
+        // Initial render
+        renderAll();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAppIconCreator);
+      } else {
+        initAppIconCreator();
+      }
+    </script>
+  </body>
+</html>

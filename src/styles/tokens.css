@@ -1,67 +1,80 @@
-/* Base design tokens and defaults */
+/* Base design tokens and defaults - Built with iPhone Green Palette */
 :root {
+  /* iPhone Green Palette Reference:
+   * iPhone 11 (Green): #ade1cd | rgb(173, 225, 205)
+   * iPhone 11 Pro (Midnight Green): #4e5850 | rgb(78, 88, 80)
+   * iPhone 12 (Green): #E1F8DC | rgb(225, 248, 220)
+   * iPhone 13 (Green): #1B5448 | rgb(27, 84, 72)
+   * iPhone 13 Pro (Alpine Green): #23382B | rgb(35, 56, 43)
+   */
+
   /* Brand Primary & Accents */
-  --accent: #FF7034;
-  --accent-light: #FF945E;
-  --accent-dark: #F05315;
-  --accent-rgb: 255, 112, 52;
-  --accent-glow: rgba(255, 112, 52, 0.35);
-  --accent-gradient: linear-gradient(135deg, #FF5E1E 0%, #FF8A4C 50%, #FFB74D 100%);
-  --accent-gradient-subtle: linear-gradient(135deg, rgba(255, 94, 30, 0.12) 0%, rgba(255, 138, 76, 0.06) 100%);
+  --accent: #ade1cd;
+  --accent-light: #E1F8DC;
+  --accent-dark: #1B5448;
+  --accent-rgb: 173, 225, 205;
+  --accent-glow: rgba(173, 225, 205, 0.35);
+  --accent-gradient: linear-gradient(135deg, #ade1cd 0%, #1B5448 50%, #23382B 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(173, 225, 205, 0.15) 0%, rgba(27, 84, 72, 0.05) 100%);
 
-  /* Secondary Accent (Violet/Indigo atmospheric accents) */
-  --accent-secondary: #8B5CF6;
-  --accent-secondary-rgb: 139, 92, 246;
+  /* Secondary Accent (iPhone 13 Green / Alpine Green) */
+  --accent-secondary: #1B5448;
+  --accent-secondary-rgb: 27, 84, 72;
 
-  /* Neutrals (light baseline; dark overrides in themes/dark.css) */
-  --black: 15, 23, 42;
-  --gray: 100, 116, 139;
-  --gray-light: 241, 245, 249;
-  --gray-dark: 51, 65, 85;
+  /* iPhone Green Neutrals */
+  --black: 13, 23, 18;
+  --gray: 78, 88, 80;
+  --gray-light: 225, 248, 220;
+  --gray-dark: 35, 56, 43;
 
   /* Elevation Shadows */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 35px -5px rgba(0, 0, 0, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.06);
-  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
-  --shadow-glow: 0 0 25px rgba(255, 112, 52, 0.25);
+  --shadow-xs: 0 1px 2px rgba(13, 23, 18, 0.04);
+  --shadow-sm: 0 1px 3px rgba(13, 23, 18, 0.06), 0 1px 2px rgba(13, 23, 18, 0.04);
+  --shadow-md: 0 4px 12px -1px rgba(13, 23, 18, 0.08), 0 2px 6px -1px rgba(13, 23, 18, 0.04);
+  --shadow-lg: 0 10px 25px -3px rgba(13, 23, 18, 0.1), 0 4px 10px -2px rgba(13, 23, 18, 0.05);
+  --shadow-xl: 0 20px 35px -5px rgba(13, 23, 18, 0.12), 0 8px 16px -4px rgba(13, 23, 18, 0.06);
+  --shadow-2xl: 0 25px 50px -12px rgba(13, 23, 18, 0.2);
+  --shadow-glow: 0 0 25px rgba(173, 225, 205, 0.25);
 
   --box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.06),
-    0 8px 24px rgba(0, 0, 0, 0.06),
-    0 16px 32px rgba(0, 0, 0, 0.06);
+    0 2px 6px rgba(13, 23, 18, 0.06),
+    0 8px 24px rgba(13, 23, 18, 0.06),
+    0 16px 32px rgba(13, 23, 18, 0.06);
 
   /* Starwind theme mapped variables */
-  --background: #fcfcfd;
-  --foreground: #0f172a;
+  --background: #f4fbf3;
+  --foreground: #14241b;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #14241b;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  --popover-foreground: #14241b;
   --primary: var(--accent);
-  --primary-foreground: #ffffff;
-  --secondary: #FFB36B;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent-foreground: #0f172a;
-  --info: #0ea5e9;
-  --info-foreground: #ffffff;
-  --success: #10b981;
-  --success-foreground: #ffffff;
-  --warning: #f59e0b;
-  --warning-foreground: #ffffff;
-  --error: #ef4444;
-  --error-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
+  --primary-foreground: #0d1712;
+  --secondary: #1B5448;
+  --secondary-foreground: #E1F8DC;
+  --muted: #edf8eb;
+  --muted-foreground: #4e5850;
+  --accent-foreground: #14241b;
+  --info: #ade1cd;
+  --info-foreground: #14241b;
+  --success: #ade1cd;
+  --success-foreground: #14241b;
+  --warning: #ade1cd;
+  --warning-foreground: #14241b;
+  --error: #4e5850;
+  --error-foreground: #E1F8DC;
+  --border: rgba(78, 88, 80, 0.2);
+  --input: rgba(78, 88, 80, 0.2);
   --outline: var(--accent);
   --radius: 0.875rem;
 
   /* Glass & Mesh settings */
   --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(226, 232, 240, 0.8);
+  --glass-border: rgba(78, 88, 80, 0.25);
   --glass-blur: 16px;
+
+  /* Kinetic Motion & Physics Easing Tokens */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
 }

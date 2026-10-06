@@ -24,7 +24,7 @@ if (featured) {
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
 	<head>
     <BaseHead title={`Blog – ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
     {totalPages > 1 && (
@@ -37,9 +37,9 @@ if (featured) {
       title="Articles & Notes"
       subtitle="Deep dives, architectural insights, and practical guides on mobile development, cloud systems, and scaling digital products."
     />
-    <main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-10">
+    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-2 sm:py-4 space-y-6 sm:space-y-8">
       {featured && (
-        <section class="card-surface p-6 sm:p-8">
+        <section class="card-surface p-5 sm:p-7 md:p-8 w-full">
           <FeaturedPost post={featured} readingTimeMin={featuredReading} />
         </section>
       )}

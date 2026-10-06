@@ -1,0 +1,142 @@
+---
+interface Props {
+  src: string;
+  class?: string;
+  loop?: boolean;
+  autoplay?: boolean;
+  speed?: number;
+  alt?: string;
+}
+
+const {
+  src,
+  class: className = "w-full h-full",
+  loop = true,
+  autoplay = true,
+  speed = 1,
+  alt = "Animated graphic",
+} = Astro.props;
+
+// Generate a unique ID for this instance
+const id = `lottie-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<div
+  id={id}
+  class={`lottie-wrapper relative flex items-center justify-center overflow-hidden ${className}`}
+  data-lottie-src={src}
+  data-lottie-loop={loop ? "true" : "false"}
+  data-lottie-autoplay={autoplay ? "true" : "false"}
+  data-lottie-speed={speed}
+  role="img"
+  aria-label={alt}
+>
+  <!-- Loading skeleton / placeholder placeholder with soft iPhone Green tint -->
+  <div class="lottie-placeholder absolute inset-0 flex items-center justify-center opacity-30 transition-opacity duration-500">
+    <div class="size-8 rounded-full border-2 border-[var(--color-border)] border-t-[var(--accent)] animate-spin"></div>
+  </div>
+  <div class="lottie-target w-full h-full flex items-center justify-center z-10"></div>
+</div>
+
+<script>
+  let lottieLoadedPromise: Promise<any> | null = null;
+
+  function loadLottieScript(): Promise<any> {
+    if ((window as any).bodymovin) {
+      return Promise.resolve((window as any).bodymovin);
+    }
+    if (lottieLoadedPromise) {
+      return lottieLoadedPromise;
+    }
+    lottieLoadedPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "/scripts/lottie_light.min.js";
+      script.async = true;
+      script.onload = () => resolve((window as any).bodymovin);
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    return lottieLoadedPromise;
+  }
+
+  function initLottieAnimations() {
+    const wrappers = document.querySelectorAll<HTMLElement>(".lottie-wrapper:not([data-lottie-initialized])");
+    if (!wrappers.length) return;
+
+    // Check prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const wrapper = entry.target as HTMLElement;
+          const anim = (wrapper as any)._lottieAnim;
+
+          if (entry.isIntersecting) {
+            if (!anim && !wrapper.hasAttribute("data-lottie-loading")) {
+              wrapper.setAttribute("data-lottie-loading", "true");
+              const src = wrapper.dataset.lottieSrc;
+              const loop = wrapper.dataset.lottieLoop === "true" && !prefersReducedMotion;
+              const autoplay = wrapper.dataset.lottieAutoplay === "true" && !prefersReducedMotion;
+              const speed = parseFloat(wrapper.dataset.lottieSpeed || "1");
+              const target = wrapper.querySelector(".lottie-target") as HTMLElement;
+              const placeholder = wrapper.querySelector(".lottie-placeholder") as HTMLElement;
+
+              if (src && target) {
+                loadLottieScript().then((bodymovin) => {
+                  if (!bodymovin) return;
+                  const newAnim = bodymovin.loadAnimation({
+                    container: target,
+                    renderer: "svg",
+                    loop: loop,
+                    autoplay: autoplay,
+                    path: src,
+                    rendererSettings: {
+                      progressiveLoad: true,
+                      preserveAspectRatio: "xMidYMid meet",
+                      className: "w-full h-full drop-shadow-sm",
+                    },
+                  });
+
+                  if (speed !== 1) {
+                    newAnim.setSpeed(speed);
+                  }
+
+                  newAnim.addEventListener("DOMLoaded", () => {
+                    if (placeholder) {
+                      placeholder.style.display = "none";
+                    }
+                  });
+
+                  (wrapper as any)._lottieAnim = newAnim;
+                  wrapper.setAttribute("data-lottie-initialized", "true");
+                }).catch((err) => {
+                  console.error("Failed to load Lottie animation", err);
+                });
+              }
+            } else if (anim && !prefersReducedMotion) {
+              anim.play();
+            }
+          } else {
+            // Pause animation when out of view to save battery and GPU cycles
+            if (anim) {
+              anim.pause();
+            }
+          }
+        });
+      },
+      { rootMargin: "150px" }
+    );
+
+    wrappers.forEach((w) => observer.observe(w));
+  }
+
+  // Support both direct load and Astro View Transitions
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initLottieAnimations);
+  } else {
+    initLottieAnimations();
+  }
+
+  document.addEventListener("astro:page-load", initLottieAnimations);
+</script>

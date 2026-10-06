@@ -1,0 +1,943 @@
+[
+  {
+    "id": "dart-001",
+    "language": "dart",
+    "difficulty": "easy",
+    "concepts": [
+      "cascade-operator",
+      "lists"
+    ],
+    "code": "var list = [3, 1, 2]..sort();\nprint(list);",
+    "question": "What will be printed?",
+    "options": [
+      "[1, 2, 3]",
+      "[3, 1, 2]",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "[1, 2, 3]",
+    "explanation": "The cascade operator `..` performs a sequence of operations on an object and returns the receiver itself (the sorted `list`).",
+    "runtime": "Dart 3.0+"
+  },
+  {
+    "id": "dart-002",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "null-safety",
+      "null-aware-assignment"
+    ],
+    "code": "int? x;\nx ??= 10;\nx ??= 20;\nprint(x);",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "20",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "`??=` assigns a value only if the target is currently null. The first assignment sets `x = 10`; the second does nothing because `x` is no longer null.",
+    "runtime": "Dart 3.0+"
+  },
+  {
+    "id": "dart-003",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "const",
+      "canonical-instances",
+      "identity"
+    ],
+    "code": "const a = [1, 2];\nconst b = [1, 2];\nprint(identical(a, b));",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "true",
+    "explanation": "In Dart, `const` values are canonicalized at compile-time into single shared instances in memory, making `identical(a, b)` evaluate to `true`.",
+    "runtime": "Dart 3.0+"
+  },
+  {
+    "id": "dart-004",
+    "language": "dart",
+    "difficulty": "easy",
+    "concepts": [
+      "spread-operator",
+      "null-aware-spread"
+    ],
+    "code": "List<int>? extra;\nvar items = [1, 2, ...?extra];\nprint(items.length);",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "3",
+      "NullThrownError",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "The null-aware spread operator `...?` safely skips spreading if the collection operand is null, leaving `items` with 2 elements.",
+    "runtime": "Dart 3.0+"
+  },
+  {
+    "id": "dart-005",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "collection-if",
+      "lists"
+    ],
+    "code": "bool promo = false;\nvar cart = ['Apple', if (promo) 'Discount'];\nprint(cart.length);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Collection `if` evaluates conditionally during list construction. Since `promo` is false, 'Discount' is not included.",
+    "runtime": "Dart 3.0+"
+  },
+  {
+    "id": "dart-006",
+    "language": "dart",
+    "difficulty": "easy",
+    "concepts": [
+      "parameters",
+      "named-defaults"
+    ],
+    "code": "int calc({int a = 5, int b = 10}) => a * b;\nprint(calc(a: 2));",
+    "question": "What will be printed?",
+    "options": [
+      "20",
+      "50",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "20",
+    "explanation": "Named parameter `a` is 2, while `b` uses default value 10: 2 * 10 = 20.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for parameters."
+  },
+  {
+    "id": "dart-007",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "interpolation"
+    ],
+    "code": "var lang = 'Dart';\nprint('Len: ${lang.length}');",
+    "question": "What will be printed?",
+    "options": [
+      "Len: 4",
+      "Len: ${lang.length}",
+      "Len: 5",
+      "Compilation error"
+    ],
+    "correctAnswer": "Len: 4",
+    "explanation": "Expression `${lang.length}` evaluates to 4 in string interpolation.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for strings."
+  },
+  {
+    "id": "dart-008",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "fold"
+    ],
+    "code": "var nums = [1, 2, 3];\nvar res = nums.fold(10, (int acc, int e) => acc + e);\nprint(res);",
+    "question": "What will be printed?",
+    "options": [
+      "16",
+      "6",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "16",
+    "explanation": "`fold` begins at 10 and adds 1, 2, and 3: 10 + 1 + 2 + 3 = 16.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for collections."
+  },
+  {
+    "id": "dart-009",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "final",
+      "mutability"
+    ],
+    "code": "final list = [1, 2];\nlist.add(3);\nprint(list.length);",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "2",
+      "Compilation error",
+      "UnsupportedError"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`final` prevents reassigning the variable reference `list`, but the List object remains mutable.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for final."
+  },
+  {
+    "id": "dart-010",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "null-safety",
+      "null-assertion"
+    ],
+    "code": "String? text = 'Flutter';\nprint(text!.length);",
+    "question": "What will be printed?",
+    "options": [
+      "7",
+      "null",
+      "TypeError",
+      "Compilation error"
+    ],
+    "correctAnswer": "7",
+    "explanation": "The `!` operator asserts non-null; length of 'Flutter' is 7.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for null-safety."
+  },
+  {
+    "id": "dart-011",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "constructors",
+      "initializer-list"
+    ],
+    "code": "class Point { final int x; Point(int a) : x = a * 2; }\nprint(Point(5).x);",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "5",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "Initializer list `: x = a * 2` initializes final field `x` to 10.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for constructors."
+  },
+  {
+    "id": "dart-012",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "collection-for",
+      "lists"
+    ],
+    "code": "var doubled = [for (var i in [1, 2]) i * 2];\nprint(doubled);",
+    "question": "What will be printed?",
+    "options": [
+      "[2, 4]",
+      "[1, 2]",
+      "[4]",
+      "Compilation error"
+    ],
+    "correctAnswer": "[2, 4]",
+    "explanation": "Collection `for` produces `[2, 4]`.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for collection-for."
+  },
+  {
+    "id": "dart-013",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "mixins",
+      "inheritance"
+    ],
+    "code": "mixin Walker { String walk() => 'Walking'; }\nclass Person with Walker {}\nprint(Person().walk());",
+    "question": "What will be printed?",
+    "options": [
+      "Walking",
+      "Person",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "Walking",
+    "explanation": "Classes mixed with `with Walker` inherit the mixin's methods.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for mixins."
+  },
+  {
+    "id": "dart-014",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "maps",
+      "putifabsent"
+    ],
+    "code": "var m = {'a': 1};\nm.putIfAbsent('a', () => 2);\nprint(m['a']);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`putIfAbsent` does not update existing keys; `'a'` stays 1.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for maps."
+  },
+  {
+    "id": "dart-015",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "extensions",
+      "methods"
+    ],
+    "code": "extension on int { int get tripled => this * 3; }\nprint(4.tripled);",
+    "question": "What will be printed?",
+    "options": [
+      "12",
+      "4",
+      "Compilation error",
+      "undefined"
+    ],
+    "correctAnswer": "12",
+    "explanation": "Extension method adds getter `tripled` to `int`.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for extensions."
+  },
+  {
+    "id": "dart-016",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "unique"
+    ],
+    "code": "var s = {1, 2, 2, 3};\nprint(s.length);",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "4",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "Sets retain only distinct items; {1, 2, 3} has length 3.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for sets."
+  },
+  {
+    "id": "dart-017",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "records",
+      "positional"
+    ],
+    "code": "var r = (10, 'A');\nprint('${r.$1} ${r.$2}');",
+    "question": "What will be printed?",
+    "options": [
+      "10 A",
+      "A 10",
+      "Compilation error",
+      "(10, A)"
+    ],
+    "correctAnswer": "10 A",
+    "explanation": "Dart 3 records access positional fields via `$1`, `$2`.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for records."
+  },
+  {
+    "id": "dart-018",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "first-where"
+    ],
+    "code": "var list = [1, 3, 5];\nprint(list.firstWhere((x) => x > 2, orElse: () => -1));",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "5",
+      "-1",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`firstWhere` returns 3 (first element > 2).",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for lists."
+  },
+  {
+    "id": "dart-019",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "factory-constructor"
+    ],
+    "code": "class S { static final S _i = S._(); factory S() => _i; S._(); }\nprint(identical(S(), S()));",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Factory constructor returns the singleton `_i`, so both calls return identical instances.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for classes."
+  },
+  {
+    "id": "dart-020",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "trim"
+    ],
+    "code": "print('  dart  '.trim().length);",
+    "question": "What will be printed?",
+    "options": [
+      "4",
+      "8",
+      "6",
+      "Compilation error"
+    ],
+    "correctAnswer": "4",
+    "explanation": "`trim()` removes leading and trailing spaces, leaving 'dart' (length 4).",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for strings."
+  },
+  {
+    "id": "dart-021",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "patterns",
+      "switch-expression"
+    ],
+    "code": "int x = 2;\nvar r = switch(x) { 1 => 'one', 2 => 'two', _ => 'other' };\nprint(r);",
+    "question": "What will be printed?",
+    "options": [
+      "two",
+      "one",
+      "other",
+      "Compilation error"
+    ],
+    "correctAnswer": "two",
+    "explanation": "Dart 3 switch expression matches 2 to 'two'.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for patterns."
+  },
+  {
+    "id": "dart-022",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "functions",
+      "anonymous"
+    ],
+    "code": "var f = (int a, int b) => a + b;\nprint(f(3, 4));",
+    "question": "What will be printed?",
+    "options": [
+      "7",
+      "34",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "7",
+    "explanation": "Arrow function computes 3 + 4 = 7.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for functions."
+  },
+  {
+    "id": "dart-023",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "late",
+      "initialization"
+    ],
+    "code": "late int x;\nx = 42;\nprint(x);",
+    "question": "What will be printed?",
+    "options": [
+      "42",
+      "null",
+      "LateInitializationError",
+      "Compilation error"
+    ],
+    "correctAnswer": "42",
+    "explanation": "`late` variables can be assigned after declaration before first read.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for late."
+  },
+  {
+    "id": "dart-024",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "division",
+      "truncating"
+    ],
+    "code": "print(7 ~/ 2);",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "3.5",
+      "4",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`~/` is the integer truncating division operator in Dart.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for division."
+  },
+  {
+    "id": "dart-025",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "records",
+      "named-fields"
+    ],
+    "code": "var rec = (x: 10, y: 20);\nprint(rec.x + rec.y);",
+    "question": "What will be printed?",
+    "options": [
+      "30",
+      "10",
+      "20",
+      "Compilation error"
+    ],
+    "correctAnswer": "30",
+    "explanation": "Named fields on records are accessed by field name.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for records."
+  },
+  {
+    "id": "dart-026",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "any"
+    ],
+    "code": "print([1, 2, 3].any((x) => x > 2));",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "2"
+    ],
+    "correctAnswer": "true",
+    "explanation": "`any()` returns true if at least one item satisfies condition (3 > 2).",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for lists."
+  },
+  {
+    "id": "dart-027",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "async",
+      "microtask"
+    ],
+    "code": "print('A');\nFuture.microtask(() => print('B'));\nprint('C');",
+    "question": "What will be printed?",
+    "options": [
+      "A C B",
+      "A B C",
+      "B A C",
+      "C A B"
+    ],
+    "correctAnswer": "A C B",
+    "explanation": "Synchronous statements print 'A' and 'C'; the microtask prints 'B' after current synchronous block.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for async."
+  },
+  {
+    "id": "dart-028",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "take"
+    ],
+    "code": "var l = [10, 20, 30].take(2).toList();\nprint(l);",
+    "question": "What will be printed?",
+    "options": [
+      "[10, 20]",
+      "[20, 30]",
+      "[10]",
+      "Compilation error"
+    ],
+    "correctAnswer": "[10, 20]",
+    "explanation": "`take(2)` takes first 2 elements.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for lists."
+  },
+  {
+    "id": "dart-029",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "typedef",
+      "function-signature"
+    ],
+    "code": "typedef Calc = int Function(int, int);\nCalc add = (a, b) => a + b;\nprint(add(2, 3));",
+    "question": "What will be printed?",
+    "options": [
+      "5",
+      "23",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "5",
+    "explanation": "Generic function typedef binds correctly.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for typedef."
+  },
+  {
+    "id": "dart-030",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "padleft"
+    ],
+    "code": "print('7'.padLeft(3, '0'));",
+    "question": "What will be printed?",
+    "options": [
+      "007",
+      "700",
+      "07",
+      "Compilation error"
+    ],
+    "correctAnswer": "007",
+    "explanation": "`padLeft(3, '0')` prepends zeros to reach length 3.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for strings."
+  },
+  {
+    "id": "dart-031",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "abstract-interface"
+    ],
+    "code": "abstract interface class I { void run(); }",
+    "question": "What will be printed?",
+    "options": [
+      "Defines pure interface class",
+      "Disallows methods",
+      "Compilation error",
+      "None"
+    ],
+    "correctAnswer": "Defines pure interface class",
+    "explanation": "Dart 3 class modifiers: `abstract interface class` specifies an interface that must be implemented, not extended.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for classes."
+  },
+  {
+    "id": "dart-032",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "where-count"
+    ],
+    "code": "print([1, 2, 3, 4].where((x) => x.isEven).length);",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "4",
+      "1",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "2 and 4 are even; count is 2.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for lists."
+  },
+  {
+    "id": "dart-033",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "patterns",
+      "destructuring"
+    ],
+    "code": "var [a, b, ...] = [1, 2, 3, 4];\nprint('$a $b');",
+    "question": "What will be printed?",
+    "options": [
+      "1 2",
+      "1 4",
+      "[1, 2]",
+      "Compilation error"
+    ],
+    "correctAnswer": "1 2",
+    "explanation": "Dart 3 list pattern matches `a = 1`, `b = 2`.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for patterns."
+  },
+  {
+    "id": "dart-034",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "numbers",
+      "parse"
+    ],
+    "code": "print(int.parse('FF', radix: 16));",
+    "question": "What will be printed?",
+    "options": [
+      "255",
+      "15",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "255",
+    "explanation": "'FF' in hexadecimal base 16 is 255.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for numbers."
+  },
+  {
+    "id": "dart-035",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "enums",
+      "enhanced-enums"
+    ],
+    "code": "enum Planet { earth(1); final int order; const Planet(this.order); }\nprint(Planet.earth.order);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "earth",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Enhanced enums support fields and constructors.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for enums."
+  },
+  {
+    "id": "dart-036",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "skip"
+    ],
+    "code": "print([1, 2, 3].skip(1).first);",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`skip(1)` bypasses index 0, so `.first` is 2.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for lists."
+  },
+  {
+    "id": "dart-037",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "operator-overload",
+      "plus"
+    ],
+    "code": "class N { final int v; N(this.v); N operator +(N o) => N(v + o.v); }\nprint((N(2) + N(3)).v);",
+    "question": "What will be printed?",
+    "options": [
+      "5",
+      "23",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "5",
+    "explanation": "Overloaded `+` operator adds values: 2 + 3 = 5.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for operator-overload."
+  },
+  {
+    "id": "dart-038",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "maps",
+      "entries"
+    ],
+    "code": "var m = {'a': 1};\nprint(m.entries.first.key);",
+    "question": "What will be printed?",
+    "options": [
+      "a",
+      "1",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "a",
+    "explanation": "`.entries.first.key` retrieves key 'a'.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for maps."
+  },
+  {
+    "id": "dart-039",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "unmodifiable",
+      "list"
+    ],
+    "code": "var l = List.unmodifiable([1, 2]);\ntry { l.add(3); } catch (e) { print('ERR'); }",
+    "question": "What will be printed?",
+    "options": [
+      "ERR",
+      "3",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "ERR",
+    "explanation": "Unmodifiable list throws `UnsupportedError` on mutation.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for unmodifiable."
+  },
+  {
+    "id": "dart-040",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "split"
+    ],
+    "code": "print('a,b'.split(',').length);",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Splits into ['a', 'b'] (length 2).",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for strings."
+  },
+  {
+    "id": "dart-041",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "generators",
+      "sync-star"
+    ],
+    "code": "Iterable<int> gen() sync* { yield 1; yield 2; }\nprint(gen().toList());",
+    "question": "What will be printed?",
+    "options": [
+      "[1, 2]",
+      "[1]",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "[1, 2]",
+    "explanation": "`sync*` generator yields elements sequentially.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for generators."
+  },
+  {
+    "id": "dart-042",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "bitwise",
+      "or"
+    ],
+    "code": "print(4 | 1);",
+    "question": "What will be printed?",
+    "options": [
+      "5",
+      "4",
+      "1",
+      "Compilation error"
+    ],
+    "correctAnswer": "5",
+    "explanation": "4 (100) OR 1 (001) = 5 (101).",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for bitwise."
+  },
+  {
+    "id": "dart-043",
+    "language": "dart",
+    "difficulty": "hard",
+    "concepts": [
+      "future",
+      "then-chain"
+    ],
+    "code": "Future.value(1).then((v) => v + 1).then(print);",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Promise chain increments 1 to 2 and prints 2.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for future."
+  },
+  {
+    "id": "dart-044",
+    "language": "dart",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "replaceall"
+    ],
+    "code": "print('cat cat'.replaceAll('cat', 'dog'));",
+    "question": "What will be printed?",
+    "options": [
+      "dog dog",
+      "dog cat",
+      "cat cat",
+      "Compilation error"
+    ],
+    "correctAnswer": "dog dog",
+    "explanation": "`replaceAll` substitutes all occurrences.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for strings."
+  },
+  {
+    "id": "dart-045",
+    "language": "dart",
+    "difficulty": "expert",
+    "concepts": [
+      "class-modifier",
+      "sealed"
+    ],
+    "code": "sealed class Shape {}\nclass Circle extends Shape {}\nprint(Circle() is Shape);",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Sealed classes in Dart allow subclasses within the same library; `Circle is Shape` evaluates to true.",
+    "runtime": "Dart 3.0+",
+    "hint": "Recall Dart rules for class-modifier."
+  }
+]

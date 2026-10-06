@@ -1,4 +1,6 @@
 ---
+import LottieAnimation from "../ui/lottie/LottieAnimation.astro";
+
 interface Props {
   title?: string;
   subtitle?: string;
@@ -10,26 +12,37 @@ const {
 } = Astro.props as Props;
 ---
 
-<section class="w-full py-8 md:py-12 relative overflow-hidden">
-  <div class="ambient-glow-orb -top-20 left-1/2 -translate-x-1/2 w-[450px] h-[200px] bg-gradient-to-r from-[#FF5E1E] to-[#8B5CF6] opacity-15 pointer-events-none"></div>
+<section class="w-full py-4 sm:py-6 md:py-8 relative overflow-hidden">
+  <div class="ambient-glow-orb -top-20 left-1/2 -translate-x-1/2 w-[450px] h-[200px] bg-gradient-to-r from-[#1B5448] via-[#23382B] to-[#ade1cd] opacity-25 pointer-events-none animate-ambient-breathe"></div>
 
-  <div class="relative z-10 mx-auto max-w-5xl px-4 sm:px-6">
-    <div class="max-w-2xl">
-      <div class="inline-flex mb-3">
-        <span class="status-pill text-xs">
-          Articles & Insights
-        </span>
+  <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="max-w-2xl">
+        <div class="inline-flex mb-3 hero-enter-1">
+          <span class="status-pill text-xs">
+            Articles & Insights
+          </span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-tight hero-enter-2">
+          <span class="bg-gradient-to-r from-[#1B5448] via-[#23382B] to-[#4e5850] dark:from-[#ade1cd] dark:via-[#c6eedc] dark:to-[#E1F8DC] bg-clip-text text-transparent animate-text-sheen">
+            {title}
+          </span>
+        </h1>
+        {subtitle && (
+          <p class="mt-4 text-base sm:text-lg text-[var(--color-text-secondary)] leading-relaxed hero-enter-3">
+            {subtitle}
+          </p>
+        )}
       </div>
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-tight">
-        <span class="bg-gradient-to-r from-[#FF5E1E] via-[#FF8A4C] to-[#FFB74D] bg-clip-text text-transparent">
-          {title}
-        </span>
-      </h1>
-      {subtitle && (
-        <p class="mt-4 text-base sm:text-lg text-[var(--color-text-secondary)] leading-relaxed">
-          {subtitle}
-        </p>
-      )}
+
+      <div class="hidden sm:flex size-32 sm:size-40 md:size-44 shrink-0 items-center justify-center p-2 rounded-2xl bg-[var(--color-bg-secondary)]/50 border border-[var(--color-border)]/60 relative overflow-hidden hero-enter-window">
+        <div class="ambient-glow-orb inset-0 bg-[#ade1cd] opacity-15 pointer-events-none animate-ambient-breathe"></div>
+        <LottieAnimation
+          src="/assets/lottie/build.json"
+          class="w-full h-full filter drop-shadow-sm"
+          alt="Engineering systems architecture animation"
+        />
+      </div>
     </div>
   </div>
 </section>

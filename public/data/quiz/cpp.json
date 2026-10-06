@@ -1,0 +1,1367 @@
+[
+  {
+    "id": "cpp-001",
+    "language": "cpp",
+    "difficulty": "easy",
+    "concepts": [
+      "references",
+      "functions",
+      "pass-by-reference"
+    ],
+    "code": "void addTen(int &x) {\n    x += 10;\n}\n\nint a = 5;\naddTen(a);\nstd::cout << a;",
+    "question": "What will be printed?",
+    "options": [
+      "15",
+      "5",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "15",
+    "explanation": "Parameter `int &x` is passed by reference, binding directly to `a`. Mutating `x` modifies the original variable `a` to 15.",
+    "runtime": "C++17 / C++20"
+  },
+  {
+    "id": "cpp-002",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "vector",
+      "copy-semantics",
+      "stl"
+    ],
+    "code": "std::vector<int> a = {1, 2};\nauto b = a;\nb.push_back(3);\nstd::cout << a.size() << \" \" << b.size();",
+    "question": "What will be printed?",
+    "options": [
+      "2 3",
+      "3 3",
+      "2 2",
+      "Compilation error"
+    ],
+    "correctAnswer": "2 3",
+    "explanation": "In C++, `std::vector` possesses deep copy value semantics. `auto b = a` creates an independent copy; modifying `b` does not alter `a`.",
+    "runtime": "C++17 / C++20"
+  },
+  {
+    "id": "cpp-003",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "polymorphism",
+      "virtual-functions",
+      "inheritance"
+    ],
+    "code": "struct Base {\n    virtual void show() { std::cout << \"B\"; }\n};\nstruct Derived : Base {\n    void show() override { std::cout << \"D\"; }\n};\n\nBase *b = new Derived();\nb->show();",
+    "question": "What will be printed?",
+    "options": [
+      "D",
+      "B",
+      "BD",
+      "Compilation error"
+    ],
+    "correctAnswer": "D",
+    "explanation": "Because `show()` is declared `virtual` in `Base`, dynamic dispatch invokes the overridden method in `Derived` at runtime.",
+    "runtime": "C++17 / C++20"
+  },
+  {
+    "id": "cpp-004",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "lambdas",
+      "capture-by-value",
+      "mutable"
+    ],
+    "code": "int x = 10;\nauto fn = [x]() mutable {\n    return ++x;\n};\nfn();\nstd::cout << x;",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "11",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "10",
+    "explanation": "Capture `[x]` copies `x` by value into the lambda's closure. The `mutable` keyword allows modifying the captured copy, leaving outer `x` unchanged at 10.",
+    "runtime": "C++17 / C++20"
+  },
+  {
+    "id": "cpp-005",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "range-for",
+      "copy-vs-reference"
+    ],
+    "code": "std::vector<int> v = {1, 2};\nfor (auto x : v) {\n    x *= 2;\n}\nstd::cout << v[0];",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`for (auto x : v)` iterates by value, copying each element into `x`. Modifying `x` does not update the vector elements; `for (auto &x : v)` would be required.",
+    "runtime": "C++17 / C++20"
+  },
+  {
+    "id": "cpp-006",
+    "language": "cpp",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "concatenation"
+    ],
+    "code": "std::string s = \"A\";\ns += \"B\";\nstd::cout << s;",
+    "question": "What will be printed?",
+    "options": [
+      "AB",
+      "A",
+      "B",
+      "Compilation error"
+    ],
+    "correctAnswer": "AB",
+    "explanation": "`+=` appends string 'B' to 'A'.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for strings."
+  },
+  {
+    "id": "cpp-007",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "smart-pointers",
+      "unique-ptr",
+      "move"
+    ],
+    "code": "auto p1 = std::make_unique<int>(42);\nauto p2 = std::move(p1);\nstd::cout << (p1 == nullptr);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "Segmentation fault"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`std::move` transfers ownership to `p2`, leaving `p1` holding `nullptr` (evaluated as 1 in boolean context).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for smart-pointers."
+  },
+  {
+    "id": "cpp-008",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "references",
+      "const-ref-binding"
+    ],
+    "code": "const int &r = 10;\nstd::cout << r;",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "Compilation error",
+      "0",
+      "Segmentation fault"
+    ],
+    "correctAnswer": "10",
+    "explanation": "In C++, a `const` reference can bind to a temporary rvalue, extending its lifetime.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for references."
+  },
+  {
+    "id": "cpp-009",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "constructors",
+      "initializer-list-order"
+    ],
+    "code": "struct S { int a; int b; S(int x) : b(x), a(b + 1) {} };",
+    "question": "What will be printed?",
+    "options": [
+      "Undefined behavior / uninitialized 'a'",
+      "Valid standard behavior",
+      "Compilation error",
+      "None"
+    ],
+    "correctAnswer": "Undefined behavior / uninitialized 'a'",
+    "explanation": "Members are initialized in order of their declaration in class definition (`a` before `b`), so reading `b` before it is initialized is undefined.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for constructors."
+  },
+  {
+    "id": "cpp-010",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "auto",
+      "type-deduction"
+    ],
+    "code": "auto a = 5.0f;\nstd::cout << typeid(a).name();",
+    "question": "What will be printed?",
+    "options": [
+      "float type",
+      "double type",
+      "int type",
+      "Compilation error"
+    ],
+    "correctAnswer": "float type",
+    "explanation": "Suffix `f` denotes a float literal, so `auto` deduces `float`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for auto."
+  },
+  {
+    "id": "cpp-011",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "templates",
+      "specialization"
+    ],
+    "code": "template<typename T> struct C { static int f(){ return 1; } };\ntemplate<> struct C<int> { static int f(){ return 2; } };\nstd::cout << C<int>::f();",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Explicit template specialization for `int` takes precedence over primary template, returning 2.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for templates."
+  },
+  {
+    "id": "cpp-012",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "vector",
+      "at-bounds"
+    ],
+    "code": "std::vector<int> v = {1};\ntry { v.at(5); } catch (const std::out_of_range&) { std::cout << \"OOR\"; }",
+    "question": "What will be printed?",
+    "options": [
+      "OOR",
+      "1",
+      "Segmentation fault",
+      "Compilation error"
+    ],
+    "correctAnswer": "OOR",
+    "explanation": "Unlike `v[5]`, `.at(5)` performs bounds-checking and throws `std::out_of_range`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for vector."
+  },
+  {
+    "id": "cpp-013",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "destructors-virtual"
+    ],
+    "code": "struct B { ~B(){ std::cout << \"B\"; } };\nstruct D : B { ~D(){ std::cout << \"D\"; } };\n{ D d; }",
+    "question": "What will be printed?",
+    "options": [
+      "DB",
+      "BD",
+      "D",
+      "B"
+    ],
+    "correctAnswer": "DB",
+    "explanation": "Derived class destructor body runs first, followed by base class destructor.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for classes."
+  },
+  {
+    "id": "cpp-014",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "stl",
+      "accumulate"
+    ],
+    "code": "std::vector<int> v = {1, 2, 3};\nstd::cout << std::accumulate(v.begin(), v.end(), 10);",
+    "question": "What will be printed?",
+    "options": [
+      "16",
+      "6",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "16",
+    "explanation": "`std::accumulate` computes 10 + 1 + 2 + 3 = 16.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for stl."
+  },
+  {
+    "id": "cpp-015",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "move-semantics",
+      "rvalue-ref"
+    ],
+    "code": "void f(int &) { std::cout << \"L\"; }\nvoid f(int &&) { std::cout << \"R\"; }\nf(42);",
+    "question": "What will be printed?",
+    "options": [
+      "R",
+      "L",
+      "Compilation error",
+      "Ambiguous error"
+    ],
+    "correctAnswer": "R",
+    "explanation": "Literal `42` is an rvalue (prvalue), binding to the rvalue reference overload `f(int&&)`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for move-semantics."
+  },
+  {
+    "id": "cpp-016",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "pairs",
+      "make-pair"
+    ],
+    "code": "auto p = std::make_pair(\"A\", 1);\nstd::cout << p.first << p.second;",
+    "question": "What will be printed?",
+    "options": [
+      "A1",
+      "A 1",
+      "Compilation error",
+      "1A"
+    ],
+    "correctAnswer": "A1",
+    "explanation": "`std::make_pair` creates a pair with members `.first` and `.second`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for pairs."
+  },
+  {
+    "id": "cpp-017",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "constexpr",
+      "compile-time"
+    ],
+    "code": "constexpr int sq(int x) { return x * x; }\nconstexpr int val = sq(4);\nstd::cout << val;",
+    "question": "What will be printed?",
+    "options": [
+      "16",
+      "4",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "16",
+    "explanation": "`constexpr` function evaluates at compile-time when called with constant expressions.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for constexpr."
+  },
+  {
+    "id": "cpp-018",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "set",
+      "ordered-unique"
+    ],
+    "code": "std::set<int> s = {3, 1, 2, 1};\nstd::cout << *s.begin();",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "3",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`std::set` keeps unique elements sorted ascending; `*s.begin()` is 1.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for set."
+  },
+  {
+    "id": "cpp-019",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "map",
+      "subscript-default"
+    ],
+    "code": "std::map<std::string, int> m;\nstd::cout << m[\"missing\"];",
+    "question": "What will be printed?",
+    "options": [
+      "0",
+      "KeyError",
+      "Compilation error",
+      "-1"
+    ],
+    "correctAnswer": "0",
+    "explanation": "`map::operator[]` value-initializes missing entries (int defaults to 0).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for map."
+  },
+  {
+    "id": "cpp-020",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "find-npos"
+    ],
+    "code": "std::string s = \"abc\";\nstd::cout << (s.find('z') == std::string::npos);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "-1"
+    ],
+    "correctAnswer": "1",
+    "explanation": "When a character is not found, `find()` returns `std::string::npos` (evaluates to true/1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for strings."
+  },
+  {
+    "id": "cpp-021",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "smart-pointers",
+      "shared-ptr-use-count"
+    ],
+    "code": "auto s1 = std::make_shared<int>(5);\nauto s2 = s1;\nstd::cout << s1.use_count();",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Both `s1` and `s2` share ownership of the integer, so reference count is 2.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for smart-pointers."
+  },
+  {
+    "id": "cpp-022",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "vector",
+      "pop-back"
+    ],
+    "code": "std::vector<int> v = {1, 2};\nv.pop_back();\nstd::cout << v.size();",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`pop_back()` removes the last element, decreasing size to 1.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for vector."
+  },
+  {
+    "id": "cpp-023",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "lambdas",
+      "capture-by-ref"
+    ],
+    "code": "int a = 5;\nauto f = [&a]() { a += 5; };\nf();\nstd::cout << a;",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "5",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "10",
+    "explanation": "Capture by reference `[&a]` modifies the original `a`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for lambdas."
+  },
+  {
+    "id": "cpp-024",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "casting",
+      "static-cast"
+    ],
+    "code": "double d = 4.7;\nint i = static_cast<int>(d);\nstd::cout << i;",
+    "question": "What will be printed?",
+    "options": [
+      "4",
+      "5",
+      "4.7",
+      "Compilation error"
+    ],
+    "correctAnswer": "4",
+    "explanation": "`static_cast<int>` truncates the fractional portion to 4.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for casting."
+  },
+  {
+    "id": "cpp-025",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "default-delete"
+    ],
+    "code": "struct NoCopy { NoCopy() = default; NoCopy(const NoCopy&) = delete; };",
+    "question": "What will be printed?",
+    "options": [
+      "Prevents copy construction",
+      "Deletes destructor",
+      "Compilation error",
+      "None"
+    ],
+    "correctAnswer": "Prevents copy construction",
+    "explanation": "`= delete` explicitly disables copy constructor invocation.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for classes."
+  },
+  {
+    "id": "cpp-026",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "stl",
+      "count"
+    ],
+    "code": "std::vector<int> v = {1, 2, 2, 3};\nstd::cout << std::count(v.begin(), v.end(), 2);",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`std::count` tallies elements equal to 2 (appears twice).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for stl."
+  },
+  {
+    "id": "cpp-027",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "explicit-constructor"
+    ],
+    "code": "struct B { explicit B(int){} };",
+    "question": "What will be printed?",
+    "options": [
+      "Prevents implicit conversion from int",
+      "Requires int pointer",
+      "Compilation error",
+      "None"
+    ],
+    "correctAnswer": "Prevents implicit conversion from int",
+    "explanation": "`explicit` prohibits automatic type conversions (e.g., `B b = 5;`).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for classes."
+  },
+  {
+    "id": "cpp-028",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "vector",
+      "front-back"
+    ],
+    "code": "std::vector<int> v = {10, 20, 30};\nstd::cout << v.front() + v.back();",
+    "question": "What will be printed?",
+    "options": [
+      "40",
+      "30",
+      "10",
+      "20"
+    ],
+    "correctAnswer": "40",
+    "explanation": "`v.front()` is 10 and `v.back()` is 30; 10 + 30 = 40.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for vector."
+  },
+  {
+    "id": "cpp-029",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "operator-overload",
+      "plus"
+    ],
+    "code": "struct V { int x; V operator+(const V& o) const { return {x + o.x}; } };\nV a{2}, b{3};\nstd::cout << (a + b).x;",
+    "question": "What will be printed?",
+    "options": [
+      "5",
+      "2",
+      "3",
+      "Compilation error"
+    ],
+    "correctAnswer": "5",
+    "explanation": "Overloaded `operator+` computes `2 + 3 = 5`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for operator-overload."
+  },
+  {
+    "id": "cpp-030",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "substr"
+    ],
+    "code": "std::string s = \"abcdef\";\nstd::cout << s.substr(2, 3);",
+    "question": "What will be printed?",
+    "options": [
+      "cde",
+      "cd",
+      "bc",
+      "cdef"
+    ],
+    "correctAnswer": "cde",
+    "explanation": "In C++, `substr(pos, count)` takes position 2 and extracts 3 characters ('c', 'd', 'e').",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for strings."
+  },
+  {
+    "id": "cpp-031",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "optional",
+      "has-value"
+    ],
+    "code": "std::optional<int> o;\nstd::cout << o.value_or(100);",
+    "question": "What will be printed?",
+    "options": [
+      "100",
+      "0",
+      "bad_optional_access",
+      "Compilation error"
+    ],
+    "correctAnswer": "100",
+    "explanation": "Empty `std::optional` returns the fallback value 100 via `value_or`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for optional."
+  },
+  {
+    "id": "cpp-032",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "tuples",
+      "get"
+    ],
+    "code": "auto t = std::make_tuple(1, \"A\");\nstd::cout << std::get<0>(t);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "A",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`std::get<0>` extracts the first element (1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for tuples."
+  },
+  {
+    "id": "cpp-033",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "templates",
+      "fold-expressions"
+    ],
+    "code": "template<typename... Args> auto sum(Args... args) { return (args + ...); }\nstd::cout << sum(1, 2, 3, 4);",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "1",
+      "4",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "C++17 unary fold expression `(args + ...)` calculates 1 + 2 + 3 + 4 = 10.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for templates."
+  },
+  {
+    "id": "cpp-034",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "enums",
+      "enum-class"
+    ],
+    "code": "enum class Color { Red, Blue };\nstd::cout << (Color::Red == Color::Red);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "Red"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Scoped `enum class` elements can be compared for equality with same enum type.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for enums."
+  },
+  {
+    "id": "cpp-035",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "type-traits",
+      "is-same"
+    ],
+    "code": "std::cout << std::is_same_v<int, int32_t>;",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "undefined"
+    ],
+    "correctAnswer": "1",
+    "explanation": "On platforms where int is 32-bit, `int` and `int32_t` denote the exact same underlying type.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for type-traits."
+  },
+  {
+    "id": "cpp-036",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "deque",
+      "push-front"
+    ],
+    "code": "std::deque<int> d = {2};\nd.push_front(1);\nstd::cout << d[0];",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`push_front(1)` prepends 1 to the deque.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for deque."
+  },
+  {
+    "id": "cpp-037",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "variant",
+      "holds-alternative"
+    ],
+    "code": "std::variant<int, std::string> v = 42;\nstd::cout << std::holds_alternative<int>(v);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "42"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`std::variant` currently holds an `int`, so `holds_alternative<int>` is true (1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for variant."
+  },
+  {
+    "id": "cpp-038",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "queue",
+      "fifo"
+    ],
+    "code": "std::queue<int> q;\nq.push(1); q.push(2);\nstd::cout << q.front();",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`std::queue` is FIFO (First-In, First-Out); `front()` is 1.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for queue."
+  },
+  {
+    "id": "cpp-039",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "stack",
+      "lifo"
+    ],
+    "code": "std::stack<int> s;\ns.push(1); s.push(2);\nstd::cout << s.top();",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`std::stack` is LIFO (Last-In, First-Out); `top()` is 2.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for stack."
+  },
+  {
+    "id": "cpp-040",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "string-view",
+      "no-copy"
+    ],
+    "code": "std::string_view sv = \"Hello\";\nstd::cout << sv.length();",
+    "question": "What will be printed?",
+    "options": [
+      "5",
+      "6",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "5",
+    "explanation": "`std::string_view` non-owning view of \"Hello\" has length 5.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for string-view."
+  },
+  {
+    "id": "cpp-041",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "any",
+      "any-cast"
+    ],
+    "code": "std::any a = 10;\nstd::cout << std::any_cast<int>(a);",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "bad_any_cast",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "10",
+    "explanation": "`std::any_cast<int>` retrieves the contained integer 10.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for any."
+  },
+  {
+    "id": "cpp-042",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "vector",
+      "clear-empty"
+    ],
+    "code": "std::vector<int> v = {1};\nv.clear();\nstd::cout << v.empty();",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "true"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`v.clear()` removes all items; `v.empty()` returns true (1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for vector."
+  },
+  {
+    "id": "cpp-043",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "destructors",
+      "order-members"
+    ],
+    "code": "struct A { ~A(){ std::cout << \"A\"; } };\nstruct B { ~B(){ std::cout << \"B\"; } };\nstruct C { A a; B b; };\n{ C c; }",
+    "question": "What will be printed?",
+    "options": [
+      "BA",
+      "AB",
+      "C",
+      "Compilation error"
+    ],
+    "correctAnswer": "BA",
+    "explanation": "Member variables are destroyed in the reverse order of their declaration: `b` then `a`.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for destructors."
+  },
+  {
+    "id": "cpp-044",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "math",
+      "clamp"
+    ],
+    "code": "std::cout << std::clamp(15, 0, 10);",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "15",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "C++17 `std::clamp(val, low, high)` clamps 15 to the upper bound 10.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for math."
+  },
+  {
+    "id": "cpp-045",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "stl",
+      "binary-search"
+    ],
+    "code": "std::vector<int> v = {1, 3, 5};\nstd::cout << std::binary_search(v.begin(), v.end(), 3);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "3"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`std::binary_search` returns boolean true (1) if element 3 is present.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for stl."
+  },
+  {
+    "id": "cpp-046",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "vector",
+      "insert"
+    ],
+    "code": "std::vector<int> v = {1, 3};\nv.insert(v.begin() + 1, 2);\nstd::cout << v[1];",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`insert` puts element 2 at index 1.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for vector."
+  },
+  {
+    "id": "cpp-047",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "structured-binding",
+      "tuple"
+    ],
+    "code": "auto [x, y] = std::make_pair(10, 20);\nstd::cout << x + y;",
+    "question": "What will be printed?",
+    "options": [
+      "30",
+      "10",
+      "20",
+      "Compilation error"
+    ],
+    "correctAnswer": "30",
+    "explanation": "C++17 structured bindings decompose the pair into `x = 10` and `y = 20`; 10 + 20 = 30.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for structured-binding."
+  },
+  {
+    "id": "cpp-048",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "chrono",
+      "duration"
+    ],
+    "code": "auto sec = std::chrono::seconds(2);\nstd::cout << sec.count();",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "2000",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`.count()` returns the number of representation ticks (2).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for chrono."
+  },
+  {
+    "id": "cpp-049",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "casting",
+      "dynamic-cast-null"
+    ],
+    "code": "struct B { virtual ~B(){} };\nstruct D : B {};\nB b;\nstd::cout << (dynamic_cast<D*>(&b) == nullptr);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "bad_cast",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Downcasting an actual `B` instance pointer to `D*` fails safely, returning `nullptr` (1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for casting."
+  },
+  {
+    "id": "cpp-050",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "algorithm",
+      "reverse"
+    ],
+    "code": "std::string s = \"ABC\";\nstd::reverse(s.begin(), s.end());\nstd::cout << s;",
+    "question": "What will be printed?",
+    "options": [
+      "CBA",
+      "ABC",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "CBA",
+    "explanation": "`std::reverse` reverses in-place.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for algorithm."
+  },
+  {
+    "id": "cpp-051",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "stl",
+      "lower-bound"
+    ],
+    "code": "std::vector<int> v = {10, 20, 30};\nauto it = std::lower_bound(v.begin(), v.end(), 20);\nstd::cout << *it;",
+    "question": "What will be printed?",
+    "options": [
+      "20",
+      "10",
+      "30",
+      "Compilation error"
+    ],
+    "correctAnswer": "20",
+    "explanation": "`std::lower_bound` returns an iterator to the first element not less than 20.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for stl."
+  },
+  {
+    "id": "cpp-052",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "algorithm",
+      "min-max"
+    ],
+    "code": "auto [mn, mx] = std::minmax({4, 1, 9, 2});\nstd::cout << mn << mx;",
+    "question": "What will be printed?",
+    "options": [
+      "19",
+      "49",
+      "12",
+      "Compilation error"
+    ],
+    "correctAnswer": "19",
+    "explanation": "`std::minmax` computes minimum (1) and maximum (9).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for algorithm."
+  },
+  {
+    "id": "cpp-053",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "friend-function"
+    ],
+    "code": "class Secret { int val = 99; friend int read(Secret s){ return s.val; } };\nstd::cout << read(Secret{});",
+    "question": "What will be printed?",
+    "options": [
+      "99",
+      "Compilation error",
+      "0",
+      "undefined"
+    ],
+    "correctAnswer": "99",
+    "explanation": "A `friend` function has access to private class members.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for classes."
+  },
+  {
+    "id": "cpp-054",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "vector",
+      "reserve-vs-resize"
+    ],
+    "code": "std::vector<int> v;\nv.reserve(10);\nstd::cout << v.size();",
+    "question": "What will be printed?",
+    "options": [
+      "0",
+      "10",
+      "Compilation error",
+      "undefined"
+    ],
+    "correctAnswer": "0",
+    "explanation": "`reserve(10)` allocates internal capacity without creating elements, so `.size()` is 0.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for vector."
+  },
+  {
+    "id": "cpp-055",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "vector",
+      "resize-size"
+    ],
+    "code": "std::vector<int> v;\nv.resize(10);\nstd::cout << v.size();",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "0",
+      "Compilation error",
+      "undefined"
+    ],
+    "correctAnswer": "10",
+    "explanation": "`resize(10)` creates 10 zero-initialized elements, so `.size()` is 10.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for vector."
+  },
+  {
+    "id": "cpp-056",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "numbers",
+      "gcd-cpp"
+    ],
+    "code": "std::cout << std::gcd(24, 18);",
+    "question": "What will be printed?",
+    "options": [
+      "6",
+      "3",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "6",
+    "explanation": "`std::gcd` in `<numeric>` computes the greatest common divisor (6).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for numbers."
+  },
+  {
+    "id": "cpp-057",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "bitset",
+      "count"
+    ],
+    "code": "std::bitset<8> b(\"00001101\");\nstd::cout << b.count();",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "8",
+      "4",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`.count()` counts set bits (ones); there are three 1s.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for bitset."
+  },
+  {
+    "id": "cpp-058",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "complex",
+      "real"
+    ],
+    "code": "std::complex<double> c(3.0, 4.0);\nstd::cout << c.real();",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`.real()` returns real component 3.0.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for complex."
+  },
+  {
+    "id": "cpp-059",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "type-traits",
+      "underlying-type"
+    ],
+    "code": "enum class E : char { A = 'x' };\nstd::cout << (char)E::A;",
+    "question": "What will be printed?",
+    "options": [
+      "x",
+      "120",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "x",
+    "explanation": "Explicitly casting enum class to its underlying `char` type yields 'x'.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for type-traits."
+  },
+  {
+    "id": "cpp-060",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "string",
+      "starts-with"
+    ],
+    "code": "std::string s = \"cpp20\";\nstd::cout << s.starts_with(\"cpp\");",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "true"
+    ],
+    "correctAnswer": "1",
+    "explanation": "C++20 `starts_with` returns true (1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for string."
+  },
+  {
+    "id": "cpp-061",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "concepts",
+      "requires"
+    ],
+    "code": "template<typename T> concept Addable = requires(T a, T b){ a + b; };\nstd::cout << Addable<int>;",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "true"
+    ],
+    "correctAnswer": "1",
+    "explanation": "C++20 concept `Addable<int>` evaluates to boolean true (1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for concepts."
+  },
+  {
+    "id": "cpp-062",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "ranges",
+      "iota"
+    ],
+    "code": "auto v = std::views::iota(1, 4);\nstd::cout << *v.begin();",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "4",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`std::views::iota(1, 4)` generates half-open range [1, 4); first element is 1.",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for ranges."
+  },
+  {
+    "id": "cpp-063",
+    "language": "cpp",
+    "difficulty": "hard",
+    "concepts": [
+      "memory",
+      "span"
+    ],
+    "code": "int a[] = {1, 2, 3};\nstd::span sp(a);\nstd::cout << sp.size();",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "sizeof(int*)",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "3",
+    "explanation": "C++20 `std::span` automatically deduces array extent (3).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for memory."
+  },
+  {
+    "id": "cpp-064",
+    "language": "cpp",
+    "difficulty": "medium",
+    "concepts": [
+      "numeric",
+      "midpoint"
+    ],
+    "code": "std::cout << std::midpoint(10, 20);",
+    "question": "What will be printed?",
+    "options": [
+      "15",
+      "14",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "15",
+    "explanation": "C++20 `std::midpoint(a, b)` computes integer midpoint without overflow (15).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for numeric."
+  },
+  {
+    "id": "cpp-065",
+    "language": "cpp",
+    "difficulty": "expert",
+    "concepts": [
+      "spaceship-operator",
+      "three-way"
+    ],
+    "code": "auto cmp = (1 <=> 2);\nstd::cout << (cmp < 0);",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "-1"
+    ],
+    "correctAnswer": "1",
+    "explanation": "C++20 three-way comparison operator `<=>` yields `strong_ordering::less`, which compares `< 0` as true (1).",
+    "runtime": "C++17 / C++20",
+    "hint": "Think about C++ semantics for spaceship-operator."
+  }
+]

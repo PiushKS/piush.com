@@ -1,0 +1,1103 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/sections/Header.astro";
+import Footer from "../components/sections/Footer.astro";
+import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astro";
+import { quizManifest, LANGUAGE_META } from "../data/quiz/manifest";
+
+const title = "Programming Code Output Quiz – JavaScript, Python, Java, C++ & More | Piush";
+const description = "Test your programming logic with code output challenges across JavaScript, Python, Java, C, C++, Kotlin, Swift and Dart.";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={title} description={description} />
+    <!-- Structured Data for Interactive Learning / Quiz -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Quiz",
+      "name": "Programming Code Output Quiz",
+      "description": description,
+      "educationalLevel": "Intermediate to Advanced",
+      "about": ["Computer Programming", "JavaScript", "Python", "Java", "C++", "C", "Kotlin", "Swift", "Dart"]
+    })} />
+  </head>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+    <Header />
+
+    <main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-5xl mx-auto">
+      <!-- Page Hero / Introduction -->
+      <section class="text-center space-y-3 mb-8 sm:mb-12">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium bg-[#1B5448]/15 dark:bg-[#ade1cd]/15 text-[#1B5448] dark:text-[#ade1cd] border border-[#1B5448]/25 dark:border-[#ade1cd]/25 shadow-xs">
+          <span class="size-2 rounded-full bg-[#1B5448] dark:bg-[#ade1cd] animate-pulse"></span>
+          <span>{quizManifest.totalCount} Verified Code Output Challenges</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground">
+          Code Output Challenge
+        </h1>
+
+        <p class="text-base sm:text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed">
+          Sharpen your mental compiler. Predict exact runtime outputs, inspect memory references, trace execution flows, and master subtle language quirks across 8 modern programming runtimes.
+        </p>
+
+        <!-- Stats Bar -->
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs font-mono">
+          <div class="px-3 py-1.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex items-center gap-2">
+            <span class="text-[var(--color-text-muted)]">Bank:</span>
+            <span class="font-bold text-foreground">{quizManifest.totalCount} Questions</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex items-center gap-2">
+            <span>🔥</span>
+            <span class="text-[var(--color-text-muted)]">Streak:</span>
+            <span class="font-bold text-foreground" id="quiz-page-streak">0</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex items-center gap-2">
+            <span>🎯</span>
+            <span class="text-[var(--color-text-muted)]">Solved:</span>
+            <span class="font-bold text-[var(--accent)]" id="quiz-page-solved">0</span>
+          </div>
+          <button
+            type="button"
+            id="quiz-stats-modal-btn"
+            class="px-3 py-1.5 rounded-xl bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] border border-[var(--color-border)] hover:border-[var(--accent)] text-foreground transition-all cursor-pointer"
+          >
+            📊 View Lifetime Stats
+          </button>
+        </div>
+      </section>
+
+      <!-- Quiz App Container -->
+      <div id="quiz-app" class="relative">
+        <!-- MODE SELECTOR VIEW (Shown before starting a quiz) -->
+        <div id="quiz-lobby-view" class="space-y-6">
+          <!-- Quiz Mode Cards Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Mode 1: Quick Challenge -->
+            <button
+              type="button"
+              data-mode="quick"
+              data-length="5"
+              class="quiz-start-mode-btn group p-5 rounded-3xl border border-[var(--color-border)] bg-[var(--card)] hover:border-[var(--accent)] hover:shadow-lg transition-all text-left flex flex-col justify-between cursor-pointer"
+            >
+              <div>
+                <div class="size-10 rounded-2xl bg-[var(--accent)]/15 text-[var(--accent)] flex items-center justify-center font-mono font-bold text-lg mb-3 group-hover:scale-110 transition-transform">
+                  ⚡
+                </div>
+                <h3 class="text-base font-bold text-foreground tracking-tight group-hover:text-[var(--accent)] transition-colors">
+                  Quick Challenge
+                </h3>
+                <p class="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed">
+                  5 rapid-fire questions across all languages. Ideal for a 2-minute mental warmup.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-[var(--color-border)]/50 flex items-center justify-between text-xs font-mono text-[var(--color-text-muted)]">
+                <span>5 Questions</span>
+                <span class="text-[var(--accent)] font-semibold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </button>
+
+            <!-- Mode 2: Standard Quiz (Recommended) -->
+            <button
+              type="button"
+              data-mode="standard"
+              data-length="10"
+              class="quiz-start-mode-btn group p-5 rounded-3xl border-2 border-[var(--accent)] bg-[var(--card)] hover:shadow-xl transition-all text-left flex flex-col justify-between cursor-pointer relative overflow-hidden"
+            >
+              <div class="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-[var(--accent)] text-white">
+                Popular
+              </div>
+              <div>
+                <div class="size-10 rounded-2xl bg-[var(--accent)] text-white flex items-center justify-center font-mono font-bold text-lg mb-3 group-hover:scale-110 transition-transform">
+                  🎯
+                </div>
+                <h3 class="text-base font-bold text-foreground tracking-tight group-hover:text-[var(--accent)] transition-colors">
+                  Standard Quiz
+                </h3>
+                <p class="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed">
+                  10 balanced questions spanning syntax, closures, memory references, and OOP logic.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-[var(--color-border)]/50 flex items-center justify-between text-xs font-mono text-[var(--color-text-muted)]">
+                <span>10 Questions</span>
+                <span class="text-[var(--accent)] font-semibold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </button>
+
+            <!-- Mode 3: Deep Challenge -->
+            <button
+              type="button"
+              data-mode="deep"
+              data-length="20"
+              class="quiz-start-mode-btn group p-5 rounded-3xl border border-[var(--color-border)] bg-[var(--card)] hover:border-[var(--accent)] hover:shadow-lg transition-all text-left flex flex-col justify-between cursor-pointer"
+            >
+              <div>
+                <div class="size-10 rounded-2xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center font-mono font-bold text-lg mb-3 group-hover:scale-110 transition-transform">
+                  🧠
+                </div>
+                <h3 class="text-base font-bold text-foreground tracking-tight group-hover:text-[var(--accent)] transition-colors">
+                  Deep Challenge
+                </h3>
+                <p class="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed">
+                  20 comprehensive questions including advanced control flow, recursion, and edge cases.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-[var(--color-border)]/50 flex items-center justify-between text-xs font-mono text-[var(--color-text-muted)]">
+                <span>20 Questions</span>
+                <span class="text-[var(--accent)] font-semibold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </button>
+
+            <!-- Mode 4: Daily Challenge -->
+            <button
+              type="button"
+              data-mode="daily"
+              data-length="1"
+              class="quiz-start-mode-btn group p-5 rounded-3xl border border-[var(--color-border)] bg-[var(--card)] hover:border-[var(--accent)] hover:shadow-lg transition-all text-left flex flex-col justify-between cursor-pointer"
+            >
+              <div>
+                <div class="size-10 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-mono font-bold text-lg mb-3 group-hover:scale-110 transition-transform">
+                  📅
+                </div>
+                <h3 class="text-base font-bold text-foreground tracking-tight group-hover:text-[var(--accent)] transition-colors">
+                  Daily Challenge
+                </h3>
+                <p class="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed">
+                  One globally synchronized puzzle for today. Share your result with friends.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-[var(--color-border)]/50 flex items-center justify-between text-xs font-mono text-[var(--color-text-muted)]">
+                <span>1 Deterministic Q</span>
+                <span class="text-[var(--accent)] font-semibold group-hover:translate-x-1 transition-transform">Play Today →</span>
+              </div>
+            </button>
+
+            <!-- Mode 5: Endless Mode -->
+            <button
+              type="button"
+              data-mode="endless"
+              data-length="999"
+              class="quiz-start-mode-btn group p-5 rounded-3xl border border-[var(--color-border)] bg-[var(--card)] hover:border-[var(--accent)] hover:shadow-lg transition-all text-left flex flex-col justify-between cursor-pointer"
+            >
+              <div>
+                <div class="size-10 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-lg mb-3 group-hover:scale-110 transition-transform">
+                  ♾️
+                </div>
+                <h3 class="text-base font-bold text-foreground tracking-tight group-hover:text-[var(--accent)] transition-colors">
+                  Endless Mode
+                </h3>
+                <p class="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed">
+                  Continuous play with zero question limits. Test how high of a streak you can reach!
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-[var(--color-border)]/50 flex items-center justify-between text-xs font-mono text-[var(--color-text-muted)]">
+                <span>Unlimited</span>
+                <span class="text-[var(--accent)] font-semibold group-hover:translate-x-1 transition-transform">Play Endless →</span>
+              </div>
+            </button>
+
+            <!-- Mode 6: Language-Specific Challenge -->
+            <div class="p-5 rounded-3xl border border-[var(--color-border)] bg-[var(--card)] flex flex-col justify-between">
+              <div>
+                <div class="size-10 rounded-2xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-mono font-bold text-lg mb-3">
+                  🔍
+                </div>
+                <h3 class="text-base font-bold text-foreground tracking-tight">
+                  Single-Language Drill
+                </h3>
+                <p class="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed">
+                  Focus exclusively on your runtime of choice to test language-specific mastery.
+                </p>
+              </div>
+              <div class="mt-3">
+                <select id="single-lang-select" class="w-full text-xs font-mono px-3 py-2 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-foreground focus:outline-none focus:border-[var(--accent)]">
+                  {LANGUAGE_META.filter(l => l.id !== 'all').map(l => (
+                    <option value={l.id}>{l.name} ({l.count} questions)</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  id="start-single-lang-btn"
+                  class="w-full mt-2 py-2 px-3 rounded-xl bg-[var(--accent)] text-white text-xs font-semibold hover:opacity-90 transition-all cursor-pointer"
+                >
+                  Start Language Drill (10 Q) →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Distribution Grid -->
+          <div class="card-surface rounded-3xl p-6 border border-[var(--color-border)] space-y-4">
+            <h3 class="text-sm font-bold text-foreground tracking-tight font-mono uppercase text-[var(--color-text-muted)]">
+              Questions in Dataset by Language
+            </h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+              {LANGUAGE_META.filter(l => l.id !== 'all').map(lang => (
+                <div class="p-3 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]/60 flex items-center justify-between">
+                  <span class="font-medium text-foreground">{lang.name}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-[var(--accent)]/15 text-[var(--accent)] font-bold text-[11px]">
+                    {lang.count}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVE QUIZ GAME VIEW (Hidden initially) -->
+        <div id="quiz-active-view" class="hidden space-y-4 animate-fadeIn">
+          <!-- Game Header: Progress, Score & Exit -->
+          <div class="p-4 rounded-2xl card-surface border border-[var(--color-border)] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+            <div class="flex items-center gap-3">
+              <button
+                type="button"
+                id="quiz-quit-btn"
+                class="px-2.5 py-1 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] hover:text-foreground transition-colors cursor-pointer"
+              >
+                ✕ Exit Quiz
+              </button>
+              <div class="flex items-center gap-2">
+                <span class="text-[var(--color-text-muted)]" id="active-mode-label">Standard Quiz</span>
+                <span class="size-1 rounded-full bg-[var(--color-border)]"></span>
+                <span class="font-bold text-foreground" id="active-q-number">Question 1 / 10</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[var(--color-text-muted)]">Score:</span>
+                <span class="font-bold text-emerald-600 dark:text-emerald-400" id="active-score-display">0</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span>🔥</span>
+                <span class="font-bold text-foreground" id="active-streak-display">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full h-2 rounded-full bg-[var(--color-bg-secondary)] overflow-hidden border border-[var(--color-border)]/40" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="quiz-progress-bar-container">
+            <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-[#1B5448] to-[#ade1cd] transition-all duration-300 w-0"></div>
+          </div>
+
+          <!-- Interactive Code Editor Card for Active Game -->
+          <div class="w-full card-surface rounded-3xl border border-[var(--color-border)] shadow-xl overflow-hidden backdrop-blur-xl relative">
+            <!-- Top bar -->
+            <div class="flex flex-wrap items-center justify-between gap-2.5 px-4 sm:px-6 py-3 bg-[var(--color-bg-secondary)]/70 border-b border-[var(--color-border)] font-mono text-xs">
+              <div class="flex items-center gap-2.5">
+                <div class="flex items-center gap-1.5" aria-hidden="true">
+                  <span class="size-2.5 rounded-full bg-[#1B5448]"></span>
+                  <span class="size-2.5 rounded-full bg-[#4e5850]"></span>
+                  <span class="size-2.5 rounded-full bg-[#ade1cd]"></span>
+                </div>
+                <span class="font-bold text-foreground tracking-tight" id="active-card-id">
+                  CODE OUTPUT #1
+                </span>
+                <span class="text-[var(--color-text-muted)] font-normal text-[11px]" id="active-runtime-tag">
+                  ECMAScript
+                </span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span id="active-lang-tag" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#1B5448]/15 text-[#1B5448] dark:bg-[#ade1cd]/15 dark:text-[#ade1cd] border border-[#1B5448]/25 dark:border-[#ade1cd]/25">
+                  JavaScript
+                </span>
+                <span id="active-diff-tag" class="px-2 py-0.5 rounded-lg text-[11px] font-semibold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25">
+                  Medium
+                </span>
+              </div>
+            </div>
+
+            <!-- Code snippet display -->
+            <div class="relative bg-[var(--color-bg-primary)] p-4 sm:p-6 overflow-hidden border-b border-[var(--color-border)]/60">
+              <div class="flex items-stretch min-h-[140px] min-w-0 text-xs sm:text-sm font-mono leading-relaxed">
+                <div id="active-line-numbers" class="select-none pr-3 sm:pr-4 text-right text-[var(--color-text-muted)]/50 border-r border-[var(--color-border)]/40 font-mono shrink-0" aria-hidden="true">
+                  <div>1</div>
+                  <div>2</div>
+                  <div>3</div>
+                </div>
+                <pre class="flex-1 min-w-0 pl-3 sm:pl-4 m-0 overflow-x-auto text-foreground font-mono focus:outline-none"><code id="active-code-display"></code></pre>
+              </div>
+
+              <!-- Concepts & Hint toggle -->
+              <div class="mt-4 pt-3 border-t border-[var(--color-border)]/40 flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
+                <span class="text-[var(--color-text-muted)]">Concepts:</span>
+                <div id="active-concepts-list" class="flex flex-wrap gap-1.5"></div>
+                <button
+                  type="button"
+                  id="active-hint-toggle"
+                  class="ml-auto inline-flex items-center gap-1 text-[11px] font-sans font-medium text-[var(--accent)] hover:underline cursor-pointer"
+                >
+                  <span>💡 Hint</span>
+                </button>
+              </div>
+
+              <!-- Collapsible Hint -->
+              <div id="active-hint-panel" class="hidden mt-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 dark:text-amber-200 text-xs font-sans animate-fadeIn">
+                <div class="font-semibold mb-1">💡 Reasoning Hint:</div>
+                <p id="active-hint-text" class="leading-relaxed"></p>
+              </div>
+            </div>
+
+            <!-- 4 Options & Submit -->
+            <div class="p-4 sm:p-6 bg-[var(--card)] space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 id="active-prompt-text" class="text-sm sm:text-base font-bold text-foreground tracking-tight">
+                  What will be the output?
+                </h3>
+                <span class="text-xs text-[var(--color-text-muted)] font-mono">
+                  Press 1-4 or click
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="active-options-container" role="radiogroup"></div>
+
+              <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <button
+                  type="button"
+                  id="active-submit-btn"
+                  disabled
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-xs sm:text-sm bg-[var(--accent)] text-white disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 shadow-md shadow-[var(--accent)]/15 transition-all cursor-pointer"
+                >
+                  <span>Check Answer</span>
+                  <span class="text-xs font-mono opacity-80">(Enter)</span>
+                </button>
+
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                  <button
+                    type="button"
+                    id="active-walkthrough-btn"
+                    class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border border-[var(--color-border)] bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] hover:border-[var(--accent)] transition-all cursor-pointer"
+                  >
+                    <span>🔍 Walk Through</span>
+                  </button>
+
+                  <a
+                    id="active-try-playground-btn"
+                    href="/tools/playground"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono font-medium border border-[var(--color-border)] bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] hover:border-[var(--accent)] text-[var(--accent)] transition-all cursor-pointer no-underline"
+                    title="Open this snippet in the Code Playground"
+                  >
+                    <span>⚡</span>
+                    <span>Try in Playground &rarr;</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    id="active-next-btn"
+                    class="hidden items-center gap-1.5 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm bg-foreground text-background hover:opacity-90 transition-all cursor-pointer shadow-sm"
+                  >
+                    <span>Next Question</span>
+                    <span class="font-mono text-xs">→</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Explanation Area -->
+              <div id="active-explanation-card" class="hidden rounded-2xl p-4 sm:p-5 border transition-all animate-fadeIn">
+                <div class="flex items-center gap-2 font-bold text-sm sm:text-base" id="active-result-title">
+                  <span id="active-result-icon">✓</span>
+                  <span id="active-result-heading">Correct</span>
+                </div>
+                <p class="mt-2 text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed" id="active-explanation-body"></p>
+
+                <div id="active-walkthrough-panel" class="hidden mt-4 pt-3 border-t border-[var(--color-border)] space-y-2">
+                  <div class="text-xs font-semibold text-foreground">Step-by-Step Execution Trace:</div>
+                  <div id="active-walkthrough-steps" class="space-y-1.5 font-mono text-xs"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPLETION RESULTS VIEW (Shown when quiz ends) -->
+        <div id="quiz-results-view" class="hidden card-surface rounded-3xl p-6 sm:p-8 border border-[var(--color-border)] shadow-xl space-y-6 text-center animate-fadeIn">
+          <div class="size-16 rounded-full bg-[var(--accent)]/15 text-[var(--accent)] flex items-center justify-center font-bold text-2xl mx-auto">
+            🏆
+          </div>
+
+          <div class="space-y-1">
+            <h2 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
+              Quiz Completed!
+            </h2>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Great effort reviewing your programming fundamentals and runtime rules.
+            </p>
+          </div>
+
+          <!-- Score Card Big -->
+          <div class="max-w-xs mx-auto p-4 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] space-y-1">
+            <div class="text-3xl sm:text-4xl font-black text-foreground" id="final-score-ratio">
+              8 / 10
+            </div>
+            <div class="text-sm font-semibold text-[var(--accent)]" id="final-score-pct">
+              80% Accuracy
+            </div>
+          </div>
+
+          <!-- Performance Breakdown by Language -->
+          <div class="text-left space-y-3 max-w-lg mx-auto">
+            <h3 class="text-xs font-bold font-mono uppercase text-[var(--color-text-muted)]">
+              Performance Breakdown by Language
+            </h3>
+            <div id="final-lang-breakdown" class="space-y-2 text-xs font-mono">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
+            <button
+              type="button"
+              id="results-share-btn"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm bg-[var(--accent)] text-white hover:opacity-90 transition-all cursor-pointer shadow-sm"
+            >
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              <span>Share Score</span>
+            </button>
+
+            <button
+              type="button"
+              id="results-replay-btn"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-foreground transition-all cursor-pointer"
+            >
+              <span>Choose Another Mode</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <GlowLineSeparator />
+
+      <!-- Educational Semantic Article Explaining the Challenges -->
+      <article class="prose prose-neutral dark:prose-invert max-w-none text-sm text-[var(--color-text-secondary)] space-y-4 pt-4">
+        <h2 class="text-lg font-bold text-foreground">About the Code Output Challenge Dataset</h2>
+        <p>
+          This challenge platform contains over 550 verified, deterministic questions engineered to simulate actual runtime behavior across 8 core languages: <strong>JavaScript</strong>, <strong>Python</strong>, <strong>Java</strong>, <strong>C</strong>, <strong>C++</strong>, <strong>Kotlin</strong>, <strong>Swift</strong>, and <strong>Dart</strong>.
+        </p>
+        <p>
+          Every snippet is validated against official language standards (ECMAScript 2023, Python 3.10+, Java 17+, C11/C++20, Kotlin 1.9+, Swift 5.9+, Dart 3.0+). The questions deliberately avoid ambiguous compiler implementations or undefined behaviors unless specifically highlighted as a teaching point.
+        </p>
+      </article>
+    </main>
+
+    <Footer />
+
+    <!-- Quiz Client Logic -->
+    <script>
+      (() => {
+        interface QuizQuestion {
+          id: string;
+          language: string;
+          difficulty: string;
+          concepts: string[];
+          code: string;
+          question?: string;
+          options: [string, string, string, string];
+          correctAnswer: string;
+          explanation: string;
+          runtime?: string;
+          hint?: string;
+          walkthrough?: Array<{ step: number; label: string; explanation: string; highlightLine?: number }>;
+        }
+
+        // Cache for all questions fetched from public JSON
+        let fullQuestionBank: QuizQuestion[] = [];
+        let isFetchingBank = false;
+
+        async function loadAllQuestions(): Promise<QuizQuestion[]> {
+          if (fullQuestionBank.length > 0) return fullQuestionBank;
+          if (isFetchingBank) {
+            while (isFetchingBank) {
+              await new Promise(r => setTimeout(r, 50));
+            }
+            return fullQuestionBank;
+          }
+
+          isFetchingBank = true;
+          try {
+            const res = await fetch("/data/quiz/all.json");
+            fullQuestionBank = await res.json();
+          } catch (e) {
+            console.error("Failed to load /data/quiz/all.json", e);
+            fullQuestionBank = [];
+          } finally {
+            isFetchingBank = false;
+          }
+          return fullQuestionBank;
+        }
+
+        // Preload bank in background idle time
+        if ("requestIdleCallback" in window) {
+          (window as any).requestIdleCallback(() => loadAllQuestions());
+        } else {
+          setTimeout(loadAllQuestions, 500);
+        }
+
+        // Local Storage Statistics
+        const STORAGE_KEY = "piush_quiz_stats_v1";
+        function getStoredStats() {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+          } catch {}
+          return {
+            totalAttempted: 0,
+            totalCorrect: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            completedIds: [] as string[]
+          };
+        }
+
+        function saveStats(stats: any) {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+          } catch {}
+        }
+
+        let userStats = getStoredStats();
+
+        // Update header stats
+        const pageStreakEl = document.getElementById("quiz-page-streak");
+        const pageSolvedEl = document.getElementById("quiz-page-solved");
+        function updateHeaderStats() {
+          if (pageStreakEl) pageStreakEl.textContent = String(userStats.currentStreak || 0);
+          if (pageSolvedEl) pageSolvedEl.textContent = String(userStats.completedIds?.length || 0);
+        }
+        updateHeaderStats();
+
+        // Views
+        const lobbyView = document.getElementById("quiz-lobby-view");
+        const activeView = document.getElementById("quiz-active-view");
+        const resultsView = document.getElementById("quiz-results-view");
+
+        // Game State
+        let currentMode = "standard";
+        let activeQuestions: QuizQuestion[] = [];
+        let currentIndex = 0;
+        let sessionScore = 0;
+        let selectedOptionIdx: number | null = null;
+        let isSubmitted = false;
+        let languageBreakdown: Record<string, { total: number; correct: number }> = {};
+
+        // Active Game Elements
+        const modeLabelEl = document.getElementById("active-mode-label");
+        const qNumberEl = document.getElementById("active-q-number");
+        const scoreDisplayEl = document.getElementById("active-score-display");
+        const streakDisplayEl = document.getElementById("active-streak-display");
+        const progressBar = document.getElementById("quiz-progress-bar");
+        const cardIdEl = document.getElementById("active-card-id");
+        const runtimeTagEl = document.getElementById("active-runtime-tag");
+        const langTagEl = document.getElementById("active-lang-tag");
+        const diffTagEl = document.getElementById("active-diff-tag");
+        const lineNumbersEl = document.getElementById("active-line-numbers");
+        const codeDisplayEl = document.getElementById("active-code-display");
+        const conceptsListEl = document.getElementById("active-concepts-list");
+        const hintToggleBtn = document.getElementById("active-hint-toggle");
+        const hintPanel = document.getElementById("active-hint-panel");
+        const hintTextEl = document.getElementById("active-hint-text");
+        const promptTextEl = document.getElementById("active-prompt-text");
+        const optionsContainer = document.getElementById("active-options-container");
+        const submitBtn = document.getElementById("active-submit-btn") as HTMLButtonElement | null;
+        const nextBtn = document.getElementById("active-next-btn") as HTMLButtonElement | null;
+        const tryPlaygroundBtn = document.getElementById("active-try-playground-btn") as HTMLAnchorElement | null;
+        const walkthroughBtn = document.getElementById("active-walkthrough-btn");
+        const explanationCard = document.getElementById("active-explanation-card");
+        const resultTitleEl = document.getElementById("active-result-title");
+        const resultIconEl = document.getElementById("active-result-icon");
+        const resultHeadingEl = document.getElementById("active-result-heading");
+        const explanationBodyEl = document.getElementById("active-explanation-body");
+        const walkthroughPanel = document.getElementById("active-walkthrough-panel");
+        const walkthroughStepsEl = document.getElementById("active-walkthrough-steps");
+        const quitBtn = document.getElementById("quiz-quit-btn");
+
+        // Results elements
+        const finalRatioEl = document.getElementById("final-score-ratio");
+        const finalPctEl = document.getElementById("final-score-pct");
+        const finalLangBreakdownEl = document.getElementById("final-lang-breakdown");
+        const replayBtn = document.getElementById("results-replay-btn");
+        const resultsShareBtn = document.getElementById("results-share-btn");
+
+        function shuffle<T>(array: T[]): T[] {
+          const arr = [...array];
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+          return arr;
+        }
+
+        async function startQuiz(mode: string, length: number, langFilter?: string) {
+          const bank = await loadAllQuestions();
+          if (!bank.length) {
+            alert("Questions are loading, please try again in a moment.");
+            return;
+          }
+
+          currentMode = mode;
+          currentIndex = 0;
+          sessionScore = 0;
+          languageBreakdown = {};
+
+          let pool = bank;
+          if (langFilter && langFilter !== "all") {
+            pool = bank.filter(q => q.language.toLowerCase() === langFilter.toLowerCase());
+          }
+
+          if (mode === "daily") {
+            // Deterministic pick based on today's UTC date
+            const todayStr = new Date().toISOString().slice(0, 10);
+            let hash = 0;
+            for (let i = 0; i < todayStr.length; i++) {
+              hash = (hash << 5) - hash + todayStr.charCodeAt(i);
+              hash |= 0;
+            }
+            const idx = Math.abs(hash) % bank.length;
+            activeQuestions = [bank[idx]];
+          } else {
+            // Prioritize unseen questions
+            const completed = new Set(userStats.completedIds || []);
+            const unseen = pool.filter(q => !completed.has(q.id));
+            const seen = pool.filter(q => completed.has(q.id));
+
+            const prioritized = [...shuffle(unseen), ...shuffle(seen)];
+            activeQuestions = prioritized.slice(0, Math.min(length, prioritized.length));
+          }
+
+          // Switch View
+          if (lobbyView) lobbyView.classList.add("hidden");
+          if (resultsView) resultsView.classList.add("hidden");
+          if (activeView) activeView.classList.remove("hidden");
+
+          if (modeLabelEl) {
+            modeLabelEl.textContent =
+              mode === "daily"
+                ? "Daily Challenge"
+                : mode === "quick"
+                ? "Quick Challenge"
+                : mode === "deep"
+                ? "Deep Challenge"
+                : mode === "endless"
+                ? "Endless Mode"
+                : langFilter
+                ? `${langFilter.toUpperCase()} Drill`
+                : "Standard Quiz";
+          }
+
+          renderCurrentQuestion();
+        }
+
+        function renderCurrentQuestion() {
+          if (currentIndex >= activeQuestions.length) {
+            finishQuiz();
+            return;
+          }
+
+          const q = activeQuestions[currentIndex];
+          isSubmitted = false;
+          selectedOptionIdx = null;
+
+          if (qNumberEl) {
+            qNumberEl.textContent =
+              currentMode === "endless"
+                ? `Question ${currentIndex + 1}`
+                : `Question ${currentIndex + 1} / ${activeQuestions.length}`;
+          }
+
+          if (scoreDisplayEl) scoreDisplayEl.textContent = String(sessionScore);
+          if (streakDisplayEl) streakDisplayEl.textContent = String(userStats.currentStreak || 0);
+
+          if (progressBar) {
+            const pct = Math.round((currentIndex / activeQuestions.length) * 100);
+            progressBar.style.width = `${pct}%`;
+          }
+
+          if (cardIdEl) cardIdEl.textContent = `CODE OUTPUT #${q.id.toUpperCase()}`;
+          if (runtimeTagEl) runtimeTagEl.textContent = q.runtime || "Standard Runtime";
+          if (langTagEl) langTagEl.textContent = q.language.toUpperCase();
+          if (diffTagEl) {
+            diffTagEl.textContent = q.difficulty;
+            diffTagEl.className = `px-2 py-0.5 rounded-lg text-[11px] font-semibold uppercase border ${
+              q.difficulty === 'easy'
+                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+                : q.difficulty === 'medium'
+                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25'
+                : q.difficulty === 'hard'
+                ? 'bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/25'
+                : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/25'
+            }`;
+          }
+
+          // Code Box
+          if (codeDisplayEl) codeDisplayEl.textContent = q.code;
+          const lines = q.code.split("\n").length;
+          if (lineNumbersEl) {
+            lineNumbersEl.innerHTML = Array.from({ length: lines }, (_, i) => `<div>${i + 1}</div>`).join("");
+          }
+
+          // Concepts
+          if (conceptsListEl) {
+            conceptsListEl.innerHTML = (q.concepts || [])
+              .map(c => `<span class="px-2 py-0.5 rounded-md bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">${c}</span>`)
+              .join("");
+          }
+
+          // Hint
+          if (hintPanel) hintPanel.classList.add("hidden");
+          if (hintTextEl) hintTextEl.textContent = q.hint || "Carefully trace assignment lines and check whether types are value or reference.";
+
+          if (promptTextEl) promptTextEl.textContent = q.question || "What will be the output?";
+
+          // Options
+          if (optionsContainer) {
+            optionsContainer.innerHTML = "";
+            q.options.forEach((opt, idx) => {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "active-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]/60 hover:bg-[var(--color-bg-secondary)] hover:border-[var(--accent)]/60 text-left transition-all duration-150 cursor-pointer group";
+              btn.setAttribute("role", "radio");
+              btn.setAttribute("aria-checked", "false");
+              btn.setAttribute("data-opt-index", String(idx));
+
+              btn.innerHTML = `
+                <div class="flex items-center gap-3 truncate">
+                  <span class="opt-num size-5 rounded-full border border-[var(--color-border)] flex items-center justify-center text-xs text-[var(--color-text-muted)] group-hover:border-[var(--accent)] group-hover:text-[var(--accent)] transition-colors">
+                    ${idx + 1}
+                  </span>
+                  <span class="opt-label font-mono text-xs sm:text-sm text-foreground font-medium truncate">${escapeHtml(opt)}</span>
+                </div>
+                <span class="opt-badge hidden text-xs font-mono font-semibold"></span>
+              `;
+
+              btn.addEventListener("click", () => {
+                if (isSubmitted) return;
+                selectOption(idx);
+              });
+
+              optionsContainer.appendChild(btn);
+            });
+          }
+
+          if (explanationCard) explanationCard.classList.add("hidden");
+          if (walkthroughPanel) walkthroughPanel.classList.add("hidden");
+          if (walkthroughBtn) walkthroughBtn.classList.add("hidden");
+          if (nextBtn) nextBtn.classList.add("hidden");
+          if (tryPlaygroundBtn) tryPlaygroundBtn.classList.add("hidden");
+
+          if (submitBtn) {
+            submitBtn.classList.remove("hidden");
+            submitBtn.disabled = true;
+          }
+        }
+
+        function selectOption(idx: number) {
+          selectedOptionIdx = idx;
+          const buttons = optionsContainer?.querySelectorAll(".active-opt-btn");
+          buttons?.forEach((b, i) => {
+            const isSelected = i === idx;
+            b.setAttribute("aria-checked", isSelected ? "true" : "false");
+            const num = b.querySelector(".opt-num");
+            if (isSelected) {
+              b.className = "active-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-[var(--accent)] bg-[rgba(var(--accent-rgb),0.08)] text-left transition-all duration-150 cursor-pointer";
+              if (num) num.className = "opt-num size-5 rounded-full bg-[var(--accent)] text-white flex items-center justify-center text-xs font-bold";
+            } else {
+              b.className = "active-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]/60 hover:bg-[var(--color-bg-secondary)] text-left transition-all duration-150 cursor-pointer group";
+              if (num) num.className = "opt-num size-5 rounded-full border border-[var(--color-border)] flex items-center justify-center text-xs text-[var(--color-text-muted)] group-hover:border-[var(--accent)]";
+            }
+          });
+
+          if (submitBtn) submitBtn.disabled = false;
+        }
+
+        function checkAnswer() {
+          if (isSubmitted || selectedOptionIdx === null) return;
+          isSubmitted = true;
+
+          const q = activeQuestions[currentIndex];
+          const chosenVal = q.options[selectedOptionIdx];
+          const isCorrect = chosenVal === q.correctAnswer;
+
+          if (!languageBreakdown[q.language]) {
+            languageBreakdown[q.language] = { total: 0, correct: 0 };
+          }
+          languageBreakdown[q.language].total++;
+
+          userStats.totalAttempted = (userStats.totalAttempted || 0) + 1;
+
+          if (isCorrect) {
+            sessionScore++;
+            languageBreakdown[q.language].correct++;
+            userStats.totalCorrect = (userStats.totalCorrect || 0) + 1;
+            userStats.currentStreak = (userStats.currentStreak || 0) + 1;
+            if (userStats.currentStreak > (userStats.bestStreak || 0)) {
+              userStats.bestStreak = userStats.currentStreak;
+            }
+          } else {
+            userStats.currentStreak = 0;
+          }
+
+          if (!userStats.completedIds.includes(q.id)) {
+            userStats.completedIds.push(q.id);
+          }
+          saveStats(userStats);
+          updateHeaderStats();
+
+          // Option feedback
+          const buttons = optionsContainer?.querySelectorAll(".active-opt-btn");
+          buttons?.forEach((b, i) => {
+            (b as HTMLButtonElement).disabled = true;
+            const optVal = q.options[i];
+            const badge = b.querySelector(".opt-badge");
+            const num = b.querySelector(".opt-num");
+
+            if (optVal === q.correctAnswer) {
+              b.className = "active-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 font-semibold transition-all";
+              if (badge) {
+                badge.classList.remove("hidden");
+                badge.textContent = "✓ Correct Answer";
+                badge.className = "opt-badge text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400";
+              }
+              if (num) {
+                num.textContent = "✓";
+                num.className = "opt-num size-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold";
+              }
+            } else if (i === selectedOptionIdx && !isCorrect) {
+              b.className = "active-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-rose-500 bg-rose-500/10 text-rose-900 dark:text-rose-200 transition-all";
+              if (badge) {
+                badge.classList.remove("hidden");
+                badge.textContent = "✕ Your Answer";
+                badge.className = "opt-badge text-xs font-mono font-semibold text-rose-600 dark:text-rose-400";
+              }
+              if (num) {
+                num.textContent = "✕";
+                num.className = "opt-num size-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-bold";
+              }
+            } else {
+              b.className = "active-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)]/40 opacity-40 bg-[var(--color-bg-secondary)]/20";
+            }
+          });
+
+          // Show explanation
+          if (explanationCard) {
+            explanationCard.classList.remove("hidden");
+            if (isCorrect) {
+              explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 animate-fadeIn";
+              if (resultIconEl) resultIconEl.textContent = "✓";
+              if (resultHeadingEl) resultHeadingEl.textContent = `Correct — Output: ${q.correctAnswer}`;
+            } else {
+              explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-rose-500/40 bg-rose-500/10 text-rose-950 dark:text-rose-100 animate-fadeIn";
+              if (resultIconEl) resultIconEl.textContent = "✕";
+              if (resultHeadingEl) resultHeadingEl.textContent = `Not quite — Expected: ${q.correctAnswer}`;
+            }
+            if (explanationBodyEl) explanationBodyEl.textContent = q.explanation;
+          }
+
+          if (q.walkthrough && q.walkthrough.length > 0 && walkthroughBtn) {
+            walkthroughBtn.classList.remove("hidden");
+            walkthroughBtn.classList.add("inline-flex");
+          }
+
+          if (tryPlaygroundBtn) {
+            const encCode = 'b64:' + btoa(unescape(encodeURIComponent(q.code)));
+            tryPlaygroundBtn.href = `/tools/playground?lang=${encodeURIComponent(q.language)}&c=${encodeURIComponent(encCode)}`;
+            tryPlaygroundBtn.classList.remove("hidden");
+            tryPlaygroundBtn.classList.add("inline-flex");
+          }
+
+          if (submitBtn) submitBtn.classList.add("hidden");
+          if (nextBtn) {
+            nextBtn.classList.remove("hidden");
+            nextBtn.classList.add("inline-flex");
+          }
+        }
+
+        function nextQuestion() {
+          currentIndex++;
+          renderCurrentQuestion();
+        }
+
+        function finishQuiz() {
+          if (activeView) activeView.classList.add("hidden");
+          if (resultsView) resultsView.classList.remove("hidden");
+
+          const total = activeQuestions.length;
+          const pct = Math.round((sessionScore / total) * 100);
+
+          if (finalRatioEl) finalRatioEl.textContent = `${sessionScore} / ${total}`;
+          if (finalPctEl) finalPctEl.textContent = `${pct}% Accuracy`;
+
+          if (finalLangBreakdownEl) {
+            finalLangBreakdownEl.innerHTML = Object.entries(languageBreakdown)
+              .map(([lang, stat]) => `
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                  <span class="font-semibold capitalize text-foreground">${lang}</span>
+                  <span class="font-mono text-[var(--accent)] font-bold">${stat.correct} / ${stat.total} (${Math.round((stat.correct / stat.total) * 100)}%)</span>
+                </div>
+              `)
+              .join("");
+          }
+        }
+
+        function escapeHtml(str: string): string {
+          return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
+
+        // Keyboard Controls
+        window.addEventListener("keydown", (e) => {
+          if (activeView?.classList.contains("hidden")) return;
+          const tag = (document.activeElement?.tagName || "").toLowerCase();
+          if (tag === "input" || tag === "textarea") return;
+
+          if (e.key >= "1" && e.key <= "4" && !isSubmitted) {
+            const idx = parseInt(e.key, 10) - 1;
+            selectOption(idx);
+          } else if (e.key === "Enter") {
+            if (!isSubmitted && selectedOptionIdx !== null) {
+              checkAnswer();
+            } else if (isSubmitted) {
+              nextQuestion();
+            }
+          } else if ((e.key === "n" || e.key === "N") && isSubmitted) {
+            nextQuestion();
+          } else if (e.key === "h" || e.key === "H") {
+            if (hintPanel) hintPanel.classList.toggle("hidden");
+          }
+        });
+
+        // Event Listeners
+        if (submitBtn) submitBtn.addEventListener("click", checkAnswer);
+        if (nextBtn) nextBtn.addEventListener("click", nextQuestion);
+        if (hintToggleBtn) {
+          hintToggleBtn.addEventListener("click", () => {
+            if (hintPanel) hintPanel.classList.toggle("hidden");
+          });
+        }
+
+        if (walkthroughBtn) {
+          walkthroughBtn.addEventListener("click", () => {
+            const q = activeQuestions[currentIndex];
+            if (!q.walkthrough || !walkthroughPanel || !walkthroughStepsEl) return;
+            walkthroughPanel.classList.toggle("hidden");
+            walkthroughStepsEl.innerHTML = q.walkthrough
+              .map(step => `
+                <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex items-start gap-2">
+                  <span class="px-2 py-0.5 rounded bg-[var(--accent)]/15 text-[var(--accent)] font-bold text-[10px]">
+                    Step ${step.step}
+                  </span>
+                  <div>
+                    <div class="font-semibold text-foreground text-xs">${escapeHtml(step.label)}</div>
+                    <div class="text-[var(--color-text-secondary)] text-[11px] font-sans">${escapeHtml(step.explanation)}</div>
+                  </div>
+                </div>
+              `)
+              .join("");
+          });
+        }
+
+        if (quitBtn) {
+          quitBtn.addEventListener("click", () => {
+            if (confirm("Exit the current quiz? Progress for this session will end.")) {
+              if (activeView) activeView.classList.add("hidden");
+              if (lobbyView) lobbyView.classList.remove("hidden");
+            }
+          });
+        }
+
+        if (replayBtn) {
+          replayBtn.addEventListener("click", () => {
+            if (resultsView) resultsView.classList.add("hidden");
+            if (lobbyView) lobbyView.classList.remove("hidden");
+          });
+        }
+
+        if (resultsShareBtn) {
+          resultsShareBtn.addEventListener("click", async () => {
+            const total = activeQuestions.length;
+            const pct = Math.round((sessionScore / total) * 100);
+            const text = `🏆 Code Output Challenge Quiz\nScore: ${sessionScore}/${total} (${pct}%)\nStreak: ${userStats.currentStreak} 🔥\nCan you beat my programming logic score?\nhttps://piush.com/quiz`;
+
+            if (navigator.share) {
+              try {
+                await navigator.share({ title: "My Code Quiz Score", text });
+                return;
+              } catch {}
+            }
+            try {
+              await navigator.clipboard.writeText(text);
+              alert("Score copied to clipboard!");
+            } catch {
+              alert(text);
+            }
+          });
+        }
+
+        // Mode start buttons
+        const modeButtons = document.querySelectorAll(".quiz-start-mode-btn");
+        modeButtons.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const mode = btn.getAttribute("data-mode") || "standard";
+            const len = parseInt(btn.getAttribute("data-length") || "10", 10);
+            startQuiz(mode, len);
+          });
+        });
+
+        // Single Language button
+        const startSingleLangBtn = document.getElementById("start-single-lang-btn");
+        const singleLangSelect = document.getElementById("single-lang-select") as HTMLSelectElement | null;
+        if (startSingleLangBtn && singleLangSelect) {
+          startSingleLangBtn.addEventListener("click", () => {
+            const chosenLang = singleLangSelect.value;
+            startQuiz("language", 10, chosenLang);
+          });
+        }
+
+        // Lifetime stats modal button
+        const statsModalBtn = document.getElementById("quiz-stats-modal-btn");
+        if (statsModalBtn) {
+          statsModalBtn.addEventListener("click", () => {
+            const total = userStats.totalAttempted || 0;
+            const correct = userStats.totalCorrect || 0;
+            const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const solvedCount = userStats.completedIds?.length || 0;
+
+            const msg = `📊 Lifetime Quiz Statistics\n\n` +
+              `• Questions Attempted: ${total}\n` +
+              `• Correct Answers: ${correct}\n` +
+              `• Overall Accuracy: ${pct}%\n` +
+              `• Current Streak: ${userStats.currentStreak || 0} 🔥\n` +
+              `• Best Streak: ${userStats.bestStreak || 0} ⚡\n` +
+              `• Unique Challenges Solved: ${solvedCount} / 550\n\n` +
+              `Would you like to reset all quiz progress?`;
+
+            if (confirm(msg + "\n\n(Click Cancel to keep stats, or OK to Reset)")) {
+              userStats = {
+                totalAttempted: 0,
+                totalCorrect: 0,
+                currentStreak: 0,
+                bestStreak: 0,
+                completedIds: []
+              };
+              saveStats(userStats);
+              updateHeaderStats();
+              alert("Quiz stats reset successfully!");
+            }
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

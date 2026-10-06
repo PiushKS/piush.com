@@ -1,0 +1,1141 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/sections/Header.astro';
+import Footer from '../../components/sections/Footer.astro';
+import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
+
+const pageTitle = "SVG Editor, Optimizer & Converter Online | Piush";
+const pageDescription = "Edit, preview, optimize and convert SVG files directly in your browser. Free privacy-friendly SVG tools for developers and designers.";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'SVG Studio',
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires JavaScript',
+      url: new URL('/tools/svg', Astro.site || 'https://piush.com').toString(),
+      description: pageDescription,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+    })} />
+  </head>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+    <Header />
+    <main class="flex-1 w-full px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-4 max-w-[1600px] mx-auto">
+      
+      <!-- Top Navigation & Breadcrumbs -->
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-3">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2">
+          <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+          <span>/</span>
+          <a href="/tools" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
+          <span>/</span>
+          <span class="text-[var(--accent)] font-medium">SVG Studio</span>
+        </nav>
+        <div class="flex items-center gap-2 font-mono text-[11px] text-[var(--color-text-secondary)]">
+          <span class="inline-flex size-2 rounded-full bg-[var(--accent)]"></span>
+          <span>100% Client-Side • Your files and code stay in your browser</span>
+        </div>
+      </div>
+
+      <!-- Header Title & Overview -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <div class="size-9 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)]">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                <path d="M2 2l7.586 7.586"/>
+                <circle cx="11" cy="11" r="2"/>
+              </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight m-0">
+              SVG Studio
+            </h1>
+            <span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)]">
+              Vector Lab
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-[var(--color-text-muted)] mt-1 m-0">
+            Edit, inspect, optimize, transform, recolor, and export vector graphics directly in your browser canvas.
+          </p>
+        </div>
+
+        <!-- Sample Switcher & Presets & Cross-Linking -->
+        <div class="flex flex-wrap items-center gap-2">
+          <a
+            href="/tools/app-icon"
+            id="btn-export-to-app-icon"
+            class="sw-tool-btn text-xs font-semibold text-[var(--accent)] border-[rgba(var(--accent-rgb),0.35)] hover:bg-[rgba(var(--accent-rgb),0.12)]"
+            title="Export this SVG directly to App Icon Creator"
+          >
+            <span>Export to App Icon Creator</span>
+            <span>→</span>
+          </a>
+
+          <label class="sw-tool-btn cursor-pointer" title="Upload SVG file">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Upload SVG</span>
+            <input type="file" id="file-upload" accept=".svg,image/svg+xml" class="hidden" />
+          </label>
+
+          <button id="btn-sample-1" type="button" class="sw-tool-btn" title="Load Mobile Architecture icon">
+            <span>Icon Sample</span>
+          </button>
+          <button id="btn-sample-2" type="button" class="sw-tool-btn" title="Load Badge / Shield illustration">
+            <span>Badge Sample</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Action Toolbar -->
+      <div class="card-surface p-2.5 sm:p-3 border border-[var(--color-border)] flex flex-wrap items-center justify-between gap-2.5">
+        <!-- Optimizer & Format Actions -->
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <button id="btn-optimize" type="button" class="sw-tool-btn sw-tool-btn-primary" title="Clean, remove metadata, and compress SVG">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Optimize SVG</span>
+          </button>
+
+          <button id="btn-prettify" type="button" class="sw-tool-btn" title="Format XML with clean indentation">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="21" y1="10" x2="3" y2="10"/>
+              <line x1="21" y1="6" x2="3" y2="6"/>
+              <line x1="21" y1="14" x2="3" y2="14"/>
+              <line x1="21" y1="18" x2="3" y2="18"/>
+            </svg>
+            <span>Prettify</span>
+          </button>
+
+          <button id="btn-minify-svg" type="button" class="sw-tool-btn" title="Minify into single compact string">
+            <span>Minify</span>
+          </button>
+
+          <span class="h-4 w-px bg-[var(--color-border)] hidden sm:inline-block mx-0.5"></span>
+
+          <!-- Quick Scale / Transforms -->
+          <div class="flex items-center gap-1">
+            <button id="btn-rotate-cw" type="button" class="sw-tool-btn p-1.5" title="Rotate 90° Clockwise">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+            </button>
+            <button id="btn-flip-h" type="button" class="sw-tool-btn p-1.5" title="Flip Horizontal">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="2" x2="12" y2="22"/>
+                <polyline points="4 7 12 12 4 17"/>
+                <polyline points="20 7 12 12 20 17"/>
+              </svg>
+            </button>
+            <button id="btn-flip-v" type="button" class="sw-tool-btn p-1.5" title="Flip Vertical">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <polyline points="7 4 12 12 17 4"/>
+                <polyline points="7 20 12 12 17 20"/>
+              </svg>
+            </button>
+            <button id="btn-reset-transform" type="button" class="sw-tool-btn text-[11px]" title="Reset rotation and flips">
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Export & Copy Dropdown / Buttons -->
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <!-- Copy Dropdown -->
+          <div class="relative inline-flex items-center">
+            <select id="select-copy-format" class="sw-tool-select text-[11px]" aria-label="Copy Format">
+              <option value="raw">Raw SVG</option>
+              <option value="jsx">HTML / JSX &lt;svg&gt;</option>
+              <option value="css">CSS Background</option>
+              <option value="datauri">Data URI</option>
+              <option value="base64">Base64</option>
+            </select>
+            <button id="btn-copy-svg" type="button" class="sw-tool-btn ml-1" title="Copy selected format to clipboard">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span>Copy</span>
+            </button>
+          </div>
+
+          <!-- Download Options -->
+          <button id="btn-download-svg" type="button" class="sw-tool-btn" title="Download clean .svg file">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>SVG</span>
+          </button>
+
+          <!-- PNG Export Dropdown -->
+          <div class="inline-flex items-center">
+            <select id="select-png-scale" class="sw-tool-select text-[11px]" aria-label="PNG Export Scale">
+              <option value="1">1x PNG</option>
+              <option value="2">2x PNG (Retina)</option>
+              <option value="3">3x PNG</option>
+              <option value="4">4x PNG (Ultra)</option>
+            </select>
+            <button id="btn-download-png" type="button" class="sw-tool-btn ml-1" title="Export as raster PNG">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+              <span>Export PNG</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Optimization Stats Banner -->
+      <div id="optimizer-stats-banner" class="hidden card-surface p-3 border border-[rgba(var(--accent-rgb),0.3)] bg-[rgba(var(--accent-rgb),0.06)] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+        <div class="flex items-center gap-2">
+          <span class="text-[var(--accent)] font-bold">⚡ Optimization Complete:</span>
+          <span id="opt-orig-size">Original: 0 KB</span>
+          <span>→</span>
+          <span id="opt-new-size" class="font-bold text-foreground">Optimized: 0 KB</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="opt-savings-badge" class="px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.2)] text-[var(--accent)] font-bold border border-[rgba(var(--accent-rgb),0.3)]">
+            Saved 0%
+          </span>
+          <button id="btn-revert-opt" type="button" class="underline text-[var(--color-text-muted)] hover:text-foreground cursor-pointer">
+            Revert
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Editor & Live Preview Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch min-h-[580px]">
+        
+        <!-- LEFT PANEL: SVG CODE (5 cols) -->
+        <div class="lg:col-span-5 card-surface flex flex-col h-[520px] sm:h-[620px] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xs relative">
+          <!-- Code Header -->
+          <div class="px-4 py-2.5 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 font-mono font-semibold text-foreground">
+              <span class="text-[var(--accent)] font-bold">01</span>
+              <span>SVG CODE</span>
+            </div>
+            <div class="flex items-center gap-3 font-mono text-[11px] text-[var(--color-text-muted)]">
+              <span id="svg-code-stats">0 lines • 0 B</span>
+              <button id="btn-clear-code" type="button" class="hover:text-red-400 transition-colors inline-flex items-center gap-1 cursor-pointer">
+                <span>Clear</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Code Editor Body with Gutter -->
+          <div class="relative flex-1 flex overflow-hidden font-mono text-[13px] leading-5" id="svg-input-container">
+            <div id="svg-gutter" class="select-none py-3 px-2 text-right text-[var(--color-text-muted)]/50 bg-[var(--color-bg-secondary)]/50 border-r border-[var(--color-border)] min-w-[42px] overflow-hidden">
+              1
+            </div>
+            <textarea
+              id="svg-input"
+              class="w-full h-full p-3 resize-none bg-transparent text-foreground placeholder-[var(--color-text-muted)]/40 focus:outline-none border-none leading-5 overflow-auto selection:bg-[var(--accent)]/20"
+              placeholder="Paste raw <svg> code here or drag & drop an .svg file..."
+              spellcheck="false"
+              wrap="off"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: LIVE PREVIEW & CONTROLS (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          
+          <!-- Live Preview Canvas Card -->
+          <div class="card-surface flex flex-col h-[420px] sm:h-[460px] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xs relative">
+            
+            <!-- Canvas Toolbar -->
+            <div class="px-3 sm:px-4 py-2 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2 font-mono font-semibold text-foreground">
+                <span class="text-[var(--accent)] font-bold">02</span>
+                <span>LIVE PREVIEW</span>
+                <span id="preview-dimensions-badge" class="text-[10px] font-mono text-[var(--color-text-muted)] px-1.5 py-0.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)]">
+                  24 × 24
+                </span>
+              </div>
+
+              <!-- Canvas Background Switcher -->
+              <div class="flex items-center gap-1 text-[11px] font-mono">
+                <span class="text-[var(--color-text-muted)] hidden sm:inline mr-1">Backdrop:</span>
+                <button type="button" class="sw-bg-btn active" data-bg="checkerboard" title="Checkerboard Grid Pattern"></button>
+                <button type="button" class="sw-bg-btn bg-white border border-gray-300" data-bg="white" title="Pure White"></button>
+                <button type="button" class="sw-bg-btn bg-[#0a0a0a] border border-gray-700" data-bg="black" title="Dark Black"></button>
+                <button type="button" class="sw-bg-btn bg-transparent border border-dashed border-[var(--color-border)]" data-bg="transparent" title="Transparent"></button>
+                <input type="color" id="preview-bg-custom" value="#14241b" class="size-5 rounded cursor-pointer border border-[var(--color-border)] bg-transparent p-0" title="Custom Color" />
+              </div>
+
+              <!-- Zoom Controls -->
+              <div class="flex items-center gap-1 font-mono text-[11px]">
+                <button id="btn-zoom-out" type="button" class="size-6 rounded flex items-center justify-center bg-[var(--color-bg-primary)] border border-[var(--color-border)] hover:text-[var(--accent)]">
+                  -
+                </button>
+                <span id="zoom-level-label" class="min-w-[42px] text-center text-[var(--color-text-secondary)]">100%</span>
+                <button id="btn-zoom-in" type="button" class="size-6 rounded flex items-center justify-center bg-[var(--color-bg-primary)] border border-[var(--color-border)] hover:text-[var(--accent)]">
+                  +
+                </button>
+                <button id="btn-zoom-reset" type="button" class="px-1.5 py-0.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)] hover:text-[var(--accent)] text-[10px]">
+                  Fit
+                </button>
+              </div>
+            </div>
+
+            <!-- Canvas Stage Area -->
+            <div id="preview-stage" class="relative flex-1 overflow-auto flex items-center justify-center p-6 bg-checkerboard select-none transition-colors duration-200">
+              <div id="svg-transform-wrapper" class="transition-transform duration-150 origin-center flex items-center justify-center">
+                <div id="svg-render-mount" class="flex items-center justify-center max-w-full max-h-full"></div>
+              </div>
+            </div>
+
+            <!-- Size Presets Ribbon -->
+            <div class="px-3 py-1.5 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)] flex items-center justify-between gap-2 overflow-x-auto text-[11px] font-mono">
+              <span class="text-[var(--color-text-muted)] shrink-0 text-[10px]">Size Presets:</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <button type="button" class="sw-size-btn" data-size="16">16px</button>
+                <button type="button" class="sw-size-btn" data-size="24">24px</button>
+                <button type="button" class="sw-size-btn" data-size="32">32px</button>
+                <button type="button" class="sw-size-btn" data-size="48">48px</button>
+                <button type="button" class="sw-size-btn" data-size="64">64px</button>
+                <button type="button" class="sw-size-btn" data-size="128">128px</button>
+                <button type="button" class="sw-size-btn" data-size="256">256px</button>
+                <button type="button" class="sw-size-btn active" data-size="auto">Auto / Original</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color Swatches & Attribute Tuning Card -->
+          <div class="card-surface p-3.5 sm:p-4 border border-[var(--color-border)] rounded-2xl space-y-3">
+            
+            <!-- Detected Colors Palette -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono font-bold text-[var(--accent)] uppercase tracking-wider flex items-center gap-1.5">
+                  <span>🎨</span> Detected SVG Colors
+                </span>
+                <span class="text-[10px] text-[var(--color-text-muted)] font-mono">Click swatch to recolor instantly</span>
+              </div>
+              <div id="color-palette-container" class="flex flex-wrap items-center gap-2 min-h-[32px]">
+                <span class="text-xs text-[var(--color-text-muted)] italic">No colors detected yet.</span>
+              </div>
+            </div>
+
+            <div class="border-t border-[var(--color-border)] my-1"></div>
+
+            <!-- Global Attributes Quick Tweak -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+              <div>
+                <label for="input-svg-width" class="block text-[10px] text-[var(--color-text-muted)] mb-1">Width (px)</label>
+                <input type="text" id="input-svg-width" class="sw-tool-input" placeholder="e.g. 24" />
+              </div>
+              <div>
+                <label for="input-svg-height" class="block text-[10px] text-[var(--color-text-muted)] mb-1">Height (px)</label>
+                <input type="text" id="input-svg-height" class="sw-tool-input" placeholder="e.g. 24" />
+              </div>
+              <div>
+                <label for="input-svg-stroke-width" class="block text-[10px] text-[var(--color-text-muted)] mb-1">Stroke Width</label>
+                <input type="range" id="input-svg-stroke-width" min="0" max="6" step="0.25" value="2" class="w-full accent-[var(--accent)] mt-1.5" />
+              </div>
+              <div>
+                <label for="input-svg-opacity" class="block text-[10px] text-[var(--color-text-muted)] mb-1">Opacity</label>
+                <input type="range" id="input-svg-opacity" min="10" max="100" value="100" class="w-full accent-[var(--accent)] mt-1.5" />
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <GlowLineSeparator />
+    </main>
+    <Footer />
+
+    <!-- Hidden Canvas for PNG conversion -->
+    <canvas id="export-canvas" class="hidden"></canvas>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" aria-live="assertive"></div>
+
+    <!-- Client-side Tool Logic -->
+    <script>
+      function initSvgStudio() {
+        // Elements
+        const svgInput = document.getElementById('svg-input') as HTMLTextAreaElement | null;
+        const svgGutter = document.getElementById('svg-gutter');
+        const svgCodeStats = document.getElementById('svg-code-stats');
+        const svgMount = document.getElementById('svg-render-mount');
+        const transformWrapper = document.getElementById('svg-transform-wrapper');
+        const previewStage = document.getElementById('preview-stage');
+        const previewDimensionsBadge = document.getElementById('preview-dimensions-badge');
+        const colorPaletteContainer = document.getElementById('color-palette-container');
+
+        // Inputs for attributes
+        const inputWidth = document.getElementById('input-svg-width') as HTMLInputElement | null;
+        const inputHeight = document.getElementById('input-svg-height') as HTMLInputElement | null;
+        const inputStrokeWidth = document.getElementById('input-svg-stroke-width') as HTMLInputElement | null;
+        const inputOpacity = document.getElementById('input-svg-opacity') as HTMLInputElement | null;
+
+        // Optimizer elements
+        const optimizerBanner = document.getElementById('optimizer-stats-banner');
+        const optOrigSize = document.getElementById('opt-orig-size');
+        const optNewSize = document.getElementById('opt-new-size');
+        const optSavingsBadge = document.getElementById('opt-savings-badge');
+        const btnRevertOpt = document.getElementById('btn-revert-opt');
+
+        // Buttons
+        const btnOptimize = document.getElementById('btn-optimize');
+        const btnPrettify = document.getElementById('btn-prettify');
+        const btnMinify = document.getElementById('btn-minify-svg');
+        const btnRotateCw = document.getElementById('btn-rotate-cw');
+        const btnFlipH = document.getElementById('btn-flip-h');
+        const btnFlipV = document.getElementById('btn-flip-v');
+        const btnResetTransform = document.getElementById('btn-reset-transform');
+        const btnCopySvg = document.getElementById('btn-copy-svg');
+        const btnDownloadSvg = document.getElementById('btn-download-svg');
+        const btnDownloadPng = document.getElementById('btn-download-png');
+        const btnClearCode = document.getElementById('btn-clear-code');
+        const fileUpload = document.getElementById('file-upload') as HTMLInputElement | null;
+
+        // Sample buttons
+        const btnSample1 = document.getElementById('btn-sample-1');
+        const btnSample2 = document.getElementById('btn-sample-2');
+
+        // Zoom elements
+        const btnZoomIn = document.getElementById('btn-zoom-in');
+        const btnZoomOut = document.getElementById('btn-zoom-out');
+        const btnZoomReset = document.getElementById('btn-zoom-reset');
+        const zoomLabel = document.getElementById('zoom-level-label');
+
+        let zoomLevel = 100;
+        let rotationDeg = 0;
+        let isFlippedH = false;
+        let isFlippedV = false;
+        let originalPreOptCode = '';
+
+        // Built-in Samples
+        const sample1 = `<svg viewBox="0 0 24 24" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Mobile & Cloud Architecture Icon -->
+  <rect x="4" y="2" width="16" height="20" rx="3" stroke="#1B5448" stroke-width="2"/>
+  <circle cx="12" cy="18" r="1" fill="#1B5448"/>
+  <path d="M8 6h8" stroke="#ade1cd" stroke-width="2" stroke-linecap="round"/>
+  <path d="M10 10h4" stroke="#ade1cd" stroke-width="2" stroke-linecap="round"/>
+  <path d="M9 14h6" stroke="#4e5850" stroke-width="1.5" stroke-linecap="round"/>
+</svg>`;
+
+        const sample2 = `<svg viewBox="0 0 100 100" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Security Shield & Key Badge -->
+  <path d="M50 10 L85 25 V50 C85 72 50 90 50 90 C50 90 15 72 15 50 V25 Z" fill="#23382B" stroke="#ade1cd" stroke-width="4"/>
+  <circle cx="50" cy="45" r="12" fill="#E1F8DC"/>
+  <path d="M50 57 v15" stroke="#E1F8DC" stroke-width="4" stroke-linecap="round"/>
+  <path d="M50 65 h8" stroke="#E1F8DC" stroke-width="3" stroke-linecap="round"/>
+</svg>`;
+
+        // Toast Helper
+        function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
+          const container = document.getElementById('toast-container');
+          if (!container) return;
+          const toast = document.createElement('div');
+          toast.className = `px-4 py-2.5 rounded-xl border text-xs font-mono shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto flex items-center gap-2 ${
+            type === 'success'
+              ? 'bg-[#1B5448] text-[#E1F8DC] border-[#ade1cd]/30 dark:bg-[#1B5448]/90 dark:text-[#ade1cd]'
+              : type === 'error'
+              ? 'bg-red-950 text-red-200 border-red-500/40'
+              : 'bg-[#23382B] text-white border-[var(--color-border)]'
+          }`;
+          const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+          toast.innerHTML = `<span class="font-bold">${icon}</span> <span>${message}</span>`;
+          container.appendChild(toast);
+          requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+          setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+          }, 2400);
+        }
+
+        // Format Byte Size
+        function formatBytes(bytes: number): string {
+          if (bytes === 0) return '0 B';
+          const k = 1024;
+          const sizes = ['B', 'KB', 'MB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // Apply Transform Styles
+        function applyTransforms() {
+          if (!transformWrapper) return;
+          const scaleX = isFlippedH ? -1 : 1;
+          const scaleY = isFlippedV ? -1 : 1;
+          const zoomScale = zoomLevel / 100;
+          transformWrapper.style.transform = `scale(${zoomScale}) rotate(${rotationDeg}deg) scale(${scaleX}, ${scaleY})`;
+          if (zoomLabel) zoomLabel.textContent = `${zoomLevel}%`;
+        }
+
+        // Update Gutters & Line count
+        function updateGutter() {
+          if (!svgInput || !svgGutter || !svgCodeStats) return;
+          const text = svgInput.value;
+          const lines = text ? text.split('\n').length : 1;
+          let html = '';
+          for (let i = 1; i <= Math.max(lines, 1); i++) {
+            html += `<div>${i}</div>`;
+          }
+          svgGutter.innerHTML = html;
+          const byteLen = new TextEncoder().encode(text).length;
+          svgCodeStats.textContent = `${lines} lines • ${formatBytes(byteLen)}`;
+        }
+
+        // Parse and Extract Colors
+        function extractColors(svgString: string): string[] {
+          const colors = new Set<string>();
+          // Match hex (#fff, #ffffff, #ffffff80)
+          const hexMatches = svgString.match(/#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g) || [];
+          hexMatches.forEach((c) => colors.add(c.toLowerCase()));
+
+          // Match rgb/rgba/hsl/hsla
+          const funcMatches = svgString.match(/(?:rgb|hsl)a?\([^)]+\)/gi) || [];
+          funcMatches.forEach((c) => colors.add(c.toLowerCase()));
+
+          return Array.from(colors);
+        }
+
+        // Render Color Swatches
+        function renderColorSwatches(colors: string[]) {
+          if (!colorPaletteContainer) return;
+          colorPaletteContainer.innerHTML = '';
+
+          if (colors.length === 0) {
+            colorPaletteContainer.innerHTML = '<span class="text-xs text-[var(--color-text-muted)] italic">No colors detected in SVG markup.</span>';
+            return;
+          }
+
+          colors.forEach((color) => {
+            const swatch = document.createElement('div');
+            swatch.className = 'group relative flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] transition-all cursor-pointer';
+
+            const colorSquare = document.createElement('span');
+            colorSquare.className = 'size-4 rounded shadow-xs border border-black/10 shrink-0';
+            colorSquare.style.backgroundColor = color;
+
+            const colorText = document.createElement('span');
+            colorText.className = 'text-[11px] font-mono text-[var(--color-text-secondary)] select-all';
+            colorText.textContent = color;
+
+            // Hidden color picker input for instant live recoloring
+            const picker = document.createElement('input');
+            picker.type = 'color';
+            picker.value = color.startsWith('#') && (color.length === 7 || color.length === 4) ? color : '#1B5448';
+            picker.className = 'opacity-0 absolute inset-0 w-full h-full cursor-pointer';
+
+            picker.addEventListener('input', (e) => {
+              const newColor = (e.target as HTMLInputElement).value;
+              colorSquare.style.backgroundColor = newColor;
+              colorText.textContent = newColor;
+              recolorSvg(color, newColor);
+            });
+
+            swatch.appendChild(colorSquare);
+            swatch.appendChild(colorText);
+            swatch.appendChild(picker);
+            colorPaletteContainer.appendChild(swatch);
+          });
+        }
+
+        // Global Recolor Replacement
+        function recolorSvg(oldColor: string, newColor: string) {
+          if (!svgInput) return;
+          // Escape special regex chars
+          const escaped = oldColor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regex = new RegExp(escaped, 'gi');
+          svgInput.value = svgInput.value.replace(regex, newColor);
+          renderPreview();
+          showToast(`Replaced ${oldColor} → ${newColor}`, 'info');
+        }
+
+        // Render Preview Canvas
+        function renderPreview() {
+          if (!svgInput || !svgMount) return;
+          const code = svgInput.value.trim();
+          updateGutter();
+
+          if (!code) {
+            svgMount.innerHTML = '<span class="text-xs text-[var(--color-text-muted)] italic">Waiting for SVG code...</span>';
+            if (previewDimensionsBadge) previewDimensionsBadge.textContent = '0 × 0';
+            renderColorSwatches([]);
+            return;
+          }
+
+          try {
+            // Clean sanitize basic DOM parser
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(code, 'image/svg+xml');
+            const svgElement = doc.querySelector('svg');
+
+            if (!svgElement) {
+              svgMount.innerHTML = '<span class="text-xs text-red-400 font-mono">Invalid SVG markup</span>';
+              return;
+            }
+
+            // Sync dimensions badge
+            const width = svgElement.getAttribute('width') || svgElement.viewBox.baseVal?.width || '24';
+            const height = svgElement.getAttribute('height') || svgElement.viewBox.baseVal?.height || '24';
+            if (previewDimensionsBadge) {
+              previewDimensionsBadge.textContent = `${width} × ${height}`;
+            }
+
+            if (inputWidth && !inputWidth.value) inputWidth.value = String(width);
+            if (inputHeight && !inputHeight.value) inputHeight.value = String(height);
+
+            svgMount.innerHTML = '';
+            svgMount.appendChild(document.importNode(svgElement, true));
+
+            // Extract and update colors
+            const colors = extractColors(code);
+            renderColorSwatches(colors);
+
+          } catch (err: any) {
+            svgMount.innerHTML = `<span class="text-xs text-red-400 font-mono">Error: ${err.message}</span>`;
+          }
+        }
+
+        // SVG Code Input event
+        svgInput?.addEventListener('input', () => {
+          renderPreview();
+        });
+
+        // Background Color Switcher
+        const bgButtons = document.querySelectorAll('.sw-bg-btn');
+        bgButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            bgButtons.forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            const bgType = btn.getAttribute('data-bg');
+            if (!previewStage) return;
+
+            previewStage.className = 'relative flex-1 overflow-auto flex items-center justify-center p-6 select-none transition-colors duration-200';
+            if (bgType === 'checkerboard') {
+              previewStage.classList.add('bg-checkerboard');
+              previewStage.style.backgroundColor = '';
+            } else if (bgType === 'white') {
+              previewStage.style.backgroundColor = '#ffffff';
+            } else if (bgType === 'black') {
+              previewStage.style.backgroundColor = '#0a0a0a';
+            } else if (bgType === 'transparent') {
+              previewStage.style.backgroundColor = 'transparent';
+            }
+          });
+        });
+
+        const customBgPicker = document.getElementById('preview-bg-custom') as HTMLInputElement | null;
+        customBgPicker?.addEventListener('input', (e) => {
+          if (previewStage) {
+            bgButtons.forEach((b) => b.classList.remove('active'));
+            previewStage.className = 'relative flex-1 overflow-auto flex items-center justify-center p-6 select-none transition-colors duration-200';
+            previewStage.style.backgroundColor = (e.target as HTMLInputElement).value;
+          }
+        });
+
+        // Size Presets
+        const sizeButtons = document.querySelectorAll('.sw-size-btn');
+        sizeButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            sizeButtons.forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            const size = btn.getAttribute('data-size');
+            const svgInMount = svgMount?.querySelector('svg');
+            if (!svgInMount) return;
+
+            if (size === 'auto') {
+              svgInMount.style.width = '';
+              svgInMount.style.height = '';
+            } else {
+              svgInMount.style.width = `${size}px`;
+              svgInMount.style.height = `${size}px`;
+            }
+          });
+        });
+
+        // Zoom Controls
+        btnZoomIn?.addEventListener('click', () => {
+          zoomLevel = Math.min(zoomLevel + 25, 400);
+          applyTransforms();
+        });
+
+        btnZoomOut?.addEventListener('click', () => {
+          zoomLevel = Math.max(zoomLevel - 25, 25);
+          applyTransforms();
+        });
+
+        btnZoomReset?.addEventListener('click', () => {
+          zoomLevel = 100;
+          applyTransforms();
+        });
+
+        // Transform Controls
+        btnRotateCw?.addEventListener('click', () => {
+          rotationDeg = (rotationDeg + 90) % 360;
+          applyTransforms();
+        });
+
+        btnFlipH?.addEventListener('click', () => {
+          isFlippedH = !isFlippedH;
+          applyTransforms();
+        });
+
+        btnFlipV?.addEventListener('click', () => {
+          isFlippedV = !isFlippedV;
+          applyTransforms();
+        });
+
+        btnResetTransform?.addEventListener('click', () => {
+          rotationDeg = 0;
+          isFlippedH = false;
+          isFlippedV = false;
+          zoomLevel = 100;
+          applyTransforms();
+          showToast('Reset transforms', 'info');
+        });
+
+        // SVG Optimizer Logic
+        function optimizeSvg() {
+          if (!svgInput) return;
+          const original = svgInput.value.trim();
+          if (!original) return;
+
+          originalPreOptCode = original;
+          const origLen = new TextEncoder().encode(original).length;
+
+          let cleaned = original;
+          // 1. Remove XML declarations and doctypes
+          cleaned = cleaned.replace(/<\?xml[^>]*\?>/gi, '');
+          cleaned = cleaned.replace(/<!DOCTYPE[^>]*>/gi, '');
+          // 2. Remove comments
+          cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, '');
+          // 3. Remove metadata, desc, title tags
+          cleaned = cleaned.replace(/<(metadata|desc|title)[\s\S]*?<\/\1>/gi, '');
+          // 4. Remove empty groups
+          cleaned = cleaned.replace(/<g[^>]*>\s*<\/g>/gi, '');
+          // 5. Remove unnecessary namespaces and editor junk
+          cleaned = cleaned.replace(/\s*(xmlns:sketch|xmlns:inkscape|xmlns:sodipodi|xmlns:xml)="[^"]*"/gi, '');
+          cleaned = cleaned.replace(/\s*(sketch:type|inkscape:[a-z]+|sodipodi:[a-z]+)="[^"]*"/gi, '');
+          // 6. Reduce float decimals in path definitions
+          cleaned = cleaned.replace(/(\d+\.\d{3,})/g, (m) => parseFloat(m).toFixed(2));
+          // 7. Strip extraneous spaces inside tags
+          cleaned = cleaned.replace(/\s{2,}/g, ' ');
+          cleaned = cleaned.replace(/>\s+</g, '><').trim();
+
+          const newLen = new TextEncoder().encode(cleaned).length;
+          const savedBytes = origLen - newLen;
+          const savingsPct = origLen > 0 ? Math.max(0, Math.round((savedBytes / origLen) * 100)) : 0;
+
+          svgInput.value = cleaned;
+          renderPreview();
+
+          if (optimizerBanner && optOrigSize && optNewSize && optSavingsBadge) {
+            optimizerBanner.classList.remove('hidden');
+            optOrigSize.textContent = `Original: ${formatBytes(origLen)}`;
+            optNewSize.textContent = `Optimized: ${formatBytes(newLen)}`;
+            optSavingsBadge.textContent = `Saved ${savingsPct}%`;
+          }
+
+          showToast(`Optimized: Saved ${savingsPct}% (${formatBytes(savedBytes)})`, 'success');
+        }
+
+        btnOptimize?.addEventListener('click', optimizeSvg);
+
+        btnRevertOpt?.addEventListener('click', () => {
+          if (originalPreOptCode && svgInput) {
+            svgInput.value = originalPreOptCode;
+            renderPreview();
+            optimizerBanner?.classList.add('hidden');
+            showToast('Reverted to original SVG', 'info');
+          }
+        });
+
+        // Prettify XML
+        function prettifyXml(xml: string) {
+          let formatted = '';
+          const reg = /(>)(<)(\/*)/g;
+          xml = xml.replace(reg, '$1\r\n$2$3');
+          let pad = 0;
+          xml.split('\r\n').forEach((node) => {
+            let indent = 0;
+            if (node.match(/.+<\/\w[^>]*>$/)) {
+              indent = 0;
+            } else if (node.match(/^<\/\w/)) {
+              if (pad !== 0) pad -= 1;
+            } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+              indent = 1;
+            } else {
+              indent = 0;
+            }
+            let padding = '';
+            for (let i = 0; i < pad; i++) {
+              padding += '  ';
+            }
+            formatted += padding + node + '\r\n';
+            pad += indent;
+          });
+          return formatted.trim();
+        }
+
+        btnPrettify?.addEventListener('click', () => {
+          if (!svgInput) return;
+          svgInput.value = prettifyXml(svgInput.value);
+          renderPreview();
+          showToast('Prettified SVG markup', 'info');
+        });
+
+        btnMinify?.addEventListener('click', () => {
+          if (!svgInput) return;
+          svgInput.value = svgInput.value.replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').trim();
+          renderPreview();
+          showToast('Minified SVG markup', 'info');
+        });
+
+        // Copy Actions
+        btnCopySvg?.addEventListener('click', () => {
+          if (!svgInput || !svgInput.value.trim()) {
+            showToast('No SVG to copy', 'error');
+            return;
+          }
+          const format = (document.getElementById('select-copy-format') as HTMLSelectElement)?.value || 'raw';
+          const code = svgInput.value.trim();
+          let copyPayload = code;
+
+          if (format === 'jsx') {
+            copyPayload = code
+              .replace(/class=/g, 'className=')
+              .replace(/clip-path=/g, 'clipPath=')
+              .replace(/fill-rule=/g, 'fillRule=')
+              .replace(/stroke-width=/g, 'strokeWidth=')
+              .replace(/stroke-linecap=/g, 'strokeLinecap=')
+              .replace(/stroke-linejoin=/g, 'strokeLinejoin=');
+          } else if (format === 'css') {
+            const encoded = encodeURIComponent(code).replace(/'/g, '%27').replace(/"/g, '%22');
+            copyPayload = `background-image: url('data:image/svg+xml;utf8,${encoded}');`;
+          } else if (format === 'datauri') {
+            const encoded = encodeURIComponent(code);
+            copyPayload = `data:image/svg+xml;utf8,${encoded}`;
+          } else if (format === 'base64') {
+            const b64 = btoa(unescape(encodeURIComponent(code)));
+            copyPayload = `data:image/svg+xml;base64,${b64}`;
+          }
+
+          navigator.clipboard.writeText(copyPayload).then(() => {
+            showToast(`Copied as ${format.toUpperCase()}`, 'success');
+          }).catch(() => {
+            showToast('Failed to copy', 'error');
+          });
+        });
+
+        // Download SVG
+        btnDownloadSvg?.addEventListener('click', () => {
+          if (!svgInput || !svgInput.value.trim()) {
+            showToast('No SVG to download', 'error');
+            return;
+          }
+          const blob = new Blob([svgInput.value], { type: 'image/svg+xml;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `vector-${Date.now()}.svg`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('Downloaded .svg file', 'success');
+        });
+
+        // Download PNG using Offscreen Canvas
+        btnDownloadPng?.addEventListener('click', () => {
+          if (!svgInput || !svgInput.value.trim()) {
+            showToast('No SVG to export', 'error');
+            return;
+          }
+          const scale = parseInt((document.getElementById('select-png-scale') as HTMLSelectElement)?.value || '1', 10);
+          const svgCode = svgInput.value.trim();
+
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(svgCode, 'image/svg+xml');
+          const svg = doc.querySelector('svg');
+          if (!svg) return;
+
+          let width = parseFloat(svg.getAttribute('width') || String(svg.viewBox.baseVal?.width || 256));
+          let height = parseFloat(svg.getAttribute('height') || String(svg.viewBox.baseVal?.height || 256));
+
+          const canvas = document.getElementById('export-canvas') as HTMLCanvasElement;
+          canvas.width = width * scale;
+          canvas.height = height * scale;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+
+          const img = new Image();
+          const blob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+
+          img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            URL.revokeObjectURL(url);
+
+            const pngUrl = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = pngUrl;
+            a.download = `vector-${scale}x-${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast(`Exported ${scale}x PNG`, 'success');
+          };
+          img.src = url;
+        });
+
+        // Cross-tool export to App Icon Creator
+        document.getElementById('btn-export-to-app-icon')?.addEventListener('click', () => {
+          const currentSvg = svgInput?.value || '';
+          if (currentSvg.trim()) {
+            localStorage.setItem('app_icon_shared_artwork', JSON.stringify({
+              svg: currentSvg,
+              timestamp: Date.now()
+            }));
+          }
+        });
+
+        // Sample Loaders
+        btnSample1?.addEventListener('click', () => {
+          if (svgInput) {
+            svgInput.value = sample1;
+            renderPreview();
+            showToast('Loaded Icon Sample', 'info');
+          }
+        });
+
+        btnSample2?.addEventListener('click', () => {
+          if (svgInput) {
+            svgInput.value = sample2;
+            renderPreview();
+            showToast('Loaded Badge Sample', 'info');
+          }
+        });
+
+        // Clear Code
+        btnClearCode?.addEventListener('click', () => {
+          if (svgInput) {
+            svgInput.value = '';
+            renderPreview();
+            showToast('Cleared SVG editor', 'info');
+          }
+        });
+
+        // File Upload
+        fileUpload?.addEventListener('change', (e) => {
+          const file = (e.target as HTMLInputElement).files?.[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            if (svgInput) {
+              svgInput.value = event.target?.result as string;
+              renderPreview();
+              showToast(`Loaded ${file.name}`, 'success');
+            }
+          };
+          reader.readAsText(file);
+        });
+
+        // Drag & Drop
+        const dropZone = document.getElementById('svg-input-container');
+        dropZone?.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropZone.classList.add('ring-2', 'ring-[var(--accent)]');
+        });
+        dropZone?.addEventListener('dragleave', () => {
+          dropZone.classList.remove('ring-2', 'ring-[var(--accent)]');
+        });
+        dropZone?.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('ring-2', 'ring-[var(--accent)]');
+          const file = e.dataTransfer?.files?.[0];
+          if (file && svgInput) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              svgInput.value = event.target?.result as string;
+              renderPreview();
+              showToast(`Loaded ${file.name}`, 'success');
+            };
+            reader.readAsText(file);
+          }
+        });
+
+        // Attribute Inputs
+        inputStrokeWidth?.addEventListener('input', (e) => {
+          const val = (e.target as HTMLInputElement).value;
+          const svgEl = svgMount?.querySelector('svg');
+          if (svgEl) {
+            svgEl.querySelectorAll('*').forEach((el) => {
+              if (el.hasAttribute('stroke') && el.getAttribute('stroke') !== 'none') {
+                el.setAttribute('stroke-width', val);
+              }
+            });
+          }
+        });
+
+        inputOpacity?.addEventListener('input', (e) => {
+          const val = parseInt((e.target as HTMLInputElement).value, 10) / 100;
+          const svgEl = svgMount?.querySelector('svg');
+          if (svgEl) {
+            svgEl.style.opacity = String(val);
+          }
+        });
+
+        // Initial render
+        if (svgInput && !svgInput.value.trim()) {
+          svgInput.value = sample1;
+          renderPreview();
+        } else {
+          renderPreview();
+        }
+      }
+
+      // Lifecycle binding for Astro client navigation
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSvgStudio);
+      } else {
+        initSvgStudio();
+      }
+      document.addEventListener('astro:page-load', initSvgStudio);
+    </script>
+
+    <!-- CSS Helpers -->
+    <style>
+      .sw-tool-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 180ms ease;
+        background: var(--color-bg-secondary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        text-decoration: none;
+        user-select: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      .sw-tool-btn:hover {
+        background: rgba(var(--accent-rgb), 0.12);
+        color: var(--accent);
+        border-color: rgba(var(--accent-rgb), 0.35);
+      }
+      .sw-tool-btn-primary {
+        background: linear-gradient(135deg, #1B5448 0%, #23382B 100%);
+        color: #E1F8DC !important;
+        border-color: #1B5448;
+        box-shadow: 0 2px 8px rgba(27, 84, 72, 0.3);
+      }
+      :global(.dark) .sw-tool-btn-primary {
+        background: linear-gradient(135deg, #ade1cd 0%, #1B5448 100%);
+        color: #0d1712 !important;
+        border-color: #ade1cd;
+        box-shadow: 0 2px 10px rgba(173, 225, 205, 0.25);
+      }
+      .sw-tool-select {
+        padding: 0.35rem 0.55rem;
+        border-radius: 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 500;
+        background: var(--color-bg-secondary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        cursor: pointer;
+        outline: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      .sw-tool-input {
+        width: 100%;
+        padding: 0.3rem 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        background: var(--color-bg-primary);
+        color: var(--color-text-primary);
+        border: 1px solid var(--color-border);
+        outline: none;
+      }
+      .sw-tool-input:focus {
+        border-color: var(--accent);
+      }
+      .sw-bg-btn {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: transform 120ms ease;
+      }
+      .sw-bg-btn:hover {
+        transform: scale(1.15);
+      }
+      .sw-bg-btn.active {
+        ring: 2px solid var(--accent);
+        outline: 1px solid var(--accent);
+      }
+      .sw-size-btn {
+        padding: 0.2rem 0.45rem;
+        border-radius: 0.25rem;
+        font-size: 0.65rem;
+        color: var(--color-text-muted);
+        background: transparent;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 120ms ease;
+      }
+      .sw-size-btn:hover {
+        color: var(--color-text-primary);
+      }
+      .sw-size-btn.active {
+        background: var(--card);
+        color: var(--accent);
+        border-color: var(--color-border);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      }
+      .bg-checkerboard {
+        background-color: #14241b;
+        background-image: 
+          linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%), 
+          linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%), 
+          linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%), 
+          linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+        background-size: 16px 16px;
+        background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+      }
+      :global(:root:not(.dark)) .bg-checkerboard {
+        background-color: #f4fbf3;
+        background-image: 
+          linear-gradient(45deg, rgba(78, 88, 80, 0.08) 25%, transparent 25%), 
+          linear-gradient(-45deg, rgba(78, 88, 80, 0.08) 25%, transparent 25%), 
+          linear-gradient(45deg, transparent 75%, rgba(78, 88, 80, 0.08) 75%), 
+          linear-gradient(-45deg, transparent 75%, rgba(78, 88, 80, 0.08) 75%);
+      }
+    </style>
+  </body>
+</html>

@@ -22,13 +22,13 @@ const authorName = posts[0]?.data.author || 'Piush KS';
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
   <head>
     <BaseHead title={`Articles by ${authorName} – Piush KS`} description={`Posts and guides written by ${authorName}`} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10 space-y-8">
       <div class="border-b border-[var(--color-border)] pb-6">
         <div class="inline-flex mb-2">
           <span class="status-pill text-xs">Author Archive</span>

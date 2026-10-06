@@ -1,16 +1,15 @@
 ---
 import { SITE_TITLE } from '../../consts';
 import HeaderLink from './HeaderLink.astro';
-import ThemeToggle from '../ui/button/ThemeToggle.astro';
 ---
 
 <header class="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]/85 backdrop-blur-xl transition-colors duration-200">
-  <nav class="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between">
+  <nav class="w-full px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between">
     <!-- Brand Logo / Name -->
     <div class="flex items-center gap-6">
       <a class="no-underline group flex items-center gap-2.5" href="/" aria-label="Home">
-        <div class="relative size-9 rounded-xl overflow-hidden ring-1 ring-[var(--color-border)] group-hover:ring-[var(--accent)] transition-all duration-300 shadow-sm flex items-center justify-center bg-[var(--color-bg-secondary)]">
-          <img src="/favicon.png?v=1" alt="Piush KS" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" width="36" height="36" />
+        <div class="relative size-9 rounded-xl overflow-hidden ring-1 ring-[var(--color-border)] group-hover:ring-[var(--accent)] transition-all duration-300 shadow-sm flex items-center justify-center bg-[var(--color-bg-secondary)] group-hover:scale-105 group-hover:-rotate-3">
+          <img src="/favicon.png?v=1" alt="Piush KS" class="w-full h-full object-cover transition-transform duration-300" width="36" height="36" />
         </div>
         <span class="font-bold text-lg tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
           Piush<span class="text-[var(--accent)]">.</span>
@@ -21,6 +20,8 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
       <div class="hidden md:flex items-center gap-1">
         <HeaderLink href="/">Home</HeaderLink>
         <HeaderLink href="/portfolio">Portfolio</HeaderLink>
+        <HeaderLink href="/tools">Tools</HeaderLink>
+        <HeaderLink href="/quiz">Quiz</HeaderLink>
         <HeaderLink href="/about">About</HeaderLink>
         <HeaderLink href="/blog">Blog</HeaderLink>
         <HeaderLink href="/tags">Tags</HeaderLink>
@@ -70,13 +71,10 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
 
       <a
         href="#contact"
-        class="hidden lg:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.25)] hover:bg-[rgba(var(--accent-rgb),0.18)] transition-colors no-underline"
+        class="hidden lg:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.25)] hover:bg-[rgba(var(--accent-rgb),0.18)] transition-all duration-200 btn-interactive no-underline"
       >
         Contact
       </a>
-
-      <!-- Theme Switcher -->
-      <ThemeToggle />
 
       <!-- Mobile Hamburger Button -->
       <button
@@ -85,7 +83,7 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
         aria-controls="mobile-menu"
         aria-expanded="false"
         data-menu-btn
-        class="md:hidden inline-flex items-center justify-center size-9 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:text-[var(--accent)] transition-colors"
+        class="md:hidden inline-flex items-center justify-center size-9 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:text-[var(--accent)] transition-all duration-200 btn-interactive"
       >
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="4" y1="6" x2="20" y2="6"/>
@@ -97,10 +95,12 @@ import ThemeToggle from '../ui/button/ThemeToggle.astro';
   </nav>
 
   <!-- Mobile Dropdown Menu -->
-  <div id="mobile-menu" class="md:hidden hidden border-t border-[var(--color-border)] bg-[var(--color-bg-primary)]/95 backdrop-blur-2xl">
-    <div class="mx-auto max-w-6xl px-4 py-4 flex flex-col gap-1">
+  <div id="mobile-menu" class="md:hidden hidden border-t border-[var(--color-border)] bg-[var(--color-bg-primary)]/95 backdrop-blur-2xl mobile-nav-panel">
+    <div class="w-full px-4 sm:px-8 py-4 flex flex-col gap-1">
       <HeaderLink href="/" class="py-2.5 px-3 block">Home</HeaderLink>
       <HeaderLink href="/portfolio" class="py-2.5 px-3 block">Portfolio</HeaderLink>
+      <HeaderLink href="/tools" class="py-2.5 px-3 block">Tools</HeaderLink>
+      <HeaderLink href="/quiz" class="py-2.5 px-3 block">Quiz</HeaderLink>
       <HeaderLink href="/about" class="py-2.5 px-3 block">About</HeaderLink>
       <HeaderLink href="/blog" class="py-2.5 px-3 block">Blog</HeaderLink>
       <HeaderLink href="/tags" class="py-2.5 px-3 block">Tags</HeaderLink>

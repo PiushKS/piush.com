@@ -1,0 +1,195 @@
+---
+import Button from '../ui/button/Button.astro';
+
+const tools = [
+  {
+    id: 'json',
+    title: 'JSON Toolkit',
+    description: 'Format, validate and inspect JSON.',
+    href: '/tools/json',
+    tag: 'Development',
+    chips: ['Formatter', 'Validator', 'Tree View', 'Minifier'],
+    iconType: 'json',
+    ctaText: 'Open Tool'
+  },
+  {
+    id: 'text',
+    title: 'Developer Text Toolkit',
+    description: 'Transform, encode and clean developer text.',
+    href: '/tools/text',
+    tag: 'Development',
+    chips: ['10 Cases', 'Base64 UTF-8', 'URL & HTML', 'Deduplicate'],
+    iconType: 'text',
+    ctaText: 'Open Tool'
+  },
+  {
+    id: 'playground',
+    title: 'Code Playground',
+    description: 'Write, run and experiment with 20+ programming languages online.',
+    href: '/tools/playground',
+    tag: 'Development',
+    chips: ['20+ Languages', 'Real Compilers', 'Monaco IDE', 'stdin / stdout'],
+    iconType: 'playground',
+    ctaText: 'Start Coding'
+  },
+  {
+    id: 'svg',
+    title: 'SVG Studio',
+    description: 'Edit, optimize and export SVG graphics.',
+    href: '/tools/svg',
+    tag: 'Design',
+    chips: ['Live Canvas', 'Optimizer', 'Color Swatches', 'PNG Export'],
+    iconType: 'svg',
+    ctaText: 'Open Tool'
+  },
+  {
+    id: 'ui',
+    title: 'UI Design Lab',
+    description: 'Visually generate CSS, colors and reusable UI styles.',
+    href: '/tools/ui',
+    tag: 'Design',
+    chips: ['Shadows & Radius', 'Gradients', 'Palette 50-950', 'Buttons & Cards'],
+    iconType: 'ui',
+    ctaText: 'Open Tool'
+  },
+  {
+    id: 'colors',
+    title: 'Color Studio',
+    description: 'Pick, generate, test and export modern UI color systems.',
+    href: '/tools/colors',
+    tag: 'Design',
+    chips: ['OKLCH Engine', '50-950 Shades', 'WCAG Contrast', 'Harmonies'],
+    iconType: 'colors',
+    ctaText: 'Open Color Studio'
+  },
+  {
+    id: 'app-icon',
+    title: 'App Icon Creator',
+    description: 'Create and export production-ready Android & iOS app icons.',
+    href: '/tools/app-icon',
+    tag: 'Mobile',
+    chips: ['Android Adaptive', 'iOS Squircle', 'Safe Zone 66%', 'Xcode ZIP'],
+    iconType: 'app-icon',
+    ctaText: 'Create App Icon'
+  }
+];
+---
+
+<section class="w-full py-4 sm:py-6 md:py-8" id="developer-tools">
+  <div class="w-full">
+    <!-- Header -->
+    <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)] mb-3 shadow-xs">
+        <span class="size-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
+        <span>100% Client-Side • Zero Network Requests</span>
+      </div>
+      <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+        <span class="bg-gradient-to-r from-foreground via-foreground to-[var(--color-text-secondary)] bg-clip-text">
+          Developer & Design Tools
+        </span>
+      </h2>
+      <p class="mt-3 text-base text-[var(--color-text-muted)] leading-relaxed">
+        Fast, privacy-friendly utilities for developers, designers, and mobile creators. No signup, no uploads—everything runs inside your browser.
+      </p>
+    </div>
+
+    <!-- 6 Interactive Tool Cards Grid (3 cols on desktop) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full">
+      {tools.map((t) => (
+        <article class="card-surface p-5 sm:p-6 group flex flex-col justify-between h-full border border-[var(--color-border)] hover:border-[var(--accent)] transition-all duration-300">
+          <div>
+            <!-- Top Row: Developer Icon + Category Pill -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="icon-badge-interactive size-11 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)] group-hover:bg-[rgba(var(--accent-rgb),0.18)] group-hover:border-[var(--accent)] shadow-xs">
+                {t.iconType === 'json' && (
+                  <span class="font-mono font-bold text-base leading-none">&#123; &#125;</span>
+                )}
+                {t.iconType === 'text' && (
+                  <span class="font-serif font-bold text-base leading-none">Aa</span>
+                )}
+                {t.iconType === 'svg' && (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                    <path d="M2 2l7.586 7.586"/>
+                    <circle cx="11" cy="11" r="2"/>
+                  </svg>
+                )}
+                {t.iconType === 'ui' && (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2"/>
+                    <path d="M3 9h18"/>
+                    <path d="M9 21V9"/>
+                  </svg>
+                )}
+                {t.iconType === 'colors' && (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="9" r="6"/>
+                    <circle cx="15" cy="9" r="6"/>
+                    <circle cx="12" cy="15" r="6"/>
+                  </svg>
+                )}
+                {t.iconType === 'app-icon' && (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="5"/>
+                    <path d="M3 9h18"/>
+                    <path d="M9 21V9"/>
+                  </svg>
+                )}
+                {t.iconType === 'playground' && (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"/>
+                    <polyline points="8 6 2 12 8 18"/>
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                  </svg>
+                )}
+              </div>
+              <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)] uppercase tracking-wider">
+                {t.tag}
+              </span>
+            </div>
+
+            <!-- Title & Description -->
+            <h3 class="text-base sm:text-lg font-bold text-foreground mb-1.5 group-hover:text-[var(--accent)] transition-colors tracking-tight leading-snug">
+              {t.title}
+            </h3>
+            <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mb-4">
+              {t.description}
+            </p>
+
+            <!-- Capabilities Chips -->
+            <div class="flex flex-wrap gap-1 mb-4">
+              {t.chips.map((c) => (
+                <span class="tech-chip text-[0.65rem] py-0.5 px-2">
+                  {c}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <!-- Bottom Action CTA -->
+          <div class="mt-4 pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
+            <span class="text-[11px] font-mono text-[var(--color-text-muted)]">
+              {t.href}
+            </span>
+            <Button href={t.href} variant="secondary" size="sm" class="btn-interactive">
+              <span>{t.ctaText}</span>
+              <span class="transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+            </Button>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Central Directory Link -->
+    <div class="text-center mt-6 sm:mt-8">
+      <a
+        href="/tools"
+        class="btn-interactive group inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[var(--color-text-secondary)] hover:text-[var(--accent)] transition-colors no-underline px-4 py-2 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] shadow-xs"
+      >
+        <span>Explore all tools</span>
+        <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+  </div>
+</section>

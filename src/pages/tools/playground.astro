@@ -1,0 +1,1764 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/sections/Header.astro';
+import Footer from '../../components/sections/Footer.astro';
+import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
+import { PLAYGROUND_LANGUAGES } from '../../data/playground/languages';
+
+const pageTitle = "Online Code Compiler & Programming Playground | Piush";
+const pageDescription = "Write and run JavaScript, Python, Java, C, C++, Kotlin, Swift, Dart and other programming languages online with a fast developer code playground.";
+
+const popularLangs = PLAYGROUND_LANGUAGES.filter(l => l.category === 'popular');
+const moreLangs = PLAYGROUND_LANGUAGES.filter(l => l.category === 'more');
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'Code Playground',
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires JavaScript',
+      url: new URL('/tools/playground', Astro.site || 'https://piush.com').toString(),
+      description: pageDescription,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+    })} />
+  </head>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans selection:bg-[var(--accent)]/20">
+    <div id="site-header-container">
+      <Header />
+    </div>
+
+    <main class="flex-1 w-full px-3 sm:px-6 lg:px-8 py-3 sm:py-5 space-y-3 max-w-[1700px] mx-auto flex flex-col" id="playground-main">
+      
+      <!-- Top Navigation & Breadcrumbs -->
+      <div id="playground-top-bar" class="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-2.5">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2">
+          <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+          <span>/</span>
+          <a href="/tools" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
+          <span>/</span>
+          <span class="text-[var(--accent)] font-medium">Code Playground</span>
+        </nav>
+        
+        <div class="flex items-center gap-3">
+          <!-- Quiz Cross-Link -->
+          <a
+            href="/quiz"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-medium bg-[rgba(var(--accent-rgb),0.08)] hover:bg-[rgba(var(--accent-rgb),0.15)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)] transition-all no-underline"
+            title="Practice your output prediction skills with 550+ verified coding questions"
+          >
+            <span>💡</span>
+            <span>Think you know the output? Try Code Challenges &rarr;</span>
+          </a>
+
+          <div class="hidden md:flex items-center gap-2 font-mono text-[11px] text-[var(--color-text-secondary)]">
+            <span class="inline-flex size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Isolated Sandbox • 20+ Runtimes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Playground App Shell Container -->
+      <div id="playground-app" class="flex-1 flex flex-col rounded-2xl border border-[var(--color-border)] bg-[var(--card)] shadow-sm overflow-hidden min-h-[700px]">
+        
+        <!-- IDE Toolbar -->
+        <header class="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] select-none">
+          
+          <!-- Left: Language & Version Selectors -->
+          <div class="flex flex-wrap items-center gap-2">
+            
+            <!-- Language Selector Dropdown -->
+            <div class="relative" id="lang-dropdown-wrapper">
+              <button
+                type="button"
+                id="lang-select-btn"
+                class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] text-foreground text-xs font-mono font-semibold transition-all shadow-xs cursor-pointer"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                <span id="selected-lang-icon" class="text-sm">⚡</span>
+                <span id="selected-lang-name">Python</span>
+                <svg class="size-3 text-[var(--color-text-muted)]" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                </svg>
+              </button>
+
+              <!-- Language Menu Modal/Dropdown -->
+              <div
+                id="lang-menu"
+                class="hidden absolute top-full left-0 mt-1 w-72 max-h-96 rounded-xl bg-[var(--card)] border border-[var(--color-border)] shadow-xl z-50 overflow-hidden flex-col text-xs"
+                role="listbox"
+              >
+                <div class="p-2 border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+                  <input
+                    type="text"
+                    id="lang-search-input"
+                    placeholder="Search languages..."
+                    class="w-full px-2.5 py-1.5 rounded-md bg-[var(--card)] border border-[var(--color-border)] text-foreground text-xs font-sans focus:outline-none focus:border-[var(--accent)]"
+                    autocomplete="off"
+                  />
+                </div>
+
+                <div class="overflow-y-auto max-h-72 p-1.5 space-y-2" id="lang-menu-list">
+                  <div>
+                    <div class="px-2 py-1 text-[10px] font-mono font-bold text-[var(--color-text-muted)] tracking-wider">POPULAR</div>
+                    <div class="space-y-0.5" id="popular-lang-items">
+                      {popularLangs.map(l => (
+                        <button
+                          type="button"
+                          class="lang-option w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left text-foreground hover:bg-[rgba(var(--accent-rgb),0.1)] hover:text-[var(--accent)] transition-colors cursor-pointer"
+                          data-lang={l.id}
+                        >
+                          <span class="font-medium font-mono">{l.name}</span>
+                          <span class="text-[10px] text-[var(--color-text-muted)] font-mono">{l.ext}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="px-2 py-1 text-[10px] font-mono font-bold text-[var(--color-text-muted)] tracking-wider">MORE LANGUAGES</div>
+                    <div class="space-y-0.5" id="more-lang-items">
+                      {moreLangs.map(l => (
+                        <button
+                          type="button"
+                          class="lang-option w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left text-foreground hover:bg-[rgba(var(--accent-rgb),0.1)] hover:text-[var(--accent)] transition-colors cursor-pointer"
+                          data-lang={l.id}
+                        >
+                          <span class="font-medium font-mono">{l.name}</span>
+                          <span class="text-[10px] text-[var(--color-text-muted)] font-mono">{l.ext}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Version Selector -->
+            <div class="relative" id="version-dropdown-wrapper">
+              <select
+                id="version-select"
+                class="px-2.5 py-1.5 rounded-lg bg-[var(--card)] border border-[var(--color-border)] hover:border-[var(--accent)] text-foreground text-xs font-mono font-medium focus:outline-none focus:border-[var(--accent)] cursor-pointer"
+                title="Select Compiler / Runtime Version"
+              >
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <!-- Templates / Examples Dropdown -->
+            <div class="relative" id="examples-dropdown-wrapper">
+              <button
+                type="button"
+                id="examples-btn"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+                title="Load code templates & examples"
+              >
+                <span>📚</span>
+                <span>Examples</span>
+              </button>
+
+              <div
+                id="examples-menu"
+                class="hidden absolute top-full left-0 mt-1 w-64 max-h-80 rounded-xl bg-[var(--card)] border border-[var(--color-border)] shadow-xl z-50 overflow-y-auto p-1 text-xs"
+              >
+                <!-- Populated dynamically per language -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Center/Right: Primary Run & Action Buttons -->
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            
+            <!-- RUN BUTTON (Primary Action) -->
+            <button
+              type="button"
+              id="run-code-btn"
+              class="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[var(--accent)] hover:opacity-90 active:scale-[0.98] text-white text-xs font-mono font-bold tracking-wide shadow-xs transition-all cursor-pointer"
+              title="Run code (Ctrl/Cmd + Enter)"
+            >
+              <svg class="size-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span>Run Code</span>
+              <kbd class="hidden lg:inline-block text-[10px] px-1 py-0.2 rounded bg-black/20 text-white/90">⌘↵</kbd>
+            </button>
+
+            <!-- STOP BUTTON (Enabled during execution) -->
+            <button
+              type="button"
+              id="stop-code-btn"
+              class="hidden items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-mono font-bold transition-all cursor-pointer"
+              title="Stop execution"
+            >
+              <span class="size-2 rounded-xs bg-white"></span>
+              <span>Stop</span>
+            </button>
+
+            <div class="h-5 w-[1px] bg-[var(--color-border)] mx-0.5 hidden sm:block"></div>
+
+            <!-- Reset Code Button -->
+            <button
+              type="button"
+              id="reset-code-btn"
+              class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+              title="Reset code to default template"
+            >
+              <span class="sm:hidden">↺</span>
+              <span class="hidden sm:inline">Reset</span>
+            </button>
+
+            <!-- Format Code Button -->
+            <button
+              type="button"
+              id="format-code-btn"
+              class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+              title="Format source code"
+            >
+              <span class="sm:hidden">✨</span>
+              <span class="hidden sm:inline">Format</span>
+            </button>
+
+            <!-- Copy Code -->
+            <button
+              type="button"
+              id="copy-code-btn"
+              class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+              title="Copy code to clipboard"
+            >
+              <span class="sm:hidden">📋</span>
+              <span class="hidden sm:inline">Copy</span>
+            </button>
+
+            <!-- Download Code -->
+            <button
+              type="button"
+              id="download-code-btn"
+              class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+              title="Download source code"
+            >
+              <span class="sm:hidden">⬇</span>
+              <span class="hidden sm:inline">Download</span>
+            </button>
+
+            <!-- Share Button -->
+            <button
+              type="button"
+              id="share-code-btn"
+              class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+              title="Generate shareable URL"
+            >
+              <span class="sm:hidden">🔗</span>
+              <span class="hidden sm:inline">Share</span>
+            </button>
+
+            <!-- Overflow Actions Menu -->
+            <div class="relative" id="overflow-dropdown-wrapper">
+              <button
+                type="button"
+                id="overflow-menu-btn"
+                class="p-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+                title="More options & settings"
+              >
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="12" cy="5" r="1"></circle>
+                  <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+              </button>
+
+              <div
+                id="overflow-menu"
+                class="hidden absolute top-full right-0 mt-1 w-52 rounded-xl bg-[var(--card)] border border-[var(--color-border)] shadow-xl z-50 p-1 text-xs"
+              >
+                <button type="button" id="open-snippets-btn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-foreground hover:bg-[rgba(var(--accent-rgb),0.08)] cursor-pointer">
+                  <span>💾</span>
+                  <span>My Snippets</span>
+                </button>
+                <button type="button" id="open-settings-btn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-foreground hover:bg-[rgba(var(--accent-rgb),0.08)] cursor-pointer">
+                  <span>⚙️</span>
+                  <span>Editor Settings</span>
+                </button>
+                <button type="button" id="open-shortcuts-btn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-foreground hover:bg-[rgba(var(--accent-rgb),0.08)] cursor-pointer">
+                  <span>⌨️</span>
+                  <span>Keyboard Shortcuts</span>
+                </button>
+                <button type="button" id="toggle-multi-file-btn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-foreground hover:bg-[rgba(var(--accent-rgb),0.08)] cursor-pointer">
+                  <span>📁</span>
+                  <span id="multi-file-toggle-label">Enable Multi-File Mode</span>
+                </button>
+                <div class="my-1 border-t border-[var(--color-border)]"></div>
+                <button type="button" id="clear-code-btn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-rose-600 hover:bg-rose-500/10 cursor-pointer">
+                  <span>🗑️</span>
+                  <span>Clear Code</span>
+                </button>
+                <button type="button" id="clear-output-btn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-rose-600 hover:bg-rose-500/10 cursor-pointer">
+                  <span>🧹</span>
+                  <span>Clear Output</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Focus Mode (Full Screen) -->
+            <button
+              type="button"
+              id="focus-mode-btn"
+              class="p-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-foreground cursor-pointer transition-colors"
+              title="Toggle Focus Mode (Fullscreen)"
+            >
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+              </svg>
+            </button>
+
+          </div>
+        </header>
+
+        <!-- Optional Multi-File Tab Bar (Initially Hidden) -->
+        <div id="multi-file-bar" class="hidden px-3 py-1.5 bg-[var(--color-bg-secondary)]/50 border-b border-[var(--color-border)] flex items-center gap-1.5 overflow-x-auto text-xs font-mono">
+          <div id="file-tabs-container" class="flex items-center gap-1">
+            <!-- Tabs rendered dynamically -->
+          </div>
+          <button type="button" id="add-file-btn" class="px-2 py-1 rounded-md bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-foreground text-[11px] cursor-pointer">
+            + Add File
+          </button>
+        </div>
+
+        <!-- Mobile View Navigation Tabs (< 768px) -->
+        <div class="md:hidden flex items-center border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] text-xs font-mono">
+          <button type="button" class="mobile-tab-btn flex-1 py-2 text-center font-bold text-[var(--accent)] border-b-2 border-[var(--accent)] cursor-pointer" data-tab="code">
+            CODE
+          </button>
+          <button type="button" class="mobile-tab-btn flex-1 py-2 text-center text-[var(--color-text-muted)] cursor-pointer" data-tab="input">
+            INPUT (stdin)
+          </button>
+          <button type="button" class="mobile-tab-btn flex-1 py-2 text-center text-[var(--color-text-muted)] cursor-pointer" data-tab="output">
+            OUTPUT
+          </button>
+        </div>
+
+        <!-- Layout Toggle Bar (Side-by-Side vs Stacked) for Desktop -->
+        <div class="hidden md:flex items-center justify-between px-3 py-1 bg-[var(--color-bg-secondary)]/30 border-b border-[var(--color-border)]/50 text-[11px] font-mono text-[var(--color-text-muted)]">
+          <div class="flex items-center gap-2">
+            <span id="active-filename-label">main.py</span>
+            <span>•</span>
+            <span id="autosave-indicator" class="text-[10px] text-emerald-600 font-semibold">Autosaved</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span>Layout:</span>
+            <button type="button" id="layout-split-v-btn" class="px-1.5 py-0.5 rounded bg-[var(--card)] border border-[var(--color-border)] text-foreground cursor-pointer font-bold" title="Side by Side">
+              Vertical Split [ | ]
+            </button>
+            <button type="button" id="layout-split-h-btn" class="px-1.5 py-0.5 rounded hover:bg-[var(--card)] text-[var(--color-text-muted)] hover:text-foreground cursor-pointer" title="Stacked">
+              Horizontal Split [ = ]
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Workspace Area: Editor & Terminal Console -->
+        <div id="workspace-container" class="flex-1 flex flex-col md:flex-row relative min-h-[500px]">
+          
+          <!-- Code Editor Panel -->
+          <div id="editor-panel" class="flex-1 flex flex-col relative w-full h-[400px] md:h-auto min-h-[300px]">
+            <!-- Monaco Editor Mount Container -->
+            <div id="monaco-editor-mount" class="w-full h-full"></div>
+
+            <!-- Fallback Textarea Editor (if Monaco CDN is offline/blocked) -->
+            <textarea
+              id="fallback-code-editor"
+              class="hidden w-full h-full p-4 font-mono text-sm bg-[var(--card)] text-foreground border-none resize-none focus:outline-none"
+              spellcheck="false"
+              aria-label="Code Editor"
+            ></textarea>
+
+            <!-- Loading Spinner for Editor Mount -->
+            <div id="editor-loading-spinner" class="absolute inset-0 flex flex-col items-center justify-center bg-[var(--card)]/90 backdrop-blur-xs gap-3 z-10">
+              <div class="size-8 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin"></div>
+              <span class="font-mono text-xs text-[var(--color-text-muted)]">Initializing Monaco Editor...</span>
+            </div>
+          </div>
+
+          <!-- Resizer Split Handle -->
+          <div
+            id="panel-resizer"
+            class="hidden md:flex w-2 hover:w-2 bg-[var(--color-bg-secondary)] hover:bg-[var(--accent)]/50 cursor-col-resize items-center justify-center transition-colors select-none z-20"
+            title="Drag to resize panels"
+          >
+            <div class="w-0.5 h-6 bg-[var(--color-border)] rounded-full"></div>
+          </div>
+
+          <!-- Console & Output Panel -->
+          <div id="console-panel" class="w-full md:w-[480px] flex flex-col bg-[var(--color-bg-secondary)]/40 border-t md:border-t-0 md:border-l border-[var(--color-border)] min-h-[280px]">
+            
+            <!-- Terminal Header & Tabs -->
+            <div class="flex items-center justify-between px-3 py-1.5 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] text-xs font-mono select-none">
+              <div class="flex items-center gap-1">
+                <button
+                  type="button"
+                  class="console-tab-btn px-2.5 py-1 rounded-md font-bold bg-[var(--card)] text-[var(--accent)] border border-[var(--color-border)] cursor-pointer"
+                  data-console-tab="output"
+                >
+                  Output
+                </button>
+                <button
+                  type="button"
+                  class="console-tab-btn px-2.5 py-1 rounded-md text-[var(--color-text-muted)] hover:text-foreground cursor-pointer"
+                  data-console-tab="input"
+                >
+                  Input (stdin)
+                </button>
+                <button
+                  type="button"
+                  class="console-tab-btn px-2.5 py-1 rounded-md text-[var(--color-text-muted)] hover:text-foreground cursor-pointer"
+                  data-console-tab="errors"
+                >
+                  Errors <span id="error-badge-count" class="hidden px-1 py-0.2 rounded-full bg-rose-500 text-white text-[10px]">0</span>
+                </button>
+              </div>
+
+              <!-- Console Actions -->
+              <div class="flex items-center gap-1">
+                <button type="button" id="copy-output-btn" class="px-2 py-0.5 rounded text-[11px] text-[var(--color-text-secondary)] hover:text-foreground hover:bg-[var(--card)] cursor-pointer" title="Copy output">
+                  Copy
+                </button>
+                <button type="button" id="clear-output-icon-btn" class="px-2 py-0.5 rounded text-[11px] text-[var(--color-text-secondary)] hover:text-foreground hover:bg-[var(--card)] cursor-pointer" title="Clear output">
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Terminal Execution Status Banner -->
+            <div id="execution-status-bar" class="px-3 py-1.5 bg-[var(--card)] border-b border-[var(--color-border)] flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+              <div class="flex items-center gap-2" id="status-badge-container">
+                <span class="size-2 rounded-full bg-slate-400" id="status-indicator-dot"></span>
+                <span id="status-text" class="font-semibold text-[var(--color-text-muted)]">Ready</span>
+              </div>
+
+              <!-- Execution Time & Memory Stats -->
+              <div id="execution-metrics" class="hidden flex items-center gap-3 text-[11px] text-[var(--color-text-secondary)]">
+                <span id="metric-time">Time: -</span>
+                <span>•</span>
+                <span id="metric-memory">Memory: -</span>
+              </div>
+            </div>
+
+            <!-- Output Body Viewports -->
+            <div class="flex-1 relative overflow-hidden flex flex-col">
+              
+              <!-- TAB 1: STDOUT (Main Output) -->
+              <div id="tab-content-output" class="flex-1 p-3 overflow-y-auto font-mono text-xs whitespace-pre-wrap select-text text-foreground leading-relaxed">
+                <div id="stdout-content" class="text-[var(--color-text-secondary)]">Click <strong class="text-[var(--accent)] font-bold">Run Code (Ctrl+Enter)</strong> to execute the script in an isolated sandbox.</div>
+              </div>
+
+              <!-- TAB 2: STDIN (Program Input) -->
+              <div id="tab-content-input" class="hidden flex-1 p-3 flex-col gap-2">
+                <label for="stdin-textarea" class="text-xs font-mono text-[var(--color-text-muted)] flex items-center justify-between">
+                  <span>Standard Input (stdin):</span>
+                  <span class="text-[11px] text-[var(--color-text-muted)]">Passed to cin, Scanner, input(), or readSync()</span>
+                </label>
+                <textarea
+                  id="stdin-textarea"
+                  class="flex-1 w-full p-2.5 rounded-lg bg-[var(--card)] border border-[var(--color-border)] text-foreground font-mono text-xs focus:outline-none focus:border-[var(--accent)] resize-none"
+                  placeholder="Enter inputs here (e.g. numbers, strings, or lines of text)..."
+                ></textarea>
+              </div>
+
+              <!-- TAB 3: ERRORS & COMPILER DIAGNOSTICS -->
+              <div id="tab-content-errors" class="hidden flex-1 p-3 overflow-y-auto font-mono text-xs whitespace-pre-wrap select-text leading-relaxed">
+                <!-- Clickable line pills inserted here if errors found -->
+                <div id="error-clickable-lines" class="mb-2 flex flex-wrap gap-1.5 hidden"></div>
+                <div id="stderr-content" class="text-rose-600 dark:text-rose-400">No compiler errors or runtime warnings reported.</div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- IDE Status Bar -->
+        <footer class="flex flex-wrap items-center justify-between px-3 py-1 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)] text-[11px] font-mono text-[var(--color-text-muted)] select-none">
+          <div class="flex items-center gap-3">
+            <span id="status-lang-version">Python 3.12.5</span>
+            <span>•</span>
+            <span id="status-cursor-pos">Ln 1, Col 1</span>
+            <span class="hidden sm:inline">•</span>
+            <span class="hidden sm:inline">UTF-8</span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <span class="hidden md:inline">Memory Limit: 256MB</span>
+            <span class="hidden md:inline">•</span>
+            <span class="hidden md:inline">Time Limit: 5.0s</span>
+            <span>•</span>
+            <span class="text-emerald-600 font-semibold">Sandbox Secure</span>
+          </div>
+        </footer>
+
+      </div>
+
+      <!-- Privacy & Sandbox Transparency Notice -->
+      <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)]/50 border border-[var(--color-border)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-[var(--color-text-secondary)]">
+        <div class="flex items-center gap-2">
+          <span>🔒</span>
+          <span><strong>Privacy & Execution Sandbox:</strong> Code is sent securely to an isolated execution container when you press Run. Locally saved snippets remain strictly inside your browser's storage.</span>
+        </div>
+        <div class="text-[11px] font-mono text-[var(--color-text-muted)] whitespace-nowrap">
+          Zero login required
+        </div>
+      </div>
+
+    </main>
+
+    <div id="site-footer-container">
+      <Footer />
+    </div>
+
+    <!-- MODAL 1: MY SNIPPETS (IndexedDB/Local Storage) -->
+    <div id="snippets-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+      <div class="w-full max-w-xl rounded-2xl bg-[var(--card)] border border-[var(--color-border)] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">💾</span>
+            <h3 class="font-bold text-base text-foreground m-0">My Saved Snippets</h3>
+          </div>
+          <button type="button" class="close-modal-btn p-1 rounded-lg hover:bg-[var(--card)] text-[var(--color-text-muted)] cursor-pointer">✕</button>
+        </div>
+
+        <div class="p-4 border-b border-[var(--color-border)] flex gap-2">
+          <input
+            type="text"
+            id="new-snippet-title-input"
+            placeholder="Snippet title (e.g. Quick Sort Algorithm)..."
+            class="flex-1 px-3 py-1.5 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-sans text-foreground focus:outline-none focus:border-[var(--accent)]"
+          />
+          <button
+            type="button"
+            id="save-current-snippet-btn"
+            class="px-3 py-1.5 rounded-lg bg-[var(--accent)] text-white font-mono text-xs font-bold hover:opacity-90 cursor-pointer"
+          >
+            Save Current
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 space-y-2" id="snippets-list-container">
+          <div class="text-center py-8 text-xs text-[var(--color-text-muted)]">No snippets saved yet. Click "Save Current" to store your code locally.</div>
+        </div>
+
+        <div class="p-3 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)] flex justify-end">
+          <button type="button" class="close-modal-btn px-4 py-1.5 rounded-lg bg-[var(--card)] border border-[var(--color-border)] text-xs font-mono cursor-pointer">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 2: EDITOR SETTINGS -->
+    <div id="settings-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+      <div class="w-full max-w-md rounded-2xl bg-[var(--card)] border border-[var(--color-border)] shadow-2xl overflow-hidden flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">⚙️</span>
+            <h3 class="font-bold text-base text-foreground m-0">Editor Settings</h3>
+          </div>
+          <button type="button" class="close-modal-btn p-1 rounded-lg hover:bg-[var(--card)] text-[var(--color-text-muted)] cursor-pointer">✕</button>
+        </div>
+
+        <div class="p-5 space-y-4 text-xs font-mono">
+          <div class="flex items-center justify-between">
+            <label for="setting-font-size" class="text-foreground">Font Size (px):</label>
+            <select id="setting-font-size" class="px-2 py-1 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-foreground">
+              <option value="12">12 px</option>
+              <option value="13">13 px</option>
+              <option value="14" selected>14 px (Default)</option>
+              <option value="16">16 px</option>
+              <option value="18">18 px</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label for="setting-tab-size" class="text-foreground">Tab Size:</label>
+            <select id="setting-tab-size" class="px-2 py-1 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-foreground">
+              <option value="2">2 spaces</option>
+              <option value="4" selected>4 spaces</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label for="setting-word-wrap" class="text-foreground">Word Wrap:</label>
+            <input type="checkbox" id="setting-word-wrap" class="size-4 accent-[var(--accent)] cursor-pointer" checked />
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label for="setting-minimap" class="text-foreground">Minimap:</label>
+            <input type="checkbox" id="setting-minimap" class="size-4 accent-[var(--accent)] cursor-pointer" />
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label for="setting-line-numbers" class="text-foreground">Line Numbers:</label>
+            <input type="checkbox" id="setting-line-numbers" class="size-4 accent-[var(--accent)] cursor-pointer" checked />
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label for="setting-editor-theme" class="text-foreground">Editor Theme:</label>
+            <select id="setting-editor-theme" class="px-2 py-1 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-foreground">
+              <option value="vs" selected>Light (VS)</option>
+              <option value="vs-dark">Dark (VS Dark)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)] flex justify-end">
+          <button type="button" class="close-modal-btn px-4 py-1.5 rounded-lg bg-[var(--accent)] text-white text-xs font-mono font-bold cursor-pointer">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 3: KEYBOARD SHORTCUTS -->
+    <div id="shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+      <div class="w-full max-w-md rounded-2xl bg-[var(--card)] border border-[var(--color-border)] shadow-2xl overflow-hidden flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">⌨️</span>
+            <h3 class="font-bold text-base text-foreground m-0">Keyboard Shortcuts</h3>
+          </div>
+          <button type="button" class="close-modal-btn p-1 rounded-lg hover:bg-[var(--card)] text-[var(--color-text-muted)] cursor-pointer">✕</button>
+        </div>
+
+        <div class="p-5 space-y-2.5 text-xs font-mono">
+          <div class="flex items-center justify-between py-1 border-b border-[var(--color-border)]/50">
+            <span class="text-[var(--color-text-secondary)]">Run Code</span>
+            <kbd class="px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">Ctrl / Cmd + Enter</kbd>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-[var(--color-border)]/50">
+            <span class="text-[var(--color-text-secondary)]">Save Snippet Locally</span>
+            <kbd class="px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">Ctrl / Cmd + S</kbd>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-[var(--color-border)]/50">
+            <span class="text-[var(--color-text-secondary)]">Format Code</span>
+            <kbd class="px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">Shift + Alt + F</kbd>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-[var(--color-border)]/50">
+            <span class="text-[var(--color-text-secondary)]">Command Palette</span>
+            <kbd class="px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">F1</kbd>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-[var(--color-border)]/50">
+            <span class="text-[var(--color-text-secondary)]">Find & Replace</span>
+            <kbd class="px-2 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">Ctrl / Cmd + F</kbd>
+          </div>
+        </div>
+
+        <div class="p-3 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)] flex justify-end">
+          <button type="button" class="close-modal-btn px-4 py-1.5 rounded-lg bg-[var(--accent)] text-white text-xs font-mono font-bold cursor-pointer">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 4: RESET CONFIRMATION -->
+    <div id="reset-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+      <div class="w-full max-w-sm rounded-2xl bg-[var(--card)] border border-[var(--color-border)] shadow-2xl p-5 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="size-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl">⚠️</div>
+          <div>
+            <h4 class="font-bold text-foreground text-sm m-0">Reset Code Template?</h4>
+            <p class="text-xs text-[var(--color-text-muted)] m-0">Your current changes will be overwritten with the default starter code.</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="cancel-reset-btn" class="px-3 py-1.5 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-xs font-mono cursor-pointer">
+            Cancel
+          </button>
+          <button type="button" id="confirm-reset-btn" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-mono font-bold cursor-pointer">
+            Yes, Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="playground-toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-mono shadow-2xl flex items-center gap-2 border border-slate-700 transition-all transform translate-y-2">
+      <span id="toast-icon">✓</span>
+      <span id="toast-message">Copied to clipboard</span>
+    </div>
+
+    <!-- Embed Languages JSON for Client-Side Script -->
+    <script id="languages-data" type="application/json" set:html={JSON.stringify(PLAYGROUND_LANGUAGES)}></script>
+
+    <!-- Client-side Playground Engine Script -->
+    <script>
+      // Load Monaco Editor dynamically and initialize playground
+      (function() {
+        const languagesDataEl = document.getElementById('languages-data');
+        if (!languagesDataEl) return;
+
+        const languages = JSON.parse(languagesDataEl.textContent || '[]');
+        
+        // State
+        let currentLang = languages.find((l: any) => l.id === 'python') || languages[0];
+        let currentVersion = currentLang.versions[0];
+        let isRunning = false;
+        let activeAbortController: AbortController | null = null;
+        let monacoInstance: any = null;
+        let editorInstance: any = null;
+        let multiFileMode = false;
+        let files = [{ name: 'main' + currentLang.ext, content: currentLang.starterCode }];
+        let activeFileIndex = 0;
+
+        // UI Element References
+        const runBtn = document.getElementById('run-code-btn') as HTMLButtonElement;
+        const stopBtn = document.getElementById('stop-code-btn') as HTMLButtonElement;
+        const langSelectBtn = document.getElementById('lang-select-btn') as HTMLButtonElement;
+        const langMenu = document.getElementById('lang-menu') as HTMLElement;
+        const selectedLangIcon = document.getElementById('selected-lang-icon') as HTMLElement;
+        const selectedLangName = document.getElementById('selected-lang-name') as HTMLElement;
+        const versionSelect = document.getElementById('version-select') as HTMLSelectElement;
+        const examplesBtn = document.getElementById('examples-btn') as HTMLButtonElement;
+        const examplesMenu = document.getElementById('examples-menu') as HTMLElement;
+        const resetBtn = document.getElementById('reset-code-btn') as HTMLButtonElement;
+        const formatBtn = document.getElementById('format-code-btn') as HTMLButtonElement;
+        const copyCodeBtn = document.getElementById('copy-code-btn') as HTMLButtonElement;
+        const downloadCodeBtn = document.getElementById('download-code-btn') as HTMLButtonElement;
+        const shareCodeBtn = document.getElementById('share-code-btn') as HTMLButtonElement;
+        const overflowBtn = document.getElementById('overflow-menu-btn') as HTMLButtonElement;
+        const overflowMenu = document.getElementById('overflow-menu') as HTMLElement;
+        const focusModeBtn = document.getElementById('focus-mode-btn') as HTMLButtonElement;
+        const stdinTextarea = document.getElementById('stdin-textarea') as HTMLTextAreaElement;
+        const fallbackEditor = document.getElementById('fallback-code-editor') as HTMLTextAreaElement;
+        const editorMount = document.getElementById('monaco-editor-mount') as HTMLElement;
+        const editorSpinner = document.getElementById('editor-loading-spinner') as HTMLElement;
+        const statusIndicatorDot = document.getElementById('status-indicator-dot') as HTMLElement;
+        const statusText = document.getElementById('status-text') as HTMLElement;
+        const metricsContainer = document.getElementById('execution-metrics') as HTMLElement;
+        const metricTime = document.getElementById('metric-time') as HTMLElement;
+        const metricMemory = document.getElementById('metric-memory') as HTMLElement;
+        const stdoutContent = document.getElementById('stdout-content') as HTMLElement;
+        const stderrContent = document.getElementById('stderr-content') as HTMLElement;
+        const errorBadgeCount = document.getElementById('error-badge-count') as HTMLElement;
+        const errorClickableLines = document.getElementById('error-clickable-lines') as HTMLElement;
+        const statusLangVersion = document.getElementById('status-lang-version') as HTMLElement;
+        const statusCursorPos = document.getElementById('status-cursor-pos') as HTMLElement;
+        const activeFilenameLabel = document.getElementById('active-filename-label') as HTMLElement;
+        const toast = document.getElementById('playground-toast') as HTMLElement;
+        const toastMsg = document.getElementById('toast-message') as HTMLElement;
+
+        // Toast Helper
+        function showToast(message: string, isError = false) {
+          if (!toast || !toastMsg) return;
+          toastMsg.textContent = message;
+          toast.className = `fixed bottom-5 right-5 z-50 px-4 py-2 rounded-xl text-xs font-mono shadow-2xl flex items-center gap-2 border transition-all ${
+            isError ? 'bg-rose-900 border-rose-700 text-white' : 'bg-slate-900 border-slate-700 text-white'
+          }`;
+          toast.classList.remove('hidden');
+          setTimeout(() => {
+            toast.classList.add('hidden');
+          }, 2800);
+        }
+
+        // Get Code Content
+        function getCode(): string {
+          if (editorInstance) {
+            return editorInstance.getValue();
+          }
+          return fallbackEditor ? fallbackEditor.value : '';
+        }
+
+        // Set Code Content
+        function setCode(code: string) {
+          if (editorInstance) {
+            editorInstance.setValue(code);
+          }
+          if (fallbackEditor) {
+            fallbackEditor.value = code;
+          }
+          saveAutosave();
+        }
+
+        // Autosave handling
+        function saveAutosave() {
+          try {
+            const state = {
+              langId: currentLang.id,
+              versionId: currentVersion.id,
+              code: getCode(),
+              stdin: stdinTextarea ? stdinTextarea.value : '',
+              timestamp: Date.now()
+            };
+            localStorage.setItem('code_playground_state', JSON.stringify(state));
+          } catch (e) {}
+        }
+
+        function restoreAutosave() {
+          // 1. Check URL parameters first (e.g. from Quiz or Share Link)
+          const params = new URLSearchParams(window.location.search);
+          const urlLang = params.get('lang');
+          const urlCode = params.get('code') || params.get('c');
+          const urlStdin = params.get('stdin') || params.get('in');
+
+          if (urlLang) {
+            const found = languages.find((l: any) => l.id.toLowerCase() === urlLang.toLowerCase() || (urlLang === 'cpp' && l.id === 'cpp') || (urlLang === 'js' && l.id === 'javascript'));
+            if (found) {
+              currentLang = found;
+              currentVersion = found.versions[0];
+            }
+          }
+
+          if (urlCode) {
+            try {
+              let decoded = urlCode;
+              if (urlCode.startsWith('b64:')) {
+                decoded = decodeURIComponent(escape(atob(urlCode.slice(4))));
+              }
+              setCode(decoded);
+              if (urlStdin && stdinTextarea) {
+                stdinTextarea.value = urlStdin;
+              }
+              showToast('Snippet loaded from link. Press Run Code to execute.');
+              return;
+            } catch (e) {
+              console.error('Failed to decode URL code param', e);
+            }
+          }
+
+          // 2. Otherwise restore from localStorage
+          try {
+            const savedRaw = localStorage.getItem('code_playground_state');
+            if (savedRaw) {
+              const saved = JSON.parse(savedRaw);
+              const foundLang = languages.find((l: any) => l.id === saved.langId);
+              if (foundLang) {
+                currentLang = foundLang;
+                const foundVersion = foundLang.versions.find((v: any) => v.id === saved.versionId) || foundLang.versions[0];
+                currentVersion = foundVersion;
+              }
+              if (saved.code) {
+                setCode(saved.code);
+              } else {
+                setCode(currentLang.starterCode);
+              }
+              if (saved.stdin && stdinTextarea) {
+                stdinTextarea.value = saved.stdin;
+              }
+              return;
+            }
+          } catch (e) {}
+
+          // 3. Fallback to default
+          setCode(currentLang.starterCode);
+        }
+
+        // Populate Versions Dropdown
+        function updateVersionsDropdown() {
+          if (!versionSelect) return;
+          versionSelect.innerHTML = '';
+          currentLang.versions.forEach((v: any) => {
+            const opt = document.createElement('option');
+            opt.value = String(v.id);
+            opt.textContent = v.version;
+            if (v.id === currentVersion.id) opt.selected = true;
+            versionSelect.appendChild(opt);
+          });
+          if (statusLangVersion) {
+            statusLangVersion.textContent = `${currentLang.name} (${currentVersion.version})`;
+          }
+        }
+
+        // Update Language UI
+        function setLanguage(langId: string) {
+          const found = languages.find((l: any) => l.id === langId);
+          if (!found) return;
+
+          currentLang = found;
+          currentVersion = found.versions[0];
+
+          if (selectedLangName) selectedLangName.textContent = found.name;
+          if (activeFilenameLabel) activeFilenameLabel.textContent = `main${found.ext}`;
+
+          updateVersionsDropdown();
+          populateExamplesMenu();
+
+          // Set editor language model
+          if (editorInstance && monacoInstance) {
+            const model = editorInstance.getModel();
+            if (model) {
+              monacoInstance.editor.setModelLanguage(model, found.monacoLang);
+            }
+          }
+
+          setCode(found.starterCode);
+          if (stdinTextarea && found.starterStdin !== undefined) {
+            stdinTextarea.value = found.starterStdin;
+          }
+
+          // Format button visibility
+          if (formatBtn) {
+            formatBtn.style.display = found.supportsFormat ? 'inline-flex' : 'none';
+          }
+
+          saveAutosave();
+        }
+
+        // Populate Examples Menu
+        function populateExamplesMenu() {
+          if (!examplesMenu) return;
+          examplesMenu.innerHTML = '';
+          if (!currentLang.examples || currentLang.examples.length === 0) {
+            examplesMenu.innerHTML = '<div class="p-2 text-xs text-[var(--color-text-muted)]">No starter templates.</div>';
+            return;
+          }
+
+          currentLang.examples.forEach((ex: any) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'w-full flex flex-col px-3 py-2 rounded-lg text-left hover:bg-[rgba(var(--accent-rgb),0.1)] text-foreground cursor-pointer transition-colors';
+            btn.innerHTML = `
+              <span class="font-medium text-xs">${ex.title}</span>
+              <span class="text-[10px] text-[var(--color-text-muted)] font-mono">${ex.category}</span>
+            `;
+            btn.addEventListener('click', () => {
+              setCode(ex.code);
+              if (ex.stdin !== undefined && stdinTextarea) {
+                stdinTextarea.value = ex.stdin;
+              }
+              examplesMenu.classList.add('hidden');
+              showToast(`Loaded template: ${ex.title}`);
+            });
+            examplesMenu.appendChild(btn);
+          });
+        }
+
+        // Clickable Line References for Compiler Errors
+        function renderErrorLines(text: string) {
+          if (!errorClickableLines) return;
+          errorClickableLines.innerHTML = '';
+
+          // Match patterns like: main.cpp:5:12: error or Line 5 or File "script.py", line 4
+          const lineMatches = new Set<number>();
+          const regex1 = /(?:main\.\w+|Main\.\w+|script\.\w+|\w+\.\w+):(\d+)(?::(\d+))?:/g;
+          const regex2 = /line\s+(\d+)/gi;
+
+          let match;
+          while ((match = regex1.exec(text)) !== null) {
+            const line = parseInt(match[1], 10);
+            if (!isNaN(line)) lineMatches.add(line);
+          }
+          while ((match = regex2.exec(text)) !== null) {
+            const line = parseInt(match[1], 10);
+            if (!isNaN(line)) lineMatches.add(line);
+          }
+
+          if (lineMatches.size > 0) {
+            errorClickableLines.classList.remove('hidden');
+            const label = document.createElement('span');
+            label.className = 'text-[10px] text-[var(--color-text-muted)] font-mono self-center mr-1';
+            label.textContent = 'Jump to:';
+            errorClickableLines.appendChild(label);
+
+            lineMatches.forEach(lineNumber => {
+              const pill = document.createElement('button');
+              pill.type = 'button';
+              pill.className = 'px-2 py-0.5 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30 text-[11px] font-mono cursor-pointer transition-colors';
+              pill.textContent = `Line ${lineNumber}`;
+              pill.addEventListener('click', () => {
+                if (editorInstance) {
+                  editorInstance.revealLineInCenter(lineNumber);
+                  editorInstance.setPosition({ lineNumber, column: 1 });
+                  editorInstance.focus();
+                }
+              });
+              errorClickableLines.appendChild(pill);
+            });
+          } else {
+            errorClickableLines.classList.add('hidden');
+          }
+        }
+
+        // Switch Console Tabs
+        const consoleTabBtns = document.querySelectorAll('.console-tab-btn');
+        consoleTabBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetTab = btn.getAttribute('data-console-tab');
+            switchConsoleTab(targetTab || 'output');
+          });
+        });
+
+        function switchConsoleTab(tabName: string) {
+          consoleTabBtns.forEach(b => {
+            if (b.getAttribute('data-console-tab') === tabName) {
+              b.className = 'console-tab-btn px-2.5 py-1 rounded-md font-bold bg-[var(--card)] text-[var(--accent)] border border-[var(--color-border)] cursor-pointer';
+            } else {
+              b.className = 'console-tab-btn px-2.5 py-1 rounded-md text-[var(--color-text-muted)] hover:text-foreground cursor-pointer';
+            }
+          });
+
+          const tabOutput = document.getElementById('tab-content-output');
+          const tabInput = document.getElementById('tab-content-input');
+          const tabErrors = document.getElementById('tab-content-errors');
+
+          if (tabOutput) tabOutput.classList.toggle('hidden', tabName !== 'output');
+          if (tabInput) tabInput.classList.toggle('hidden', tabName !== 'input');
+          if (tabErrors) tabErrors.classList.toggle('hidden', tabName !== 'errors');
+        }
+
+        // Mobile Tabs
+        const mobileTabBtns = document.querySelectorAll('.mobile-tab-btn');
+        mobileTabBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const tab = btn.getAttribute('data-tab');
+            mobileTabBtns.forEach(b => {
+              if (b === btn) {
+                b.className = 'mobile-tab-btn flex-1 py-2 text-center font-bold text-[var(--accent)] border-b-2 border-[var(--accent)] cursor-pointer';
+              } else {
+                b.className = 'mobile-tab-btn flex-1 py-2 text-center text-[var(--color-text-muted)] cursor-pointer';
+              }
+            });
+
+            const editorPanel = document.getElementById('editor-panel');
+            const consolePanel = document.getElementById('console-panel');
+
+            if (tab === 'code') {
+              if (editorPanel) editorPanel.classList.remove('hidden');
+              if (consolePanel) consolePanel.classList.add('hidden');
+            } else if (tab === 'input') {
+              if (editorPanel) editorPanel.classList.add('hidden');
+              if (consolePanel) consolePanel.classList.remove('hidden');
+              switchConsoleTab('input');
+            } else if (tab === 'output') {
+              if (editorPanel) editorPanel.classList.add('hidden');
+              if (consolePanel) consolePanel.classList.remove('hidden');
+              switchConsoleTab('output');
+            }
+          });
+        });
+
+        // EXECUTION ENGINE (Direct Sandboxed Judge0 Client with Abort Controller & Rate Limit)
+        let lastRunTimestamp = 0;
+
+        async function executeCode() {
+          if (isRunning) return;
+
+          const now = Date.now();
+          if (now - lastRunTimestamp < 1000) {
+            showToast('Please wait a second before running again.');
+            return;
+          }
+          lastRunTimestamp = now;
+
+          const sourceCode = getCode();
+          if (!sourceCode.trim()) {
+            showToast('Editor is empty. Write or load some code first.', true);
+            return;
+          }
+
+          // Enforce 100KB source code limit
+          if (sourceCode.length > 102400) {
+            showToast('Source code exceeds 100KB limit.', true);
+            return;
+          }
+
+          const stdinInput = stdinTextarea ? stdinTextarea.value : '';
+
+          // Update UI to running state
+          isRunning = true;
+          activeAbortController = new AbortController();
+
+          if (runBtn) runBtn.classList.add('hidden');
+          if (stopBtn) stopBtn.classList.remove('hidden');
+          if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-amber-500 animate-ping';
+          if (statusText) {
+            statusText.textContent = 'Running...';
+            statusText.className = 'font-semibold text-amber-600';
+          }
+          if (stdoutContent) {
+            stdoutContent.textContent = 'Executing in isolated container...\n';
+          }
+          if (metricsContainer) metricsContainer.classList.add('hidden');
+
+          switchConsoleTab('output');
+
+          try {
+            const response = await fetch('https://ce.judge0.com/submissions?base64_encoded=false&wait=true', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                language_id: currentVersion.id,
+                source_code: sourceCode,
+                stdin: stdinInput
+              }),
+              signal: activeAbortController.signal
+            });
+
+            if (!response.ok) {
+              throw new Error(`Execution service returned status ${response.status}`);
+            }
+
+            const data = await response.json();
+            handleExecutionResult(data);
+          } catch (err: any) {
+            if (err.name === 'AbortError') {
+              if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-slate-400';
+              if (statusText) {
+                statusText.textContent = 'Execution cancelled by user';
+                statusText.className = 'font-semibold text-[var(--color-text-muted)]';
+              }
+              if (stdoutContent) stdoutContent.textContent = '[Execution aborted by user]';
+            } else {
+              console.error('Execution failure', err);
+              if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-rose-500';
+              if (statusText) {
+                statusText.textContent = 'Compiler temporarily unavailable';
+                statusText.className = 'font-semibold text-rose-600';
+              }
+              if (stdoutContent) {
+                stdoutContent.textContent = 'Compiler temporarily unavailable.\nYour code is safely stored locally. You can still Copy or Download your work, and please try running again shortly.';
+              }
+              showToast('Compiler temporarily unavailable', true);
+            }
+          } finally {
+            isRunning = false;
+            activeAbortController = null;
+            if (runBtn) runBtn.classList.remove('hidden');
+            if (stopBtn) stopBtn.classList.add('hidden');
+          }
+        }
+
+        // Process Judge0 Execution Response
+        function handleExecutionResult(res: any) {
+          const status = res.status || {};
+          const statusId = status.id;
+          const statusDesc = status.description || 'Unknown';
+
+          // Format Execution Time & Memory
+          let timeText = '-';
+          if (res.time !== null && res.time !== undefined) {
+            const sec = parseFloat(res.time);
+            timeText = sec < 1 ? `${Math.round(sec * 1000)} ms` : `${sec.toFixed(2)} s`;
+          }
+
+          let memText = '-';
+          if (res.memory !== null && res.memory !== undefined) {
+            memText = `${(res.memory / 1024).toFixed(1)} MB`;
+          }
+
+          if (metricsContainer && metricTime && metricMemory) {
+            metricsContainer.classList.remove('hidden');
+            metricTime.textContent = `Time: ${timeText}`;
+            metricMemory.textContent = `Memory: ${memText}`;
+          }
+
+          // Handle Stdout (Truncate if > 1MB)
+          let stdoutStr = res.stdout || '';
+          if (stdoutStr.length > 1048576) {
+            stdoutStr = stdoutStr.slice(0, 1048576) + '\n\n[Output truncated at 1MB limit]';
+          }
+
+          // Handle Errors / Stderr / Compile Output
+          const stderrStr = res.stderr || '';
+          const compileOutputStr = res.compile_output || '';
+          const fullErrors = (compileOutputStr + (compileOutputStr && stderrStr ? '\n\n' : '') + stderrStr).trim();
+
+          if (statusId === 3) { // Accepted / Finished
+            if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-emerald-500';
+            if (statusText) {
+              statusText.textContent = '✓ Finished';
+              statusText.className = 'font-semibold text-emerald-600';
+            }
+            if (stdoutContent) {
+              stdoutContent.textContent = stdoutStr || '[Program finished with no output]';
+            }
+          } else if (statusId === 5) { // Time Limit Exceeded
+            if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-amber-500';
+            if (statusText) {
+              statusText.textContent = '⏱ Time Limit Exceeded (5.0s)';
+              statusText.className = 'font-semibold text-amber-600';
+            }
+            if (stdoutContent) {
+              stdoutContent.textContent = (stdoutStr ? stdoutStr + '\n\n' : '') + '⏱ Execution stopped: Time limit exceeded (5.0 seconds).';
+            }
+          } else if (statusId === 6) { // Compilation Error
+            if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-rose-500';
+            if (statusText) {
+              statusText.textContent = '✕ Compilation Error';
+              statusText.className = 'font-semibold text-rose-600';
+            }
+            if (stdoutContent) {
+              stdoutContent.textContent = compileOutputStr || stderrStr || 'Compilation failed.';
+            }
+            switchConsoleTab('errors');
+          } else { // Runtime Error or other
+            if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-rose-500';
+            if (statusText) {
+              statusText.textContent = `✕ ${statusDesc}`;
+              statusText.className = 'font-semibold text-rose-600';
+            }
+            if (stdoutContent) {
+              stdoutContent.textContent = (stdoutStr ? stdoutStr + '\n\n' : '') + (stderrStr || statusDesc);
+            }
+            if (stderrStr || compileOutputStr) {
+              switchConsoleTab('errors');
+            }
+          }
+
+          // Populate Errors tab
+          if (stderrContent) {
+            stderrContent.textContent = fullErrors || 'No compiler errors or runtime warnings reported.';
+          }
+          if (errorBadgeCount) {
+            if (fullErrors) {
+              errorBadgeCount.textContent = '1';
+              errorBadgeCount.classList.remove('hidden');
+            } else {
+              errorBadgeCount.classList.add('hidden');
+            }
+          }
+
+          if (fullErrors) {
+            renderErrorLines(fullErrors);
+          }
+        }
+
+        // Stop Execution
+        if (stopBtn) {
+          stopBtn.addEventListener('click', () => {
+            if (activeAbortController) {
+              activeAbortController.abort();
+            }
+          });
+        }
+
+        // Run Code Trigger
+        if (runBtn) {
+          runBtn.addEventListener('click', executeCode);
+        }
+
+        // Reset Code Modal Flow
+        const resetConfirmModal = document.getElementById('reset-confirm-modal');
+        const confirmResetBtn = document.getElementById('confirm-reset-btn');
+        const cancelResetBtn = document.getElementById('cancel-reset-btn');
+
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            const current = getCode();
+            if (current !== currentLang.starterCode) {
+              if (resetConfirmModal) resetConfirmModal.classList.remove('hidden');
+            } else {
+              setCode(currentLang.starterCode);
+              showToast('Code reset to default');
+            }
+          });
+        }
+
+        if (confirmResetBtn) {
+          confirmResetBtn.addEventListener('click', () => {
+            setCode(currentLang.starterCode);
+            if (resetConfirmModal) resetConfirmModal.classList.add('hidden');
+            showToast('Code reset to default template');
+          });
+        }
+
+        if (cancelResetBtn) {
+          cancelResetBtn.addEventListener('click', () => {
+            if (resetConfirmModal) resetConfirmModal.classList.add('hidden');
+          });
+        }
+
+        // Format Code Button
+        if (formatBtn) {
+          formatBtn.addEventListener('click', () => {
+            if (editorInstance) {
+              const formatAction = editorInstance.getAction('editor.action.formatDocument');
+              if (formatAction) {
+                formatAction.run();
+                showToast('Formatted document');
+                return;
+              }
+            }
+            showToast('Formatting not supported for this language');
+          });
+        }
+
+        // Copy Code
+        if (copyCodeBtn) {
+          copyCodeBtn.addEventListener('click', () => {
+            const code = getCode();
+            navigator.clipboard.writeText(code).then(() => {
+              showToast('Code copied to clipboard');
+            }).catch(() => {
+              showToast('Failed to copy', true);
+            });
+          });
+        }
+
+        // Copy Output
+        const copyOutputBtn = document.getElementById('copy-output-btn');
+        if (copyOutputBtn) {
+          copyOutputBtn.addEventListener('click', () => {
+            const outText = stdoutContent ? stdoutContent.textContent || '' : '';
+            navigator.clipboard.writeText(outText).then(() => {
+              showToast('Output copied to clipboard');
+            });
+          });
+        }
+
+        // Clear Output
+        function clearOutput() {
+          if (stdoutContent) stdoutContent.textContent = 'Output cleared.';
+          if (stderrContent) stderrContent.textContent = 'No errors.';
+          if (statusText) statusText.textContent = 'Ready';
+          if (statusIndicatorDot) statusIndicatorDot.className = 'size-2 rounded-full bg-slate-400';
+          if (metricsContainer) metricsContainer.classList.add('hidden');
+          if (errorBadgeCount) errorBadgeCount.classList.add('hidden');
+          showToast('Output cleared');
+        }
+
+        const clearOutputIconBtn = document.getElementById('clear-output-icon-btn');
+        if (clearOutputIconBtn) clearOutputIconBtn.addEventListener('click', clearOutput);
+
+        const clearOutputBtn = document.getElementById('clear-output-btn');
+        if (clearOutputBtn) {
+          clearOutputBtn.addEventListener('click', () => {
+            clearOutput();
+            if (overflowMenu) overflowMenu.classList.add('hidden');
+          });
+        }
+
+        // Clear Code
+        const clearCodeBtn = document.getElementById('clear-code-btn');
+        if (clearCodeBtn) {
+          clearCodeBtn.addEventListener('click', () => {
+            setCode('');
+            if (overflowMenu) overflowMenu.classList.add('hidden');
+            showToast('Code cleared');
+          });
+        }
+
+        // Download Code
+        if (downloadCodeBtn) {
+          downloadCodeBtn.addEventListener('click', () => {
+            const code = getCode();
+            const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `main${currentLang.ext}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`Downloaded main${currentLang.ext}`);
+          });
+        }
+
+        // Share Code
+        if (shareCodeBtn) {
+          shareCodeBtn.addEventListener('click', () => {
+            const code = getCode();
+            if (code.length > 4096) {
+              showToast('Snippet exceeds 4KB URL limit. Use My Snippets to save locally.', true);
+              return;
+            }
+
+            const url = new URL(window.location.origin + '/tools/playground');
+            url.searchParams.set('lang', currentLang.id);
+            const encoded = 'b64:' + btoa(unescape(encodeURIComponent(code)));
+            url.searchParams.set('c', encoded);
+
+            if (stdinTextarea && stdinTextarea.value.trim()) {
+              url.searchParams.set('in', stdinTextarea.value);
+            }
+
+            navigator.clipboard.writeText(url.toString()).then(() => {
+              showToast('Shareable link copied to clipboard!');
+            }).catch(() => {
+              showToast('Failed to copy link', true);
+            });
+          });
+        }
+
+        // Focus Mode (Full Screen)
+        let isFocusMode = false;
+        if (focusModeBtn) {
+          focusModeBtn.addEventListener('click', () => {
+            isFocusMode = !isFocusMode;
+            const main = document.getElementById('playground-main');
+            const header = document.getElementById('site-header-container');
+            const footer = document.getElementById('site-footer-container');
+            const topBar = document.getElementById('playground-top-bar');
+
+            if (isFocusMode) {
+              if (header) header.style.display = 'none';
+              if (footer) footer.style.display = 'none';
+              if (topBar) topBar.style.display = 'none';
+              if (main) {
+                main.className = 'fixed inset-0 z-50 p-2 bg-[var(--background)] flex flex-col h-screen w-screen max-w-none';
+              }
+              showToast('Entered Focus Mode. Click button again to exit.');
+            } else {
+              if (header) header.style.display = '';
+              if (footer) footer.style.display = '';
+              if (topBar) topBar.style.display = '';
+              if (main) {
+                main.className = 'flex-1 w-full px-3 sm:px-6 lg:px-8 py-3 sm:py-5 space-y-3 max-w-[1700px] mx-auto flex flex-col';
+              }
+            }
+            if (editorInstance) {
+              editorInstance.layout();
+            }
+          });
+        }
+
+        // Language Search Filter
+        const langSearchInput = document.getElementById('lang-search-input') as HTMLInputElement;
+        if (langSearchInput) {
+          langSearchInput.addEventListener('input', (e: any) => {
+            const query = e.target.value.toLowerCase().trim();
+            const options = document.querySelectorAll('.lang-option');
+            options.forEach((opt: any) => {
+              const langId = opt.getAttribute('data-lang');
+              const langObj = languages.find((l: any) => l.id === langId);
+              if (langObj && (langObj.name.toLowerCase().includes(query) || langObj.id.toLowerCase().includes(query))) {
+                opt.style.display = 'flex';
+              } else {
+                opt.style.display = 'none';
+              }
+            });
+          });
+        }
+
+        // Language Options Click
+        document.querySelectorAll('.lang-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+            const langId = opt.getAttribute('data-lang');
+            if (langId) {
+              setLanguage(langId);
+              if (langMenu) langMenu.classList.add('hidden');
+            }
+          });
+        });
+
+        // Dropdown Click Handlers
+        if (langSelectBtn && langMenu) {
+          langSelectBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langMenu.classList.toggle('hidden');
+            if (!langMenu.classList.contains('hidden') && langSearchInput) {
+              langSearchInput.focus();
+            }
+          });
+        }
+
+        if (versionSelect) {
+          versionSelect.addEventListener('change', () => {
+            const selectedId = parseInt(versionSelect.value, 10);
+            const foundV = currentLang.versions.find((v: any) => v.id === selectedId);
+            if (foundV) {
+              currentVersion = foundV;
+              if (statusLangVersion) {
+                statusLangVersion.textContent = `${currentLang.name} (${currentVersion.version})`;
+              }
+              saveAutosave();
+            }
+          });
+        }
+
+        if (examplesBtn && examplesMenu) {
+          examplesBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            examplesMenu.classList.toggle('hidden');
+          });
+        }
+
+        if (overflowBtn && overflowMenu) {
+          overflowBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            overflowMenu.classList.toggle('hidden');
+          });
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', () => {
+          if (langMenu) langMenu.classList.add('hidden');
+          if (examplesMenu) examplesMenu.classList.add('hidden');
+          if (overflowMenu) overflowMenu.classList.add('hidden');
+        });
+
+        // Modals management
+        const snippetsModal = document.getElementById('snippets-modal');
+        const settingsModal = document.getElementById('settings-modal');
+        const shortcutsModal = document.getElementById('shortcuts-modal');
+
+        document.getElementById('open-snippets-btn')?.addEventListener('click', () => {
+          if (snippetsModal) snippetsModal.classList.remove('hidden');
+          if (overflowMenu) overflowMenu.classList.add('hidden');
+          renderSnippetsList();
+        });
+
+        document.getElementById('open-settings-btn')?.addEventListener('click', () => {
+          if (settingsModal) settingsModal.classList.remove('hidden');
+          if (overflowMenu) overflowMenu.classList.add('hidden');
+        });
+
+        document.getElementById('open-shortcuts-btn')?.addEventListener('click', () => {
+          if (shortcutsModal) shortcutsModal.classList.remove('hidden');
+          if (overflowMenu) overflowMenu.classList.add('hidden');
+        });
+
+        document.querySelectorAll('.close-modal-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (snippetsModal) snippetsModal.classList.add('hidden');
+            if (settingsModal) settingsModal.classList.add('hidden');
+            if (shortcutsModal) shortcutsModal.classList.add('hidden');
+          });
+        });
+
+        // Snippets Local Storage Engine
+        function getSavedSnippets(): any[] {
+          try {
+            return JSON.parse(localStorage.getItem('code_playground_snippets') || '[]');
+          } catch (e) {
+            return [];
+          }
+        }
+
+        function saveSnippetsList(list: any[]) {
+          try {
+            localStorage.setItem('code_playground_snippets', JSON.stringify(list));
+          } catch (e) {}
+        }
+
+        function renderSnippetsList() {
+          const container = document.getElementById('snippets-list-container');
+          if (!container) return;
+
+          const list = getSavedSnippets();
+          if (list.length === 0) {
+            container.innerHTML = '<div class="text-center py-8 text-xs text-[var(--color-text-muted)]">No snippets saved yet. Click "Save Current" to store your code locally.</div>';
+            return;
+          }
+
+          container.innerHTML = '';
+          list.forEach((snip, index) => {
+            const card = document.createElement('div');
+            card.className = 'p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex items-center justify-between gap-3 text-xs';
+            card.innerHTML = `
+              <div class="flex-1 overflow-hidden">
+                <div class="font-bold text-foreground truncate">${snip.title}</div>
+                <div class="text-[11px] font-mono text-[var(--color-text-muted)] flex items-center gap-2">
+                  <span>${snip.langName}</span>
+                  <span>•</span>
+                  <span>${new Date(snip.updatedAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" class="load-snip-btn px-2.5 py-1 rounded-md bg-[var(--accent)] text-white font-mono text-[11px] cursor-pointer">Open</button>
+                <button type="button" class="del-snip-btn px-2 py-1 rounded-md hover:bg-rose-500/10 text-rose-600 font-mono text-[11px] cursor-pointer">Delete</button>
+              </div>
+            `;
+
+            card.querySelector('.load-snip-btn')?.addEventListener('click', () => {
+              setLanguage(snip.langId);
+              setCode(snip.code);
+              if (snip.stdin && stdinTextarea) {
+                stdinTextarea.value = snip.stdin;
+              }
+              if (snippetsModal) snippetsModal.classList.add('hidden');
+              showToast(`Loaded snippet: ${snip.title}`);
+            });
+
+            card.querySelector('.del-snip-btn')?.addEventListener('click', () => {
+              const updated = list.filter((_, idx) => idx !== index);
+              saveSnippetsList(updated);
+              renderSnippetsList();
+              showToast('Snippet deleted');
+            });
+
+            container.appendChild(card);
+          });
+        }
+
+        document.getElementById('save-current-snippet-btn')?.addEventListener('click', () => {
+          const titleInput = document.getElementById('new-snippet-title-input') as HTMLInputElement;
+          const title = titleInput && titleInput.value.trim() ? titleInput.value.trim() : `${currentLang.name} Snippet (${new Date().toLocaleTimeString()})`;
+          const list = getSavedSnippets();
+          list.unshift({
+            title,
+            langId: currentLang.id,
+            langName: currentLang.name,
+            code: getCode(),
+            stdin: stdinTextarea ? stdinTextarea.value : '',
+            updatedAt: Date.now()
+          });
+          saveSnippetsList(list);
+          if (titleInput) titleInput.value = '';
+          renderSnippetsList();
+          showToast(`Saved snippet "${title}"`);
+        });
+
+        // Settings change handlers
+        document.getElementById('setting-font-size')?.addEventListener('change', (e: any) => {
+          if (editorInstance) {
+            editorInstance.updateOptions({ fontSize: parseInt(e.target.value, 10) });
+          }
+        });
+        document.getElementById('setting-tab-size')?.addEventListener('change', (e: any) => {
+          if (editorInstance) {
+            editorInstance.updateOptions({ tabSize: parseInt(e.target.value, 10) });
+          }
+        });
+        document.getElementById('setting-word-wrap')?.addEventListener('change', (e: any) => {
+          if (editorInstance) {
+            editorInstance.updateOptions({ wordWrap: e.target.checked ? 'on' : 'off' });
+          }
+        });
+        document.getElementById('setting-minimap')?.addEventListener('change', (e: any) => {
+          if (editorInstance) {
+            editorInstance.updateOptions({ minimap: { enabled: e.target.checked } });
+          }
+        });
+        document.getElementById('setting-line-numbers')?.addEventListener('change', (e: any) => {
+          if (editorInstance) {
+            editorInstance.updateOptions({ lineNumbers: e.target.checked ? 'on' : 'off' });
+          }
+        });
+        document.getElementById('setting-editor-theme')?.addEventListener('change', (e: any) => {
+          if (monacoInstance) {
+            monacoInstance.editor.setTheme(e.target.value);
+          }
+        });
+
+        // Keyboard Shortcuts Handler (Cmd/Ctrl + Enter = Run, Cmd/Ctrl + S = Save)
+        window.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            executeCode();
+          } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            saveAutosave();
+            showToast('Playground state saved locally');
+          }
+        });
+
+        // Layout Toggle (Side-by-Side vs Stacked)
+        const layoutSplitVBtn = document.getElementById('layout-split-v-btn');
+        const layoutSplitHBtn = document.getElementById('layout-split-h-btn');
+        const workspaceContainer = document.getElementById('workspace-container');
+        const consolePanel = document.getElementById('console-panel');
+
+        if (layoutSplitVBtn && layoutSplitHBtn && workspaceContainer && consolePanel) {
+          layoutSplitVBtn.addEventListener('click', () => {
+            workspaceContainer.className = 'flex-1 flex flex-col md:flex-row relative min-h-[500px]';
+            consolePanel.className = 'w-full md:w-[480px] flex flex-col bg-[var(--color-bg-secondary)]/40 border-t md:border-t-0 md:border-l border-[var(--color-border)] min-h-[280px]';
+            layoutSplitVBtn.className = 'px-1.5 py-0.5 rounded bg-[var(--card)] border border-[var(--color-border)] text-foreground cursor-pointer font-bold';
+            layoutSplitHBtn.className = 'px-1.5 py-0.5 rounded hover:bg-[var(--card)] text-[var(--color-text-muted)] hover:text-foreground cursor-pointer';
+            if (editorInstance) editorInstance.layout();
+          });
+
+          layoutSplitHBtn.addEventListener('click', () => {
+            workspaceContainer.className = 'flex-1 flex flex-col relative min-h-[500px]';
+            consolePanel.className = 'w-full h-[280px] flex flex-col bg-[var(--color-bg-secondary)]/40 border-t border-[var(--color-border)]';
+            layoutSplitHBtn.className = 'px-1.5 py-0.5 rounded bg-[var(--card)] border border-[var(--color-border)] text-foreground cursor-pointer font-bold';
+            layoutSplitVBtn.className = 'px-1.5 py-0.5 rounded hover:bg-[var(--card)] text-[var(--color-text-muted)] hover:text-foreground cursor-pointer';
+            if (editorInstance) editorInstance.layout();
+          });
+        }
+
+        // LOAD MONACO EDITOR VIA CDN (Lazy Loaded specifically on this page)
+        function initMonaco() {
+          const loaderScript = document.createElement('script');
+          loaderScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js';
+          loaderScript.async = true;
+
+          loaderScript.onload = () => {
+            // @ts-ignore
+            if (window.require) {
+              // @ts-ignore
+              window.require.config({
+                paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }
+              });
+
+              // @ts-ignore
+              window.require(['vs/editor/editor.main'], function() {
+                // @ts-ignore
+                monacoInstance = window.monaco;
+                if (!monacoInstance || !editorMount) return;
+
+                editorInstance = monacoInstance.editor.create(editorMount, {
+                  value: currentLang.starterCode,
+                  language: currentLang.monacoLang,
+                  theme: 'vs',
+                  fontSize: 14,
+                  tabSize: 4,
+                  wordWrap: 'on',
+                  minimap: { enabled: false },
+                  lineNumbers: 'on',
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+                  fontLigatures: true,
+                  renderLineHighlight: 'all',
+                  bracketPairColorization: { enabled: true },
+                  autoClosingBrackets: 'always'
+                });
+
+                // Cursor Position Tracking for IDE Status Bar
+                editorInstance.onDidChangeCursorPosition((e: any) => {
+                  if (statusCursorPos) {
+                    statusCursorPos.textContent = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
+                  }
+                });
+
+                // Content Change Autosave
+                editorInstance.onDidChangeModelContent(() => {
+                  saveAutosave();
+                });
+
+                // Add Custom Actions to Monaco Command Palette (F1)
+                editorInstance.addAction({
+                  id: 'playground-run-code',
+                  label: 'Playground: Run Code',
+                  keybindings: [
+                    monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.Enter
+                  ],
+                  run: () => {
+                    executeCode();
+                  }
+                });
+
+                if (editorSpinner) editorSpinner.style.display = 'none';
+                restoreAutosave();
+                updateVersionsDropdown();
+                populateExamplesMenu();
+              });
+            }
+          };
+
+          loaderScript.onerror = () => {
+            console.warn('Monaco CDN failed to load; activating fallback editor.');
+            if (editorSpinner) editorSpinner.style.display = 'none';
+            if (fallbackEditor) {
+              fallbackEditor.classList.remove('hidden');
+              fallbackEditor.value = currentLang.starterCode;
+              fallbackEditor.addEventListener('input', saveAutosave);
+            }
+            restoreAutosave();
+            updateVersionsDropdown();
+            populateExamplesMenu();
+          };
+
+          document.head.appendChild(loaderScript);
+        }
+
+        // Initialize!
+        initMonaco();
+      })();
+    </script>
+  </body>
+</html>

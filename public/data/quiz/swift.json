@@ -1,0 +1,943 @@
+[
+  {
+    "id": "swift-001",
+    "language": "swift",
+    "difficulty": "easy",
+    "concepts": [
+      "structs",
+      "value-semantics",
+      "copy-on-write"
+    ],
+    "code": "struct Point {\n    var x: Int\n}\nvar p1 = Point(x: 10)\nvar p2 = p1\np2.x = 20\nprint(p1.x)",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "20",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "In Swift, `struct` types have value semantics. Assigning `var p2 = p1` makes an independent copy; modifying `p2.x` does not alter `p1.x`.",
+    "runtime": "Swift 5.9+"
+  },
+  {
+    "id": "swift-002",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "classes",
+      "reference-semantics"
+    ],
+    "code": "class Node {\n    var value: Int\n    init(_ v: Int) { self.value = v }\n}\nvar n1 = Node(10)\nvar n2 = n1\nn2.value = 20\nprint(n1.value)",
+    "question": "What will be printed?",
+    "options": [
+      "20",
+      "10",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "20",
+    "explanation": "Swift `class` types have reference semantics. `n1` and `n2` point to the identical instance in memory; changing `n2.value` directly modifies `n1.value`.",
+    "runtime": "Swift 5.9+"
+  },
+  {
+    "id": "swift-003",
+    "language": "swift",
+    "difficulty": "easy",
+    "concepts": [
+      "optionals",
+      "nil-coalescing"
+    ],
+    "code": "var name: String? = nil\nprint(name ?? \"Guest\")",
+    "question": "What will be printed?",
+    "options": [
+      "Guest",
+      "nil",
+      "Optional(\"Guest\")",
+      "Compilation error"
+    ],
+    "correctAnswer": "Guest",
+    "explanation": "The nil-coalescing operator `??` unwraps an optional if it has a value, or provides a default fallback string ('Guest') when it is `nil`.",
+    "runtime": "Swift 5.9+"
+  },
+  {
+    "id": "swift-004",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "defer",
+      "lifo-order"
+    ],
+    "code": "func run() {\n    defer { print(\"A\", terminator: \"\") }\n    defer { print(\"B\", terminator: \"\") }\n    print(\"C\", terminator: \"\")\n}\nrun()",
+    "question": "What will be printed?",
+    "options": [
+      "CBA",
+      "CAB",
+      "ABC",
+      "BCA"
+    ],
+    "correctAnswer": "CBA",
+    "explanation": "Statements in `defer` blocks execute upon function exit in reverse (LIFO - Last In First Out) order. 'C' prints first, followed by 'B', then 'A'.",
+    "runtime": "Swift 5.9+"
+  },
+  {
+    "id": "swift-005",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "property-observers",
+      "didSet"
+    ],
+    "code": "var count = 0 {\n    didSet {\n        count += 1\n    }\n}\ncount = 5\nprint(count)",
+    "question": "What will be printed?",
+    "options": [
+      "6",
+      "5",
+      "0",
+      "Infinite loop"
+    ],
+    "correctAnswer": "6",
+    "explanation": "`count = 5` triggers the `didSet` observer. Setting `count += 1` inside its own `didSet` does not trigger further recursive observer calls in Swift, ending with 6.",
+    "runtime": "Swift 5.9+"
+  },
+  {
+    "id": "swift-006",
+    "language": "swift",
+    "difficulty": "easy",
+    "concepts": [
+      "enums",
+      "raw-values"
+    ],
+    "code": "enum Dir: String { case north = \"N\", south = \"S\" }\nprint(Dir.north.rawValue)",
+    "question": "What will be printed?",
+    "options": [
+      "N",
+      "north",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "N",
+    "explanation": "The rawValue of `Dir.north` is explicitly defined as \"N\".",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for enums."
+  },
+  {
+    "id": "swift-007",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "closures",
+      "trailing-shorthand"
+    ],
+    "code": "let nums = [1, 2, 3]\nlet res = nums.map { $0 * 2 }\nprint(res)",
+    "question": "What will be printed?",
+    "options": [
+      "[2, 4, 6]",
+      "[1, 2, 3]",
+      "6",
+      "Compilation error"
+    ],
+    "correctAnswer": "[2, 4, 6]",
+    "explanation": "Trailing closure with shorthand parameter `$0` doubles each element in the array.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for closures."
+  },
+  {
+    "id": "swift-008",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "inout",
+      "parameters"
+    ],
+    "code": "func doubleIt(_ x: inout Int) { x *= 2 }\nvar a = 5\ndoubleIt(&a)\nprint(a)",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "5",
+      "&a",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "`inout` passes a copy-in copy-out reference; passing `&a` mutates `a` to 10.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for inout."
+  },
+  {
+    "id": "swift-009",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "guard",
+      "scope"
+    ],
+    "code": "func check(_ v: Int?) -> Int {\n    guard let v = v else { return 0 }\n    return v * 2\n}\nprint(check(5))",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "5",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "Variables bound with `guard let` remain in scope for the remainder of the enclosing function.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for guard."
+  },
+  {
+    "id": "swift-010",
+    "language": "swift",
+    "difficulty": "easy",
+    "concepts": [
+      "arrays",
+      "count"
+    ],
+    "code": "var arr = [1, 2, 3]\narr.append(4)\nprint(arr.count)",
+    "question": "What will be printed?",
+    "options": [
+      "4",
+      "3",
+      "5",
+      "Compilation error"
+    ],
+    "correctAnswer": "4",
+    "explanation": "Appending 4 increases array count to 4.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for arrays."
+  },
+  {
+    "id": "swift-011",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "tuples",
+      "pattern-matching"
+    ],
+    "code": "let pt = (0, 5)\nswitch pt {\ncase (0, let y): print(\"Y:\\(y)\")\ndefault: print(\"Other\")\n}",
+    "question": "What will be printed?",
+    "options": [
+      "Y:5",
+      "Other",
+      "(0, 5)",
+      "Compilation error"
+    ],
+    "correctAnswer": "Y:5",
+    "explanation": "Pattern `(0, let y)` matches the tuple with first element 0 and binds `y = 5`.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for tuples."
+  },
+  {
+    "id": "swift-012",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "mutating",
+      "methods"
+    ],
+    "code": "struct Counter {\n    var count = 0\n    mutating func inc() { count += 1 }\n}\nvar c = Counter()\nc.inc()\nprint(c.count)",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`mutating` keyword is required on struct methods that modify stored instance properties.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for mutating."
+  },
+  {
+    "id": "swift-013",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "dictionaries",
+      "subscript-default"
+    ],
+    "code": "let d = [\"a\": 1]\nprint(d[\"b\", default: 0])",
+    "question": "What will be printed?",
+    "options": [
+      "0",
+      "nil",
+      "Optional(0)",
+      "KeyError"
+    ],
+    "correctAnswer": "0",
+    "explanation": "Dictionary subscript with `default:` parameter returns the non-optional default value 0.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for dictionaries."
+  },
+  {
+    "id": "swift-014",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "protocols",
+      "extensions"
+    ],
+    "code": "protocol P { func f() -> String }\nextension P { func f() -> String { \"P\" } }\nstruct S : P {}\nprint(S().f())",
+    "question": "What will be printed?",
+    "options": [
+      "P",
+      "S",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "P",
+    "explanation": "Protocol extension provides the default implementation of `f()` for adopting types.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for protocols."
+  },
+  {
+    "id": "swift-015",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "count"
+    ],
+    "code": "let s = \"Café\"\nprint(s.count)",
+    "question": "What will be printed?",
+    "options": [
+      "4",
+      "5",
+      "Compilation error",
+      "3"
+    ],
+    "correctAnswer": "4",
+    "explanation": "Swift `String.count` counts extended grapheme clusters; 'é' is 1 grapheme cluster.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for strings."
+  },
+  {
+    "id": "swift-016",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "generics",
+      "type-constraint"
+    ],
+    "code": "func cmp<T: Comparable>(_ a: T, _ b: T) -> T { a > b ? a : b }\nprint(cmp(10, 20))",
+    "question": "What will be printed?",
+    "options": [
+      "20",
+      "10",
+      "Compilation error",
+      "true"
+    ],
+    "correctAnswer": "20",
+    "explanation": "`Comparable` constraint allows `>` operator; returns 20.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for generics."
+  },
+  {
+    "id": "swift-017",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "insert"
+    ],
+    "code": "var s: Set<Int> = [1, 2]\nlet (inserted, _) = s.insert(2)\nprint(inserted)",
+    "question": "What will be printed?",
+    "options": [
+      "false",
+      "true",
+      "Compilation error",
+      "2"
+    ],
+    "correctAnswer": "false",
+    "explanation": "Inserting an existing element returns `(inserted: false, memberAfterInsert: 2)`.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for sets."
+  },
+  {
+    "id": "swift-018",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "lazy",
+      "properties"
+    ],
+    "code": "class Box {\n    var initVal = 0\n    lazy var val: Int = { initVal += 1; return 42 }()\n}\nlet b = Box()\nprint(\"\\(b.initVal) \\(b.val) \\(b.initVal)\")",
+    "question": "What will be printed?",
+    "options": [
+      "0 42 1",
+      "1 42 1",
+      "0 42 0",
+      "Compilation error"
+    ],
+    "correctAnswer": "0 42 1",
+    "explanation": "`lazy` properties evaluate on first access.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for lazy."
+  },
+  {
+    "id": "swift-019",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "ranges",
+      "half-open"
+    ],
+    "code": "let r = 1..<4\nprint(r.count)",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "4",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "Half-open range `1..<4` contains elements 1, 2, and 3 (count 3).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for ranges."
+  },
+  {
+    "id": "swift-020",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "optional-chaining",
+      "nil"
+    ],
+    "code": "struct User { var name: String? }\nvar u: User? = nil\nprint(u?.name?.count == nil)",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Optional chaining on a nil instance evaluates to `nil`, which equals `nil` (true).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for optional-chaining."
+  },
+  {
+    "id": "swift-021",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "remove-last"
+    ],
+    "code": "var a = [1, 2, 3]\nlet x = a.removeLast()\nprint(\"\\(x) \\(a.count)\")",
+    "question": "What will be printed?",
+    "options": [
+      "3 2",
+      "3 3",
+      "1 2",
+      "Compilation error"
+    ],
+    "correctAnswer": "3 2",
+    "explanation": "`removeLast()` returns removed element 3 and shortens the array to 2.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for arrays."
+  },
+  {
+    "id": "swift-022",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "closures",
+      "capture-list"
+    ],
+    "code": "var x = 10\nlet f = { [x] in x + 5 }\nx = 20\nprint(f())",
+    "question": "What will be printed?",
+    "options": [
+      "15",
+      "25",
+      "20",
+      "Compilation error"
+    ],
+    "correctAnswer": "15",
+    "explanation": "Capture list `[x]` copies `x`'s value at closure definition time (10). 10 + 5 = 15.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for closures."
+  },
+  {
+    "id": "swift-023",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "extensions",
+      "computed-property"
+    ],
+    "code": "extension Int { var doubled: Int { self * 2 } }\nprint(5.doubled)",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "5",
+      "Compilation error",
+      "25"
+    ],
+    "correctAnswer": "10",
+    "explanation": "Extension on `Int` adds computed property `doubled`.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for extensions."
+  },
+  {
+    "id": "swift-024",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "typealias",
+      "usage"
+    ],
+    "code": "typealias Kilometers = Int\nlet d: Kilometers = 42\nprint(d + 8)",
+    "question": "What will be printed?",
+    "options": [
+      "50",
+      "42",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "50",
+    "explanation": "`typealias` provides an alternative name for `Int`.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for typealias."
+  },
+  {
+    "id": "swift-025",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "hasprefix"
+    ],
+    "code": "let s = \"swift-lang\"\nprint(s.hasPrefix(\"swift\"))",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "true",
+    "explanation": "`hasPrefix` checks whether string starts with the given substring.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for strings."
+  },
+  {
+    "id": "swift-026",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "enums",
+      "associated-values"
+    ],
+    "code": "enum Barcode { case upc(Int, Int) }\nlet code = Barcode.upc(1, 2)\nif case let .upc(a, b) = code { print(a + b) }",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "12",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`if case let` binds associated values `a = 1` and `b = 2`; 1 + 2 = 3.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for enums."
+  },
+  {
+    "id": "swift-027",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "reduce"
+    ],
+    "code": "let nums = [1, 2, 3]\nlet sum = nums.reduce(10, +)\nprint(sum)",
+    "question": "What will be printed?",
+    "options": [
+      "16",
+      "6",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "16",
+    "explanation": "`reduce(10, +)` starts at 10 and accumulates: 10 + 1 + 2 + 3 = 16.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for collections."
+  },
+  {
+    "id": "swift-028",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "convenience-init"
+    ],
+    "code": "class A { var x: Int; init(x: Int){ self.x = x } convenience init(){ self.init(x: 5) } }\nprint(A().x)",
+    "question": "What will be printed?",
+    "options": [
+      "5",
+      "0",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "5",
+    "explanation": "Convenience initializers delegate to designated initializers (`self.init(x: 5)`).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for classes."
+  },
+  {
+    "id": "swift-029",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "compactmap"
+    ],
+    "code": "let arr = [\"1\", \"a\", \"3\"]\nlet nums = arr.compactMap { Int($0) }\nprint(nums.count)",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`compactMap` discards nil results: \"1\" and \"3\" parse successfully (count 2).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for arrays."
+  },
+  {
+    "id": "swift-030",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "failable-init",
+      "nil"
+    ],
+    "code": "struct Pos { var val: Int; init?(v: Int) { if v < 0 { return nil }; self.val = v } }\nprint(Pos(v: -1) == nil)",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Failable initializers return `nil` if validation fails.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for failable-init."
+  },
+  {
+    "id": "swift-031",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "lowercased"
+    ],
+    "code": "print(\"SWIFT\".lowercased())",
+    "question": "What will be printed?",
+    "options": [
+      "swift",
+      "SWIFT",
+      "Swift",
+      "Compilation error"
+    ],
+    "correctAnswer": "swift",
+    "explanation": "`lowercased()` converts all characters to lowercase.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for strings."
+  },
+  {
+    "id": "swift-032",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "protocols",
+      "optional-extension-dispatch"
+    ],
+    "code": "protocol Animal {}\nextension Animal { func speak(){ print(\"...\") } }\nclass Cat : Animal { func speak(){ print(\"Meow\") } }\nlet a: Animal = Cat()\na.speak()",
+    "question": "What will be printed?",
+    "options": [
+      "...",
+      "Meow",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "...",
+    "explanation": "Because `speak()` is not declared in the protocol definition, it dispatches statically based on protocol type `Animal`.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for protocols."
+  },
+  {
+    "id": "swift-033",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "booleans",
+      "toggle"
+    ],
+    "code": "var flag = true\nflag.toggle()\nprint(flag)",
+    "question": "What will be printed?",
+    "options": [
+      "false",
+      "true",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "false",
+    "explanation": "`.toggle()` mutates boolean to its opposite state.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for booleans."
+  },
+  {
+    "id": "swift-034",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "structs",
+      "memberwise-init"
+    ],
+    "code": "struct Item { var id: Int = 1; var name: String }\nprint(Item(name: \"Book\").id)",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Swift generates memberwise initializers with default parameter values.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for structs."
+  },
+  {
+    "id": "swift-035",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "first-index"
+    ],
+    "code": "let a = [10, 20, 30]\nprint(a.firstIndex(of: 20) ?? -1)",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "0",
+      "-1"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Value 20 is located at index 1.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for arrays."
+  },
+  {
+    "id": "swift-036",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "defer",
+      "multiple-scope"
+    ],
+    "code": "func test() -> Int {\n    var x = 1\n    defer { x += 1 }\n    return x\n}\nprint(test())",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "The return value (1) is evaluated before `defer` block executes.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for defer."
+  },
+  {
+    "id": "swift-037",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "intersection"
+    ],
+    "code": "let a: Set = [1, 2]\nlet b: Set = [2, 3]\nprint(a.intersection(b).count)",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "0"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Common element is 2 (count 1).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for sets."
+  },
+  {
+    "id": "swift-038",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "nested-functions",
+      "scope"
+    ],
+    "code": "func outer() -> Int {\n    var x = 5\n    func inner(){ x += 5 }\n    inner()\n    return x\n}\nprint(outer())",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "5",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "10",
+    "explanation": "Nested functions capture enclosing mutable variables.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for nested-functions."
+  },
+  {
+    "id": "swift-039",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "reversed"
+    ],
+    "code": "let a = [1, 2]\nprint(Array(a.reversed())[0])",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Reversing `[1, 2]` puts 2 at index 0.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for arrays."
+  },
+  {
+    "id": "swift-040",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "willSet",
+      "property-observer"
+    ],
+    "code": "var v = 0 {\n    willSet(newVal) {\n        print(newVal, terminator: \"\")\n    }\n}\nv = 42",
+    "question": "What will be printed?",
+    "options": [
+      "42",
+      "0",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "42",
+    "explanation": "`willSet` receives the incoming value `newVal` before the value is stored.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for willSet."
+  },
+  {
+    "id": "swift-041",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "uppercased"
+    ],
+    "code": "print(\"ios\".uppercased())",
+    "question": "What will be printed?",
+    "options": [
+      "IOS",
+      "ios",
+      "Ios",
+      "Compilation error"
+    ],
+    "correctAnswer": "IOS",
+    "explanation": "`uppercased()` converts characters to uppercase.",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for strings."
+  },
+  {
+    "id": "swift-042",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "enum",
+      "case-iterable"
+    ],
+    "code": "enum State: CaseIterable { case a, b }\nprint(State.allCases.count)",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`CaseIterable` generates `allCases` containing all enum cases (count 2).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for enum."
+  },
+  {
+    "id": "swift-043",
+    "language": "swift",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "filter"
+    ],
+    "code": "let a = [1, 2, 3, 4]\nprint(a.filter { $0 % 2 == 0 }.count)",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "4",
+      "1",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Even numbers are 2 and 4 (count 2).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for collections."
+  },
+  {
+    "id": "swift-044",
+    "language": "swift",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "required-init"
+    ],
+    "code": "class Base { required init(){} }\nclass Sub: Base {}\nprint(Sub() is Base)",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "true",
+    "explanation": "`Sub` inherits required initializer and is an instance of `Base` (true).",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for classes."
+  },
+  {
+    "id": "swift-045",
+    "language": "swift",
+    "difficulty": "expert",
+    "concepts": [
+      "keypaths",
+      "subscript"
+    ],
+    "code": "struct Person { var name = \"Sam\" }\nlet kp = \\Person.name\nprint(Person()[keyPath: kp])",
+    "question": "What will be printed?",
+    "options": [
+      "Sam",
+      "\\Person.name",
+      "Compilation error",
+      "nil"
+    ],
+    "correctAnswer": "Sam",
+    "explanation": "KeyPath access `[keyPath: kp]` reads the property value dynamically ('Sam').",
+    "runtime": "Swift 5.9+",
+    "hint": "Recall Swift semantics for keypaths."
+  }
+]

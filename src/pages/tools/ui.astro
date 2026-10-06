@@ -1,0 +1,1364 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/sections/Header.astro';
+import Footer from '../../components/sections/Footer.astro';
+import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
+
+const pageTitle = "CSS & UI Generator – Visual UI Design Tools | Piush";
+const pageDescription = "Create gradients, shadows, colors, buttons, cards, typography and CSS visually with instant preview and production-ready code.";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'UI Design Lab',
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires JavaScript',
+      url: new URL('/tools/ui', Astro.site || 'https://piush.com').toString(),
+      description: pageDescription,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+    })} />
+  </head>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+    <Header />
+    <main class="flex-1 w-full px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-4 max-w-[1680px] mx-auto">
+      
+      <!-- Top Navigation & Breadcrumbs -->
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-3">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2">
+          <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+          <span>/</span>
+          <a href="/tools" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
+          <span>/</span>
+          <span class="text-[var(--accent)] font-medium">UI Design Lab</span>
+        </nav>
+        <div class="flex items-center gap-2 font-mono text-[11px] text-[var(--color-text-secondary)]">
+          <span class="inline-flex size-2 rounded-full bg-[var(--accent)]"></span>
+          <span>100% Client-Side • Instant Realtime CSS Compilation</span>
+        </div>
+      </div>
+
+      <!-- Header Title & Overview -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <div class="size-9 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)]">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                <path d="M3 9h18"/>
+                <path d="M9 21V9"/>
+              </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight m-0">
+              UI Design Lab
+            </h1>
+            <span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)]">
+              CSS Studio
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-[var(--color-text-muted)] mt-1 m-0">
+            Visually generate production-ready CSS, components, gradients, shadows, palettes, and animations in real time.
+          </p>
+        </div>
+
+        <!-- Presets Bar -->
+        <div class="flex items-center gap-2 font-mono text-xs">
+          <select id="preset-selector" class="sw-tool-select text-[11px]" aria-label="Load Design Preset">
+            <option value="default">Preset: Apple Dark Card</option>
+            <option value="linear">Preset: Linear Minimalist</option>
+            <option value="glass">Preset: Frosted Alpine Glass</option>
+            <option value="brutalist">Preset: Neo-Brutalist Forest</option>
+          </select>
+          <button id="btn-save-preset" type="button" class="sw-tool-btn text-[11px]" title="Save current settings to localStorage">
+            <span>Save Preset</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Module Navigation Switcher Bar -->
+      <div class="card-surface p-2 border border-[var(--color-border)] overflow-x-auto flex items-center gap-1.5 text-xs font-mono select-none">
+        <button type="button" class="sw-tab-btn active" data-module="radius">Border Radius</button>
+        <button type="button" class="sw-tab-btn" data-module="shadow">Box Shadow</button>
+        <button type="button" class="sw-tab-btn" data-module="gradient">Gradients</button>
+        <button type="button" class="sw-tab-btn" data-module="glass">Glass / Blur</button>
+        <button type="button" class="sw-tab-btn" data-module="button">Button Builder</button>
+        <button type="button" class="sw-tab-btn" data-module="card">Card Component</button>
+        <button type="button" class="sw-tab-btn" data-module="colors">Color & Palette</button>
+        <button type="button" class="sw-tab-btn" data-module="typography">Typography</button>
+        <button type="button" class="sw-tab-btn" data-module="spacing">Spacing Visualizer</button>
+        <button type="button" class="sw-tab-btn" data-module="transform">Transforms & Animation</button>
+      </div>
+
+      <!-- Mobile Screen Tab Bar (Design / Preview / Code) -->
+      <div class="lg:hidden flex items-center justify-between p-1 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] text-xs font-mono">
+        <button type="button" class="sw-mobile-tab-btn active flex-1 py-1.5 text-center rounded-lg" data-target="panel-controls">1. Controls</button>
+        <button type="button" class="sw-mobile-tab-btn flex-1 py-1.5 text-center rounded-lg" data-target="panel-preview">2. Live Preview</button>
+        <button type="button" class="sw-mobile-tab-btn flex-1 py-1.5 text-center rounded-lg" data-target="panel-code">3. Generated Code</button>
+      </div>
+
+      <!-- 3-PANEL INTERFACE (CONTROLS | LIVE PREVIEW | GENERATED CODE) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch min-h-[640px]">
+        
+        <!-- PANEL 1: CONTROLS (4 cols) -->
+        <div id="panel-controls" class="lg:col-span-4 card-surface flex flex-col h-[580px] sm:h-[660px] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xs relative">
+          
+          <div class="px-4 py-2.5 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 font-mono font-semibold text-foreground">
+              <span class="text-[var(--accent)] font-bold">01</span>
+              <span id="controls-panel-title">BORDER RADIUS CONTROLS</span>
+            </div>
+            <button id="btn-reset-module" type="button" class="text-[11px] font-mono text-[var(--color-text-muted)] hover:text-foreground">
+              Reset
+            </button>
+          </div>
+
+          <!-- Module Controls Container -->
+          <div class="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono" id="module-controls-content">
+            <!-- Dynamically populated or toggled based on active module -->
+            
+            <!-- MODULE: BORDER RADIUS -->
+            <div id="ctrl-section-radius" class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-foreground">Corners Linking:</span>
+                <label class="inline-flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="radius-linked" checked class="accent-[var(--accent)] rounded" />
+                  <span>Link All 4 Corners</span>
+                </label>
+              </div>
+
+              <!-- Presets -->
+              <div class="flex flex-wrap gap-1.5 pt-1">
+                <button type="button" class="sw-preset-chip" data-radius-preset="8">Soft (8px)</button>
+                <button type="button" class="sw-preset-chip" data-radius-preset="16">Rounded (16px)</button>
+                <button type="button" class="sw-preset-chip" data-radius-preset="32">Pill (999px)</button>
+                <button type="button" class="sw-preset-chip" data-radius-preset="50%">Circle (50%)</button>
+                <button type="button" class="sw-preset-chip" data-radius-preset="organic">Organic</button>
+              </div>
+
+              <div class="space-y-3 pt-2">
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Top-Left</span>
+                    <span id="val-radius-tl">16px</span>
+                  </div>
+                  <input type="range" id="slider-radius-tl" min="0" max="100" value="16" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Top-Right</span>
+                    <span id="val-radius-tr">16px</span>
+                  </div>
+                  <input type="range" id="slider-radius-tr" min="0" max="100" value="16" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Bottom-Right</span>
+                    <span id="val-radius-br">16px</span>
+                  </div>
+                  <input type="range" id="slider-radius-br" min="0" max="100" value="16" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Bottom-Left</span>
+                    <span id="val-radius-bl">16px</span>
+                  </div>
+                  <input type="range" id="slider-radius-bl" min="0" max="100" value="16" class="w-full accent-[var(--accent)]" />
+                </div>
+              </div>
+            </div>
+
+            <!-- MODULE: BOX SHADOW -->
+            <div id="ctrl-section-shadow" class="hidden space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-foreground">Shadow Presets:</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" class="sw-preset-chip" data-shadow-preset="subtle">Subtle</button>
+                <button type="button" class="sw-preset-chip" data-shadow-preset="card">Card</button>
+                <button type="button" class="sw-preset-chip" data-shadow-preset="floating">Floating</button>
+                <button type="button" class="sw-preset-chip" data-shadow-preset="elevated">Elevated</button>
+                <button type="button" class="sw-preset-chip" data-shadow-preset="modal">Modal</button>
+                <button type="button" class="sw-preset-chip" data-shadow-preset="sharp">Sharp</button>
+              </div>
+
+              <div class="space-y-3 pt-2">
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">X Offset</span>
+                    <span id="val-shadow-x">0px</span>
+                  </div>
+                  <input type="range" id="slider-shadow-x" min="-40" max="40" value="0" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Y Offset</span>
+                    <span id="val-shadow-y">10px</span>
+                  </div>
+                  <input type="range" id="slider-shadow-y" min="-40" max="40" value="10" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Blur Radius</span>
+                    <span id="val-shadow-blur">25px</span>
+                  </div>
+                  <input type="range" id="slider-shadow-blur" min="0" max="80" value="25" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Spread</span>
+                    <span id="val-shadow-spread">-5px</span>
+                  </div>
+                  <input type="range" id="slider-shadow-spread" min="-20" max="30" value="-5" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div class="flex items-center justify-between pt-1">
+                  <span class="text-[var(--color-text-muted)]">Shadow Color</span>
+                  <input type="color" id="picker-shadow-color" value="#0d1712" class="size-6 rounded cursor-pointer border border-[var(--color-border)] p-0" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-[var(--color-text-muted)]">Shadow Opacity</span>
+                    <span id="val-shadow-opacity">25%</span>
+                  </div>
+                  <input type="range" id="slider-shadow-opacity" min="0" max="100" value="25" class="w-full accent-[var(--accent)]" />
+                </div>
+                <div class="flex items-center justify-between pt-1">
+                  <span class="text-[var(--color-text-muted)]">Inset Shadow</span>
+                  <input type="checkbox" id="checkbox-shadow-inset" class="accent-[var(--accent)] rounded" />
+                </div>
+              </div>
+            </div>
+
+            <!-- MODULE: GRADIENTS -->
+            <div id="ctrl-section-gradient" class="hidden space-y-4">
+              <div>
+                <label for="select-gradient-type" class="block text-[11px] text-[var(--color-text-muted)] mb-1.5">Gradient Type</label>
+                <select id="select-gradient-type" class="sw-tool-select w-full">
+                  <option value="linear">Linear Gradient</option>
+                  <option value="radial">Radial Gradient</option>
+                  <option value="conic">Conic Gradient</option>
+                </select>
+              </div>
+
+              <div id="gradient-angle-container">
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Angle</span>
+                  <span id="val-gradient-angle">135°</span>
+                </div>
+                <input type="range" id="slider-gradient-angle" min="0" max="360" value="135" class="w-full accent-[var(--accent)]" />
+              </div>
+
+              <!-- Color Stops -->
+              <div class="space-y-2 pt-2">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-foreground">Color Stops:</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                  <div class="flex items-center gap-2">
+                    <input type="color" id="grad-color-1" value="#1B5448" class="size-6 rounded border border-[var(--color-border)] p-0 cursor-pointer" />
+                    <span>Stop 1</span>
+                  </div>
+                  <input type="number" id="grad-pos-1" min="0" max="100" value="0" class="w-14 px-1.5 py-0.5 rounded text-[11px] bg-[var(--color-bg-primary)] border border-[var(--color-border)]" />
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                  <div class="flex items-center gap-2">
+                    <input type="color" id="grad-color-2" value="#ade1cd" class="size-6 rounded border border-[var(--color-border)] p-0 cursor-pointer" />
+                    <span>Stop 2</span>
+                  </div>
+                  <input type="number" id="grad-pos-2" min="0" max="100" value="100" class="w-14 px-1.5 py-0.5 rounded text-[11px] bg-[var(--color-bg-primary)] border border-[var(--color-border)]" />
+                </div>
+              </div>
+            </div>
+
+            <!-- MODULE: GLASS / BLUR -->
+            <div id="ctrl-section-glass" class="hidden space-y-4">
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Backdrop Blur</span>
+                  <span id="val-glass-blur">16px</span>
+                </div>
+                <input type="range" id="slider-glass-blur" min="0" max="40" value="16" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Background Opacity</span>
+                  <span id="val-glass-opacity">40%</span>
+                </div>
+                <input type="range" id="slider-glass-opacity" min="5" max="95" value="40" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Saturation</span>
+                  <span id="val-glass-saturate">150%</span>
+                </div>
+                <input type="range" id="slider-glass-saturate" min="50" max="200" value="150" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-[var(--color-text-muted)]">Glass Tint Color</span>
+                <input type="color" id="picker-glass-color" value="#23382B" class="size-6 rounded border border-[var(--color-border)] p-0 cursor-pointer" />
+              </div>
+            </div>
+
+            <!-- MODULE: BUTTON BUILDER -->
+            <div id="ctrl-section-button" class="hidden space-y-3">
+              <div>
+                <label for="input-btn-text" class="block text-[11px] text-[var(--color-text-muted)] mb-1">Button Label</label>
+                <input type="text" id="input-btn-text" value="Get Started Now" class="sw-tool-input" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label for="picker-btn-bg" class="block text-[10px] text-[var(--color-text-muted)] mb-1">Background</label>
+                  <input type="color" id="picker-btn-bg" value="#1B5448" class="size-6 rounded cursor-pointer border border-[var(--color-border)] p-0 w-full" />
+                </div>
+                <div>
+                  <label for="picker-btn-text" class="block text-[10px] text-[var(--color-text-muted)] mb-1">Text Color</label>
+                  <input type="color" id="picker-btn-text" value="#E1F8DC" class="size-6 rounded cursor-pointer border border-[var(--color-border)] p-0 w-full" />
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Padding X (Horizontal)</span>
+                  <span id="val-btn-px">20px</span>
+                </div>
+                <input type="range" id="slider-btn-px" min="8" max="48" value="20" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Padding Y (Vertical)</span>
+                  <span id="val-btn-py">10px</span>
+                </div>
+                <input type="range" id="slider-btn-py" min="4" max="24" value="10" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Corner Radius</span>
+                  <span id="val-btn-radius">12px</span>
+                </div>
+                <input type="range" id="slider-btn-radius" min="0" max="40" value="12" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Font Size</span>
+                  <span id="val-btn-size">14px</span>
+                </div>
+                <input type="range" id="slider-btn-size" min="11" max="22" value="14" class="w-full accent-[var(--accent)]" />
+              </div>
+            </div>
+
+            <!-- MODULE: CARD COMPONENT -->
+            <div id="ctrl-section-card" class="hidden space-y-3">
+              <div>
+                <label for="input-card-title" class="block text-[11px] text-[var(--color-text-muted)] mb-1">Card Title</label>
+                <input type="text" id="input-card-title" value="High-Performance Microservice" class="sw-tool-input" />
+              </div>
+              <div>
+                <label for="input-card-desc" class="block text-[11px] text-[var(--color-text-muted)] mb-1">Card Description</label>
+                <input type="text" id="input-card-desc" value="Architecting low-latency edge services and distributed events with Astro." class="sw-tool-input" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Card Width</span>
+                  <span id="val-card-width">340px</span>
+                </div>
+                <input type="range" id="slider-card-width" min="260" max="480" value="340" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Card Padding</span>
+                  <span id="val-card-pad">24px</span>
+                </div>
+                <input type="range" id="slider-card-pad" min="12" max="40" value="24" class="w-full accent-[var(--accent)]" />
+              </div>
+            </div>
+
+            <!-- MODULE: COLOR & PALETTE -->
+            <div id="ctrl-section-colors" class="hidden space-y-3">
+              <div>
+                <label for="picker-base-color" class="block text-[11px] text-[var(--color-text-muted)] mb-1">Base Seed Color</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="picker-base-color" value="#1B5448" class="size-8 rounded cursor-pointer border border-[var(--color-border)] p-0" />
+                  <input type="text" id="input-base-hex" value="#1B5448" class="sw-tool-input font-mono" />
+                </div>
+              </div>
+              <div>
+                <span class="text-[11px] font-bold text-foreground block mb-1">11-Step Palette (50–950):</span>
+                <div id="palette-steps-swatches" class="grid grid-cols-11 gap-0.5 h-7 rounded overflow-hidden border border-[var(--color-border)]"></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] pt-1">
+                <span class="text-[var(--color-text-muted)]">Export As:</span>
+                <div class="flex gap-1">
+                  <button type="button" class="sw-preset-chip active" id="btn-export-css-vars">CSS</button>
+                  <button type="button" class="sw-preset-chip" id="btn-export-tailwind">Tailwind</button>
+                  <button type="button" class="sw-preset-chip" id="btn-export-json">JSON</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODULE: TYPOGRAPHY -->
+            <div id="ctrl-section-typography" class="hidden space-y-3">
+              <div>
+                <label for="select-font-family" class="block text-[11px] text-[var(--color-text-muted)] mb-1">Font Family</label>
+                <select id="select-font-family" class="sw-tool-select w-full">
+                  <option value="Atkinson, system-ui, sans-serif">Atkinson (Primary Portfolio)</option>
+                  <option value="ui-sans-serif, system-ui, sans-serif">System Sans-Serif</option>
+                  <option value="ui-monospace, SFMono-Regular, monospace">Monospace Code</option>
+                  <option value="ui-serif, Georgia, serif">Editorial Serif</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Font Size</span>
+                  <span id="val-typo-size">24px</span>
+                </div>
+                <input type="range" id="slider-typo-size" min="12" max="64" value="24" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Line Height</span>
+                  <span id="val-typo-lh">1.4</span>
+                </div>
+                <input type="range" id="slider-typo-lh" min="10" max="22" value="14" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Letter Spacing</span>
+                  <span id="val-typo-ls">-0.5px</span>
+                </div>
+                <input type="range" id="slider-typo-ls" min="-2" max="8" value="-0.5" step="0.5" class="w-full accent-[var(--accent)]" />
+              </div>
+            </div>
+
+            <!-- MODULE: SPACING VISUALIZER -->
+            <div id="ctrl-section-spacing" class="hidden space-y-3">
+              <div class="p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-center text-[10px] space-y-1">
+                <div class="font-bold text-foreground">Interactive Box Model Diagram</div>
+                <div class="text-[var(--color-text-muted)]">Margin (Orange) • Border • Padding (Green) • Content</div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Padding All</span>
+                  <span id="val-spacing-pad">20px</span>
+                </div>
+                <input type="range" id="slider-spacing-pad" min="0" max="60" value="20" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Margin All</span>
+                  <span id="val-spacing-mar">16px</span>
+                </div>
+                <input type="range" id="slider-spacing-mar" min="0" max="60" value="16" class="w-full accent-[var(--accent)]" />
+              </div>
+            </div>
+
+            <!-- MODULE: TRANSFORMS & ANIMATION -->
+            <div id="ctrl-section-transform" class="hidden space-y-3">
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Rotate</span>
+                  <span id="val-trans-rotate">0°</span>
+                </div>
+                <input type="range" id="slider-trans-rotate" min="-180" max="180" value="0" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-[var(--color-text-muted)]">Scale</span>
+                  <span id="val-trans-scale">1.0x</span>
+                </div>
+                <input type="range" id="slider-trans-scale" min="5" max="20" value="10" class="w-full accent-[var(--accent)]" />
+              </div>
+              <div class="pt-2 border-t border-[var(--color-border)]">
+                <span class="font-bold text-foreground block mb-2">CSS Animation Presets:</span>
+                <div class="flex flex-wrap gap-1.5">
+                  <button type="button" class="sw-preset-chip" data-anim-preset="pulse">Pulse</button>
+                  <button type="button" class="sw-preset-chip" data-anim-preset="bounce">Bounce</button>
+                  <button type="button" class="sw-preset-chip" data-anim-preset="spin">Spin</button>
+                  <button type="button" class="sw-preset-chip" data-anim-preset="none">Stop</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PANEL 2: LIVE PREVIEW (5 cols) -->
+        <div id="panel-preview" class="lg:col-span-5 card-surface flex flex-col h-[580px] sm:h-[660px] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xs relative">
+          
+          <!-- Viewport Bar -->
+          <div class="px-3 sm:px-4 py-2 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 font-mono font-semibold text-foreground">
+              <span class="text-[var(--accent)] font-bold">02</span>
+              <span>LIVE PREVIEW</span>
+            </div>
+
+            <!-- Responsive Viewport Presets -->
+            <div class="flex items-center gap-1 text-[11px] font-mono">
+              <button type="button" class="sw-vp-btn active" data-vp="100%">Desktop</button>
+              <button type="button" class="sw-vp-btn" data-vp="1024px">1024px</button>
+              <button type="button" class="sw-vp-btn" data-vp="768px">768px</button>
+              <button type="button" class="sw-vp-btn" data-vp="375px">375px</button>
+            </div>
+          </div>
+
+          <!-- Preview Stage Body -->
+          <div id="preview-stage-container" class="relative flex-1 overflow-auto flex items-center justify-center p-6 bg-[var(--color-bg-primary)] select-none">
+            
+            <!-- Resizable Canvas Container -->
+            <div id="preview-canvas-resizer" class="transition-all duration-200 flex items-center justify-center w-full max-w-full">
+              
+              <!-- Target Element Being Styled -->
+              <div id="ui-target-element" class="p-6 transition-all duration-150 flex flex-col items-center justify-center text-center max-w-full">
+                <!-- Inner Content that adapts based on module -->
+                <div id="ui-target-content" class="w-full">
+                  <div class="size-10 rounded-xl bg-[rgba(var(--accent-rgb),0.15)] text-[var(--accent)] flex items-center justify-center mx-auto mb-2 font-bold">
+                    ✦
+                  </div>
+                  <h3 class="text-base font-bold text-foreground m-0" id="preview-inner-title">
+                    UI Design Lab
+                  </h3>
+                  <p class="text-xs text-[var(--color-text-secondary)] mt-1.5 m-0 leading-relaxed max-w-xs mx-auto" id="preview-inner-text">
+                    Customizable element updating in real time.
+                  </p>
+                  <button type="button" class="mt-4 px-4 py-2 rounded-xl text-xs font-semibold bg-[var(--accent)] text-[#0d1712] shadow-sm cursor-pointer hover:brightness-110 active:scale-95 transition-all" id="preview-inner-btn">
+                    Action Button
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Stage Footer with Dimensions & Status -->
+          <div class="px-4 py-1.5 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)] flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)]">
+            <span id="preview-element-size">Size: 340 × 180 px</span>
+            <span>Instant CSS Engine</span>
+          </div>
+
+        </div>
+
+        <!-- PANEL 3: GENERATED CODE (3 cols) -->
+        <div id="panel-code" class="lg:col-span-3 card-surface flex flex-col h-[580px] sm:h-[660px] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xs relative">
+          
+          <!-- Code Panel Header -->
+          <div class="px-4 py-2 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 font-mono font-semibold text-foreground">
+              <span class="text-[var(--accent)] font-bold">03</span>
+              <span>CODE</span>
+            </div>
+            <!-- Code Tab Switcher -->
+            <div class="flex items-center gap-1 font-mono text-[10px]">
+              <button type="button" class="sw-code-tab active" data-code-tab="css">CSS</button>
+              <button type="button" class="sw-code-tab" data-code-tab="html">HTML</button>
+              <button type="button" class="sw-code-tab" data-code-tab="tailwind">Tailwind</button>
+            </div>
+          </div>
+
+          <!-- Output Code Pre Area -->
+          <div class="relative flex-1 flex overflow-hidden font-mono text-[12px] leading-5 bg-[var(--color-bg-primary)]">
+            <pre class="flex-1 m-0 p-3.5 overflow-auto text-foreground select-text"><code id="generated-code-display" class="block whitespace-pre"></code></pre>
+          </div>
+
+          <!-- Quick Copy Action Bar -->
+          <div class="p-3 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)] flex items-center gap-2">
+            <button id="btn-copy-code" type="button" class="sw-tool-btn sw-tool-btn-primary flex-1 justify-center" title="Copy code to clipboard">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span>Copy Code</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <GlowLineSeparator />
+    </main>
+    <Footer />
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" aria-live="assertive"></div>
+
+    <!-- Client-side Tool Logic -->
+    <script>
+      function initUiDesignLab() {
+        const target = document.getElementById('ui-target-element');
+        const codeDisplay = document.getElementById('generated-code-display');
+        const controlsTitle = document.getElementById('controls-panel-title');
+        const elementSizeLabel = document.getElementById('preview-element-size');
+        const canvasResizer = document.getElementById('preview-canvas-resizer');
+        const btnCopyCode = document.getElementById('btn-copy-code');
+        const presetSelector = document.getElementById('preset-selector') as HTMLSelectElement | null;
+        const btnSavePreset = document.getElementById('btn-save-preset');
+
+        let activeModule = 'radius';
+        let activeCodeTab = 'css';
+
+        // State Store
+        const state = {
+          radius: { tl: 16, tr: 16, br: 16, bl: 16, linked: true },
+          shadow: { x: 0, y: 10, blur: 25, spread: -5, color: '#0d1712', opacity: 25, inset: false },
+          gradient: { type: 'linear', angle: 135, color1: '#1B5448', pos1: 0, color2: '#ade1cd', pos2: 100 },
+          glass: { blur: 16, opacity: 40, saturate: 150, color: '#23382B' },
+          button: { text: 'Get Started Now', bg: '#1B5448', textCol: '#E1F8DC', px: 20, py: 10, radius: 12, size: 14 },
+          card: { title: 'High-Performance Microservice', desc: 'Architecting low-latency edge services and distributed events with Astro.', width: 340, pad: 24 },
+          colors: { base: '#1B5448', format: 'css' },
+          typography: { family: 'Atkinson, system-ui, sans-serif', size: 24, lh: 1.4, ls: -0.5 },
+          spacing: { pad: 20, mar: 16 },
+          transform: { rotate: 0, scale: 1.0, anim: 'none' }
+        };
+
+        // Toast Helper
+        function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
+          const container = document.getElementById('toast-container');
+          if (!container) return;
+          const toast = document.createElement('div');
+          toast.className = `px-4 py-2.5 rounded-xl border text-xs font-mono shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto flex items-center gap-2 ${
+            type === 'success'
+              ? 'bg-[#1B5448] text-[#E1F8DC] border-[#ade1cd]/30 dark:bg-[#1B5448]/90 dark:text-[#ade1cd]'
+              : type === 'error'
+              ? 'bg-red-950 text-red-200 border-red-500/40'
+              : 'bg-[#23382B] text-white border-[var(--color-border)]'
+          }`;
+          const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+          toast.innerHTML = `<span class="font-bold">${icon}</span> <span>${message}</span>`;
+          container.appendChild(toast);
+          requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+          setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+          }, 2200);
+        }
+
+        // Apply Styles to Target Element & Generate Output Code
+        function updateStyles() {
+          if (!target || !codeDisplay) return;
+
+          let css = '';
+          let html = '';
+          let tailwind = '';
+
+          // Reset baseline
+          target.style.width = '';
+          target.style.height = '';
+          target.style.background = '';
+          target.style.borderRadius = '';
+          target.style.boxShadow = '';
+          target.style.backdropFilter = '';
+          target.style.transform = '';
+          target.style.animation = '';
+          target.style.fontFamily = '';
+          target.style.fontSize = '';
+          target.style.lineHeight = '';
+          target.style.letterSpacing = '';
+
+          const innerTitle = document.getElementById('preview-inner-title');
+          const innerText = document.getElementById('preview-inner-text');
+          const innerBtn = document.getElementById('preview-inner-btn');
+
+          if (innerBtn) innerBtn.style.display = activeModule === 'button' ? 'none' : '';
+
+          if (activeModule === 'radius') {
+            const { tl, tr, br, bl } = state.radius;
+            const rVal = `${tl}px ${tr}px ${br}px ${bl}px`;
+            target.style.borderRadius = rVal;
+            target.style.background = 'var(--card)';
+            target.style.border = '1px solid var(--color-border)';
+
+            css = `.custom-card {\n  border-radius: ${rVal};\n  background: var(--card);\n  border: 1px solid var(--color-border);\n}`;
+            html = `<div class="custom-card">\n  <h3>${innerTitle?.textContent || 'Card Title'}</h3>\n  <p>${innerText?.textContent || 'Description'}</p>\n</div>`;
+            tailwind = `<div class="rounded-[${rVal}] bg-card border border-border p-6">\n  ...\n</div>`;
+
+          } else if (activeModule === 'shadow') {
+            const { x, y, blur, spread, color, opacity, inset } = state.shadow;
+            const hexAlpha = Math.round((opacity / 100) * 255).toString(16).padStart(2, '0');
+            const shadowColor = `${color}${hexAlpha}`;
+            const sVal = `${inset ? 'inset ' : ''}${x}px ${y}px ${blur}px ${spread}px ${shadowColor}`;
+            target.style.boxShadow = sVal;
+            target.style.borderRadius = '16px';
+            target.style.background = 'var(--card)';
+            target.style.border = '1px solid var(--color-border)';
+
+            css = `.shadow-box {\n  box-shadow: ${sVal};\n  border-radius: 16px;\n  background: var(--card);\n}`;
+            html = `<div class="shadow-box">\n  <h3>${innerTitle?.textContent || 'Card Title'}</h3>\n</div>`;
+            tailwind = `<div class="shadow-[${sVal}] rounded-2xl bg-card">\n  ...\n</div>`;
+
+          } else if (activeModule === 'gradient') {
+            const { type, angle, color1, pos1, color2, pos2 } = state.gradient;
+            let gVal = '';
+            if (type === 'linear') {
+              gVal = `linear-gradient(${angle}deg, ${color1} ${pos1}%, ${color2} ${pos2}%)`;
+            } else if (type === 'radial') {
+              gVal = `radial-gradient(circle, ${color1} ${pos1}%, ${color2} ${pos2}%)`;
+            } else {
+              gVal = `conic-gradient(from ${angle}deg, ${color1} ${pos1}%, ${color2} ${pos2}%)`;
+            }
+
+            target.style.background = gVal;
+            target.style.borderRadius = '16px';
+
+            css = `.gradient-surface {\n  background: ${gVal};\n  border-radius: 16px;\n}`;
+            html = `<div class="gradient-surface">\n  <h3>${innerTitle?.textContent || 'Card Title'}</h3>\n</div>`;
+            tailwind = `<div class="bg-[${gVal}] rounded-2xl">\n  ...\n</div>`;
+
+          } else if (activeModule === 'glass') {
+            const { blur, opacity, saturate, color } = state.glass;
+            const hexAlpha = Math.round((opacity / 100) * 255).toString(16).padStart(2, '0');
+            const bgVal = `${color}${hexAlpha}`;
+
+            target.style.background = bgVal;
+            target.style.backdropFilter = `blur(${blur}px) saturate(${saturate}%)`;
+            target.style.borderRadius = '16px';
+            target.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+
+            css = `.glass-card {\n  background: ${bgVal};\n  backdrop-filter: blur(${blur}px) saturate(${saturate}%);\n  -webkit-backdrop-filter: blur(${blur}px) saturate(${saturate}%);\n  border: 1px solid rgba(255, 255, 255, 0.15);\n  border-radius: 16px;\n}`;
+            html = `<div class="glass-card">\n  <h3>Frosted Card</h3>\n</div>`;
+            tailwind = `<div class="backdrop-blur-[${blur}px] backdrop-saturate-[${saturate}%] bg-[${bgVal}] border border-white/15 rounded-2xl">\n  ...\n</div>`;
+
+          } else if (activeModule === 'button') {
+            const { text, bg, textCol, px, py, radius, size } = state.button;
+            target.style.background = bg;
+            target.style.color = textCol;
+            target.style.padding = `${py}px ${px}px`;
+            target.style.borderRadius = `${radius}px`;
+            target.style.fontSize = `${size}px`;
+            target.style.fontWeight = '600';
+            target.style.cursor = 'pointer';
+
+            if (innerTitle) innerTitle.textContent = text;
+            if (innerText) innerText.textContent = '';
+
+            css = `.custom-btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  background: ${bg};\n  color: ${textCol};\n  padding: ${py}px ${px}px;\n  border-radius: ${radius}px;\n  font-size: ${size}px;\n  font-weight: 600;\n  border: none;\n  cursor: pointer;\n  transition: all 180ms ease;\n}\n.custom-btn:hover {\n  opacity: 0.92;\n  transform: translateY(-2px);\n}`;
+            html = `<button type="button" class="custom-btn">\n  ${text}\n</button>`;
+            tailwind = `<button type="button" class="inline-flex items-center px-[${px}px] py-[${py}px] bg-[${bg}] text-[${textCol}] rounded-[${radius}px] text-[${size}px] font-semibold hover:opacity-90 hover:-translate-y-0.5 transition-all">\n  ${text}\n</button>`;
+
+          } else if (activeModule === 'card') {
+            const { title, desc, width, pad } = state.card;
+            target.style.width = `${width}px`;
+            target.style.padding = `${pad}px`;
+            target.style.borderRadius = '16px';
+            target.style.background = 'var(--card)';
+            target.style.border = '1px solid var(--color-border)';
+
+            if (innerTitle) innerTitle.textContent = title;
+            if (innerText) innerText.textContent = desc;
+
+            css = `.component-card {\n  width: 100%;\n  max-width: ${width}px;\n  padding: ${pad}px;\n  border-radius: 16px;\n  background: var(--card);\n  border: 1px solid var(--color-border);\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);\n}`;
+            html = `<div class="component-card">\n  <h3>${title}</h3>\n  <p>${desc}</p>\n  <button>Action</button>\n</div>`;
+            tailwind = `<div class="w-full max-w-[${width}px] p-[${pad}px] rounded-2xl bg-card border border-border shadow-md">\n  <h3 class="font-bold">${title}</h3>\n  <p class="text-sm mt-1">${desc}</p>\n</div>`;
+
+          } else if (activeModule === 'colors') {
+            target.style.borderRadius = '16px';
+            target.style.background = 'var(--card)';
+            target.style.border = '1px solid var(--color-border)';
+
+            const base = state.colors.base;
+            const fmt = state.colors.format;
+
+            if (fmt === 'css') {
+              css = `:root {\n  --primary-50: #f4fbf3;\n  --primary-100: #e1f8dc;\n  --primary-200: #c2ecd9;\n  --primary-300: #ade1cd;\n  --primary-400: #70b79e;\n  --primary-500: ${base};\n  --primary-600: #16463c;\n  --primary-700: #23382b;\n  --primary-800: #1b2820;\n  --primary-900: #14241b;\n  --primary-950: #0a130e;\n}`;
+            } else if (fmt === 'tailwind') {
+              css = `// tailwind.config.js\ncolors: {\n  brand: {\n    50: '#f4fbf3',\n    100: '#e1f8dc',\n    200: '#c2ecd9',\n    300: '#ade1cd',\n    500: '${base}',\n    700: '#23382b',\n    900: '#14241b'\n  }\n}`;
+            } else {
+              css = JSON.stringify({
+                "50": "#f4fbf3",
+                "100": "#e1f8dc",
+                "200": "#c2ecd9",
+                "300": "#ade1cd",
+                "500": base,
+                "700": "#23382b",
+                "900": "#14241b"
+              }, null, 2);
+            }
+            html = `<!-- Colors palette generated for ${base} -->\n<div style="background-color: var(--primary-500)"></div>`;
+            tailwind = `// Tailwind arbitrary class: bg-[${base}]`;
+
+          } else if (activeModule === 'typography') {
+            const { family, size, lh, ls } = state.typography;
+            target.style.fontFamily = family;
+            target.style.fontSize = `${size}px`;
+            target.style.lineHeight = String(lh);
+            target.style.letterSpacing = `${ls}px`;
+            target.style.borderRadius = '16px';
+            target.style.background = 'var(--card)';
+            target.style.border = '1px solid var(--color-border)';
+
+            css = `.typography-preset {\n  font-family: ${family};\n  font-size: ${size}px;\n  line-height: ${lh};\n  letter-spacing: ${ls}px;\n  color: var(--foreground);\n}`;
+            html = `<p class="typography-preset">\n  ${innerTitle?.textContent || 'Editorial Heading'}\n</p>`;
+            tailwind = `<p class="text-[${size}px] leading-[${lh}] tracking-[${ls}px] font-sans">\n  ...\n</p>`;
+
+          } else if (activeModule === 'spacing') {
+            const { pad, mar } = state.spacing;
+            target.style.padding = `${pad}px`;
+            target.style.margin = `${mar}px`;
+            target.style.borderRadius = '16px';
+            target.style.background = 'var(--card)';
+            target.style.border = '2px dashed var(--accent)';
+
+            css = `.spaced-box {\n  padding: ${pad}px;\n  margin: ${mar}px;\n  border: 1px solid var(--color-border);\n}`;
+            html = `<div class="spaced-box">\n  Content with ${pad}px padding & ${mar}px margin\n</div>`;
+            tailwind = `<div class="p-[${pad}px] m-[${mar}px] border border-border">\n  ...\n</div>`;
+
+          } else if (activeModule === 'transform') {
+            const { rotate, scale, anim } = state.transform;
+            target.style.transform = `rotate(${rotate}deg) scale(${scale})`;
+            target.style.borderRadius = '16px';
+            target.style.background = 'var(--card)';
+            target.style.border = '1px solid var(--color-border)';
+
+            if (anim === 'pulse') {
+              target.style.animation = 'pulse 2s infinite ease-in-out';
+            } else if (anim === 'bounce') {
+              target.style.animation = 'bounce 1s infinite ease-in-out';
+            } else if (anim === 'spin') {
+              target.style.animation = 'spin 3s infinite linear';
+            }
+
+            css = `.transformed-element {\n  transform: rotate(${rotate}deg) scale(${scale});\n  transform-origin: center;\n  transition: transform 200ms ease;\n}`;
+            html = `<div class="transformed-element">\n  Interactive Box\n</div>`;
+            tailwind = `<div class="rotate-[${rotate}deg] scale-[${scale}] transition-transform">\n  ...\n</div>`;
+          }
+
+          // Render active code tab
+          if (activeCodeTab === 'css') {
+            codeDisplay.textContent = css;
+          } else if (activeCodeTab === 'html') {
+            codeDisplay.textContent = html;
+          } else {
+            codeDisplay.textContent = tailwind;
+          }
+
+          // Update Dimensions Label
+          if (elementSizeLabel && target) {
+            elementSizeLabel.textContent = `Size: ${target.offsetWidth} × ${target.offsetHeight} px`;
+          }
+        }
+
+        // Switch Module
+        function switchModule(mod: string) {
+          activeModule = mod;
+          document.querySelectorAll('.sw-tab-btn').forEach((btn) => {
+            if (btn.getAttribute('data-module') === mod) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+
+          // Show/Hide corresponding controls
+          const allCtrlSections = document.querySelectorAll('[id^="ctrl-section-"]');
+          allCtrlSections.forEach((sec) => sec.classList.add('hidden'));
+
+          const targetSec = document.getElementById(`ctrl-section-${mod}`);
+          if (targetSec) targetSec.classList.remove('hidden');
+
+          if (controlsTitle) {
+            controlsTitle.textContent = `${mod.toUpperCase()} CONTROLS`;
+          }
+
+          updateStyles();
+        }
+
+        document.querySelectorAll('.sw-tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const mod = btn.getAttribute('data-module');
+            if (mod) switchModule(mod);
+          });
+        });
+
+        // Code Tabs Switcher
+        document.querySelectorAll('.sw-code-tab').forEach((tab) => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.sw-code-tab').forEach((t) => t.classList.remove('active'));
+            tab.classList.add('active');
+            activeCodeTab = tab.getAttribute('data-code-tab') || 'css';
+            updateStyles();
+          });
+        });
+
+        // Copy Code Button
+        btnCopyCode?.addEventListener('click', () => {
+          if (!codeDisplay || !codeDisplay.textContent) return;
+          navigator.clipboard.writeText(codeDisplay.textContent).then(() => {
+            showToast(`Copied ${activeCodeTab.toUpperCase()} code`, 'success');
+          }).catch(() => {
+            showToast('Failed to copy', 'error');
+          });
+        });
+
+        // Responsive Viewport Switcher
+        document.querySelectorAll('.sw-vp-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.sw-vp-btn').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            const vp = btn.getAttribute('data-vp') || '100%';
+            if (canvasResizer) {
+              canvasResizer.style.maxWidth = vp;
+            }
+          });
+        });
+
+        // Mobile Panel Switcher
+        document.querySelectorAll('.sw-mobile-tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.sw-mobile-tab-btn').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            const targetId = btn.getAttribute('data-target');
+
+            const p1 = document.getElementById('panel-controls');
+            const p2 = document.getElementById('panel-preview');
+            const p3 = document.getElementById('panel-code');
+
+            if (p1) p1.classList.add('hidden', 'lg:flex');
+            if (p2) p2.classList.add('hidden', 'lg:flex');
+            if (p3) p3.classList.add('hidden', 'lg:flex');
+
+            if (targetId) {
+              const activeP = document.getElementById(targetId);
+              if (activeP) activeP.classList.remove('hidden');
+            }
+          });
+        });
+
+        // Wire Up Inputs - Border Radius
+        const sliderTl = document.getElementById('slider-radius-tl') as HTMLInputElement | null;
+        const sliderTr = document.getElementById('slider-radius-tr') as HTMLInputElement | null;
+        const sliderBr = document.getElementById('slider-radius-br') as HTMLInputElement | null;
+        const sliderBl = document.getElementById('slider-radius-bl') as HTMLInputElement | null;
+        const radiusLinked = document.getElementById('radius-linked') as HTMLInputElement | null;
+
+        function updateRadiusFromSliders(val: number, source: string) {
+          if (radiusLinked?.checked) {
+            state.radius.tl = val;
+            state.radius.tr = val;
+            state.radius.br = val;
+            state.radius.bl = val;
+            if (sliderTl) sliderTl.value = String(val);
+            if (sliderTr) sliderTr.value = String(val);
+            if (sliderBr) sliderBr.value = String(val);
+            if (sliderBl) sliderBl.value = String(val);
+          } else {
+            if (source === 'tl') state.radius.tl = val;
+            if (source === 'tr') state.radius.tr = val;
+            if (source === 'br') state.radius.br = val;
+            if (source === 'bl') state.radius.bl = val;
+          }
+
+          const lTl = document.getElementById('val-radius-tl');
+          const lTr = document.getElementById('val-radius-tr');
+          const lBr = document.getElementById('val-radius-br');
+          const lBl = document.getElementById('val-radius-bl');
+          if (lTl) lTl.textContent = `${state.radius.tl}px`;
+          if (lTr) lTr.textContent = `${state.radius.tr}px`;
+          if (lBr) lBr.textContent = `${state.radius.br}px`;
+          if (lBl) lBl.textContent = `${state.radius.bl}px`;
+
+          updateStyles();
+        }
+
+        sliderTl?.addEventListener('input', (e) => updateRadiusFromSliders(parseInt((e.target as HTMLInputElement).value, 10), 'tl'));
+        sliderTr?.addEventListener('input', (e) => updateRadiusFromSliders(parseInt((e.target as HTMLInputElement).value, 10), 'tr'));
+        sliderBr?.addEventListener('input', (e) => updateRadiusFromSliders(parseInt((e.target as HTMLInputElement).value, 10), 'br'));
+        sliderBl?.addEventListener('input', (e) => updateRadiusFromSliders(parseInt((e.target as HTMLInputElement).value, 10), 'bl'));
+
+        document.querySelectorAll('[data-radius-preset]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const p = btn.getAttribute('data-radius-preset');
+            if (p === 'organic') {
+              state.radius = { tl: 60, tr: 30, br: 70, bl: 40, linked: false };
+            } else {
+              const num = parseInt(p || '16', 10);
+              state.radius = { tl: num, tr: num, br: num, bl: num, linked: true };
+            }
+            updateRadiusFromSliders(state.radius.tl, 'tl');
+          });
+        });
+
+        // Wire Up Inputs - Box Shadow
+        const sX = document.getElementById('slider-shadow-x') as HTMLInputElement | null;
+        const sY = document.getElementById('slider-shadow-y') as HTMLInputElement | null;
+        const sBlur = document.getElementById('slider-shadow-blur') as HTMLInputElement | null;
+        const sSpread = document.getElementById('slider-shadow-spread') as HTMLInputElement | null;
+        const sColor = document.getElementById('picker-shadow-color') as HTMLInputElement | null;
+        const sOpacity = document.getElementById('slider-shadow-opacity') as HTMLInputElement | null;
+        const sInset = document.getElementById('checkbox-shadow-inset') as HTMLInputElement | null;
+
+        function updateShadow() {
+          if (sX) state.shadow.x = parseInt(sX.value, 10);
+          if (sY) state.shadow.y = parseInt(sY.value, 10);
+          if (sBlur) state.shadow.blur = parseInt(sBlur.value, 10);
+          if (sSpread) state.shadow.spread = parseInt(sSpread.value, 10);
+          if (sColor) state.shadow.color = sColor.value;
+          if (sOpacity) state.shadow.opacity = parseInt(sOpacity.value, 10);
+          if (sInset) state.shadow.inset = sInset.checked;
+
+          const lX = document.getElementById('val-shadow-x');
+          const lY = document.getElementById('val-shadow-y');
+          const lBlur = document.getElementById('val-shadow-blur');
+          const lSpread = document.getElementById('val-shadow-spread');
+          const lOpacity = document.getElementById('val-shadow-opacity');
+
+          if (lX) lX.textContent = `${state.shadow.x}px`;
+          if (lY) lY.textContent = `${state.shadow.y}px`;
+          if (lBlur) lBlur.textContent = `${state.shadow.blur}px`;
+          if (lSpread) lSpread.textContent = `${state.shadow.spread}px`;
+          if (lOpacity) lOpacity.textContent = `${state.shadow.opacity}%`;
+
+          updateStyles();
+        }
+
+        [sX, sY, sBlur, sSpread, sColor, sOpacity, sInset].forEach((el) => {
+          el?.addEventListener('input', updateShadow);
+        });
+
+        document.querySelectorAll('[data-shadow-preset]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const p = btn.getAttribute('data-shadow-preset');
+            if (p === 'subtle') state.shadow = { x: 0, y: 1, blur: 3, spread: 0, color: '#0d1712', opacity: 12, inset: false };
+            else if (p === 'card') state.shadow = { x: 0, y: 4, blur: 6, spread: -1, color: '#0d1712', opacity: 15, inset: false };
+            else if (p === 'floating') state.shadow = { x: 0, y: 10, blur: 15, spread: -3, color: '#0d1712', opacity: 20, inset: false };
+            else if (p === 'elevated') state.shadow = { x: 0, y: 20, blur: 25, spread: -5, color: '#0d1712', opacity: 25, inset: false };
+            else if (p === 'modal') state.shadow = { x: 0, y: 25, blur: 50, spread: -12, color: '#0d1712', opacity: 40, inset: false };
+            else if (p === 'sharp') state.shadow = { x: 4, y: 4, blur: 0, spread: 0, color: '#1B5448', opacity: 90, inset: false };
+
+            if (sX) sX.value = String(state.shadow.x);
+            if (sY) sY.value = String(state.shadow.y);
+            if (sBlur) sBlur.value = String(state.shadow.blur);
+            if (sSpread) sSpread.value = String(state.shadow.spread);
+            if (sOpacity) sOpacity.value = String(state.shadow.opacity);
+            if (sInset) sInset.checked = state.shadow.inset;
+            updateShadow();
+          });
+        });
+
+        // Wire Up Gradients
+        const selGradType = document.getElementById('select-gradient-type') as HTMLSelectElement | null;
+        const sliderGradAngle = document.getElementById('slider-gradient-angle') as HTMLInputElement | null;
+        const gradC1 = document.getElementById('grad-color-1') as HTMLInputElement | null;
+        const gradP1 = document.getElementById('grad-pos-1') as HTMLInputElement | null;
+        const gradC2 = document.getElementById('grad-color-2') as HTMLInputElement | null;
+        const gradP2 = document.getElementById('grad-pos-2') as HTMLInputElement | null;
+
+        function updateGrad() {
+          if (selGradType) state.gradient.type = selGradType.value;
+          if (sliderGradAngle) state.gradient.angle = parseInt(sliderGradAngle.value, 10);
+          if (gradC1) state.gradient.color1 = gradC1.value;
+          if (gradP1) state.gradient.pos1 = parseInt(gradP1.value, 10);
+          if (gradC2) state.gradient.color2 = gradC2.value;
+          if (gradP2) state.gradient.pos2 = parseInt(gradP2.value, 10);
+
+          const lAngle = document.getElementById('val-gradient-angle');
+          if (lAngle) lAngle.textContent = `${state.gradient.angle}°`;
+
+          updateStyles();
+        }
+
+        [selGradType, sliderGradAngle, gradC1, gradP1, gradC2, gradP2].forEach((el) => {
+          el?.addEventListener('input', updateGrad);
+        });
+
+        // Wire Up Glass
+        const gBlur = document.getElementById('slider-glass-blur') as HTMLInputElement | null;
+        const gOpacity = document.getElementById('slider-glass-opacity') as HTMLInputElement | null;
+        const gSat = document.getElementById('slider-glass-saturate') as HTMLInputElement | null;
+        const gCol = document.getElementById('picker-glass-color') as HTMLInputElement | null;
+
+        function updateGlass() {
+          if (gBlur) state.glass.blur = parseInt(gBlur.value, 10);
+          if (gOpacity) state.glass.opacity = parseInt(gOpacity.value, 10);
+          if (gSat) state.glass.saturate = parseInt(gSat.value, 10);
+          if (gCol) state.glass.color = gCol.value;
+
+          const lB = document.getElementById('val-glass-blur');
+          const lO = document.getElementById('val-glass-opacity');
+          const lS = document.getElementById('val-glass-saturate');
+          if (lB) lB.textContent = `${state.glass.blur}px`;
+          if (lO) lO.textContent = `${state.glass.opacity}%`;
+          if (lS) lS.textContent = `${state.glass.saturate}%`;
+
+          updateStyles();
+        }
+
+        [gBlur, gOpacity, gSat, gCol].forEach((el) => el?.addEventListener('input', updateGlass));
+
+        // Wire Up Button Builder
+        const bText = document.getElementById('input-btn-text') as HTMLInputElement | null;
+        const bBg = document.getElementById('picker-btn-bg') as HTMLInputElement | null;
+        const bCol = document.getElementById('picker-btn-text') as HTMLInputElement | null;
+        const bPx = document.getElementById('slider-btn-px') as HTMLInputElement | null;
+        const bPy = document.getElementById('slider-btn-py') as HTMLInputElement | null;
+        const bRadius = document.getElementById('slider-btn-radius') as HTMLInputElement | null;
+        const bSize = document.getElementById('slider-btn-size') as HTMLInputElement | null;
+
+        function updateButton() {
+          if (bText) state.button.text = bText.value;
+          if (bBg) state.button.bg = bBg.value;
+          if (bCol) state.button.textCol = bCol.value;
+          if (bPx) state.button.px = parseInt(bPx.value, 10);
+          if (bPy) state.button.py = parseInt(bPy.value, 10);
+          if (bRadius) state.button.radius = parseInt(bRadius.value, 10);
+          if (bSize) state.button.size = parseInt(bSize.value, 10);
+
+          const lPx = document.getElementById('val-btn-px');
+          const lPy = document.getElementById('val-btn-py');
+          const lR = document.getElementById('val-btn-radius');
+          const lS = document.getElementById('val-btn-size');
+          if (lPx) lPx.textContent = `${state.button.px}px`;
+          if (lPy) lPy.textContent = `${state.button.py}px`;
+          if (lR) lR.textContent = `${state.button.radius}px`;
+          if (lS) lS.textContent = `${state.button.size}px`;
+
+          updateStyles();
+        }
+
+        [bText, bBg, bCol, bPx, bPy, bRadius, bSize].forEach((el) => el?.addEventListener('input', updateButton));
+
+        // Wire Up Palette Generator
+        const palettePicker = document.getElementById('picker-base-color') as HTMLInputElement | null;
+        const paletteHex = document.getElementById('input-base-hex') as HTMLInputElement | null;
+        const paletteSwatches = document.getElementById('palette-steps-swatches');
+
+        function updatePalette() {
+          if (!palettePicker) return;
+          const hex = palettePicker.value;
+          state.colors.base = hex;
+          if (paletteHex) paletteHex.value = hex;
+
+          if (paletteSwatches) {
+            paletteSwatches.innerHTML = '';
+            const steps = [
+              '#f4fbf3', '#e1f8dc', '#c2ecd9', '#ade1cd', '#70b79e',
+              hex,
+              '#16463c', '#23382b', '#1b2820', '#14241b', '#0a130e'
+            ];
+            steps.forEach((s) => {
+              const div = document.createElement('div');
+              div.style.backgroundColor = s;
+              div.className = 'w-full h-full cursor-pointer hover:opacity-80 transition-opacity';
+              div.title = s;
+              div.addEventListener('click', () => {
+                navigator.clipboard.writeText(s);
+                showToast(`Copied ${s}`, 'info');
+              });
+              paletteSwatches.appendChild(div);
+            });
+          }
+
+          updateStyles();
+        }
+
+        palettePicker?.addEventListener('input', updatePalette);
+        paletteHex?.addEventListener('input', (e) => {
+          const val = (e.target as HTMLInputElement).value;
+          if (val.match(/^#[0-9a-fA-F]{6}$/) && palettePicker) {
+            palettePicker.value = val;
+            updatePalette();
+          }
+        });
+
+        document.getElementById('btn-export-css-vars')?.addEventListener('click', () => {
+          state.colors.format = 'css';
+          updateStyles();
+        });
+        document.getElementById('btn-export-tailwind')?.addEventListener('click', () => {
+          state.colors.format = 'tailwind';
+          updateStyles();
+        });
+        document.getElementById('btn-export-json')?.addEventListener('click', () => {
+          state.colors.format = 'json';
+          updateStyles();
+        });
+
+        // Wire Up Typography
+        const typoFam = document.getElementById('select-font-family') as HTMLSelectElement | null;
+        const typoSize = document.getElementById('slider-typo-size') as HTMLInputElement | null;
+        const typoLh = document.getElementById('slider-typo-lh') as HTMLInputElement | null;
+        const typoLs = document.getElementById('slider-typo-ls') as HTMLInputElement | null;
+
+        function updateTypography() {
+          if (typoFam) state.typography.family = typoFam.value;
+          if (typoSize) state.typography.size = parseInt(typoSize.value, 10);
+          if (typoLh) state.typography.lh = parseInt(typoLh.value, 10) / 10;
+          if (typoLs) state.typography.ls = parseFloat(typoLs.value);
+
+          const lS = document.getElementById('val-typo-size');
+          const lLh = document.getElementById('val-typo-lh');
+          const lLs = document.getElementById('val-typo-ls');
+          if (lS) lS.textContent = `${state.typography.size}px`;
+          if (lLh) lLh.textContent = String(state.typography.lh);
+          if (lLs) lLs.textContent = `${state.typography.ls}px`;
+
+          updateStyles();
+        }
+
+        [typoFam, typoSize, typoLh, typoLs].forEach((el) => el?.addEventListener('input', updateTypography));
+
+        // Presets Manager
+        presetSelector?.addEventListener('change', () => {
+          const val = presetSelector.value;
+          if (val === 'default') {
+            state.radius = { tl: 16, tr: 16, br: 16, bl: 16, linked: true };
+            state.shadow = { x: 0, y: 10, blur: 25, spread: -5, color: '#0d1712', opacity: 25, inset: false };
+          } else if (val === 'linear') {
+            state.radius = { tl: 8, tr: 8, br: 8, bl: 8, linked: true };
+            state.shadow = { x: 0, y: 1, blur: 2, spread: 0, color: '#0d1712', opacity: 15, inset: false };
+          } else if (val === 'glass') {
+            state.glass = { blur: 24, opacity: 35, saturate: 180, color: '#1B5448' };
+            switchModule('glass');
+          } else if (val === 'brutalist') {
+            state.radius = { tl: 0, tr: 0, br: 0, bl: 0, linked: true };
+            state.shadow = { x: 5, y: 5, blur: 0, spread: 0, color: '#1B5448', opacity: 100, inset: false };
+          }
+          updateStyles();
+          showToast(`Loaded ${presetSelector.options[presetSelector.selectedIndex].text}`, 'info');
+        });
+
+        btnSavePreset?.addEventListener('click', () => {
+          localStorage.setItem('ui_design_lab_state', JSON.stringify(state));
+          showToast('Preset saved to localStorage', 'success');
+        });
+
+        // Initialize
+        updatePalette();
+        updateStyles();
+      }
+
+      // Astro lifecycle hooks
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUiDesignLab);
+      } else {
+        initUiDesignLab();
+      }
+      document.addEventListener('astro:page-load', initUiDesignLab);
+    </script>
+
+    <!-- CSS Helpers -->
+    <style>
+      .sw-tab-btn {
+        padding: 0.35rem 0.65rem;
+        border-radius: 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 140ms ease;
+        background: transparent;
+        color: var(--color-text-muted);
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+      .sw-tab-btn:hover {
+        color: var(--color-text-primary);
+        background: var(--color-bg-secondary);
+      }
+      .sw-tab-btn.active {
+        background: var(--card);
+        color: var(--accent);
+        border-color: var(--color-border);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      .sw-tool-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 180ms ease;
+        background: var(--color-bg-secondary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        text-decoration: none;
+        user-select: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      .sw-tool-btn:hover {
+        background: rgba(var(--accent-rgb), 0.12);
+        color: var(--accent);
+        border-color: rgba(var(--accent-rgb), 0.35);
+      }
+      .sw-tool-btn-primary {
+        background: linear-gradient(135deg, #1B5448 0%, #23382B 100%);
+        color: #E1F8DC !important;
+        border-color: #1B5448;
+        box-shadow: 0 2px 8px rgba(27, 84, 72, 0.3);
+      }
+      :global(.dark) .sw-tool-btn-primary {
+        background: linear-gradient(135deg, #ade1cd 0%, #1B5448 100%);
+        color: #0d1712 !important;
+        border-color: #ade1cd;
+        box-shadow: 0 2px 10px rgba(173, 225, 205, 0.25);
+      }
+      .sw-tool-select, .sw-tool-input {
+        padding: 0.35rem 0.55rem;
+        border-radius: 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 500;
+        background: var(--color-bg-primary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        cursor: pointer;
+        outline: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      .sw-tool-select:focus, .sw-tool-input:focus {
+        border-color: var(--accent);
+      }
+      .sw-code-tab {
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.375rem;
+        color: var(--color-text-muted);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 120ms ease;
+      }
+      .sw-code-tab.active {
+        background: var(--card);
+        color: var(--accent);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      }
+      .sw-vp-btn {
+        padding: 0.2rem 0.45rem;
+        border-radius: 0.25rem;
+        font-size: 0.65rem;
+        color: var(--color-text-muted);
+        background: transparent;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 120ms ease;
+      }
+      .sw-vp-btn.active {
+        background: var(--card);
+        color: var(--accent);
+        border-color: var(--color-border);
+      }
+      .sw-preset-chip {
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.65rem;
+        color: var(--color-text-secondary);
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border);
+        cursor: pointer;
+        transition: all 120ms ease;
+      }
+      .sw-preset-chip:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .sw-preset-chip.active {
+        background: rgba(var(--accent-rgb), 0.15);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+    </style>
+  </body>
+</html>

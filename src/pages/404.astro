@@ -3,28 +3,32 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/sections/Header.astro';
 import Footer from '../components/sections/Footer.astro';
 import Button from '../components/ui/button/Button.astro';
+import LottieAnimation from '../components/ui/lottie/LottieAnimation.astro';
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
   <head>
     <BaseHead title="404 – Page Not Found | Piush KS" description="The page you are looking for doesn’t exist or has been moved." />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-20 flex items-center justify-center">
-      <section class="card-surface p-10 sm:p-14 text-center space-y-6 max-w-xl mx-auto relative overflow-hidden">
+    <main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-16 flex items-center justify-center">
+      <section class="card-surface p-8 sm:p-12 text-center space-y-6 max-w-xl mx-auto relative overflow-hidden">
         <div class="ambient-glow-orb -top-16 left-1/2 -translate-x-1/2 size-40 bg-[var(--accent)] opacity-20 pointer-events-none"></div>
         
         <div class="inline-flex">
           <span class="status-pill text-xs">Error 404</span>
         </div>
 
-        <h1 class="text-6xl sm:text-7xl font-extrabold tracking-tight">
-          <span class="bg-gradient-to-r from-[#FF5E1E] via-[#FF8A4C] to-[#FFB74D] bg-clip-text text-transparent">
-            404
-          </span>
-        </h1>
+        <!-- Animated 404 Lottie Graphic -->
+        <div class="relative py-1 flex items-center justify-center">
+          <LottieAnimation
+            src="/assets/lottie/404.json"
+            class="w-full max-w-[260px] sm:max-w-[300px] aspect-[4/3] mx-auto filter drop-shadow-md"
+            alt="Page Not Found Animation"
+          />
+        </div>
 
         <div class="space-y-2">
           <h2 class="text-xl sm:text-2xl font-bold text-foreground m-0">Page Not Found</h2>

@@ -10,12 +10,14 @@ import WorkExperience from '../components/sections/WorkExperience.astro';
 import { work } from '../data/work';
 import Studies from '../components/sections/Studies.astro';
 import { studies } from '../data/studies';
+import DeveloperToolsSection from '../components/sections/DeveloperToolsSection.astro';
+import CodeChallengeSection from '../components/quiz/CodeChallengeSection.astro';
 import ArrowSeparator from '../components/ui/separator/ArrowSeparator.astro';
 import GlowLineSeparator from '../components/ui/separator/GlowLineSeparator.astro';
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <!-- JSON-LD: Person & Organization -->
@@ -36,7 +38,7 @@ import GlowLineSeparator from '../components/ui/separator/GlowLineSeparator.astr
 	</head>
 	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
 		<Header />
-		<main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6">
+		<main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-2 sm:py-4">
       <HeroSection
         badge="Available for Projects & Engineering"
         title="Piush KS"
@@ -47,7 +49,11 @@ import GlowLineSeparator from '../components/ui/separator/GlowLineSeparator.astr
         showHighlights={true}
       />
 
-      <section class="py-6 sm:py-10 space-y-4">
+      <section class="py-2 sm:py-4 space-y-2 sm:space-y-3">
+        <ArrowSeparator />
+        <CodeChallengeSection />
+        <ArrowSeparator />
+        <DeveloperToolsSection />
         <ArrowSeparator />
         <SkillsSection title="Skills & Tools" skills={skills} />   
         <ArrowSeparator />

@@ -25,7 +25,7 @@ const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
   <head>
     <BaseHead title={`Blog - Page ${currentPage} – Piush KS`} description={`Explore blog page ${currentPage}`} />
     {currentPage > 1 && (
@@ -38,7 +38,7 @@ const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
     <BlogHero title="Articles & Notes" subtitle="Stories, architectural deep dives, and learnings." />
-    <main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
       <BlogAllArticles posts={pagePosts} title={`Articles (Page ${currentPage})`} />
       <BlogPagination currentPage={currentPage} totalPages={totalPages} />
     </main>

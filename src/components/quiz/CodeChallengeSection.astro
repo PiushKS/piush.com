@@ -1,0 +1,813 @@
+---
+// Can You Predict the Output? - Interactive Code Output Challenge Section
+import { starterQuestions } from '../../data/quiz/starter-pool';
+import { LANGUAGE_META } from '../../data/quiz/manifest';
+import { getDailyChallenge } from '../../data/quiz/daily';
+
+const today = new Date();
+const daily = getDailyChallenge(starterQuestions, today);
+---
+
+<section id="code-challenge-section" class="w-full py-8 sm:py-12 relative" aria-labelledby="code-challenge-heading">
+  <!-- Subtle ambient background glow -->
+  <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-3/4 max-w-4xl h-48 bg-gradient-to-r from-[#1B5448]/10 via-[#ade1cd]/10 to-[#1B5448]/10 blur-3xl pointer-events-none rounded-full" aria-hidden="true"></div>
+
+  <div class="relative max-w-4xl mx-auto px-4 sm:px-6">
+    <!-- Header -->
+    <div class="text-center space-y-2 mb-6 sm:mb-8">
+      <h2 id="code-challenge-heading" class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground">
+        Can You Predict the Output?
+      </h2>
+
+      <p class="text-sm sm:text-base text-[var(--color-text-secondary)] max-w-xl mx-auto font-medium">
+        Test your programming logic with quick code challenges across 8 languages.
+      </p>
+
+      <!-- Streak & Stats pill -->
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs font-mono">
+        <span id="quiz-streak-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-foreground">
+          <span>🔥</span>
+          <span class="font-semibold" id="quiz-streak-count">0</span>
+          <span class="text-[var(--color-text-muted)]">streak</span>
+        </span>
+        <button
+          type="button"
+          id="daily-challenge-btn"
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] border border-[var(--color-border)] hover:border-[var(--accent)] text-foreground transition-all cursor-pointer"
+          title="Play today's deterministic daily challenge"
+        >
+          <span>📅</span>
+          <span>Daily Challenge</span>
+          <span class="px-1.5 py-0.2 rounded text-[10px] bg-[var(--accent)]/15 text-[var(--accent)] font-semibold" id="daily-num-label">#{daily.challengeNumber}</span>
+        </button>
+        <span class="hidden sm:inline-flex items-center gap-1 text-[var(--color-text-muted)] text-[11px]">
+          <span>⌨️ Keys:</span>
+          <kbd class="px-1 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[10px]">1-4</kbd>
+          <kbd class="px-1 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[10px]">Enter</kbd>
+          <kbd class="px-1 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[10px]">N</kbd>
+          <kbd class="px-1 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[10px]">H</kbd>
+        </span>
+      </div>
+    </div>
+
+    <!-- Language Filter Tabs (Full width, wrapping, zero left-side clipping) -->
+    <div class="w-full flex justify-center mb-5">
+      <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 px-1 py-1 max-w-full" role="tablist" aria-label="Filter challenges by language">
+        {LANGUAGE_META.map((lang, idx) => (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={idx === 0 ? "true" : "false"}
+            data-lang={lang.id}
+            class={`lang-filter-tab flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition-all cursor-pointer ${
+              idx === 0
+                ? 'bg-[var(--accent)] text-white shadow-sm'
+                : 'bg-[var(--color-bg-secondary)]/80 text-[var(--color-text-secondary)] hover:bg-[var(--card)] hover:text-foreground border border-[var(--color-border)]/60'
+            }`}
+          >
+            <span>{lang.name}</span>
+            <span class={`text-[10px] px-1.5 py-0.2 rounded-full ${idx === 0 ? 'bg-white/20 text-white' : 'bg-[var(--card)] text-[var(--color-text-muted)] border border-[var(--color-border)]'}`}>
+              {lang.count}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Interactive Code Editor Quiz Card -->
+    <div class="w-full card-surface rounded-3xl border border-[var(--color-border)] shadow-xl overflow-hidden backdrop-blur-xl relative">
+      <!-- Editor Top Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5 px-4 sm:px-6 py-3 bg-[var(--color-bg-secondary)]/70 border-b border-[var(--color-border)] font-mono text-xs">
+        <div class="flex items-center gap-2.5">
+          <!-- Subtle terminal dots -->
+          <div class="flex items-center gap-1.5" aria-hidden="true">
+            <span class="size-2.5 rounded-full bg-[#1B5448]/80"></span>
+            <span class="size-2.5 rounded-full bg-[#4e5850]/80"></span>
+            <span class="size-2.5 rounded-full bg-[#ade1cd]/80"></span>
+          </div>
+          <span class="font-bold text-foreground tracking-tight" id="quiz-header-title">
+            CODE OUTPUT #142
+          </span>
+          <span class="text-[var(--color-text-muted)] font-normal text-[11px]" id="quiz-runtime-tag">
+            Modern ECMAScript
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Language Tag -->
+          <span id="quiz-lang-tag" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-[#1B5448]/15 text-[#1B5448] dark:bg-[#ade1cd]/15 dark:text-[#ade1cd] border border-[#1B5448]/25 dark:border-[#ade1cd]/25">
+            JavaScript
+          </span>
+          <!-- Difficulty Badge -->
+          <span id="quiz-diff-tag" class="px-2 py-0.5 rounded-lg text-[11px] font-semibold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25">
+            Medium
+          </span>
+          <!-- Progress indicator -->
+          <span id="quiz-card-counter" class="text-xs text-[var(--color-text-muted)] font-mono">
+            1 / 10
+          </span>
+        </div>
+      </div>
+
+      <!-- Code Snippet Area -->
+      <div class="relative bg-[var(--color-bg-primary)] p-4 sm:p-6 overflow-hidden border-b border-[var(--color-border)]/60">
+        <div class="flex items-stretch min-h-[140px] min-w-0 text-xs sm:text-sm font-mono leading-relaxed">
+          <!-- Line numbers -->
+          <div id="quiz-line-numbers" class="select-none pr-3 sm:pr-4 text-right text-[var(--color-text-muted)]/50 border-r border-[var(--color-border)]/40 font-mono shrink-0" aria-hidden="true">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+          </div>
+          <!-- Code Block with horizontal scroll for mobile screens -->
+          <pre class="flex-1 min-w-0 pl-3 sm:pl-4 m-0 overflow-x-auto text-foreground font-mono focus:outline-none"><code id="quiz-code-display">const a = [1, 2, 3];
+const b = a;
+
+b.push(4);
+console.log(a.length);</code></pre>
+        </div>
+
+        <!-- Concept Badges -->
+        <div class="mt-4 pt-3 border-t border-[var(--color-border)]/40 flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
+          <span class="text-[var(--color-text-muted)]">Concepts:</span>
+          <div id="quiz-concepts-list" class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">arrays</span>
+            <span class="px-2 py-0.5 rounded-md bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">references</span>
+          </div>
+          
+          <button
+            type="button"
+            id="quiz-hint-toggle"
+            class="ml-auto inline-flex items-center gap-1 text-[11px] font-sans font-medium text-[var(--accent)] hover:underline cursor-pointer"
+          >
+            <span>💡 Need a hint?</span>
+          </button>
+        </div>
+
+        <!-- Collapsible Hint Panel -->
+        <div id="quiz-hint-panel" class="hidden mt-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 dark:text-amber-200 text-xs font-sans animate-fadeIn">
+          <div class="font-semibold flex items-center gap-1 mb-1">
+            <span>💡 Thinking Hint:</span>
+          </div>
+          <p id="quiz-hint-text" class="leading-relaxed">
+            Think about whether these variables contain separate arrays or references to the same array in memory.
+          </p>
+        </div>
+      </div>
+
+      <!-- Question & 4 Interactive Options -->
+      <div class="p-4 sm:p-6 bg-[var(--card)] space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 id="quiz-question-prompt" class="text-sm sm:text-base font-bold text-foreground tracking-tight">
+            What will be the output?
+          </h3>
+          <span class="text-xs text-[var(--color-text-muted)] font-mono" id="quiz-keyboard-prompt">
+            Click or press 1-4
+          </span>
+        </div>
+
+        <!-- 4 Options Stack -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="quiz-options-container" role="radiogroup" aria-label="Output options">
+          <!-- Dynamically populated options -->
+        </div>
+
+        <!-- Submit & Navigation Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <button
+            type="button"
+            id="quiz-submit-btn"
+            disabled
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-xs sm:text-sm bg-[var(--accent)] text-white disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 shadow-md shadow-[var(--accent)]/15 transition-all cursor-pointer"
+          >
+            <span>Check Answer</span>
+            <span class="text-xs font-mono opacity-80">(Enter)</span>
+          </button>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <button
+              type="button"
+              id="quiz-walkthrough-btn"
+              class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border border-[var(--color-border)] bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] hover:border-[var(--accent)] transition-all cursor-pointer"
+            >
+              <span>🔍 Walk Through Code</span>
+            </button>
+
+            <button
+              type="button"
+              id="quiz-share-btn"
+              class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border border-[var(--color-border)] bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] hover:text-[var(--accent)] transition-all cursor-pointer"
+              title="Share challenge result without exposing answer"
+            >
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              <span>Share</span>
+            </button>
+
+            <a
+              id="quiz-try-playground-btn"
+              href="/tools/playground"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hidden items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-mono font-medium border border-[var(--color-border)] bg-[var(--color-bg-secondary)] hover:bg-[var(--card)] hover:border-[var(--accent)] text-[var(--accent)] transition-all cursor-pointer no-underline"
+              title="Open this snippet in the Code Playground"
+            >
+              <span>⚡</span>
+              <span>Try in Playground &rarr;</span>
+            </a>
+
+            <button
+              type="button"
+              id="quiz-next-btn"
+              class="hidden items-center gap-1.5 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm bg-foreground text-background hover:opacity-90 transition-all cursor-pointer shadow-sm"
+            >
+              <span>Next Challenge</span>
+              <span class="font-mono text-xs">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live ARIA status announcement (Visually hidden for screen readers) -->
+        <div id="quiz-aria-live" class="sr-only" aria-live="polite"></div>
+
+        <!-- Explanation Card (Revealed after submission) -->
+        <div id="quiz-explanation-card" class="hidden rounded-2xl p-4 sm:p-5 border transition-all animate-fadeIn">
+          <div class="flex items-start justify-between gap-3">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2 font-bold text-sm sm:text-base" id="quiz-result-title">
+                <span id="quiz-result-icon">✓</span>
+                <span id="quiz-result-heading">Correct — Output: 4</span>
+              </div>
+              <p class="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed" id="quiz-explanation-body">
+                `a` and `b` reference the same mutable array in memory. Adding an item through `b` modifies the shared array, so `a.length` becomes `4`.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Execution Visualizer Panel (Optional) -->
+          <div id="quiz-walkthrough-panel" class="hidden mt-4 pt-3 border-t border-[var(--color-border)] space-y-2">
+            <div class="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <span class="text-[var(--accent)] font-mono">⚡</span>
+              <span>Step-by-Step Execution Trace:</span>
+            </div>
+            <div id="quiz-walkthrough-steps" class="space-y-1.5 font-mono text-xs">
+              <!-- Rendered walkthrough steps -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Footer Bar: Mode Switcher & CTA to /quiz -->
+      <div class="px-4 sm:px-6 py-3.5 bg-[var(--color-bg-secondary)]/80 border-t border-[var(--color-border)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2 text-[var(--color-text-muted)] font-mono text-[11px]">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Your quiz progress stays in your browser.</span>
+          <button type="button" id="quiz-reset-btn" class="text-[var(--color-text-muted)] hover:text-red-500 underline ml-1 cursor-pointer">
+            Reset
+          </button>
+        </div>
+
+        <a
+          href="/quiz"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-xs bg-[var(--card)] hover:bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] text-foreground hover:text-[var(--accent)] transition-all shadow-xs no-underline"
+        >
+          <span>Start 10-Question Quiz</span>
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Embed the 40 starter questions securely into the page for 0ms initial play -->
+<script id="starter-quiz-data" type="application/json" set:html={JSON.stringify(starterQuestions)}></script>
+
+<script>
+  (() => {
+    interface QuizQuestion {
+      id: string;
+      language: string;
+      difficulty: string;
+      concepts: string[];
+      code: string;
+      question?: string;
+      options: [string, string, string, string];
+      correctAnswer: string;
+      explanation: string;
+      runtime?: string;
+      hint?: string;
+      walkthrough?: Array<{ step: number; label: string; explanation: string; highlightLine?: number }>;
+    }
+
+    const dataEl = document.getElementById("starter-quiz-data");
+    if (!dataEl) return;
+
+    let allQuestions: QuizQuestion[] = [];
+    try {
+      allQuestions = JSON.parse(dataEl.textContent || "[]");
+    } catch {
+      allQuestions = [];
+    }
+
+    if (!allQuestions.length) return;
+
+    // Local Storage Progress State
+    const STORAGE_KEY = "piush_quiz_stats_v1";
+    function getStoredStats() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch {}
+      return {
+        totalAttempted: 0,
+        totalCorrect: 0,
+        currentStreak: 0,
+        bestStreak: 0,
+        completedIds: [] as string[],
+        selectedLanguage: "all"
+      };
+    }
+
+    function saveStats(stats: any) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+      } catch {}
+    }
+
+    let stats = getStoredStats();
+    let currentLanguage = stats.selectedLanguage || "all";
+    let activeQuestionIndex = 0;
+    let selectedOptionIndex: number | null = null;
+    let isAnswerSubmitted = false;
+    let isDailyMode = false;
+    let questionsPool: QuizQuestion[] = [];
+
+    // Elements
+    const streakCountEl = document.getElementById("quiz-streak-count");
+    const headerTitleEl = document.getElementById("quiz-header-title");
+    const runtimeTagEl = document.getElementById("quiz-runtime-tag");
+    const langTagEl = document.getElementById("quiz-lang-tag");
+    const diffTagEl = document.getElementById("quiz-diff-tag");
+    const cardCounterEl = document.getElementById("quiz-card-counter");
+    const lineNumbersEl = document.getElementById("quiz-line-numbers");
+    const codeDisplayEl = document.getElementById("quiz-code-display");
+    const conceptsListEl = document.getElementById("quiz-concepts-list");
+    const hintToggleBtn = document.getElementById("quiz-hint-toggle");
+    const hintPanel = document.getElementById("quiz-hint-panel");
+    const hintTextEl = document.getElementById("quiz-hint-text");
+    const questionPromptEl = document.getElementById("quiz-question-prompt");
+    const optionsContainer = document.getElementById("quiz-options-container");
+    const submitBtn = document.getElementById("quiz-submit-btn") as HTMLButtonElement | null;
+    const nextBtn = document.getElementById("quiz-next-btn") as HTMLButtonElement | null;
+    const tryPlaygroundBtn = document.getElementById("quiz-try-playground-btn") as HTMLAnchorElement | null;
+    const walkthroughBtn = document.getElementById("quiz-walkthrough-btn");
+    const walkthroughPanel = document.getElementById("quiz-walkthrough-panel");
+    const walkthroughStepsEl = document.getElementById("quiz-walkthrough-steps");
+    const shareBtn = document.getElementById("quiz-share-btn");
+    const explanationCard = document.getElementById("quiz-explanation-card");
+    const resultTitleEl = document.getElementById("quiz-result-title");
+    const resultIconEl = document.getElementById("quiz-result-icon");
+    const resultHeadingEl = document.getElementById("quiz-result-heading");
+    const explanationBodyEl = document.getElementById("quiz-explanation-body");
+    const ariaLiveEl = document.getElementById("quiz-aria-live");
+    const dailyBtn = document.getElementById("daily-challenge-btn");
+    const resetBtn = document.getElementById("quiz-reset-btn");
+    const langTabs = document.querySelectorAll(".lang-filter-tab");
+
+    function updateStreakDisplay() {
+      if (streakCountEl) streakCountEl.textContent = String(stats.currentStreak || 0);
+    }
+    updateStreakDisplay();
+
+    // Filter questions by selected language
+    function updatePool() {
+      if (currentLanguage === "all") {
+        questionsPool = [...allQuestions];
+      } else {
+        questionsPool = allQuestions.filter(q => q.language.toLowerCase() === currentLanguage.toLowerCase());
+        if (questionsPool.length === 0) {
+          questionsPool = [...allQuestions];
+        }
+      }
+      activeQuestionIndex = 0;
+    }
+    updatePool();
+
+    function getDeterministicDaily(): QuizQuestion {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      let hash = 0;
+      for (let i = 0; i < todayStr.length; i++) {
+        hash = (hash << 5) - hash + todayStr.charCodeAt(i);
+        hash |= 0;
+      }
+      const idx = Math.abs(hash) % allQuestions.length;
+      return allQuestions[idx];
+    }
+
+    function renderQuestion(q: QuizQuestion) {
+      isAnswerSubmitted = false;
+      selectedOptionIndex = null;
+
+      if (headerTitleEl) headerTitleEl.textContent = `CODE OUTPUT #${q.id.toUpperCase()}`;
+      if (runtimeTagEl) runtimeTagEl.textContent = q.runtime || "Standard Runtime";
+      if (langTagEl) {
+        langTagEl.textContent = q.language.charAt(0).toUpperCase() + q.language.slice(1);
+      }
+      if (diffTagEl) {
+        diffTagEl.textContent = q.difficulty;
+        diffTagEl.className = `px-2 py-0.5 rounded-lg text-[11px] font-semibold uppercase border ${
+          q.difficulty === 'easy'
+            ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+            : q.difficulty === 'medium'
+            ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25'
+            : q.difficulty === 'hard'
+            ? 'bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/25'
+            : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/25'
+        }`;
+      }
+      if (cardCounterEl) cardCounterEl.textContent = `${activeQuestionIndex + 1} / ${questionsPool.length}`;
+
+      // Code & Line Numbers
+      if (codeDisplayEl) codeDisplayEl.textContent = q.code;
+      const lines = q.code.split("\n").length;
+      if (lineNumbersEl) {
+        lineNumbersEl.innerHTML = Array.from({ length: lines }, (_, i) => `<div>${i + 1}</div>`).join("");
+      }
+
+      // Concepts
+      if (conceptsListEl) {
+        conceptsListEl.innerHTML = (q.concepts || [])
+          .map(c => `<span class="px-2 py-0.5 rounded-md bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">${c}</span>`)
+          .join("");
+      }
+
+      // Hint
+      if (hintPanel) hintPanel.classList.add("hidden");
+      if (hintTextEl) hintTextEl.textContent = q.hint || "Carefully trace variable assignments and type transformations line-by-line.";
+
+      // Question Prompt
+      if (questionPromptEl) questionPromptEl.textContent = q.question || "What will be the output?";
+
+      // Options Rendering
+      if (optionsContainer) {
+        optionsContainer.innerHTML = "";
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "quiz-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]/60 hover:bg-[var(--color-bg-secondary)] hover:border-[var(--accent)]/60 text-left transition-all duration-150 cursor-pointer group";
+          btn.setAttribute("role", "radio");
+          btn.setAttribute("aria-checked", "false");
+          btn.setAttribute("data-opt-index", String(idx));
+
+          btn.innerHTML = `
+            <div class="flex items-center gap-3 truncate">
+              <span class="opt-indicator size-5 rounded-full border border-[var(--color-border)] flex items-center justify-center text-xs text-[var(--color-text-muted)] group-hover:border-[var(--accent)] group-hover:text-[var(--accent)] transition-colors">
+                ${idx + 1}
+              </span>
+              <span class="opt-text font-mono text-xs sm:text-sm text-foreground font-medium truncate">${escapeHtml(opt)}</span>
+            </div>
+            <span class="opt-status-badge hidden text-xs font-mono font-semibold"></span>
+          `;
+
+          btn.addEventListener("click", () => {
+            if (isAnswerSubmitted) return;
+            selectOption(idx);
+          });
+
+          optionsContainer.appendChild(btn);
+        });
+      }
+
+      // Hide results & walkthrough
+      if (explanationCard) explanationCard.classList.add("hidden");
+      if (walkthroughPanel) walkthroughPanel.classList.add("hidden");
+      if (walkthroughBtn) walkthroughBtn.classList.add("hidden");
+      if (shareBtn) shareBtn.classList.add("hidden");
+      if (nextBtn) nextBtn.classList.add("hidden");
+      if (tryPlaygroundBtn) tryPlaygroundBtn.classList.add("hidden");
+
+      if (submitBtn) {
+        submitBtn.classList.remove("hidden");
+        submitBtn.disabled = true;
+      }
+    }
+
+    function selectOption(idx: number) {
+      selectedOptionIndex = idx;
+      const buttons = optionsContainer?.querySelectorAll(".quiz-opt-btn");
+      buttons?.forEach((b, i) => {
+        const isSelected = i === idx;
+        b.setAttribute("aria-checked", isSelected ? "true" : "false");
+        const ind = b.querySelector(".opt-indicator");
+        if (isSelected) {
+          b.className = "quiz-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-[var(--accent)] bg-[rgba(var(--accent-rgb),0.08)] text-left transition-all duration-150 cursor-pointer";
+          if (ind) ind.className = "opt-indicator size-5 rounded-full bg-[var(--accent)] text-white flex items-center justify-center text-xs font-bold";
+        } else {
+          b.className = "quiz-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]/60 hover:bg-[var(--color-bg-secondary)] text-left transition-all duration-150 cursor-pointer group";
+          if (ind) ind.className = "opt-indicator size-5 rounded-full border border-[var(--color-border)] flex items-center justify-center text-xs text-[var(--color-text-muted)] group-hover:border-[var(--accent)]";
+        }
+      });
+
+      if (submitBtn) submitBtn.disabled = false;
+    }
+
+    function checkAnswer() {
+      if (isAnswerSubmitted || selectedOptionIndex === null) return;
+      isAnswerSubmitted = true;
+
+      const q = isDailyMode ? getDeterministicDaily() : questionsPool[activeQuestionIndex];
+      const selectedValue = q.options[selectedOptionIndex];
+      const isCorrect = selectedValue === q.correctAnswer;
+
+      // Update Local Stats
+      stats.totalAttempted = (stats.totalAttempted || 0) + 1;
+      if (isCorrect) {
+        stats.totalCorrect = (stats.totalCorrect || 0) + 1;
+        stats.currentStreak = (stats.currentStreak || 0) + 1;
+        if (stats.currentStreak > (stats.bestStreak || 0)) {
+          stats.bestStreak = stats.currentStreak;
+        }
+      } else {
+        stats.currentStreak = 0;
+      }
+      if (!stats.completedIds.includes(q.id)) {
+        stats.completedIds.push(q.id);
+      }
+      saveStats(stats);
+      updateStreakDisplay();
+
+      // Update Option Buttons Styling (Accessible, never color alone)
+      const buttons = optionsContainer?.querySelectorAll(".quiz-opt-btn");
+      buttons?.forEach((b, i) => {
+        (b as HTMLButtonElement).disabled = true;
+        const optVal = q.options[i];
+        const statusBadge = b.querySelector(".opt-status-badge");
+        const ind = b.querySelector(".opt-indicator");
+
+        if (optVal === q.correctAnswer) {
+          b.className = "quiz-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 font-semibold transition-all";
+          if (statusBadge) {
+            statusBadge.classList.remove("hidden");
+            statusBadge.textContent = "✓ Correct Answer";
+            statusBadge.className = "opt-status-badge text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400";
+          }
+          if (ind) {
+            ind.textContent = "✓";
+            ind.className = "opt-indicator size-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold";
+          }
+        } else if (i === selectedOptionIndex && !isCorrect) {
+          b.className = "quiz-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-rose-500 bg-rose-500/10 text-rose-900 dark:text-rose-200 transition-all";
+          if (statusBadge) {
+            statusBadge.classList.remove("hidden");
+            statusBadge.textContent = "✕ Your Answer";
+            statusBadge.className = "opt-status-badge text-xs font-mono font-semibold text-rose-600 dark:text-rose-400";
+          }
+          if (ind) {
+            ind.textContent = "✕";
+            ind.className = "opt-indicator size-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-bold";
+          }
+        } else {
+          b.className = "quiz-opt-btn flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)]/40 opacity-40 bg-[var(--color-bg-secondary)]/20";
+        }
+      });
+
+      // Announce for Screen Readers
+      if (ariaLiveEl) {
+        ariaLiveEl.textContent = isCorrect
+          ? `Correct answer! The output is ${q.correctAnswer}.`
+          : `Incorrect. Your answer was ${selectedValue}, but the correct answer is ${q.correctAnswer}.`;
+      }
+
+      // Reveal Explanation
+      if (explanationCard) {
+        explanationCard.classList.remove("hidden");
+        if (isCorrect) {
+          explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 animate-fadeIn";
+          if (resultIconEl) resultIconEl.textContent = "✓";
+          if (resultHeadingEl) resultHeadingEl.textContent = `Correct — Output: ${q.correctAnswer}`;
+        } else {
+          explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-rose-500/40 bg-rose-500/10 text-rose-950 dark:text-rose-100 animate-fadeIn";
+          if (resultIconEl) resultIconEl.textContent = "✕";
+          if (resultHeadingEl) resultHeadingEl.textContent = `Not quite — Expected: ${q.correctAnswer}`;
+        }
+        if (explanationBodyEl) explanationBodyEl.textContent = q.explanation;
+      }
+
+      // Show Walkthrough button if question has walkthrough data
+      if (q.walkthrough && q.walkthrough.length > 0 && walkthroughBtn) {
+        walkthroughBtn.classList.remove("hidden");
+        walkthroughBtn.classList.add("inline-flex");
+      }
+
+      // Show Share, Next & Try in Playground button
+      if (tryPlaygroundBtn) {
+        const encCode = 'b64:' + btoa(unescape(encodeURIComponent(q.code)));
+        tryPlaygroundBtn.href = `/tools/playground?lang=${encodeURIComponent(q.language)}&c=${encodeURIComponent(encCode)}`;
+        tryPlaygroundBtn.classList.remove("hidden");
+        tryPlaygroundBtn.classList.add("inline-flex");
+      }
+      if (shareBtn) {
+        shareBtn.classList.remove("hidden");
+        shareBtn.classList.add("inline-flex");
+      }
+      if (nextBtn) {
+        nextBtn.classList.remove("hidden");
+        nextBtn.classList.add("inline-flex");
+      }
+      if (submitBtn) submitBtn.classList.add("hidden");
+    }
+
+    function nextQuestion() {
+      if (isDailyMode) {
+        isDailyMode = false;
+        if (dailyBtn) dailyBtn.classList.remove("ring-2", "ring-[var(--accent)]");
+      }
+      activeQuestionIndex = (activeQuestionIndex + 1) % questionsPool.length;
+      renderQuestion(questionsPool[activeQuestionIndex]);
+    }
+
+    function toggleWalkthrough() {
+      const q = isDailyMode ? getDeterministicDaily() : questionsPool[activeQuestionIndex];
+      if (!q.walkthrough || !walkthroughPanel || !walkthroughStepsEl) return;
+
+      if (walkthroughPanel.classList.contains("hidden")) {
+        walkthroughPanel.classList.remove("hidden");
+        walkthroughStepsEl.innerHTML = q.walkthrough
+          .map(
+            step => `
+            <div class="p-2.5 rounded-xl bg-[var(--card)]/90 border border-[var(--color-border)] flex items-start gap-2.5">
+              <span class="px-2 py-0.5 rounded bg-[var(--accent)]/15 text-[var(--accent)] font-bold text-[11px]">
+                Step ${step.step}
+              </span>
+              <div class="space-y-0.5">
+                <div class="font-semibold text-foreground text-xs">${escapeHtml(step.label)}</div>
+                <div class="text-[var(--color-text-secondary)] text-[11px] leading-relaxed font-sans">${escapeHtml(step.explanation)}</div>
+              </div>
+            </div>
+          `
+          )
+          .join("");
+      } else {
+        walkthroughPanel.classList.add("hidden");
+      }
+    }
+
+    async function shareChallenge() {
+      const q = isDailyMode ? getDeterministicDaily() : questionsPool[activeQuestionIndex];
+      const solved = selectedOptionIndex !== null && q.options[selectedOptionIndex] === q.correctAnswer;
+      const shareText = `Code Challenge #${q.id.toUpperCase()}\n${solved ? "🟩 Solved" : "🟥 Attempted"}\n${q.language.toUpperCase()} • ${q.difficulty.toUpperCase()}\nTest your programming logic: https://piush.com/quiz`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "Code Output Challenge", text: shareText });
+          return;
+        } catch {}
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareText);
+        if (shareBtn) {
+          const original = shareBtn.innerHTML;
+          shareBtn.innerHTML = `<span>✓ Copied!</span>`;
+          setTimeout(() => {
+            shareBtn.innerHTML = original;
+          }, 2000);
+        }
+      } catch {
+        alert("Challenge snippet ready to share:\n\n" + shareText);
+      }
+    }
+
+    function escapeHtml(str: string): string {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Keyboard Shortcuts: 1-4 (select), Enter (check), N (next), H (hint)
+    window.addEventListener("keydown", (e) => {
+      const activeTag = (document.activeElement?.tagName || "").toLowerCase();
+      if (activeTag === "input" || activeTag === "textarea" || (document.activeElement as HTMLElement)?.isContentEditable) {
+        return;
+      }
+
+      if (e.key >= "1" && e.key <= "4" && !isAnswerSubmitted) {
+        const idx = parseInt(e.key, 10) - 1;
+        selectOption(idx);
+      } else if (e.key === "Enter") {
+        if (!isAnswerSubmitted && selectedOptionIndex !== null) {
+          checkAnswer();
+        } else if (isAnswerSubmitted) {
+          nextQuestion();
+        }
+      } else if ((e.key === "n" || e.key === "N") && isAnswerSubmitted) {
+        nextQuestion();
+      } else if (e.key === "h" || e.key === "H") {
+        if (hintPanel) {
+          hintPanel.classList.toggle("hidden");
+        }
+      }
+    });
+
+    // Button event listeners
+    if (submitBtn) submitBtn.addEventListener("click", checkAnswer);
+    if (nextBtn) nextBtn.addEventListener("click", nextQuestion);
+    if (walkthroughBtn) walkthroughBtn.addEventListener("click", toggleWalkthrough);
+    if (shareBtn) shareBtn.addEventListener("click", shareChallenge);
+
+    if (hintToggleBtn) {
+      hintToggleBtn.addEventListener("click", () => {
+        if (hintPanel) hintPanel.classList.toggle("hidden");
+      });
+    }
+
+    // Daily Challenge toggle
+    if (dailyBtn) {
+      dailyBtn.addEventListener("click", () => {
+        isDailyMode = !isDailyMode;
+        if (isDailyMode) {
+          dailyBtn.classList.add("ring-2", "ring-[var(--accent)]");
+          renderQuestion(getDeterministicDaily());
+        } else {
+          dailyBtn.classList.remove("ring-2", "ring-[var(--accent)]");
+          renderQuestion(questionsPool[activeQuestionIndex]);
+        }
+      });
+    }
+
+    // Language tabs
+    langTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const lang = tab.getAttribute("data-lang") || "all";
+        currentLanguage = lang;
+        stats.selectedLanguage = lang;
+        saveStats(stats);
+
+        langTabs.forEach(t => {
+          const isSelected = t.getAttribute("data-lang") === lang;
+          t.setAttribute("aria-selected", isSelected ? "true" : "false");
+          if (isSelected) {
+            t.className = "lang-filter-tab flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition-all cursor-pointer bg-[var(--accent)] text-white shadow-sm";
+          } else {
+            t.className = "lang-filter-tab flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition-all cursor-pointer bg-[var(--color-bg-secondary)]/80 text-[var(--color-text-secondary)] hover:bg-[var(--card)] hover:text-foreground border border-[var(--color-border)]/60";
+          }
+        });
+
+        isDailyMode = false;
+        if (dailyBtn) dailyBtn.classList.remove("ring-2", "ring-[var(--accent)]");
+        updatePool();
+        renderQuestion(questionsPool[0]);
+      });
+    });
+
+    // Reset Progress
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        if (confirm("Reset your quiz progress and streaks? This will clear saved statistics in this browser.")) {
+          stats = {
+            totalAttempted: 0,
+            totalCorrect: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            completedIds: [],
+            selectedLanguage: "all"
+          };
+          saveStats(stats);
+          updateStreakDisplay();
+          alert("Quiz progress reset!");
+        }
+      });
+    }
+
+    // Start with the first question
+    renderQuestion(questionsPool[0]);
+  })();
+</script>
+
+<style>
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>

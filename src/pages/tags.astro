@@ -27,13 +27,13 @@ const pageDescription = 'Explore articles across mobile engineering, architectur
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
 	<head>
 		<BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
 	</head>
 	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
 		<Header />
-		<main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10">
+		<main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10">
 			<header class="text-center max-w-2xl mx-auto mb-10 space-y-3">
         <div class="inline-flex">
           <span class="status-pill">
@@ -41,7 +41,7 @@ const pageDescription = 'Explore articles across mobile engineering, architectur
           </span>
         </div>
 				<h1 class="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight m-0">
-					<span class="bg-gradient-to-r from-[#FF5E1E] via-[#FF8A4C] to-[#FFB74D] bg-clip-text text-transparent">
+					<span class="bg-gradient-to-r from-[#1B5448] via-[#23382B] to-[#4e5850] dark:from-[#ade1cd] dark:via-[#c6eedc] dark:to-[#E1F8DC] bg-clip-text text-transparent">
 						{pageTitle}
 					</span>
 				</h1>
@@ -50,7 +50,7 @@ const pageDescription = 'Explore articles across mobile engineering, architectur
 				</p>
 			</header>
 
-			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
 				{sortedTags.map(tag => (
 					<a 
 						href={`/blog/tag/${tag.toLowerCase()}/`}

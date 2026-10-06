@@ -19,14 +19,14 @@ const meta = getTagMeta(tag);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
   <head>
     <BaseHead title={`${meta.title} – Piush KS`} description={meta.description} />
     <link rel="alternate" type="application/rss+xml" title={`Tag: ${tag} feed`} href={`/rss/tag/${tag}.xml`} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="use-utility-layout flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10 space-y-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-border)] pb-6">
         <div>
           <div class="inline-flex mb-2">

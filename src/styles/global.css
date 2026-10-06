@@ -2,7 +2,6 @@
 @import "./starwind.css";
 /* Design tokens and theme overrides */
 @import "./tokens.css";
-@import "./themes/dark.css";
 @import "./themes/light.css";
 /* Project-specific utilities */
 @import "./utilities.css";
@@ -51,10 +50,22 @@ body {
 }
 
 main:not(.use-utility-layout) {
-    width: 1280px;
-    max-width: calc(100% - 2rem);
-    margin: auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
     padding: 2.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+    main:not(.use-utility-layout) {
+        padding: 2.5rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    main:not(.use-utility-layout) {
+        padding: 2.5rem 3rem;
+    }
 }
 
 h1,
@@ -120,26 +131,56 @@ img {
 	border-radius: 12px;
 }
 
-code {
+/* Inline Code */
+code:not(pre code) {
 	padding: 0.2rem 0.45rem;
 	background-color: var(--color-bg-secondary);
 	border: 1px solid var(--color-border);
 	border-radius: 6px;
-	font-size: 0.9em;
+	font-size: 0.88em;
+	font-weight: 600;
+	color: var(--color-text-primary);
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-pre {
+/* Code Blocks & Shiki Syntax Highlighting */
+pre,
+.astro-code {
 	padding: 1.25rem;
 	border-radius: 12px;
 	border: 1px solid var(--color-border);
-	background: var(--color-bg-secondary) !important;
 	overflow-x: auto;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 0.9rem;
+	line-height: 1.65;
 }
 
 pre > code {
 	all: unset;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	display: block;
+	font-family: inherit;
+	color: inherit;
+}
+
+/* Code Blocks (Light Theme) */
+pre,
+.astro-code,
+[data-theme="light"] pre,
+[data-theme="light"] .astro-code {
+	background-color: var(--color-bg-secondary) !important;
+	color: var(--color-text-primary, #14241b) !important;
+	border-color: var(--color-border);
+}
+
+pre code,
+.astro-code code,
+[data-theme="light"] .astro-code code {
+	color: var(--color-text-primary, #14241b) !important;
+}
+
+.astro-code span:not([style*="color"]),
+[data-theme="light"] .astro-code span:not([style*="color"]) {
+	color: var(--color-text-primary, #14241b) !important;
 }
 
 blockquote {

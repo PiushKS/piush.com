@@ -4,6 +4,7 @@ import Header from '../components/sections/Header.astro';
 import Footer from '../components/sections/Footer.astro';
 import GlowLineSeparator from '../components/ui/separator/GlowLineSeparator.astro';
 import Button from '../components/ui/button/Button.astro';
+import LottieAnimation from '../components/ui/lottie/LottieAnimation.astro';
 import { author } from '../data/author';
 import { SITE_TITLE } from '../consts';
 
@@ -12,15 +13,15 @@ const pageDescription = 'Learn more about my background, technical philosophy, a
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
   <head>
     <BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-12">
+    <main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-6 sm:py-8 space-y-6 sm:space-y-8">
       <!-- About Hero -->
-      <section class="text-center space-y-4 max-w-2xl mx-auto">
+      <section class="text-center space-y-3 max-w-3xl mx-auto">
         <div class="inline-flex">
           <span class="status-pill">
             <span class="status-dot"></span>
@@ -28,64 +29,78 @@ const pageDescription = 'Learn more about my background, technical philosophy, a
           </span>
         </div>
         <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-          Hi, I'm <span class="bg-gradient-to-r from-[#FF5E1E] via-[#FF8A4C] to-[#FFB74D] bg-clip-text text-transparent">{author.name}</span>
+          Hi, I'm <span class="bg-gradient-to-r from-[#1B5448] via-[#23382B] to-[#4e5850] dark:from-[#ade1cd] dark:via-[#c6eedc] dark:to-[#E1F8DC] bg-clip-text text-transparent">{author.name}</span>
         </h1>
-        <p class="text-lg sm:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+        <p class="text-base sm:text-lg text-[var(--color-text-secondary)] leading-relaxed max-w-2xl mx-auto">
           I build resilient mobile applications, scalable cloud platforms, and digital products designed for craft, speed, and reliability.
         </p>
       </section>
 
       <!-- Narrative & Journey Cards -->
-      <section class="space-y-8">
-        <div class="card-surface p-6 sm:p-8 space-y-6">
-          <h2 class="text-2xl font-bold text-foreground m-0 flex items-center gap-2.5">
+      <section class="space-y-6">
+        <div class="card-surface p-5 sm:p-7 space-y-5">
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground m-0 flex items-center gap-2.5">
             <span class="text-[var(--accent)]">✦</span>
             My Engineering Journey
           </h2>
 
-          <div class="space-y-5 text-base sm:text-lg text-[var(--color-text-secondary)] leading-relaxed">
-            <p>
-              I started my software journey in <strong>2016</strong> as an iOS engineer, working closely with Objective-C, UIKit, and Storyboards to craft bespoke interfaces and integrate real-time REST APIs for production App Store releases. That early hands-on foundation taught me the rigor required to deliver high-quality products into millions of users' hands.
-            </p>
-            <p>
-              In <strong>2017</strong>, I expanded into Android development, engineering end-to-end architectures using Java, Kotlin, and the Android SDK. I built robust data synchronization layers with Room DB & SQLite, automated CI/CD deployment pipelines, and spearheaded design systems that unified user experiences across both iOS and Android.
-            </p>
-            <p>
-              As I transitioned into senior engineering roles, I focused heavily on <strong>mobile systems at scale</strong>. I architected fault-tolerant payment workflows with idempotency and retry guarantees, integrated asynchronous event streaming with Kafka & gRPC, and enhanced observability using structured tracing with OpenTelemetry. My mobile stack grew across Kotlin (Jetpack Compose), Swift (SwiftUI), React Native, and Flutter.
-            </p>
-            <p>
-              Leading full-stack and cloud initiatives, I decomposed critical monolith bottlenecks into cloud-native microservices using TypeScript, Node.js, React, PostgreSQL, Redis, Docker, and AWS—slashing p95 latencies by over 40% and establishing modern SLO practices.
-            </p>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div class="lg:col-span-8 space-y-4 text-base sm:text-lg text-[var(--color-text-secondary)] leading-relaxed">
+              <p>
+                I started my software journey in <strong>2016</strong> as an iOS engineer, working closely with Objective-C, UIKit, and Storyboards to craft bespoke interfaces and integrate real-time REST APIs for production App Store releases. That early hands-on foundation taught me the rigor required to deliver high-quality products into millions of users' hands.
+              </p>
+              <p>
+                In <strong>2017</strong>, I expanded into Android development, engineering end-to-end architectures using Java, Kotlin, and the Android SDK. I built robust data synchronization layers with Room DB & SQLite, automated CI/CD deployment pipelines, and spearheaded design systems that unified user experiences across both iOS and Android.
+              </p>
+              <p>
+                As I transitioned into senior engineering roles, I focused heavily on <strong>mobile systems at scale</strong>. I architected fault-tolerant payment workflows with idempotency and retry guarantees, integrated asynchronous event streaming with Kafka & gRPC, and enhanced observability using structured tracing with OpenTelemetry. My mobile stack grew across Kotlin (Jetpack Compose), Swift (SwiftUI), React Native, and Flutter.
+              </p>
+              <p>
+                Leading full-stack and cloud initiatives, I decomposed critical monolith bottlenecks into cloud-native microservices using TypeScript, Node.js, React, PostgreSQL, Redis, Docker, and AWS—slashing p95 latencies by over 40% and establishing modern SLO practices.
+              </p>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col items-center justify-center p-4 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] relative overflow-hidden">
+              <div class="ambient-glow-orb inset-0 bg-[#ade1cd] opacity-15 pointer-events-none"></div>
+              <LottieAnimation
+                src="/assets/lottie/developer.json"
+                class="w-full max-w-[280px] aspect-[4/3] mx-auto filter drop-shadow-sm"
+                alt="Software engineer workspace animation"
+              />
+              <span class="text-xs font-mono text-[var(--color-text-muted)] mt-2">
+                Craft • Precision • Scale
+              </span>
+            </div>
           </div>
         </div>
 
         <!-- Principles Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div class="card-surface p-6 space-y-2">
-            <div class="size-10 rounded-xl bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] flex items-center justify-center font-bold text-lg">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="card-surface p-5 space-y-2">
+            <div class="size-9 rounded-xl bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] flex items-center justify-center font-bold text-base">
               01
             </div>
-            <h3 class="text-lg font-bold text-foreground m-0">High Craft & Speed</h3>
+            <h3 class="text-base font-bold text-foreground m-0">High Craft & Speed</h3>
             <p class="text-sm text-[var(--color-text-secondary)] m-0 leading-relaxed">
               Obsessed with crisp aesthetics, snappy interactions, zero-bloat code, and accessible design systems.
             </p>
           </div>
 
-          <div class="card-surface p-6 space-y-2">
-            <div class="size-10 rounded-xl bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] flex items-center justify-center font-bold text-lg">
+          <div class="card-surface p-5 space-y-2">
+            <div class="size-9 rounded-xl bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] flex items-center justify-center font-bold text-base">
               02
             </div>
-            <h3 class="text-lg font-bold text-foreground m-0">Resilient Architecture</h3>
+            <h3 class="text-base font-bold text-foreground m-0">Resilient Architecture</h3>
             <p class="text-sm text-[var(--color-text-secondary)] m-0 leading-relaxed">
               Designing scalable backends and mobile clients with clear boundaries, retries, and comprehensive observability.
             </p>
           </div>
 
-          <div class="card-surface p-6 space-y-2">
-            <div class="size-10 rounded-xl bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] flex items-center justify-center font-bold text-lg">
+          <div class="card-surface p-5 space-y-2">
+            <div class="size-9 rounded-xl bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] flex items-center justify-center font-bold text-base">
               03
             </div>
-            <h3 class="text-lg font-bold text-foreground m-0">Builder Mindset</h3>
+            <h3 class="text-base font-bold text-foreground m-0">Builder Mindset</h3>
             <p class="text-sm text-[var(--color-text-secondary)] m-0 leading-relaxed">
               From product strategy and SEO to developer infrastructure and growth automation—shipping end-to-end value.
             </p>
@@ -94,22 +109,6 @@ const pageDescription = 'Learn more about my background, technical philosophy, a
       </section>
 
       <GlowLineSeparator />
-
-      <!-- Connect CTA -->
-      <section class="card-surface p-8 sm:p-10 text-center space-y-4">
-        <h2 class="text-2xl sm:text-3xl font-bold text-foreground m-0">Let's Connect & Collaborate</h2>
-        <p class="text-base text-[var(--color-text-secondary)] max-w-xl mx-auto m-0">
-          Whether you're building a new product from scratch, scaling a mobile architecture, or exploring consulting opportunities, I'd love to chat.
-        </p>
-        <div class="pt-3 flex justify-center gap-3">
-          <Button href="mailto:hi@piush.com" variant="primary" size="md">
-            Get in Touch
-          </Button>
-          <Button href="/portfolio" variant="secondary" size="md">
-            View Projects
-          </Button>
-        </div>
-      </section>
     </main>
     <Footer />
   </body>

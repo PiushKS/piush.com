@@ -39,13 +39,13 @@ const posts = await getCollection('blog');
 const [firstPost, secondPost, thirdPost] = posts.slice(0, 3);
 ---
 
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
   <head>
     <BaseHead title={pageTitle} description={pageDescription} />
   </head>
   <body>
     <Header />
-    <main class="mx-auto max-w-6xl px-4 py-10 space-y-10">
+    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10 space-y-10">
       <section class="space-y-4">
         <h1 class="text-4xl font-bold">{pageTitle}</h1>
         <p class="text-lg text-[color:var(--color-text-muted)]">{pageDescription}</p>

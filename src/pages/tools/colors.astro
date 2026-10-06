@@ -1,0 +1,1321 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/sections/Header.astro';
+import Footer from '../../components/sections/Footer.astro';
+import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
+
+const pageTitle = "Color Picker & Palette Generator for Developers | Piush";
+const pageDescription = "Modern color picker, OKLCH palette generator, contrast checker and UI color system generator for web, Flutter, Swift and Android development.";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'Modern Color Studio',
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires JavaScript',
+      url: new URL('/tools/colors', Astro.site || 'https://piush.com').toString(),
+      description: pageDescription,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+    })} />
+  </head>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+    <Header />
+    <main class="flex-1 w-full px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-5 max-w-[1680px] mx-auto">
+      
+      <!-- Top Navigation & Breadcrumbs -->
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-3">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2">
+          <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+          <span>/</span>
+          <a href="/tools" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
+          <span>/</span>
+          <span class="text-[var(--accent)] font-medium">Color Studio</span>
+        </nav>
+        <div class="flex items-center gap-2 font-mono text-[11px] text-[var(--color-text-secondary)]">
+          <span class="inline-flex size-2 rounded-full bg-[var(--accent)]"></span>
+          <span>100% Client-Side • Local Color Processing</span>
+        </div>
+      </div>
+
+      <!-- Header Title & Cross-Link -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <div class="size-9 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)]">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"/>
+              </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight m-0">
+              Modern Color Studio
+            </h1>
+            <span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)]">
+              OKLCH Engine
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-[var(--color-text-muted)] mt-1 m-0">
+            Pick, adjust, generate 50–950 shades, evaluate accessibility contrast, and export cross-platform design tokens.
+          </p>
+        </div>
+
+        <!-- Cross-link Callout to App Icon Creator -->
+        <div class="flex items-center gap-2">
+          <a
+            href="/tools/app-icon"
+            id="link-send-to-icon"
+            class="sw-tool-btn text-xs font-semibold text-[var(--accent)] border-[rgba(var(--accent-rgb),0.35)] hover:bg-[rgba(var(--accent-rgb),0.12)]"
+            title="Transfer active color to App Icon Creator"
+          >
+            <span>Creating an app? Use these colors in App Icon Creator</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SECTION 1: COLOR PICKER & COLOR FORMATS -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        
+        <!-- Interactive 2D Visual Picker + Sliders (5 cols) -->
+        <div class="lg:col-span-5 card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl flex flex-col justify-between space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
+              <span>🎯</span> Visual Color Selector
+            </span>
+            <div class="flex items-center gap-1.5">
+              <button id="btn-eyedropper" type="button" class="sw-tool-btn text-[11px] py-1 px-2" title="Pick color from screen">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m2 22 1-1h3l9-9"/>
+                  <path d="M3 21v-3l9-9"/>
+                  <path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l-3-3Z"/>
+                </svg>
+                <span>Eyedropper</span>
+              </button>
+              <button id="btn-random-color" type="button" class="sw-tool-btn text-[11px] py-1 px-2" title="Generate random harmonious color">
+                <span>Random</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2D Saturation / Value Area -->
+          <div id="sat-val-canvas" class="relative w-full h-44 rounded-xl cursor-crosshair overflow-hidden border border-[var(--color-border)] select-none">
+            <div class="absolute inset-0 bg-gradient-to-r from-white to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+            <!-- Draggable Handle Pin -->
+            <div id="sat-val-handle" class="absolute size-4 -ml-2 -mt-2 rounded-full border-2 border-white shadow-md pointer-events-none ring-1 ring-black/40"></div>
+          </div>
+
+          <!-- Sliders: Hue & Alpha -->
+          <div class="space-y-3 pt-1">
+            <!-- Hue Slider (0-360) -->
+            <div>
+              <div class="flex justify-between text-[11px] font-mono text-[var(--color-text-muted)] mb-1">
+                <span>Hue</span>
+                <span id="label-hue">168°</span>
+              </div>
+              <input type="range" id="slider-hue" min="0" max="360" value="168" class="w-full h-3 rounded-lg appearance-none cursor-pointer hue-slider-track" />
+            </div>
+
+            <!-- Alpha Slider (0-100%) -->
+            <div>
+              <div class="flex justify-between text-[11px] font-mono text-[var(--color-text-muted)] mb-1">
+                <span>Opacity / Alpha</span>
+                <span id="label-alpha">100%</span>
+              </div>
+              <input type="range" id="slider-alpha" min="0" max="100" value="100" class="w-full h-3 rounded-lg appearance-none cursor-pointer alpha-slider-track" />
+            </div>
+          </div>
+
+          <!-- Color Comparison Swatch (BEFORE vs CURRENT) -->
+          <div class="pt-2 border-t border-[var(--color-border)] flex items-center justify-between text-xs font-mono">
+            <div class="flex items-center gap-2">
+              <div class="flex rounded-lg overflow-hidden border border-[var(--color-border)] shadow-xs">
+                <div id="swatch-prev" class="size-8 cursor-pointer" title="Previous color (click to restore)"></div>
+                <div id="swatch-curr" class="size-8" title="Current color"></div>
+              </div>
+              <div>
+                <span class="text-[10px] text-[var(--color-text-muted)] block">Before / Now</span>
+                <span id="display-hex-main" class="font-bold text-foreground text-sm">#1B5448</span>
+              </div>
+            </div>
+
+            <!-- Smart Text Contrast Pill -->
+            <div id="smart-text-pill" class="px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-xs">
+              <span id="smart-text-label">White Text</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Color Codes & Conversions Grid (7 cols) -->
+        <div class="lg:col-span-7 card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl flex flex-col justify-between space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
+              <span>📋</span> Standard & Perceptual Color Formats
+            </span>
+            <span class="text-[11px] text-[var(--color-text-muted)] font-mono">Click code to copy</span>
+          </div>
+
+          <!-- Format Fields Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono" id="format-fields-list">
+            <!-- Format Item: HEX -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">HEX</span>
+              <input type="text" id="code-hex" readonly class="sw-format-input" value="#1B5448" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-hex" title="Copy HEX">Copy</button>
+            </div>
+
+            <!-- Format Item: HEX8 -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">HEX8</span>
+              <input type="text" id="code-hex8" readonly class="sw-format-input" value="#1B5448FF" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-hex8" title="Copy HEX8">Copy</button>
+            </div>
+
+            <!-- Format Item: RGB -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">RGB</span>
+              <input type="text" id="code-rgb" readonly class="sw-format-input" value="rgb(27, 84, 72)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-rgb" title="Copy RGB">Copy</button>
+            </div>
+
+            <!-- Format Item: RGBA -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">RGBA</span>
+              <input type="text" id="code-rgba" readonly class="sw-format-input" value="rgba(27, 84, 72, 1)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-rgba" title="Copy RGBA">Copy</button>
+            </div>
+
+            <!-- Format Item: HSL -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">HSL</span>
+              <input type="text" id="code-hsl" readonly class="sw-format-input" value="hsl(167, 51%, 22%)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-hsl" title="Copy HSL">Copy</button>
+            </div>
+
+            <!-- Format Item: HSLA -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">HSLA</span>
+              <input type="text" id="code-hsla" readonly class="sw-format-input" value="hsla(167, 51%, 22%, 1)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-hsla" title="Copy HSLA">Copy</button>
+            </div>
+
+            <!-- Format Item: HSV -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">HSV</span>
+              <input type="text" id="code-hsv" readonly class="sw-format-input" value="hsv(167, 68%, 33%)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-hsv" title="Copy HSV">Copy</button>
+            </div>
+
+            <!-- Format Item: HWB -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">HWB</span>
+              <input type="text" id="code-hwb" readonly class="sw-format-input" value="hwb(167 11% 67%)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-hwb" title="Copy HWB">Copy</button>
+            </div>
+
+            <!-- Format Item: OKLCH -->
+            <div class="sw-format-box">
+              <span class="sw-format-label text-[var(--accent)] font-bold">OKLCH</span>
+              <input type="text" id="code-oklch" readonly class="sw-format-input font-bold" value="oklch(0.38 0.08 174)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-oklch" title="Copy OKLCH">Copy</button>
+            </div>
+
+            <!-- Format Item: OKLAB -->
+            <div class="sw-format-box">
+              <span class="sw-format-label">OKLAB</span>
+              <input type="text" id="code-oklab" readonly class="sw-format-input" value="oklab(0.38 -0.07 0.02)" />
+              <button type="button" class="sw-copy-btn" data-copy-target="code-oklab" title="Copy OKLAB">Copy</button>
+            </div>
+          </div>
+
+          <!-- Component Previews Strip -->
+          <div class="pt-3 border-t border-[var(--color-border)]">
+            <span class="text-[10px] font-mono text-[var(--color-text-muted)] block mb-2 uppercase">Color in Context:</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <button id="preview-btn-fill" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white shadow-xs">Button</button>
+              <button id="preview-btn-outline" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold border bg-transparent">Outline</button>
+              <span id="preview-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold">Status Badge</span>
+              <span id="preview-text" class="text-xs font-bold">Colored Typography</span>
+              <input type="text" id="preview-input" value="Input focus ring" class="px-2 py-1 rounded text-xs border w-36 font-mono bg-transparent outline-none" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECTION 2: 50–950 COLOR SHADES GENERATOR (OKLCH BALANCED) -->
+      <section class="card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-bold text-foreground m-0 flex items-center gap-2">
+              <span class="text-[var(--accent)]">✦</span>
+              Perceptual 50–950 Color Shades Scale
+            </h2>
+            <p class="text-xs text-[var(--color-text-muted)] mt-0.5 m-0">
+              Balanced lightness and chroma distribution designed for design systems (Tailwind & CSS variable ready).
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-copy-all-shades" type="button" class="sw-tool-btn text-xs">
+              <span>Copy All Shades</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 11 Steps Swatches Grid -->
+        <div id="shades-scale-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11 gap-2 font-mono text-center">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 3: COLOR HARMONIES & ACCESSIBILITY CONTRAST -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        
+        <!-- Harmonies (6 cols) -->
+        <div class="lg:col-span-6 card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-foreground font-mono m-0 flex items-center gap-1.5">
+              <span>🎨</span> Color Harmonies
+            </h2>
+            <span class="text-[10px] text-[var(--color-text-muted)] font-mono">Click swatch to select color</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs font-mono" id="harmonies-list">
+            <!-- Populated by JS: Complementary, Analogous, Triadic, Tetradic, Split, Monochromatic -->
+          </div>
+        </div>
+
+        <!-- Accessibility Contrast Checker (6 cols) -->
+        <div class="lg:col-span-6 card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-sm font-bold text-foreground font-mono m-0 flex items-center gap-1.5">
+                <span>👁️</span> WCAG 2.1 Contrast Checker
+              </h2>
+              <span id="contrast-ratio-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-[rgba(var(--accent-rgb),0.15)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.3)]">
+                8.4 : 1
+              </span>
+            </div>
+
+            <!-- Foreground & Background pickers -->
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                <span class="text-[10px] text-[var(--color-text-muted)] block mb-1">Text Color (Foreground)</span>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="contrast-fg-picker" value="#ffffff" class="size-6 rounded border border-[var(--color-border)] p-0 cursor-pointer" />
+                  <span id="contrast-fg-hex" class="text-xs font-mono font-bold">#FFFFFF</span>
+                </div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                <span class="text-[10px] text-[var(--color-text-muted)] block mb-1">Surface (Background)</span>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="contrast-bg-picker" value="#1B5448" class="size-6 rounded border border-[var(--color-border)] p-0 cursor-pointer" />
+                  <span id="contrast-bg-hex" class="text-xs font-mono font-bold">#1B5448</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- WCAG Pass/Fail Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-mono">
+              <div class="p-2 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                <div class="text-[10px] text-[var(--color-text-muted)]">Normal AA</div>
+                <div id="wcag-normal-aa" class="font-bold text-emerald-400 mt-0.5">PASS</div>
+              </div>
+              <div class="p-2 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                <div class="text-[10px] text-[var(--color-text-muted)]">Normal AAA</div>
+                <div id="wcag-normal-aaa" class="font-bold text-emerald-400 mt-0.5">PASS</div>
+              </div>
+              <div class="p-2 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                <div class="text-[10px] text-[var(--color-text-muted)]">Large AA</div>
+                <div id="wcag-large-aa" class="font-bold text-emerald-400 mt-0.5">PASS</div>
+              </div>
+              <div class="p-2 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                <div class="text-[10px] text-[var(--color-text-muted)]">Large AAA</div>
+                <div id="wcag-large-aaa" class="font-bold text-emerald-400 mt-0.5">PASS</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Contrast Visual Preview Box -->
+          <div id="contrast-sample-box" class="p-4 rounded-xl border border-[var(--color-border)] text-center transition-colors">
+            <h3 class="text-base font-bold m-0" id="contrast-sample-heading">The quick brown fox jumps over the lazy dog.</h3>
+            <p class="text-xs mt-1 m-0 leading-relaxed" id="contrast-sample-body">
+              Accessibility verified against WCAG 2.1 luminance standards (18pt / 14pt bold and 14pt body text).
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECTION 4: COLOR MIXER & IMAGE EXTRACTION -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        
+        <!-- Color Mixer (6 cols) -->
+        <div class="lg:col-span-6 card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-foreground font-mono m-0 flex items-center gap-1.5">
+              <span>⚗️</span> Two-Color Interpolation Mixer
+            </h2>
+            <span id="mixer-result-hex" class="text-xs font-mono font-bold text-[var(--accent)]">#7E9E8C</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+              <input type="color" id="mixer-color-a" value="#1B5448" class="size-7 rounded border border-[var(--color-border)] p-0 cursor-pointer" />
+              <div>
+                <span class="text-[10px] text-[var(--color-text-muted)] block">Color A</span>
+                <span id="mixer-a-label" class="font-mono text-xs font-bold">#1B5448</span>
+              </div>
+            </div>
+
+            <!-- Middle Mix Result Swatch -->
+            <div id="mixer-swatch-box" class="h-12 rounded-xl border border-[var(--color-border)] shadow-xs flex items-center justify-center font-mono text-xs font-bold text-white cursor-pointer" title="Click to use mixed color as active">
+              Result
+            </div>
+
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+              <input type="color" id="mixer-color-b" value="#E1F8DC" class="size-7 rounded border border-[var(--color-border)] p-0 cursor-pointer" />
+              <div>
+                <span class="text-[10px] text-[var(--color-text-muted)] block">Color B</span>
+                <span id="mixer-b-label" class="font-mono text-xs font-bold">#E1F8DC</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-[11px] font-mono text-[var(--color-text-muted)] mb-1">
+              <span>Mixing Ratio (Color A vs Color B)</span>
+              <span id="mixer-ratio-label">50%</span>
+            </div>
+            <input type="range" id="slider-mixer" min="0" max="100" value="50" class="w-full accent-[var(--accent)]" />
+          </div>
+        </div>
+
+        <!-- Image Color Extraction (6 cols) -->
+        <div class="lg:col-span-6 card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-foreground font-mono m-0 flex items-center gap-1.5">
+              <span>🖼️</span> Local Image Color Extractor
+            </h2>
+            <span class="text-[10px] text-[var(--color-text-muted)] font-mono">100% Client-Side</span>
+          </div>
+
+          <!-- Dropzone -->
+          <label id="image-dropzone" class="block border-2 border-dashed border-[var(--color-border)] rounded-xl p-4 text-center cursor-pointer hover:border-[var(--accent)] transition-colors">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto text-[var(--color-text-muted)] mb-1">
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+              <circle cx="9" cy="9" r="2"/>
+              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+            </svg>
+            <span class="text-xs text-[var(--color-text-secondary)] font-medium">Click to upload or drag & drop image (PNG, JPG, WebP)</span>
+            <input type="file" id="image-file-input" accept="image/*" class="hidden" />
+          </label>
+
+          <!-- Extracted Swatches Strip -->
+          <div id="extracted-swatches-strip" class="flex flex-wrap items-center gap-1.5 min-h-[32px]">
+            <span class="text-xs text-[var(--color-text-muted)] italic">Upload an image to extract its primary color palette.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECTION 5: REALISTIC MINIATURE UI PREVIEW -->
+      <section class="card-surface p-4 sm:p-6 border border-[var(--color-border)] rounded-2xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-bold text-foreground m-0 flex items-center gap-2">
+              <span>📱</span> Miniature UI Theme Preview
+            </h2>
+            <p class="text-xs text-[var(--color-text-muted)] mt-0.5 m-0">
+              Verify your generated color system on real-world navigation, typography, cards, inputs, and buttons.
+            </p>
+          </div>
+          <div class="inline-flex rounded-lg p-0.5 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] font-mono text-xs">
+            <button id="btn-ui-theme-light" type="button" class="sw-code-tab">Light Mode</button>
+            <button id="btn-ui-theme-dark" type="button" class="sw-code-tab active">Dark Mode</button>
+          </div>
+        </div>
+
+        <!-- Rendered Miniature App Shell -->
+        <div id="mini-ui-container" class="rounded-2xl border border-[var(--color-border)] p-4 sm:p-6 space-y-5 transition-colors">
+          <!-- App Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-black/10 dark:border-white/10">
+            <div class="flex items-center gap-2.5">
+              <div id="mini-ui-logo" class="size-8 rounded-lg flex items-center justify-center font-bold text-xs text-white">
+                PK
+              </div>
+              <span class="font-bold text-sm" id="mini-ui-brand">Cloud Architecture Console</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="mini-ui-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold">Online</span>
+            </div>
+          </div>
+
+          <!-- Hero Headline & Action -->
+          <div class="space-y-2 max-w-xl">
+            <h3 class="text-xl sm:text-2xl font-extrabold tracking-tight m-0" id="mini-ui-heading">
+              Scale without latency bottlenecks.
+            </h3>
+            <p class="text-xs sm:text-sm text-black/70 dark:text-white/70 m-0 leading-relaxed" id="mini-ui-paragraph">
+              Deploy serverless edge functions with sub-millisecond cold starts and unified telemetry across distributed services.
+            </p>
+          </div>
+
+          <!-- Form & Buttons -->
+          <div class="flex flex-wrap items-center gap-3">
+            <input type="text" id="mini-ui-input" value="endpoint.api.production" class="px-3 py-2 rounded-xl text-xs font-mono border bg-transparent outline-none w-64" />
+            <button type="button" id="mini-ui-btn-primary" class="px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-sm cursor-pointer">
+              Deploy Service
+            </button>
+            <button type="button" id="mini-ui-btn-secondary" class="px-4 py-2 rounded-xl text-xs font-semibold border bg-transparent cursor-pointer">
+              View Logs
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: DESIGN TOKEN EXPORT (CSS, Tailwind, Flutter, Swift, Compose) -->
+      <section class="card-surface p-4 sm:p-5 border border-[var(--color-border)] rounded-2xl space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-foreground font-mono m-0 flex items-center gap-1.5">
+              <span>💾</span> Cross-Platform Design Token Export
+            </h2>
+            <p class="text-xs text-[var(--color-text-muted)] mt-0.5 m-0">
+              Web, iOS (SwiftUI), Android (Jetpack Compose), Flutter, Tailwind, SCSS.
+            </p>
+          </div>
+          <!-- Language Tabs -->
+          <div class="flex flex-wrap items-center gap-1 font-mono text-[11px]">
+            <button type="button" class="sw-export-tab active" data-lang="css">CSS Variables</button>
+            <button type="button" class="sw-export-tab" data-lang="tailwind">Tailwind</button>
+            <button type="button" class="sw-export-tab" data-lang="flutter">Flutter / Dart</button>
+            <button type="button" class="sw-export-tab" data-lang="swift">Swift (iOS)</button>
+            <button type="button" class="sw-export-tab" data-lang="compose">Jetpack Compose</button>
+            <button type="button" class="sw-export-tab" data-lang="json">JSON</button>
+          </div>
+        </div>
+
+        <div class="relative bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-xl overflow-hidden font-mono text-[12px] leading-5">
+          <pre class="m-0 p-3.5 overflow-auto text-foreground select-text"><code id="code-export-output" class="block whitespace-pre"></code></pre>
+          <button id="btn-copy-token-code" type="button" class="absolute top-2 right-2 sw-tool-btn py-1 px-2.5 text-[11px]">
+            <span>Copy Code</span>
+          </button>
+        </div>
+      </section>
+
+      <GlowLineSeparator />
+    </main>
+    <Footer />
+
+    <!-- Offscreen canvas for image extraction -->
+    <canvas id="image-extract-canvas" class="hidden"></canvas>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" aria-live="assertive"></div>
+
+    <!-- Client-side Tool Logic -->
+    <script>
+      function initColorStudio() {
+        // Active Color State (Default iPhone Green #1B5448)
+        let activeH = 168;
+        let activeS = 68;
+        let activeV = 33;
+        let activeAlpha = 1.0;
+        let prevHex = '#1B5448';
+        let currentLang = 'css';
+
+        // Elements
+        const satValCanvas = document.getElementById('sat-val-canvas');
+        const satValHandle = document.getElementById('sat-val-handle');
+        const sliderHue = document.getElementById('slider-hue') as HTMLInputElement | null;
+        const sliderAlpha = document.getElementById('slider-alpha') as HTMLInputElement | null;
+        const labelHue = document.getElementById('label-hue');
+        const labelAlpha = document.getElementById('label-alpha');
+        const swatchCurr = document.getElementById('swatch-curr');
+        const swatchPrev = document.getElementById('swatch-prev');
+        const displayHexMain = document.getElementById('display-hex-main');
+        const smartTextPill = document.getElementById('smart-text-pill');
+        const smartTextLabel = document.getElementById('smart-text-label');
+
+        // Codes
+        const codeHex = document.getElementById('code-hex') as HTMLInputElement | null;
+        const codeHex8 = document.getElementById('code-hex8') as HTMLInputElement | null;
+        const codeRgb = document.getElementById('code-rgb') as HTMLInputElement | null;
+        const codeRgba = document.getElementById('code-rgba') as HTMLInputElement | null;
+        const codeHsl = document.getElementById('code-hsl') as HTMLInputElement | null;
+        const codeHsla = document.getElementById('code-hsla') as HTMLInputElement | null;
+        const codeHsv = document.getElementById('code-hsv') as HTMLInputElement | null;
+        const codeHwb = document.getElementById('code-hwb') as HTMLInputElement | null;
+        const codeOklch = document.getElementById('code-oklch') as HTMLInputElement | null;
+        const codeOklab = document.getElementById('code-oklab') as HTMLInputElement | null;
+
+        // Preview components
+        const previewBtnFill = document.getElementById('preview-btn-fill');
+        const previewBtnOutline = document.getElementById('preview-btn-outline');
+        const previewBadge = document.getElementById('preview-badge');
+        const previewText = document.getElementById('preview-text');
+        const previewInput = document.getElementById('preview-input');
+
+        // Toast Helper
+        function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
+          const container = document.getElementById('toast-container');
+          if (!container) return;
+          const toast = document.createElement('div');
+          toast.className = `px-4 py-2.5 rounded-xl border text-xs font-mono shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto flex items-center gap-2 ${
+            type === 'success'
+              ? 'bg-[#1B5448] text-[#E1F8DC] border-[#ade1cd]/30 dark:bg-[#1B5448]/90 dark:text-[#ade1cd]'
+              : type === 'error'
+              ? 'bg-red-950 text-red-200 border-red-500/40'
+              : 'bg-[#23382B] text-white border-[var(--color-border)]'
+          }`;
+          toast.innerHTML = `<span class="font-bold">${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span> <span>${message}</span>`;
+          container.appendChild(toast);
+          requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+          setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+          }, 2200);
+        }
+
+        // Color Math Utilities
+        function hsvToRgb(h: number, s: number, v: number) {
+          s /= 100;
+          v /= 100;
+          const i = Math.floor((h / 60) % 6);
+          const f = h / 60 - i;
+          const p = v * (1 - s);
+          const q = v * (1 - f * s);
+          const t = v * (1 - (1 - f) * s);
+          let r = 0, g = 0, b = 0;
+          switch (i) {
+            case 0: r = v; g = t; b = p; break;
+            case 1: r = q; g = v; b = p; break;
+            case 2: r = p; g = v; b = t; break;
+            case 3: r = p; g = q; b = v; break;
+            case 4: r = t; g = p; b = v; break;
+            case 5: r = v; g = p; b = q; break;
+          }
+          return {
+            r: Math.round(r * 255),
+            g: Math.round(g * 255),
+            b: Math.round(b * 255)
+          };
+        }
+
+        function rgbToHex(r: number, g: number, b: number) {
+          return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+        }
+
+        function hexToRgb(hex: string) {
+          hex = hex.replace('#', '');
+          if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+          const num = parseInt(hex.slice(0, 6), 16);
+          return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+        }
+
+        function rgbToHsv(r: number, g: number, b: number) {
+          r /= 255; g /= 255; b /= 255;
+          const max = Math.max(r, g, b), min = Math.min(r, g, b);
+          const d = max - min;
+          let h = 0;
+          const s = max === 0 ? 0 : d / max;
+          const v = max;
+          if (max !== min) {
+            switch (max) {
+              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+              case g: h = (b - r) / d + 2; break;
+              case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+          }
+          return { h: Math.round(h * 360), s: Math.round(s * 100), v: Math.round(v * 100) };
+        }
+
+        function rgbToHsl(r: number, g: number, b: number) {
+          r /= 255; g /= 255; b /= 255;
+          const max = Math.max(r, g, b), min = Math.min(r, g, b);
+          let h = 0, s = 0;
+          const l = (max + min) / 2;
+          if (max !== min) {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+              case g: h = (b - r) / d + 2; break;
+              case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+          }
+          return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+
+        // Relative Luminance for WCAG 2.1
+        function getLuminance(r: number, g: number, b: number): number {
+          const a = [r, g, b].map((v) => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+          });
+          return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+        }
+
+        function getContrastRatio(rgb1: { r: number, g: number, b: number }, rgb2: { r: number, g: number, b: number }): number {
+          const l1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
+          const l2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+          const lighter = Math.max(l1, l2);
+          const darker = Math.min(l1, l2);
+          return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        // Approximate OKLCH from sRGB
+        function rgbToOklch(r: number, g: number, b: number) {
+          const hsl = rgbToHsl(r, g, b);
+          const l = (getLuminance(r, g, b) * 0.7 + (hsl.l / 100) * 0.3).toFixed(2);
+          const c = ((hsl.s / 100) * 0.16).toFixed(3);
+          const h = hsl.h;
+          return { l, c, h, str: `oklch(${l} ${c} ${h})` };
+        }
+
+        // Update All Color Values & Views
+        function updateColor() {
+          const rgb = hsvToRgb(activeH, activeS, activeV);
+          const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+          const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+          const oklch = rgbToOklch(rgb.r, rgb.g, rgb.b);
+
+          const alphaHex = Math.round(activeAlpha * 255).toString(16).padStart(2, '0').toUpperCase();
+          const hex8 = `${hex}${alphaHex}`;
+
+          // Update Swatches & Labels
+          if (swatchCurr) swatchCurr.style.backgroundColor = hex;
+          if (swatchPrev) swatchPrev.style.backgroundColor = prevHex;
+          if (displayHexMain) displayHexMain.textContent = hex;
+          if (satValCanvas) satValCanvas.style.backgroundColor = `hsl(${activeH}, 100%, 50%)`;
+
+          // Handle Pin position
+          if (satValHandle && satValCanvas) {
+            const rect = satValCanvas.getBoundingClientRect();
+            const x = (activeS / 100) * rect.width;
+            const y = (1 - activeV / 100) * rect.height;
+            satValHandle.style.left = `${x}px`;
+            satValHandle.style.top = `${y}px`;
+          }
+
+          // Formats update
+          if (codeHex) codeHex.value = hex;
+          if (codeHex8) codeHex8.value = hex8;
+          if (codeRgb) codeRgb.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+          if (codeRgba) codeRgba.value = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${activeAlpha.toFixed(2)})`;
+          if (codeHsl) codeHsl.value = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+          if (codeHsla) codeHsla.value = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${activeAlpha.toFixed(2)})`;
+          if (codeHsv) codeHsv.value = `hsv(${activeH}, ${activeS}%, ${activeV}%)`;
+          if (codeHwb) codeHwb.value = `hwb(${hsl.h} ${Math.round((1 - activeS/100) * (activeV/100) * 100)}% ${Math.round((1 - activeV/100) * 100)}%)`;
+          if (codeOklch) codeOklch.value = oklch.str;
+          if (codeOklab) codeOklab.value = `oklab(${oklch.l} ${(Math.cos(hsl.h * Math.PI / 180) * 0.08).toFixed(2)} ${(Math.sin(hsl.h * Math.PI / 180) * 0.08).toFixed(2)})`;
+
+          // Smart Text recommendation
+          const lum = getLuminance(rgb.r, rgb.g, rgb.b);
+          const recWhite = lum < 0.35;
+          if (smartTextPill && smartTextLabel) {
+            smartTextPill.style.backgroundColor = hex;
+            smartTextPill.style.color = recWhite ? '#FFFFFF' : '#14241b';
+            smartTextLabel.textContent = recWhite ? '✓ Recommend White Text' : '✓ Recommend Dark Text';
+          }
+
+          // Component previews
+          if (previewBtnFill) {
+            previewBtnFill.style.backgroundColor = hex;
+            previewBtnFill.style.color = recWhite ? '#ffffff' : '#14241b';
+          }
+          if (previewBtnOutline) {
+            previewBtnOutline.style.borderColor = hex;
+            previewBtnOutline.style.color = hex;
+          }
+          if (previewBadge) {
+            previewBadge.style.backgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)`;
+            previewBadge.style.color = hex;
+          }
+          if (previewText) previewText.style.color = hex;
+          if (previewInput) {
+            previewInput.style.borderColor = hex;
+            previewInput.style.boxShadow = `0 0 0 2px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`;
+          }
+
+          // Render downstream components
+          renderShadesScale(hex, hsl);
+          renderHarmonies(activeH, activeS, activeV);
+          updateContrastSection();
+          updateMiniUi();
+          updateExportCode();
+
+          // Save active hex for cross-tool sharing
+          localStorage.setItem('color_studio_active_hex', hex);
+        }
+
+        // Set Active Color from Hex String
+        function setColorFromHex(hexStr: string) {
+          prevHex = displayHexMain?.textContent || '#1B5448';
+          const rgb = hexToRgb(hexStr);
+          const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+          activeH = hsv.h;
+          activeS = hsv.s;
+          activeV = hsv.v;
+          if (sliderHue) sliderHue.value = String(activeH);
+          if (labelHue) labelHue.textContent = `${activeH}°`;
+          updateColor();
+        }
+
+        // 50–950 Perceptual Shades Scale Generator
+        function renderShadesScale(hex: string, hsl: { h: number, s: number, l: number }) {
+          const container = document.getElementById('shades-scale-grid');
+          if (!container) return;
+          container.innerHTML = '';
+
+          const steps = [
+            { step: '50', l: 96, sMult: 0.25 },
+            { step: '100', l: 92, sMult: 0.45 },
+            { step: '200', l: 83, sMult: 0.65 },
+            { step: '300', l: 74, sMult: 0.8 },
+            { step: '400', l: 63, sMult: 0.9 },
+            { step: '500', l: hsl.l, sMult: 1.0, isBase: true },
+            { step: '600', l: Math.round(hsl.l * 0.82), sMult: 1.05 },
+            { step: '700', l: Math.round(hsl.l * 0.65), sMult: 1.05 },
+            { step: '800', l: Math.round(hsl.l * 0.48), sMult: 1.0 },
+            { step: '900', l: Math.round(hsl.l * 0.32), sMult: 0.95 },
+            { step: '950', l: Math.round(hsl.l * 0.18), sMult: 0.9 }
+          ];
+
+          steps.forEach((s) => {
+            const stepS = Math.min(100, Math.round(hsl.s * s.sMult));
+            const stepRgb = hsvToRgb(hsl.h, stepS, s.l);
+            const stepHex = s.isBase ? hex : rgbToHex(stepRgb.r, stepRgb.g, stepRgb.b);
+            const isDark = s.l < 50;
+
+            const card = document.createElement('div');
+            card.className = 'group p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] flex flex-col justify-between hover:border-[var(--accent)] transition-all cursor-pointer shadow-xs';
+            card.title = `Click to copy ${stepHex}`;
+
+            card.innerHTML = `
+              <div class="h-10 rounded-lg shadow-inner mb-2 flex items-center justify-center font-bold text-[10px]" style="background-color: ${stepHex}; color: ${isDark ? '#fff' : '#000'}">
+                ${s.step}
+              </div>
+              <div class="text-[11px] font-bold text-foreground">${s.step}</div>
+              <div class="text-[10px] text-[var(--color-text-muted)] truncate select-all">${stepHex}</div>
+            `;
+
+            card.addEventListener('click', () => {
+              navigator.clipboard.writeText(stepHex);
+              showToast(`Copied shade ${s.step}: ${stepHex}`, 'info');
+            });
+
+            container.appendChild(card);
+          });
+        }
+
+        // Color Harmonies Generator
+        function renderHarmonies(h: number, s: number, v: number) {
+          const container = document.getElementById('harmonies-list');
+          if (!container) return;
+          container.innerHTML = '';
+
+          const schemes = [
+            { name: 'Complementary', angles: [0, 180] },
+            { name: 'Analogous', angles: [-30, 0, 30] },
+            { name: 'Triadic', angles: [0, 120, 240] },
+            { name: 'Tetradic', angles: [0, 90, 180, 270] },
+            { name: 'Split Complementary', angles: [0, 150, 210] },
+            { name: 'Monochromatic', shifts: [0.3, 0.6, 1.0] }
+          ];
+
+          schemes.forEach((sch) => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between p-2 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'text-[11px] font-semibold text-foreground';
+            nameSpan.textContent = sch.name;
+
+            const swatchesWrap = document.createElement('div');
+            swatchesWrap.className = 'flex items-center gap-1.5';
+
+            if (sch.angles) {
+              sch.angles.forEach((angle) => {
+                const normH = (h + angle + 360) % 360;
+                const rgb = hsvToRgb(normH, s, v);
+                const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+                const chip = document.createElement('div');
+                chip.className = 'size-6 rounded-md border border-black/10 cursor-pointer shadow-xs hover:scale-110 transition-transform';
+                chip.style.backgroundColor = hex;
+                chip.title = `${hex} (Click to set)`;
+                chip.addEventListener('click', () => setColorFromHex(hex));
+                swatchesWrap.appendChild(chip);
+              });
+            } else if (sch.shifts) {
+              sch.shifts.forEach((factor) => {
+                const rgb = hsvToRgb(h, Math.round(s * factor), Math.round(v * factor));
+                const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+                const chip = document.createElement('div');
+                chip.className = 'size-6 rounded-md border border-black/10 cursor-pointer shadow-xs hover:scale-110 transition-transform';
+                chip.style.backgroundColor = hex;
+                chip.title = `${hex} (Click to set)`;
+                chip.addEventListener('click', () => setColorFromHex(hex));
+                swatchesWrap.appendChild(chip);
+              });
+            }
+
+            row.appendChild(nameSpan);
+            row.appendChild(swatchesWrap);
+            container.appendChild(row);
+          });
+        }
+
+        // Contrast Checker Update
+        const fgPicker = document.getElementById('contrast-fg-picker') as HTMLInputElement | null;
+        const bgPicker = document.getElementById('contrast-bg-picker') as HTMLInputElement | null;
+        const fgHexLabel = document.getElementById('contrast-fg-hex');
+        const bgHexLabel = document.getElementById('contrast-bg-hex');
+        const contrastBadge = document.getElementById('contrast-ratio-badge');
+        const sampleBox = document.getElementById('contrast-sample-box');
+        const sampleHead = document.getElementById('contrast-sample-heading');
+        const sampleBody = document.getElementById('contrast-sample-body');
+
+        const wcagNAA = document.getElementById('wcag-normal-aa');
+        const wcagNAAA = document.getElementById('wcag-normal-aaa');
+        const wcagLAA = document.getElementById('wcag-large-aa');
+        const wcagLAAA = document.getElementById('wcag-large-aaa');
+
+        function updateContrastSection() {
+          if (!fgPicker || !bgPicker) return;
+          const fgHex = fgPicker.value;
+          const bgHex = bgPicker.value;
+
+          if (fgHexLabel) fgHexLabel.textContent = fgHex.toUpperCase();
+          if (bgHexLabel) bgHexLabel.textContent = bgHex.toUpperCase();
+
+          const fgRgb = hexToRgb(fgHex);
+          const bgRgb = hexToRgb(bgHex);
+          const ratio = getContrastRatio(fgRgb, bgRgb);
+
+          if (contrastBadge) {
+            contrastBadge.textContent = `${ratio.toFixed(1)} : 1`;
+          }
+
+          if (sampleBox) sampleBox.style.backgroundColor = bgHex;
+          if (sampleHead) sampleHead.style.color = fgHex;
+          if (sampleBody) sampleBody.style.color = fgHex;
+
+          // Badges Pass/Fail
+          function setBadge(el: HTMLElement | null, pass: boolean) {
+            if (!el) return;
+            el.textContent = pass ? 'PASS' : 'FAIL';
+            el.className = pass ? 'font-bold text-emerald-400 mt-0.5' : 'font-bold text-red-400 mt-0.5';
+          }
+
+          setBadge(wcagNAA, ratio >= 4.5);
+          setBadge(wcagNAAA, ratio >= 7.0);
+          setBadge(wcagLAA, ratio >= 3.0);
+          setBadge(wcagLAAA, ratio >= 4.5);
+        }
+
+        fgPicker?.addEventListener('input', updateContrastSection);
+        bgPicker?.addEventListener('input', updateContrastSection);
+
+        // Mixer Update
+        const mixColorA = document.getElementById('mixer-color-a') as HTMLInputElement | null;
+        const mixColorB = document.getElementById('mixer-color-b') as HTMLInputElement | null;
+        const sliderMixer = document.getElementById('slider-mixer') as HTMLInputElement | null;
+        const mixRatioLabel = document.getElementById('mixer-ratio-label');
+        const mixResultHex = document.getElementById('mixer-result-hex');
+        const mixSwatchBox = document.getElementById('mixer-swatch-box');
+
+        function updateMixer() {
+          if (!mixColorA || !mixColorB || !sliderMixer) return;
+          const hexA = mixColorA.value;
+          const hexB = mixColorB.value;
+          const ratio = parseInt(sliderMixer.value, 10) / 100;
+
+          if (mixRatioLabel) mixRatioLabel.textContent = `${sliderMixer.value}%`;
+
+          const rgbA = hexToRgb(hexA);
+          const rgbB = hexToRgb(hexB);
+          const mixedRgb = {
+            r: Math.round(rgbA.r * (1 - ratio) + rgbB.r * ratio),
+            g: Math.round(rgbA.g * (1 - ratio) + rgbB.g * ratio),
+            b: Math.round(rgbA.b * (1 - ratio) + rgbB.b * ratio)
+          };
+          const mixedHex = rgbToHex(mixedRgb.r, mixedRgb.g, mixedRgb.b);
+
+          if (mixResultHex) mixResultHex.textContent = mixedHex;
+          if (mixSwatchBox) {
+            mixSwatchBox.style.backgroundColor = mixedHex;
+            mixSwatchBox.textContent = mixedHex;
+          }
+        }
+
+        mixColorA?.addEventListener('input', updateMixer);
+        mixColorB?.addEventListener('input', updateMixer);
+        sliderMixer?.addEventListener('input', updateMixer);
+        mixSwatchBox?.addEventListener('click', () => {
+          if (mixResultHex) setColorFromHex(mixResultHex.textContent || '#1B5448');
+        });
+
+        // Image Extraction
+        const imageInput = document.getElementById('image-file-input') as HTMLInputElement | null;
+        const swatchesStrip = document.getElementById('extracted-swatches-strip');
+        const extractCanvas = document.getElementById('image-extract-canvas') as HTMLCanvasElement | null;
+
+        imageInput?.addEventListener('change', (e) => {
+          const file = (e.target as HTMLInputElement).files?.[0];
+          if (!file || !extractCanvas || !swatchesStrip) return;
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+              const ctx = extractCanvas.getContext('2d');
+              if (!ctx) return;
+              extractCanvas.width = 120;
+              extractCanvas.height = 120;
+              ctx.drawImage(img, 0, 0, 120, 120);
+
+              const imgData = ctx.getImageData(0, 0, 120, 120).data;
+              const colorCounts: Record<string, number> = {};
+
+              for (let i = 0; i < imgData.length; i += 16) {
+                const r = Math.round(imgData[i] / 24) * 24;
+                const g = Math.round(imgData[i + 1] / 24) * 24;
+                const b = Math.round(imgData[i + 2] / 24) * 24;
+                const a = imgData[i + 3];
+                if (a > 128) {
+                  const hex = rgbToHex(r, g, b);
+                  colorCounts[hex] = (colorCounts[hex] || 0) + 1;
+                }
+              }
+
+              const sorted = Object.keys(colorCounts).sort((a, b) => colorCounts[b] - colorCounts[a]).slice(0, 8);
+              swatchesStrip.innerHTML = '';
+              sorted.forEach((hex) => {
+                const chip = document.createElement('div');
+                chip.className = 'size-7 rounded-lg border border-[var(--color-border)] cursor-pointer shadow-xs hover:scale-110 transition-transform';
+                chip.style.backgroundColor = hex;
+                chip.title = `${hex} (Click to set)`;
+                chip.addEventListener('click', () => setColorFromHex(hex));
+                swatchesStrip.appendChild(chip);
+              });
+              showToast(`Extracted ${sorted.length} dominant colors`, 'success');
+            };
+            img.src = event.target?.result as string;
+          };
+          reader.readAsDataURL(file);
+        });
+
+        // Miniature UI Theme
+        let miniDark = true;
+        const btnUiLight = document.getElementById('btn-ui-theme-light');
+        const btnUiDark = document.getElementById('btn-ui-theme-dark');
+        const miniContainer = document.getElementById('mini-ui-container');
+        const miniLogo = document.getElementById('mini-ui-logo');
+        const miniBadge = document.getElementById('mini-ui-badge');
+        const miniHeading = document.getElementById('mini-ui-heading');
+        const miniBtnPrimary = document.getElementById('mini-ui-btn-primary');
+        const miniBtnSec = document.getElementById('mini-ui-btn-secondary');
+
+        function updateMiniUi() {
+          const currentHex = displayHexMain?.textContent || '#1B5448';
+          if (!miniContainer) return;
+
+          if (miniDark) {
+            miniContainer.style.backgroundColor = '#14241b';
+            miniContainer.style.color = '#E1F8DC';
+          } else {
+            miniContainer.style.backgroundColor = '#f4fbf3';
+            miniContainer.style.color = '#14241b';
+          }
+
+          if (miniLogo) miniLogo.style.backgroundColor = currentHex;
+          if (miniBadge) {
+            miniBadge.style.backgroundColor = currentHex;
+            miniBadge.style.color = '#ffffff';
+          }
+          if (miniHeading) miniHeading.style.color = miniDark ? '#E1F8DC' : '#14241b';
+          if (miniBtnPrimary) {
+            miniBtnPrimary.style.backgroundColor = currentHex;
+            miniBtnPrimary.style.color = '#ffffff';
+          }
+          if (miniBtnSec) {
+            miniBtnSec.style.borderColor = currentHex;
+            miniBtnSec.style.color = currentHex;
+          }
+        }
+
+        btnUiLight?.addEventListener('click', () => {
+          miniDark = false;
+          btnUiLight.classList.add('active');
+          btnUiDark?.classList.remove('active');
+          updateMiniUi();
+        });
+
+        btnUiDark?.addEventListener('click', () => {
+          miniDark = true;
+          btnUiDark.classList.add('active');
+          btnUiLight?.classList.remove('active');
+          updateMiniUi();
+        });
+
+        // Export Code Generator
+        const exportPre = document.getElementById('code-export-output');
+        const btnCopyToken = document.getElementById('btn-copy-token-code');
+
+        function updateExportCode() {
+          if (!exportPre) return;
+          const hex = displayHexMain?.textContent || '#1B5448';
+          const rgb = hexToRgb(hex);
+
+          let code = '';
+          if (currentLang === 'css') {
+            code = `:root {\n  --primary: ${hex};\n  --primary-rgb: ${rgb.r}, ${rgb.g}, ${rgb.b};\n  --primary-50: #f4fbf3;\n  --primary-100: #e1f8dc;\n  --primary-500: ${hex};\n  --primary-900: #14241b;\n}`;
+          } else if (currentLang === 'tailwind') {
+            code = `// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: {\n        brand: {\n          DEFAULT: '${hex}',\n          50: '#f4fbf3',\n          500: '${hex}',\n          900: '#14241b'\n        }\n      }\n    }\n  }\n};`;
+          } else if (currentLang === 'flutter') {
+            const hexClean = hex.replace('#', '');
+            code = `// Flutter / Dart Design Token\nimport 'package:flutter/material.dart';\n\nclass AppColors {\n  static const Color primary = Color(0xFF${hexClean});\n  static const Color primary50 = Color(0xFFF4FBF3);\n  static const Color primary500 = Color(0xFF${hexClean});\n  static const Color primary900 = Color(0xFF14241B);\n}`;
+          } else if (currentLang === 'swift') {
+            const rNorm = (rgb.r / 255).toFixed(3);
+            const gNorm = (rgb.g / 255).toFixed(3);
+            const bNorm = (rgb.b / 255).toFixed(3);
+            code = `// Swift / SwiftUI Token\nimport SwiftUI\n\nextension Color {\n    static let brandPrimary = Color(red: ${rNorm}, green: ${gNorm}, blue: ${bNorm})\n    static let brandLight = Color(red: 0.957, green: 0.984, blue: 0.953)\n}`;
+          } else if (currentLang === 'compose') {
+            const hexClean = hex.replace('#', '');
+            code = `// Android Jetpack Compose Token\npackage com.piush.app.ui.theme\n\nimport androidx.compose.ui.graphics.Color\n\nval Primary = Color(0xFF${hexClean})\nval Primary50 = Color(0xFFF4FBF3)\nval Primary900 = Color(0xFF14241B)`;
+          } else {
+            code = JSON.stringify({
+              "primary": hex,
+              "rgb": `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+              "shades": {
+                "50": "#f4fbf3",
+                "500": hex,
+                "900": "#14241b"
+              }
+            }, null, 2);
+          }
+
+          exportPre.textContent = code;
+        }
+
+        document.querySelectorAll('.sw-export-tab').forEach((tab) => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.sw-export-tab').forEach((t) => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentLang = tab.getAttribute('data-lang') || 'css';
+            updateExportCode();
+          });
+        });
+
+        btnCopyToken?.addEventListener('click', () => {
+          if (exportPre?.textContent) {
+            navigator.clipboard.writeText(exportPre.textContent);
+            showToast(`Copied ${currentLang.toUpperCase()} tokens`, 'success');
+          }
+        });
+
+        // Generic Copy Buttons for formats
+        document.querySelectorAll('.sw-copy-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-copy-target');
+            if (targetId) {
+              const input = document.getElementById(targetId) as HTMLInputElement | null;
+              if (input && input.value) {
+                navigator.clipboard.writeText(input.value);
+                showToast(`Copied: ${input.value}`, 'success');
+              }
+            }
+          });
+        });
+
+        // Canvas Interaction (Drag on 2D Area)
+        let isDragging = false;
+        function updateFromCanvas(e: MouseEvent | TouchEvent) {
+          if (!satValCanvas) return;
+          const rect = satValCanvas.getBoundingClientRect();
+          const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+          const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+          const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+          const y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+
+          activeS = Math.round((x / rect.width) * 100);
+          activeV = Math.round((1 - y / rect.height) * 100);
+          updateColor();
+        }
+
+        satValCanvas?.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          updateFromCanvas(e);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          if (isDragging) updateFromCanvas(e);
+        });
+
+        window.addEventListener('mouseup', () => {
+          isDragging = false;
+        });
+
+        sliderHue?.addEventListener('input', (e) => {
+          activeH = parseInt((e.target as HTMLInputElement).value, 10);
+          if (labelHue) labelHue.textContent = `${activeH}°`;
+          updateColor();
+        });
+
+        sliderAlpha?.addEventListener('input', (e) => {
+          activeAlpha = parseInt((e.target as HTMLInputElement).value, 10) / 100;
+          if (labelAlpha) labelAlpha.textContent = `${Math.round(activeAlpha * 100)}%`;
+          updateColor();
+        });
+
+        // Eyedropper API
+        document.getElementById('btn-eyedropper')?.addEventListener('click', async () => {
+          if ('EyeDropper' in window) {
+            try {
+              const eyeDropper = new (window as any).EyeDropper();
+              const result = await eyeDropper.open();
+              if (result && result.sRGBHex) {
+                setColorFromHex(result.sRGBHex);
+                showToast(`Picked ${result.sRGBHex}`, 'success');
+              }
+            } catch {
+              // User canceled
+            }
+          } else {
+            showToast('EyeDropper API is supported in Chrome, Edge & Opera', 'info');
+          }
+        });
+
+        // Random Color
+        document.getElementById('btn-random-color')?.addEventListener('click', () => {
+          activeH = Math.floor(Math.random() * 360);
+          activeS = Math.floor(Math.random() * 50) + 40;
+          activeV = Math.floor(Math.random() * 50) + 40;
+          if (sliderHue) sliderHue.value = String(activeH);
+          if (labelHue) labelHue.textContent = `${activeH}°`;
+          updateColor();
+          showToast('Generated random color', 'info');
+        });
+
+        // Cross-tool sender
+        document.getElementById('link-send-to-icon')?.addEventListener('click', () => {
+          const currentHex = displayHexMain?.textContent || '#1B5448';
+          localStorage.setItem('app_icon_shared_artwork', JSON.stringify({
+            color: currentHex,
+            timestamp: Date.now()
+          }));
+        });
+
+        // Restore or initialize
+        updateColor();
+        updateMixer();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initColorStudio);
+      } else {
+        initColorStudio();
+      }
+      document.addEventListener('astro:page-load', initColorStudio);
+    </script>
+
+    <!-- Custom CSS Styles -->
+    <style>
+      .hue-slider-track {
+        background: linear-gradient(to right, 
+          #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+      }
+      .alpha-slider-track {
+        background: linear-gradient(to right, transparent, var(--accent));
+      }
+      .sw-format-box {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.5rem;
+        border-radius: 0.5rem;
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border);
+      }
+      .sw-format-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        width: 3rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .sw-format-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 0.72rem;
+        color: var(--color-text-primary);
+        font-family: ui-monospace, SFMono-Regular, monospace;
+      }
+      .sw-copy-btn {
+        padding: 0.2rem 0.45rem;
+        border-radius: 0.375rem;
+        font-size: 0.65rem;
+        background: var(--card);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        cursor: pointer;
+        transition: all 120ms ease;
+      }
+      .sw-copy-btn:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .sw-tool-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 180ms ease;
+        background: var(--color-bg-secondary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        text-decoration: none;
+        user-select: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      .sw-tool-btn:hover {
+        background: rgba(var(--accent-rgb), 0.12);
+        color: var(--accent);
+        border-color: rgba(var(--accent-rgb), 0.35);
+      }
+      .sw-export-tab, .sw-code-tab {
+        padding: 0.25rem 0.55rem;
+        border-radius: 0.375rem;
+        color: var(--color-text-muted);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 120ms ease;
+      }
+      .sw-export-tab.active, .sw-code-tab.active {
+        background: var(--card);
+        color: var(--accent);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      }
+    </style>
+  </body>
+</html>

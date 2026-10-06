@@ -6,6 +6,7 @@ interface SkillItem {
   icon: string;
   title: string;
   description: string;
+  tags?: string[];
 }
 
 interface Props {
@@ -21,10 +22,10 @@ const {
 } = Astro.props as Props;
 ---
 
-<section class="w-full py-12 md:py-16">
-  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+<section class="w-full py-4 sm:py-6 md:py-8">
+  <div class="w-full">
     <!-- Header -->
-    <div class="text-center max-w-2xl mx-auto mb-10">
+    <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
       {title && (
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
           <span class="bg-gradient-to-r from-foreground via-foreground to-[var(--color-text-secondary)] bg-clip-text">
@@ -40,28 +41,47 @@ const {
     </div>
   
     <!-- Tech stack logo strip marquee -->
-    <div class="mb-10">
+    <div class="mb-6 sm:mb-8">
       <Carousel tools={logos} speedMs={40000} />
     </div>
 
-    <!-- 2-Column High-Craft Skill Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 max-w-5xl mx-auto">
-      {skills.map((skill) => (
-        <div class="card-surface p-6 sm:p-7 group flex flex-col justify-between">
-          <div class="flex items-start gap-4">
-            <div
-              class="shrink-0 size-12 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)] group-hover:scale-105 group-hover:bg-[rgba(var(--accent-rgb),0.16)] group-hover:border-[var(--accent)] transition-all duration-300 shadow-sm [&>svg]:size-6"
-              set:html={skill.icon}
-            />
-            <div>
-              <h3 class="text-lg font-bold text-foreground mb-1.5 group-hover:text-[var(--accent)] transition-colors">
-                {skill.title}
-              </h3>
-              <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed m-0">
-                {skill.description}
-              </p>
+    <!-- Responsive High-Craft Skill Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
+      {skills.map((skill, index) => (
+        <div class="card-surface p-5 sm:p-6 group flex flex-col justify-between h-full hover:border-[var(--accent)] transition-all duration-300">
+          <div>
+            <!-- Top Row: App-style Icon + Monospace Index -->
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="icon-badge-interactive size-11 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)] group-hover:bg-[rgba(var(--accent-rgb),0.18)] group-hover:border-[var(--accent)] shadow-xs [&>svg]:size-5"
+                set:html={skill.icon}
+              />
+              <span class="text-xs font-mono font-medium text-[var(--color-text-muted)] opacity-60 group-hover:opacity-100 group-hover:text-[var(--accent)] transition-all duration-200">
+                {String(index + 1).padStart(2, '0')}
+              </span>
             </div>
+
+            <!-- Title: Spans full width -->
+            <h3 class="text-base sm:text-lg font-bold text-foreground mb-2 group-hover:text-[var(--accent)] transition-colors leading-snug tracking-tight">
+              {skill.title}
+            </h3>
+
+            <!-- Description: Spans full width with balanced typography -->
+            <p class="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed m-0">
+              {skill.description}
+            </p>
           </div>
+
+          <!-- Bottom: Tech chips -->
+          {skill.tags && skill.tags.length > 0 && (
+            <div class="mt-4 pt-3 border-t border-[var(--color-border)] flex flex-wrap gap-1.5">
+              {skill.tags.map((tag) => (
+                <span class="tech-chip text-[0.7rem]">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>

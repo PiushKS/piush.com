@@ -1,0 +1,828 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/sections/Header.astro';
+import Footer from '../../components/sections/Footer.astro';
+import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
+
+const pageTitle = "Developer Text Tools – Case Converter, Base64 & URL Encoder | Piush";
+const pageDescription = "Free browser-based developer text tools: convert camelCase, snake_case, PascalCase, kebab-case, encode/decode Base64, URL, HTML entities, and clean lines.";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'Developer Text Toolkit',
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires JavaScript',
+      url: new URL('/tools/text', Astro.site || 'https://piush.com').toString(),
+      description: pageDescription,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+    })} />
+  </head>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+    <Header />
+    <main class="flex-1 w-full px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-4 max-w-[1600px] mx-auto">
+      
+      <!-- Top Navigation & Breadcrumbs -->
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-3">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2">
+          <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+          <span>/</span>
+          <a href="/tools" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
+          <span>/</span>
+          <span class="text-[var(--accent)] font-medium">Text Toolkit</span>
+        </nav>
+        <div class="flex items-center gap-2 font-mono text-[11px] text-[var(--color-text-secondary)]">
+          <span class="inline-flex size-2 rounded-full bg-[var(--accent)]"></span>
+          <span>100% Client-Side • Your data stays in your browser</span>
+        </div>
+      </div>
+
+      <!-- Header Title & Overview -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <div class="size-9 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)] font-serif font-bold text-base">
+              Aa
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight m-0">
+              Developer Text Toolkit
+            </h1>
+            <span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)]">
+              Instant Processing
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-[var(--color-text-muted)] mt-1 m-0">
+            Convert variable cases, encode and decode payloads, deduplicate lines, and clean developer text strings locally.
+          </p>
+        </div>
+
+        <!-- Shortcuts Bar -->
+        <div class="hidden lg:flex items-center gap-2 text-[11px] font-mono text-[var(--color-text-muted)]">
+          <span class="px-1.5 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">Cmd/Ctrl + Shift + C</span> Copy Output
+          <span class="px-1.5 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] ml-2">Cmd/Ctrl + K</span> Clear
+        </div>
+      </div>
+
+      <!-- Control Panel / Operation Modules -->
+      <div class="card-surface p-3.5 sm:p-4 border border-[var(--color-border)] space-y-3">
+        
+        <!-- Module 1: Case Conversions (10 cases) -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-mono font-bold text-[var(--accent)] uppercase tracking-wider flex items-center gap-1.5">
+              <span>🔤</span> Case Conversion
+            </span>
+            <span class="text-[10px] text-[var(--color-text-muted)] font-mono">Converts single words or line-by-line lists</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" class="sw-tool-btn" data-action="case-camel" title="convert to camelCase">camelCase</button>
+            <button type="button" class="sw-tool-btn" data-action="case-pascal" title="convert to PascalCase">PascalCase</button>
+            <button type="button" class="sw-tool-btn" data-action="case-snake" title="convert to snake_case">snake_case</button>
+            <button type="button" class="sw-tool-btn" data-action="case-kebab" title="convert to kebab-case">kebab-case</button>
+            <button type="button" class="sw-tool-btn" data-action="case-constant" title="convert to CONSTANT_CASE">CONSTANT_CASE</button>
+            <button type="button" class="sw-tool-btn" data-action="case-dot" title="convert to dot.case">dot.case</button>
+            <button type="button" class="sw-tool-btn" data-action="case-title" title="convert to Title Case">Title Case</button>
+            <button type="button" class="sw-tool-btn" data-action="case-sentence" title="convert to Sentence case">Sentence case</button>
+            <button type="button" class="sw-tool-btn" data-action="case-lower" title="convert to lowercase">lowercase</button>
+            <button type="button" class="sw-tool-btn" data-action="case-upper" title="convert to UPPERCASE">UPPERCASE</button>
+          </div>
+        </div>
+
+        <div class="border-t border-[var(--color-border)] my-1"></div>
+
+        <!-- Module 2: Encoding / Decoding -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-mono font-bold text-[var(--accent)] uppercase tracking-wider flex items-center gap-1.5">
+              <span>🔐</span> Encoders & Decoders
+            </span>
+            <span class="text-[10px] text-[var(--color-text-muted)] font-mono">UTF-8 safe • Handles emojis & Unicode</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" class="sw-tool-btn" data-action="encode-b64" title="Encode text to Base64 (UTF-8)">Base64 Encode</button>
+            <button type="button" class="sw-tool-btn" data-action="decode-b64" title="Decode Base64 to text (UTF-8)">Base64 Decode</button>
+            <button type="button" class="sw-tool-btn" data-action="encode-url" title="URL Component Encode">URL Encode</button>
+            <button type="button" class="sw-tool-btn" data-action="decode-url" title="URL Decode">URL Decode</button>
+            <button type="button" class="sw-tool-btn" data-action="encode-html" title="HTML Entities Encode">HTML Encode</button>
+            <button type="button" class="sw-tool-btn" data-action="decode-html" title="HTML Entities Decode">HTML Decode</button>
+          </div>
+        </div>
+
+        <div class="border-t border-[var(--color-border)] my-1"></div>
+
+        <!-- Module 3: Line & Text Cleaners -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-mono font-bold text-[var(--accent)] uppercase tracking-wider flex items-center gap-1.5">
+              <span>🧹</span> Text & Line Operations
+            </span>
+            <span class="text-[10px] text-[var(--color-text-muted)] font-mono">Deduplication, sorting, and whitespace cleanup</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" class="sw-tool-btn" data-action="tool-dedup" title="Remove duplicate lines, preserving first occurrence">Remove Duplicate Lines</button>
+            <button type="button" class="sw-tool-btn" data-action="tool-sort-az" title="Sort lines alphabetically A to Z">Sort Lines A–Z</button>
+            <button type="button" class="sw-tool-btn" data-action="tool-sort-za" title="Sort lines reverse Z to A">Sort Lines Z–A</button>
+            <button type="button" class="sw-tool-btn" data-action="tool-remove-empty" title="Remove blank or empty lines">Remove Empty Lines</button>
+            <button type="button" class="sw-tool-btn" data-action="tool-trim" title="Trim leading and trailing whitespace per line">Trim Whitespace</button>
+            <button type="button" class="sw-tool-btn" data-action="tool-remove-extra-spaces" title="Collapse consecutive spaces to a single space">Remove Extra Spaces</button>
+            <button type="button" class="sw-tool-btn" data-action="tool-reverse" title="Reverse full text string">Reverse Text</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Utility Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2">
+          <button id="btn-sample-text" type="button" class="sw-tool-btn" title="Load sample developer text">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span>Sample Text</span>
+          </button>
+          <button id="btn-swap" type="button" class="sw-tool-btn" title="Swap output back into input (Cmd/Ctrl + Shift + S)">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="17 1 21 5 17 9"/>
+              <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+              <polyline points="7 23 3 19 7 15"/>
+              <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+            </svg>
+            <span>Swap Output → Input</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btn-copy-output" type="button" class="sw-tool-btn sw-tool-btn-primary" title="Copy output (Cmd/Ctrl + Shift + C)">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span>Copy Output</span>
+          </button>
+          <button id="btn-clear-all" type="button" class="sw-tool-btn text-red-400 hover:text-red-300 hover:border-red-500/40" title="Clear both input and output (Cmd/Ctrl + K)">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            <span>Clear</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Split Large Editor Layout (Input Text | Output Text) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch min-h-[480px]">
+        
+        <!-- LEFT PANEL: INPUT TEXT -->
+        <div class="card-surface flex flex-col h-[460px] sm:h-[520px] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xs relative">
+          <!-- Input Header -->
+          <div class="px-4 py-2.5 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 font-mono font-semibold text-foreground">
+              <span class="text-[var(--accent)] font-bold">01</span>
+              <span>INPUT TEXT</span>
+            </div>
+            <div class="flex items-center gap-3 font-mono text-[11px] text-[var(--color-text-muted)]">
+              <span id="input-stats-indicator">0 lines • 0 words • 0 chars</span>
+              <button id="btn-paste-input" type="button" class="hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1 cursor-pointer">
+                <span>Paste</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Input Textarea with Gutter -->
+          <div class="relative flex-1 flex overflow-hidden font-mono text-[13px] leading-5" id="text-input-container">
+            <div id="text-input-gutter" class="select-none py-3 px-2 text-right text-[var(--color-text-muted)]/50 bg-[var(--color-bg-secondary)]/50 border-r border-[var(--color-border)] min-w-[42px] overflow-hidden">
+              1
+            </div>
+            <textarea
+              id="text-input"
+              class="w-full h-full p-3 resize-none bg-transparent text-foreground placeholder-[var(--color-text-muted)]/40 focus:outline-none border-none leading-5 overflow-auto selection:bg-[var(--accent)]/20"
+              placeholder="Paste or type text, strings, payloads, or lines here..."
+              spellcheck="false"
+              wrap="off"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: OUTPUT TEXT -->
+        <div class="card-surface flex flex-col h-[460px] sm:h-[520px] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xs relative">
+          <!-- Output Header -->
+          <div class="px-4 py-2.5 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 font-mono font-semibold text-foreground">
+              <span class="text-[var(--accent)] font-bold">02</span>
+              <span>OUTPUT</span>
+            </div>
+            <div class="flex items-center gap-3 font-mono text-[11px] text-[var(--color-text-muted)]">
+              <span id="output-stats-indicator">0 lines • 0 words • 0 chars</span>
+            </div>
+          </div>
+
+          <!-- Output Textarea with Gutter -->
+          <div class="relative flex-1 flex overflow-hidden font-mono text-[13px] leading-5" id="text-output-container">
+            <div id="text-output-gutter" class="select-none py-3 px-2 text-right text-[var(--color-text-muted)]/50 bg-[var(--color-bg-secondary)]/50 border-r border-[var(--color-border)] min-w-[42px] overflow-hidden">
+              1
+            </div>
+            <textarea
+              id="text-output"
+              readonly
+              class="w-full h-full p-3 resize-none bg-transparent text-foreground placeholder-[var(--color-text-muted)]/40 focus:outline-none border-none leading-5 overflow-auto selection:bg-[var(--accent)]/20"
+              placeholder="Transformed text will appear here immediately..."
+              spellcheck="false"
+              wrap="off"
+            ></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Text Metrics & Telemetry Dashboard -->
+      <section class="card-surface p-4 sm:p-5 border border-[var(--color-border)]">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-[var(--color-border)]">
+          <h2 class="text-xs sm:text-sm font-bold text-foreground font-mono flex items-center gap-2 m-0">
+            <span class="text-[var(--accent)]">📊</span>
+            Input Text Analytics & Character Metrics
+          </h2>
+          <span class="text-[11px] font-mono text-[var(--color-text-muted)]">Live Character & Line Counter</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
+          <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <div class="text-[11px] text-[var(--color-text-muted)]">Word Count</div>
+            <div id="metric-words" class="text-sm sm:text-base font-bold text-foreground font-mono mt-0.5">0</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <div class="text-[11px] text-[var(--color-text-muted)]">Characters (All)</div>
+            <div id="metric-chars" class="text-sm sm:text-base font-bold text-foreground font-mono mt-0.5">0</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <div class="text-[11px] text-[var(--color-text-muted)]">Chars (No Spaces)</div>
+            <div id="metric-chars-nospace" class="text-sm sm:text-base font-bold text-foreground font-mono mt-0.5">0</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <div class="text-[11px] text-[var(--color-text-muted)]">Total Lines</div>
+            <div id="metric-lines" class="text-sm sm:text-base font-bold text-foreground font-mono mt-0.5">0</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <div class="text-[11px] text-[var(--color-text-muted)]">Paragraphs</div>
+            <div id="metric-paragraphs" class="text-sm sm:text-base font-bold text-foreground font-mono mt-0.5">0</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+            <div class="text-[11px] text-[var(--color-text-muted)]">Byte Size</div>
+            <div id="metric-bytes" class="text-sm sm:text-base font-bold text-foreground font-mono mt-0.5">0 B</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer Navigation Drawer -->
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)] py-2">
+        <div class="flex items-center gap-2">
+          <span>🔒 <strong>Zero Data Transmission</strong>: All conversions run strictly on your machine.</span>
+        </div>
+        <a href="/tools/json" class="text-[var(--accent)] hover:underline no-underline font-medium flex items-center gap-1">
+          <span>Need JSON formatting & AST inspection? Open JSON Toolkit</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <GlowLineSeparator />
+    </main>
+    <Footer />
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" aria-live="assertive"></div>
+
+    <!-- Client-side Tool Logic -->
+    <script>
+      function initTextToolkit() {
+        const textInput = document.getElementById('text-input') as HTMLTextAreaElement | null;
+        const textOutput = document.getElementById('text-output') as HTMLTextAreaElement | null;
+        const inputGutter = document.getElementById('text-input-gutter');
+        const outputGutter = document.getElementById('text-output-gutter');
+        const inputStatsIndicator = document.getElementById('input-stats-indicator');
+        const outputStatsIndicator = document.getElementById('output-stats-indicator');
+
+        // Metrics elements
+        const metricWords = document.getElementById('metric-words');
+        const metricChars = document.getElementById('metric-chars');
+        const metricCharsNoSpace = document.getElementById('metric-chars-nospace');
+        const metricLines = document.getElementById('metric-lines');
+        const metricParagraphs = document.getElementById('metric-paragraphs');
+        const metricBytes = document.getElementById('metric-bytes');
+
+        // Action Buttons
+        const actionButtons = document.querySelectorAll('[data-action]');
+        const btnSample = document.getElementById('btn-sample-text');
+        const btnSwap = document.getElementById('btn-swap');
+        const btnCopy = document.getElementById('btn-copy-output');
+        const btnClear = document.getElementById('btn-clear-all');
+        const btnPaste = document.getElementById('btn-paste-input');
+
+        // Sample Text
+        const sampleText = `// Sample Developer Text & Identifier Payloads
+user_account_id
+API_ENDPOINT_URL
+first_name_property
+access-token-bearer
+databaseConnectionPool
+system.metrics.collector
+
+apple
+banana
+orange
+apple
+banana
+grape
+
+<html>
+  <body>
+    <h1>Welcome to "Piush's Portfolio" & Developer Tools</h1>
+    <p>High craft mobile and cloud engineering 🚀</p>
+  </body>
+</html>
+
+https://piush.com/tools/json?ref=portfolio&mode=dark#explorer`;
+
+        // Toast Helper
+        function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
+          const container = document.getElementById('toast-container');
+          if (!container) return;
+
+          const toast = document.createElement('div');
+          toast.className = `px-4 py-2.5 rounded-xl border text-xs font-mono shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto flex items-center gap-2 ${
+            type === 'success'
+              ? 'bg-[#1B5448] text-[#E1F8DC] border-[#ade1cd]/30 dark:bg-[#1B5448]/90 dark:text-[#ade1cd]'
+              : type === 'error'
+              ? 'bg-red-950 text-red-200 border-red-500/40'
+              : 'bg-[#23382B] text-white border-[var(--color-border)]'
+          }`;
+
+          const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+          toast.innerHTML = `<span class="font-bold">${icon}</span> <span>${message}</span>`;
+          container.appendChild(toast);
+
+          requestAnimationFrame(() => {
+            toast.classList.remove('translate-y-2', 'opacity-0');
+          });
+
+          setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+          }, 2400);
+        }
+
+        // Format Byte Size
+        function formatBytes(bytes: number): string {
+          if (bytes === 0) return '0 B';
+          const k = 1024;
+          const sizes = ['B', 'KB', 'MB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // Update Line Gutters and Metrics
+        function updateMetrics() {
+          if (!textInput) return;
+          const str = textInput.value;
+
+          // Lines gutter update
+          const inLines = str ? str.split('\n').length : 1;
+          if (inputGutter) {
+            let inGutterHtml = '';
+            for (let i = 1; i <= Math.max(inLines, 1); i++) {
+              inGutterHtml += `<div>${i}</div>`;
+            }
+            inputGutter.innerHTML = inGutterHtml;
+          }
+
+          if (outputGutter && textOutput) {
+            const outLines = textOutput.value ? textOutput.value.split('\n').length : 1;
+            let outGutterHtml = '';
+            for (let i = 1; i <= Math.max(outLines, 1); i++) {
+              outGutterHtml += `<div>${i}</div>`;
+            }
+            outputGutter.innerHTML = outGutterHtml;
+          }
+
+          // Computations
+          const words = (str.trim().match(/\S+/g) || []).length;
+          const chars = str.length;
+          const charsNoSpace = str.replace(/\s/g, '').length;
+          const paragraphs = str ? str.split(/\n\s*\n/).filter(p => p.trim().length > 0).length : 0;
+          const bytes = new TextEncoder().encode(str).length;
+
+          if (metricWords) metricWords.textContent = words.toLocaleString();
+          if (metricChars) metricChars.textContent = chars.toLocaleString();
+          if (metricCharsNoSpace) metricCharsNoSpace.textContent = charsNoSpace.toLocaleString();
+          if (metricLines) metricLines.textContent = inLines.toLocaleString();
+          if (metricParagraphs) metricParagraphs.textContent = paragraphs.toLocaleString();
+          if (metricBytes) metricBytes.textContent = formatBytes(bytes);
+
+          if (inputStatsIndicator) {
+            inputStatsIndicator.textContent = `${inLines} lines • ${words} words • ${chars} chars`;
+          }
+
+          if (outputStatsIndicator && textOutput) {
+            const outStr = textOutput.value;
+            const oLines = outStr ? outStr.split('\n').length : 0;
+            const oWords = (outStr.trim().match(/\S+/g) || []).length;
+            const oChars = outStr.length;
+            outputStatsIndicator.textContent = `${oLines} lines • ${oWords} words • ${oChars} chars`;
+          }
+        }
+
+        // Scroll sync
+        textInput?.addEventListener('scroll', () => {
+          if (inputGutter && textInput) {
+            inputGutter.scrollTop = textInput.scrollTop;
+          }
+        });
+
+        textOutput?.addEventListener('scroll', () => {
+          if (outputGutter && textOutput) {
+            outputGutter.scrollTop = textOutput.scrollTop;
+          }
+        });
+
+        textInput?.addEventListener('input', updateMetrics);
+
+        // Word Tokenizer for Case Conversions
+        function extractWords(str: string): string[] {
+          let s = str
+            .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+            .replace(/([A-Z]+)([A-Z][a-z0-9])/g, '$1 $2');
+          s = s.replace(/[\-_.\s]+/g, ' ').trim();
+          if (!s) return [];
+          return s.split(' ').filter(Boolean);
+        }
+
+        // Multi-line Case Transformation Engine
+        function transformCase(input: string, mode: string): string {
+          return input.split('\n').map((line) => {
+            const trimmed = line.trim();
+            if (!trimmed) return line;
+            const words = extractWords(trimmed);
+            if (!words.length) return line;
+
+            switch (mode) {
+              case 'camel':
+                return words.map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
+              case 'pascal':
+                return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
+              case 'snake':
+                return words.map((w) => w.toLowerCase()).join('_');
+              case 'kebab':
+                return words.map((w) => w.toLowerCase()).join('-');
+              case 'constant':
+                return words.map((w) => w.toUpperCase()).join('_');
+              case 'dot':
+                return words.map((w) => w.toLowerCase()).join('.');
+              case 'title':
+                return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+              case 'sentence':
+                return words.map((w, i) => i === 0 ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w.toLowerCase()).join(' ');
+              case 'lower':
+                return line.toLowerCase();
+              case 'upper':
+                return line.toUpperCase();
+              default:
+                return line;
+            }
+          }).join('\n');
+        }
+
+        // UTF-8 Safe Base64 Helpers
+        function base64Encode(str: string): string {
+          const bytes = new TextEncoder().encode(str);
+          const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+          return btoa(binString);
+        }
+
+        function base64Decode(str: string): string {
+          const binString = atob(str.trim());
+          const bytes = Uint8Array.from(binString, (m) => m.charCodeAt(0));
+          return new TextDecoder().decode(bytes);
+        }
+
+        // HTML Entity Helpers
+        function htmlEncode(str: string): string {
+          return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function htmlDecode(str: string): string {
+          const doc = new DOMParser().parseFromString(str, 'text/html');
+          return doc.documentElement.textContent || '';
+        }
+
+        // Dispatch Operations
+        function executeAction(action: string) {
+          if (!textInput || !textOutput) return;
+          const input = textInput.value;
+
+          if (!input.trim() && action !== 'sample') {
+            showToast('Please enter text on the left first', 'error');
+            return;
+          }
+
+          let output = '';
+
+          try {
+            switch (action) {
+              // Cases
+              case 'case-camel':
+                output = transformCase(input, 'camel');
+                showToast('Converted to camelCase', 'success');
+                break;
+              case 'case-pascal':
+                output = transformCase(input, 'pascal');
+                showToast('Converted to PascalCase', 'success');
+                break;
+              case 'case-snake':
+                output = transformCase(input, 'snake');
+                showToast('Converted to snake_case', 'success');
+                break;
+              case 'case-kebab':
+                output = transformCase(input, 'kebab');
+                showToast('Converted to kebab-case', 'success');
+                break;
+              case 'case-constant':
+                output = transformCase(input, 'constant');
+                showToast('Converted to CONSTANT_CASE', 'success');
+                break;
+              case 'case-dot':
+                output = transformCase(input, 'dot');
+                showToast('Converted to dot.case', 'success');
+                break;
+              case 'case-title':
+                output = transformCase(input, 'title');
+                showToast('Converted to Title Case', 'success');
+                break;
+              case 'case-sentence':
+                output = transformCase(input, 'sentence');
+                showToast('Converted to Sentence case', 'success');
+                break;
+              case 'case-lower':
+                output = input.toLowerCase();
+                showToast('Converted to lowercase', 'success');
+                break;
+              case 'case-upper':
+                output = input.toUpperCase();
+                showToast('Converted to UPPERCASE', 'success');
+                break;
+
+              // Encoders / Decoders
+              case 'encode-b64':
+                output = base64Encode(input);
+                showToast('Encoded to Base64 (UTF-8)', 'success');
+                break;
+              case 'decode-b64':
+                try {
+                  output = base64Decode(input);
+                  showToast('Decoded Base64 string', 'success');
+                } catch {
+                  showToast('Invalid Base64 payload', 'error');
+                  return;
+                }
+                break;
+              case 'encode-url':
+                output = encodeURIComponent(input);
+                showToast('URL Encoded', 'success');
+                break;
+              case 'decode-url':
+                try {
+                  output = decodeURIComponent(input.replace(/\+/g, ' '));
+                  showToast('URL Decoded', 'success');
+                } catch {
+                  showToast('Malformed URL string', 'error');
+                  return;
+                }
+                break;
+              case 'encode-html':
+                output = htmlEncode(input);
+                showToast('HTML Entities Encoded', 'success');
+                break;
+              case 'decode-html':
+                output = htmlDecode(input);
+                showToast('HTML Entities Decoded', 'success');
+                break;
+
+              // Text Utilities
+              case 'tool-dedup': {
+                const lines = input.split('\n');
+                const seen = new Set<string>();
+                const deduped: string[] = [];
+                for (const line of lines) {
+                  if (!seen.has(line)) {
+                    seen.add(line);
+                    deduped.push(line);
+                  }
+                }
+                output = deduped.join('\n');
+                const removedCount = lines.length - deduped.length;
+                showToast(`Removed ${removedCount} duplicate line(s)`, 'success');
+                break;
+              }
+              case 'tool-sort-az': {
+                const lines = input.split('\n');
+                output = lines.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })).join('\n');
+                showToast('Lines sorted A–Z', 'success');
+                break;
+              }
+              case 'tool-sort-za': {
+                const lines = input.split('\n');
+                output = lines.sort((a, b) => b.localeCompare(a, undefined, { numeric: true, sensitivity: 'base' })).join('\n');
+                showToast('Lines sorted Z–A', 'success');
+                break;
+              }
+              case 'tool-remove-empty': {
+                const lines = input.split('\n');
+                const filtered = lines.filter((l) => l.trim().length > 0);
+                output = filtered.join('\n');
+                const removedCount = lines.length - filtered.length;
+                showToast(`Removed ${removedCount} empty line(s)`, 'success');
+                break;
+              }
+              case 'tool-trim': {
+                output = input.split('\n').map((l) => l.trim()).join('\n');
+                showToast('Trimmed line whitespace', 'success');
+                break;
+              }
+              case 'tool-remove-extra-spaces': {
+                output = input.split('\n').map((l) => l.replace(/[ \t]+/g, ' ')).join('\n');
+                showToast('Collapsed redundant spaces', 'success');
+                break;
+              }
+              case 'tool-reverse': {
+                output = Array.from(input).reverse().join('');
+                showToast('Reversed text characters', 'success');
+                break;
+              }
+              default:
+                break;
+            }
+
+            textOutput.value = output;
+            updateMetrics();
+
+          } catch (err: any) {
+            showToast(`Operation failed: ${err.message}`, 'error');
+          }
+        }
+
+        // Attach Action Buttons
+        actionButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const act = btn.getAttribute('data-action');
+            if (act) executeAction(act);
+          });
+        });
+
+        // Sample Text
+        btnSample?.addEventListener('click', () => {
+          if (!textInput) return;
+          textInput.value = sampleText;
+          updateMetrics();
+          executeAction('case-camel');
+          showToast('Sample text loaded', 'info');
+        });
+
+        // Swap Output -> Input
+        btnSwap?.addEventListener('click', () => {
+          if (!textInput || !textOutput) return;
+          const out = textOutput.value;
+          if (!out) {
+            showToast('No output text to swap', 'error');
+            return;
+          }
+          textInput.value = out;
+          updateMetrics();
+          showToast('Swapped Output into Input', 'info');
+        });
+
+        // Copy Output
+        btnCopy?.addEventListener('click', () => {
+          if (!textOutput || !textOutput.value) {
+            showToast('No output to copy', 'error');
+            return;
+          }
+          navigator.clipboard.writeText(textOutput.value).then(() => {
+            showToast('Output copied to clipboard', 'success');
+          }).catch(() => {
+            showToast('Failed to copy', 'error');
+          });
+        });
+
+        // Clear All
+        btnClear?.addEventListener('click', () => {
+          if (!textInput || !textOutput) return;
+          textInput.value = '';
+          textOutput.value = '';
+          updateMetrics();
+          showToast('Cleared input and output', 'info');
+        });
+
+        // Paste Input
+        btnPaste?.addEventListener('click', async () => {
+          try {
+            const text = await navigator.clipboard.readText();
+            if (textInput && text) {
+              textInput.value = text;
+              updateMetrics();
+              showToast('Pasted from clipboard', 'info');
+            }
+          } catch {
+            showToast('Clipboard access denied', 'error');
+          }
+        });
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+          const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+          const mod = isMac ? e.metaKey : e.ctrlKey;
+
+          // Cmd/Ctrl + Shift + C -> Copy Output
+          if (mod && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+            btnCopy?.click();
+          }
+
+          // Cmd/Ctrl + Shift + S -> Swap
+          if (mod && e.shiftKey && (e.key === 'S' || e.key === 's')) {
+            e.preventDefault();
+            btnSwap?.click();
+          }
+
+          // Cmd/Ctrl + K -> Clear
+          if (mod && (e.key === 'K' || e.key === 'k') && !e.shiftKey) {
+            e.preventDefault();
+            btnClear?.click();
+          }
+        });
+
+        // Default initial text if empty
+        if (textInput && !textInput.value.trim()) {
+          textInput.value = sampleText;
+          executeAction('case-camel');
+        } else {
+          updateMetrics();
+        }
+      }
+
+      // Astro lifecycle hooks
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTextToolkit);
+      } else {
+        initTextToolkit();
+      }
+      document.addEventListener('astro:page-load', initTextToolkit);
+    </script>
+
+    <!-- Custom CSS Styles -->
+    <style>
+      .sw-tool-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 180ms ease;
+        background: var(--color-bg-secondary);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        text-decoration: none;
+        user-select: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      .sw-tool-btn:hover {
+        background: rgba(var(--accent-rgb), 0.12);
+        color: var(--accent);
+        border-color: rgba(var(--accent-rgb), 0.35);
+      }
+      .sw-tool-btn-primary {
+        background: linear-gradient(135deg, #1B5448 0%, #23382B 100%);
+        color: #E1F8DC !important;
+        border-color: #1B5448;
+        box-shadow: 0 2px 8px rgba(27, 84, 72, 0.3);
+      }
+      :global(.dark) .sw-tool-btn-primary {
+        background: linear-gradient(135deg, #ade1cd 0%, #1B5448 100%);
+        color: #0d1712 !important;
+        border-color: #ade1cd;
+        box-shadow: 0 2px 10px rgba(173, 225, 205, 0.25);
+      }
+    </style>
+  </body>
+</html>

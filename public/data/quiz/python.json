@@ -1,0 +1,2226 @@
+[
+  {
+    "id": "py-001",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "functions",
+      "default-arguments",
+      "mutability"
+    ],
+    "code": "def add_item(val, items=[]):\n    items.append(val)\n    return items\n\nadd_item(1)\nprint(add_item(2))",
+    "question": "What will be the output?",
+    "options": [
+      "[2]",
+      "[1, 2]",
+      "[1]",
+      "TypeError"
+    ],
+    "correctAnswer": "[1, 2]",
+    "explanation": "Default parameter values in Python are evaluated once when the function is defined, not each time it is called. The list `items` is retained and reused across calls.",
+    "runtime": "Python 3.10+",
+    "hint": "Are default arguments re-initialized on every invocation in Python?",
+    "walkthrough": [
+      {
+        "step": 1,
+        "label": "Function definition",
+        "explanation": "`items` default list `[]` is created in memory once at function definition time.",
+        "highlightLine": 1
+      },
+      {
+        "step": 2,
+        "label": "First call",
+        "explanation": "`add_item(1)` appends 1 to that single shared list.",
+        "highlightLine": 5
+      },
+      {
+        "step": 3,
+        "label": "Second call",
+        "explanation": "`add_item(2)` appends 2 to the same list.",
+        "highlightLine": 6
+      },
+      {
+        "step": 4,
+        "label": "Result",
+        "explanation": "Returns `[1, 2]`.",
+        "highlightLine": 6
+      }
+    ]
+  },
+  {
+    "id": "py-002",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "slicing"
+    ],
+    "code": "s = \"Python\"\nprint(s[::-1])",
+    "question": "What will be the output?",
+    "options": [
+      "'nohtyP'",
+      "'Python'",
+      "'P'",
+      "IndexError"
+    ],
+    "correctAnswer": "'nohtyP'",
+    "explanation": "A step of `-1` in extended slice notation `[start:stop:step]` reverses the sequence.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-003",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "identity",
+      "caching",
+      "integers"
+    ],
+    "code": "a = 256\nb = 256\nc = 300\nd = 300\nprint(a is b, c is d)",
+    "question": "What will be the output in standard CPython REPL?",
+    "options": [
+      "True False",
+      "True True",
+      "False False",
+      "False True"
+    ],
+    "correctAnswer": "True False",
+    "explanation": "CPython pre-allocates and caches small integers in the range [-5, 256]. Thus `256 is 256` evaluates to `True`, but `300` creates separate heap objects in interactive evaluation.",
+    "runtime": "CPython 3"
+  },
+  {
+    "id": "py-004",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "multiplication",
+      "shallow-copy"
+    ],
+    "code": "grid = [[0]] * 3\ngrid[0].append(1)\nprint(grid)",
+    "question": "What will be the output?",
+    "options": [
+      "[[0, 1], [0], [0]]",
+      "[[0, 1], [0, 1], [0, 1]]",
+      "[[0], [0], [0, 1]]",
+      "IndexError"
+    ],
+    "correctAnswer": "[[0, 1], [0, 1], [0, 1]]",
+    "explanation": "List multiplication `[[0]] * 3` copies the inner list reference 3 times rather than creating deep copies. Mutating `grid[0]` reflects in all elements.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-005",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "tuples",
+      "syntax"
+    ],
+    "code": "x = (1)\ny = (1,)\nprint(type(x) == type(y))",
+    "question": "What will be the output?",
+    "options": [
+      "False",
+      "True",
+      "TypeError",
+      "SyntaxError"
+    ],
+    "correctAnswer": "False",
+    "explanation": "`x = (1)` is simply an integer in parentheses (type `int`). To create a single-element tuple, a trailing comma is required: `y = (1,)` (type `tuple`).",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-006",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "boolean",
+      "operators"
+    ],
+    "code": "print(True + True * False)",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "0",
+      "True",
+      "False"
+    ],
+    "correctAnswer": "1",
+    "explanation": "In Python, `bool` inherits from `int`. `True == 1` and `False == 0`. By operator precedence: `True * False = 1 * 0 = 0`, then `True + 0 = 1 + 0 = 1`.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-007",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "comparisons",
+      "chaining"
+    ],
+    "code": "print(1 < 2 < 3, 3 > 2 > 1)",
+    "question": "What will be the output?",
+    "options": [
+      "True True",
+      "True False",
+      "False True",
+      "False False"
+    ],
+    "correctAnswer": "True True",
+    "explanation": "Python supports chained comparisons. `1 < 2 < 3` expands to `1 < 2 and 2 < 3` (True). `3 > 2 > 1` expands to `3 > 2 and 2 > 1` (True).",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-008",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "scope",
+      "LEGB",
+      "unbound-local"
+    ],
+    "code": "x = 10\ndef f():\n    print(x)\n    x = 20\n\ntry:\n    f()\nexcept Exception as e:\n    print(type(e).__name__)",
+    "question": "What will be the output?",
+    "options": [
+      "UnboundLocalError",
+      "10",
+      "NameError",
+      "TypeError"
+    ],
+    "correctAnswer": "UnboundLocalError",
+    "explanation": "Because `x = 20` assigns to `x` inside `f()`, Python marks `x` as a local variable for the entire function scope. Reading `x` before assignment raises `UnboundLocalError`.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-009",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "dictionaries",
+      "comprehensions"
+    ],
+    "code": "d = {x: x**2 for x in [-1, 1, 2]}\nprint(len(d))",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "2",
+      "1",
+      "TypeError"
+    ],
+    "correctAnswer": "3",
+    "explanation": "The dictionary keys are `-1`, `1`, and `2`, which are all distinct integers. The dictionary contains 3 key-value pairs.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-010",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "try-finally",
+      "control-flow"
+    ],
+    "code": "def calc():\n    try:\n        return 1\n    finally:\n        return 2\n\nprint(calc())",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "None",
+      "SyntaxError"
+    ],
+    "correctAnswer": "2",
+    "explanation": "The `finally` clause executes whenever the `try` block leaves, and its return statement supersedes any prior return value.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-011",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "slicing",
+      "out-of-bounds"
+    ],
+    "code": "nums = [1, 2, 3]\nprint(nums[10:20])",
+    "question": "What will be the output?",
+    "options": [
+      "[]",
+      "IndexError",
+      "None",
+      "[1, 2, 3]"
+    ],
+    "correctAnswer": "[]",
+    "explanation": "Slice indices that are out of range are handled gracefully without raising `IndexError`, returning an empty list `[]`.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-012",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "iterables",
+      "all",
+      "vacuous-truth"
+    ],
+    "code": "print(all([]), any([]))",
+    "question": "What will be the output?",
+    "options": [
+      "True False",
+      "False False",
+      "True True",
+      "False True"
+    ],
+    "correctAnswer": "True False",
+    "explanation": "`all()` checks if no elements are false (vacuously True on empty iterables). `any()` checks if at least one element is true (False on empty iterables).",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-013",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "types"
+    ],
+    "code": "s = {1, 2}\ns.add((3, 4))\nprint(len(s))",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "4",
+      "TypeError",
+      "2"
+    ],
+    "correctAnswer": "3",
+    "explanation": "Tuples are immutable and hashable, so `(3, 4)` is added as a single valid element to the set, making `len(s) == 3`.",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-014",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "methods",
+      "split"
+    ],
+    "code": "s = \"a,b,,c\"\nparts = s.split(\",\")\nprint(len(parts))",
+    "question": "What will be the output?",
+    "options": [
+      "4",
+      "3",
+      "2",
+      "5"
+    ],
+    "correctAnswer": "4",
+    "explanation": "`split(',')` with an explicit delimiter preserves empty string splits between adjacent commas: `['a', 'b', '', 'c']` (length 4).",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-015",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "rounding",
+      "bankers-rounding"
+    ],
+    "code": "print(round(2.5), round(3.5))",
+    "question": "What will be the output?",
+    "options": [
+      "2 4",
+      "3 4",
+      "3 3",
+      "2 3"
+    ],
+    "correctAnswer": "2 4",
+    "explanation": "Python 3 uses 'banker's rounding' (round half to even). 2.5 rounds to nearest even integer (2), and 3.5 rounds to nearest even integer (4).",
+    "runtime": "Python 3.10+"
+  },
+  {
+    "id": "py-016",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "lists",
+      "index"
+    ],
+    "code": "a = [10, 20, 30]; print(a[-1]);",
+    "question": "What will be the output?",
+    "options": [
+      "30",
+      "10",
+      "20",
+      "IndexError"
+    ],
+    "correctAnswer": "30",
+    "explanation": "Negative index -1 accesses the last item in the list.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-017",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "zip",
+      "lengths"
+    ],
+    "code": "a = [1, 2]; b = ['a', 'b', 'c']; print(len(list(zip(a, b))));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "3",
+      "5",
+      "ValueError"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Default `zip()` stops at the shortest input iterable (length 2).",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for zip."
+  },
+  {
+    "id": "py-018",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "unpacking",
+      "star"
+    ],
+    "code": "a, *b, c = [1, 2, 3, 4, 5]; print(len(b));",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "5",
+      "1",
+      "4"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`*b` captures all middle elements `[2, 3, 4]`, which has length 3.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for unpacking."
+  },
+  {
+    "id": "py-019",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "decorators",
+      "syntax"
+    ],
+    "code": "def dec(fn): return lambda x: fn(x) + 1\n@dec\ndef f(x): return x * 2\nprint(f(3))",
+    "question": "What will be the output?",
+    "options": [
+      "7",
+      "8",
+      "6",
+      "TypeError"
+    ],
+    "correctAnswer": "7",
+    "explanation": "`f(3)` computes `3 * 2 = 6`, then the decorator adds 1, yielding 7.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for decorators."
+  },
+  {
+    "id": "py-020",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "dictionaries",
+      "get"
+    ],
+    "code": "d = {'a': 1}; print(d.get('b', 100));",
+    "question": "What will be the output?",
+    "options": [
+      "100",
+      "None",
+      "KeyError",
+      "1"
+    ],
+    "correctAnswer": "100",
+    "explanation": "`d.get('b', 100)` returns default value 100 since `'b'` does not exist.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for dictionaries."
+  },
+  {
+    "id": "py-021",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "find"
+    ],
+    "code": "s = 'banana'; print(s.find('z'));",
+    "question": "What will be the output?",
+    "options": [
+      "-1",
+      "None",
+      "ValueError",
+      "False"
+    ],
+    "correctAnswer": "-1",
+    "explanation": "`find()` returns -1 when substring is not found.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-022",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "index"
+    ],
+    "code": "try: 'banana'.index('z')\nexcept Exception as e: print(type(e).__name__)",
+    "question": "What will be the output?",
+    "options": [
+      "ValueError",
+      "IndexError",
+      "KeyError",
+      "-1"
+    ],
+    "correctAnswer": "ValueError",
+    "explanation": "`str.index()` raises `ValueError` if the substring is absent.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-023",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "generators",
+      "exhaustion"
+    ],
+    "code": "g = (x for x in [1, 2]); list(g); print(list(g));",
+    "question": "What will be the output?",
+    "options": [
+      "[]",
+      "[1, 2]",
+      "None",
+      "StopIteration"
+    ],
+    "correctAnswer": "[]",
+    "explanation": "Generator expressions can only be consumed once. A second iteration yields an empty list.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for generators."
+  },
+  {
+    "id": "py-024",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "difference"
+    ],
+    "code": "a = {1, 2, 3}; b = {2, 3, 4}; print(a - b);",
+    "question": "What will be the output?",
+    "options": [
+      "{1}",
+      "{4}",
+      "{1, 4}",
+      "set()"
+    ],
+    "correctAnswer": "{1}",
+    "explanation": "Set difference `a - b` keeps items in `a` that are not in `b`, leaving `{1}`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for sets."
+  },
+  {
+    "id": "py-025",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "types",
+      "isinstance"
+    ],
+    "code": "print(isinstance(True, int));",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "TypeError",
+      "None"
+    ],
+    "correctAnswer": "True",
+    "explanation": "`bool` is a direct subclass of `int` in Python, so `isinstance(True, int)` is `True`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for types."
+  },
+  {
+    "id": "py-026",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "sort",
+      "reverse"
+    ],
+    "code": "a = [3, 1, 2]; res = a.sort(); print(res);",
+    "question": "What will be the output?",
+    "options": [
+      "None",
+      "[1, 2, 3]",
+      "[3, 2, 1]",
+      "TypeError"
+    ],
+    "correctAnswer": "None",
+    "explanation": "`list.sort()` sorts in-place and returns `None`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-027",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "sorted"
+    ],
+    "code": "a = [3, 1, 2]; res = sorted(a); print(res[0]);",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "3",
+      "None",
+      "2"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`sorted(a)` returns a new sorted list `[1, 2, 3]`; index 0 is 1.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-028",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "mro"
+    ],
+    "code": "class A: pass\nclass B(A): pass\nprint(issubclass(B, object));",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "TypeError",
+      "AttributeError"
+    ],
+    "correctAnswer": "True",
+    "explanation": "All classes in Python 3 implicitly inherit from `object`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for classes."
+  },
+  {
+    "id": "py-029",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "enumerate",
+      "start"
+    ],
+    "code": "items = ['a', 'b']; print(list(enumerate(items, start=1))[0]);",
+    "question": "What will be the output?",
+    "options": [
+      "(1, 'a')",
+      "(0, 'a')",
+      "('a', 1)",
+      "1"
+    ],
+    "correctAnswer": "(1, 'a')",
+    "explanation": "`enumerate(items, start=1)` produces index-value pairs starting at 1.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for enumerate."
+  },
+  {
+    "id": "py-030",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "closures",
+      "late-binding"
+    ],
+    "code": "funcs = [lambda: i for i in range(3)]\nprint([f() for f in funcs])",
+    "question": "What will be the output?",
+    "options": [
+      "[2, 2, 2]",
+      "[0, 1, 2]",
+      "[3, 3, 3]",
+      "[0, 0, 0]"
+    ],
+    "correctAnswer": "[2, 2, 2]",
+    "explanation": "Closures capture variables by reference, not value. After the loop, `i` is 2.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for closures."
+  },
+  {
+    "id": "py-031",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "functions",
+      "kwargs"
+    ],
+    "code": "def f(**kwargs): return len(kwargs)\nprint(f(a=1, b=2));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "None",
+      "TypeError"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`**kwargs` packs keyword arguments into a dict containing 2 keys.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for functions."
+  },
+  {
+    "id": "py-032",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "strip"
+    ],
+    "code": "print('xxyHelloyxx'.strip('xy'));",
+    "question": "What will be the output?",
+    "options": [
+      "'Hello'",
+      "'yHelloy'",
+      "'xxyHelloyxx'",
+      "''"
+    ],
+    "correctAnswer": "'Hello'",
+    "explanation": "`strip('xy')` removes any combination of 'x' and 'y' from both ends.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-033",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "dictionaries",
+      "pop"
+    ],
+    "code": "d = {'x': 10}; print(d.pop('x'), len(d));",
+    "question": "What will be the output?",
+    "options": [
+      "10 0",
+      "10 1",
+      "None 0",
+      "KeyError"
+    ],
+    "correctAnswer": "10 0",
+    "explanation": "`pop('x')` removes and returns the value (10), reducing length to 0.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for dictionaries."
+  },
+  {
+    "id": "py-034",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "copy",
+      "deep-vs-shallow"
+    ],
+    "code": "import copy\na = [[1]]; b = copy.copy(a); b[0].append(2); print(len(a[0]));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "TypeError",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`copy.copy()` is a shallow copy; the inner nested list `[1]` is still shared.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for copy."
+  },
+  {
+    "id": "py-035",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "join"
+    ],
+    "code": "print('-'.join(['a', 'b', 'c']));",
+    "question": "What will be the output?",
+    "options": [
+      "'a-b-c'",
+      "'a-b-c-'",
+      "'-a-b-c'",
+      "Error"
+    ],
+    "correctAnswer": "'a-b-c'",
+    "explanation": "`join` places the separator between array elements.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-036",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "numbers",
+      "division"
+    ],
+    "code": "print(7 / 2, 7 // 2);",
+    "question": "What will be the output?",
+    "options": [
+      "3.5 3",
+      "3 3",
+      "3.5 3.5",
+      "3 3.5"
+    ],
+    "correctAnswer": "3.5 3",
+    "explanation": "Single slash `/` performs float division (3.5); double slash `//` performs floor division (3).",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for numbers."
+  },
+  {
+    "id": "py-037",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "numbers",
+      "negative-floor"
+    ],
+    "code": "print(-7 // 2);",
+    "question": "What will be the output?",
+    "options": [
+      "-4",
+      "-3",
+      "-3.5",
+      "3"
+    ],
+    "correctAnswer": "-4",
+    "explanation": "Floor division floors towards negative infinity: -3.5 rounds down to -4.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for numbers."
+  },
+  {
+    "id": "py-038",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "lists",
+      "extend"
+    ],
+    "code": "a = [1]; a.extend([2, 3]); print(len(a));",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "2",
+      "1",
+      "4"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`extend` unpacks iterable elements into `a`, resulting in `[1, 2, 3]` (length 3).",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-039",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "append-list"
+    ],
+    "code": "a = [1]; a.append([2, 3]); print(len(a));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "4"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`append` appends the inner list as a single element `[1, [2, 3]]` (length 2).",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-040",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "property"
+    ],
+    "code": "class C: \n  @property\n  def val(self): return 42\nc = C(); print(c.val);",
+    "question": "What will be the output?",
+    "options": [
+      "42",
+      "<property object>",
+      "None",
+      "TypeError"
+    ],
+    "correctAnswer": "42",
+    "explanation": "The `@property` decorator allows method invocation via standard attribute access.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for classes."
+  },
+  {
+    "id": "py-041",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "boolean",
+      "falsy"
+    ],
+    "code": "print(bool([]), bool({}), bool(0.0));",
+    "question": "What will be the output?",
+    "options": [
+      "False False False",
+      "False True False",
+      "True True True",
+      "False False True"
+    ],
+    "correctAnswer": "False False False",
+    "explanation": "Empty collections and `0.0` all evaluate to `False` in Python boolean contexts.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for boolean."
+  },
+  {
+    "id": "py-042",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "scope",
+      "global"
+    ],
+    "code": "x = 5\ndef f():\n  global x\n  x += 1\nf()\nprint(x)",
+    "question": "What will be the output?",
+    "options": [
+      "6",
+      "5",
+      "UnboundLocalError",
+      "None"
+    ],
+    "correctAnswer": "6",
+    "explanation": "`global x` instructs the function to bind mutations directly to the module-level `x`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for scope."
+  },
+  {
+    "id": "py-043",
+    "language": "python",
+    "difficulty": "expert",
+    "concepts": [
+      "scope",
+      "nonlocal"
+    ],
+    "code": "def outer():\n  c = 0\n  def inner():\n    nonlocal c\n    c += 10\n  inner()\n  return c\nprint(outer())",
+    "question": "What will be the output?",
+    "options": [
+      "10",
+      "0",
+      "UnboundLocalError",
+      "None"
+    ],
+    "correctAnswer": "10",
+    "explanation": "`nonlocal` binds `c` to the nearest enclosing non-global scope variable.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for scope."
+  },
+  {
+    "id": "py-044",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "intersection"
+    ],
+    "code": "print({1, 2} & {2, 3});",
+    "question": "What will be the output?",
+    "options": [
+      "{2}",
+      "{1, 2, 3}",
+      "set()",
+      "{1, 3}"
+    ],
+    "correctAnswer": "{2}",
+    "explanation": "`&` computes set intersection, keeping only elements present in both sets.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for sets."
+  },
+  {
+    "id": "py-045",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "symmetric-diff"
+    ],
+    "code": "print({1, 2} ^ {2, 3});",
+    "question": "What will be the output?",
+    "options": [
+      "{1, 3}",
+      "{2}",
+      "{1, 2, 3}",
+      "set()"
+    ],
+    "correctAnswer": "{1, 3}",
+    "explanation": "`^` computes symmetric difference (elements in either set, but not in both).",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for sets."
+  },
+  {
+    "id": "py-046",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "str-vs-repr"
+    ],
+    "code": "class P: pass\np = P()\nprint(repr(p).startswith('<'))",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "TypeError",
+      "AttributeError"
+    ],
+    "correctAnswer": "True",
+    "explanation": "Default `object.__repr__` returns a string of the form `<__main__.P object at 0x...>`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for classes."
+  },
+  {
+    "id": "py-047",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "pow"
+    ],
+    "code": "print(pow(2, 3, 5));",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "8",
+      "1",
+      "0"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`pow(base, exp, mod)` computes `(2**3) % 5 = 8 % 5 = 3`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-048",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "generators",
+      "yield-from"
+    ],
+    "code": "def sub(): yield 1; yield 2\ndef main(): yield from sub(); yield 3\nprint(list(main()))",
+    "question": "What will be the output?",
+    "options": [
+      "[1, 2, 3]",
+      "[[1, 2], 3]",
+      "[3]",
+      "TypeError"
+    ],
+    "correctAnswer": "[1, 2, 3]",
+    "explanation": "`yield from` delegates iteration to the subgenerator.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for generators."
+  },
+  {
+    "id": "py-049",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "format"
+    ],
+    "code": "print('{:.2f}'.format(3.14159));",
+    "question": "What will be the output?",
+    "options": [
+      "'3.14'",
+      "'3.141'",
+      "'3.1'",
+      "'3.15'"
+    ],
+    "correctAnswer": "'3.14'",
+    "explanation": "Format specifier `{:.2f}` rounds to 2 decimal places.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-050",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "builtins",
+      "abs"
+    ],
+    "code": "print(abs(-42));",
+    "question": "What will be the output?",
+    "options": [
+      "42",
+      "-42",
+      "0",
+      "TypeError"
+    ],
+    "correctAnswer": "42",
+    "explanation": "`abs()` computes the absolute value.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-051",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "count"
+    ],
+    "code": "print('banana'.count('an'));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`'an'` appears non-overlapping twice in `'banana'`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-052",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "dict",
+      "setdefault"
+    ],
+    "code": "d = {}; x = d.setdefault('k', []); x.append(1); print(d['k']);",
+    "question": "What will be the output?",
+    "options": [
+      "[1]",
+      "[]",
+      "None",
+      "KeyError"
+    ],
+    "correctAnswer": "[1]",
+    "explanation": "`setdefault` inserts the default list and returns it; mutating `x` updates `d`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for dict."
+  },
+  {
+    "id": "py-053",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "insert"
+    ],
+    "code": "a = [1, 3]; a.insert(1, 2); print(a);",
+    "question": "What will be the output?",
+    "options": [
+      "[1, 2, 3]",
+      "[2, 1, 3]",
+      "[1, 3, 2]",
+      "Error"
+    ],
+    "correctAnswer": "[1, 2, 3]",
+    "explanation": "`insert(1, 2)` places value 2 at index 1, shifting subsequent elements.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-054",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "dunder-call"
+    ],
+    "code": "class Multiplier: \n  def __call__(self, x): return x * 3\nm = Multiplier(); print(m(4));",
+    "question": "What will be the output?",
+    "options": [
+      "12",
+      "4",
+      "TypeError",
+      "None"
+    ],
+    "correctAnswer": "12",
+    "explanation": "Implementing `__call__` allows instances of the class to be invoked like functions.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for classes."
+  },
+  {
+    "id": "py-055",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "min-key"
+    ],
+    "code": "words = ['apple', 'fig', 'banana']; print(min(words, key=len));",
+    "question": "What will be the output?",
+    "options": [
+      "'fig'",
+      "'apple'",
+      "'banana'",
+      "3"
+    ],
+    "correctAnswer": "'fig'",
+    "explanation": "`min(words, key=len)` finds the element with smallest string length ('fig').",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-056",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "exceptions",
+      "else"
+    ],
+    "code": "res = 0\ntry: pass\nexcept: res = 1\nelse: res = 2\nprint(res)",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "0",
+      "1",
+      "SyntaxError"
+    ],
+    "correctAnswer": "2",
+    "explanation": "The `else` branch of a try block executes if no exceptions were raised.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for exceptions."
+  },
+  {
+    "id": "py-057",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "iterables",
+      "next-default"
+    ],
+    "code": "it = iter([]); print(next(it, 'empty'));",
+    "question": "What will be the output?",
+    "options": [
+      "'empty'",
+      "StopIteration",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": "'empty'",
+    "explanation": "`next(iterator, default)` returns the default value if the iterator is exhausted.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for iterables."
+  },
+  {
+    "id": "py-058",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "lists",
+      "pop-index"
+    ],
+    "code": "a = [10, 20, 30]; print(a.pop(1), a[1]);",
+    "question": "What will be the output?",
+    "options": [
+      "20 30",
+      "20 10",
+      "10 20",
+      "30 20"
+    ],
+    "correctAnswer": "20 30",
+    "explanation": "`pop(1)` removes element at index 1 (20); the element at index 1 is now 30.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-059",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "casefold"
+    ],
+    "code": "print('HELLO'.casefold());",
+    "question": "What will be the output?",
+    "options": [
+      "'hello'",
+      "'HELLO'",
+      "'Hello'",
+      "Error"
+    ],
+    "correctAnswer": "'hello'",
+    "explanation": "`casefold()` implements aggressive lowercase conversion.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-060",
+    "language": "python",
+    "difficulty": "expert",
+    "concepts": [
+      "metaclasses",
+      "type-call"
+    ],
+    "code": "MyClass = type('MyClass', (), {'x': 10})\nprint(MyClass.x)",
+    "question": "What will be the output?",
+    "options": [
+      "10",
+      "None",
+      "AttributeError",
+      "TypeError"
+    ],
+    "correctAnswer": "10",
+    "explanation": "`type(name, bases, dict)` dynamically creates a new class.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for metaclasses."
+  },
+  {
+    "id": "py-061",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "zfill"
+    ],
+    "code": "print('42'.zfill(5));",
+    "question": "What will be the output?",
+    "options": [
+      "'00042'",
+      "'42000'",
+      "'0042'",
+      "Error"
+    ],
+    "correctAnswer": "'00042'",
+    "explanation": "`zfill(5)` pads numeric strings with leading zeros to reach width 5.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-062",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "operator",
+      "is-not"
+    ],
+    "code": "a = [1]; b = [1]; print(a is not b);",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "None",
+      "TypeError"
+    ],
+    "correctAnswer": "True",
+    "explanation": "`a` and `b` are distinct heap objects with separate IDs.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for operator."
+  },
+  {
+    "id": "py-063",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "math",
+      "fsum"
+    ],
+    "code": "import math; print(math.fsum([0.1]*10) == 1.0);",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "TypeError",
+      "None"
+    ],
+    "correctAnswer": "True",
+    "explanation": "`math.fsum` tracks intermediate precision to prevent floating-point loss.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for math."
+  },
+  {
+    "id": "py-064",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "itertools",
+      "chain"
+    ],
+    "code": "import itertools; print(len(list(itertools.chain([1, 2], [3]))));",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "2",
+      "1",
+      "TypeError"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`itertools.chain` links multiple iterables into a single sequence of 3 items.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for itertools."
+  },
+  {
+    "id": "py-065",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "dicts",
+      "keys-view"
+    ],
+    "code": "d = {'a': 1}; keys = d.keys(); d['b'] = 2; print(len(keys));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "RuntimeError",
+      "None"
+    ],
+    "correctAnswer": "2",
+    "explanation": "In Python 3, `dict.keys()` returns a dynamic view that reflects dictionary updates.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for dicts."
+  },
+  {
+    "id": "py-066",
+    "language": "python",
+    "difficulty": "easy",
+    "concepts": [
+      "lists",
+      "clear"
+    ],
+    "code": "a = [1, 2]; a.clear(); print(len(a));",
+    "question": "What will be the output?",
+    "options": [
+      "0",
+      "2",
+      "None",
+      "IndexError"
+    ],
+    "correctAnswer": "0",
+    "explanation": "`clear()` removes all items from the list.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-067",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "getattr"
+    ],
+    "code": "class A:\n  def __getattr__(self, name): return name.upper()\na = A(); print(a.foo);",
+    "question": "What will be the output?",
+    "options": [
+      "'FOO'",
+      "'foo'",
+      "AttributeError",
+      "None"
+    ],
+    "correctAnswer": "'FOO'",
+    "explanation": "`__getattr__` is called when an attribute cannot be found in the instance `__dict__`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for classes."
+  },
+  {
+    "id": "py-068",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "map-type"
+    ],
+    "code": "m = map(int, ['1', '2']); print(type(m).__name__);",
+    "question": "What will be the output?",
+    "options": [
+      "'map'",
+      "'list'",
+      "'generator'",
+      "'tuple'"
+    ],
+    "correctAnswer": "'map'",
+    "explanation": "`map()` returns an iterator of type `map`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-069",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "strings",
+      "f-string-equals"
+    ],
+    "code": "x = 42; print(f'{x=}');",
+    "question": "What will be the output?",
+    "options": [
+      "'x=42'",
+      "'42'",
+      "'x = 42'",
+      "'42='"
+    ],
+    "correctAnswer": "'x=42'",
+    "explanation": "Python 3.8+ debugging format `f'{x=}'` prints the expression text followed by `=` and value.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-070",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "tuples",
+      "count"
+    ],
+    "code": "t = (1, 2, 2, 3); print(t.count(2));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`count(2)` returns the frequency of element 2.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for tuples."
+  },
+  {
+    "id": "py-071",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "builtins",
+      "zip-strict"
+    ],
+    "code": "try: list(zip([1], [2, 3], strict=True))\nexcept Exception as e: print(type(e).__name__)",
+    "question": "What will be the output?",
+    "options": [
+      "ValueError",
+      "TypeError",
+      "IndexError",
+      "None"
+    ],
+    "correctAnswer": "ValueError",
+    "explanation": "Python 3.10+ `zip(..., strict=True)` raises `ValueError` if arguments are of unequal length.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-072",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "numbers",
+      "complex"
+    ],
+    "code": "z = 3 + 4j; print(int(z.real));",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "TypeError"
+    ],
+    "correctAnswer": "3",
+    "explanation": "The real part `.real` of `3 + 4j` is 3.0.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for numbers."
+  },
+  {
+    "id": "py-073",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "functools",
+      "reduce"
+    ],
+    "code": "from functools import reduce; print(reduce(lambda x, y: x * y, [1, 2, 3, 4]));",
+    "question": "What will be the output?",
+    "options": [
+      "24",
+      "10",
+      "12",
+      "0"
+    ],
+    "correctAnswer": "24",
+    "explanation": "`reduce` multiplies sequentially: 1 * 2 * 3 * 4 = 24.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for functools."
+  },
+  {
+    "id": "py-074",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "count"
+    ],
+    "code": "a = ['a', 'b', 'a']; print(a.count('a'));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`count('a')` returns 2.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-075",
+    "language": "python",
+    "difficulty": "expert",
+    "concepts": [
+      "classes",
+      "init-subclass"
+    ],
+    "code": "class Base:\n  def __init_subclass__(cls): cls.tag = 'sub'\nclass Child(Base): pass\nprint(Child.tag)",
+    "question": "What will be the output?",
+    "options": [
+      "'sub'",
+      "AttributeError",
+      "None",
+      "TypeError"
+    ],
+    "correctAnswer": "'sub'",
+    "explanation": "`__init_subclass__` executes automatically whenever the class is subclassed.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for classes."
+  },
+  {
+    "id": "py-076",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "startswith-tuple"
+    ],
+    "code": "print('hello.py'.endswith(('.py', '.js')));",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "TypeError",
+      "None"
+    ],
+    "correctAnswer": "True",
+    "explanation": "`endswith()` accepts a tuple of suffixes to test against.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-077",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "context-managers",
+      "exit"
+    ],
+    "code": "class M:\n  def __enter__(self): return 1\n  def __exit__(self, *a): pass\nwith M() as val: print(val)",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "None",
+      "TypeError",
+      "AttributeError"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`__enter__` returns the bound target value for the `as` clause.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for context-managers."
+  },
+  {
+    "id": "py-078",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "dict",
+      "update"
+    ],
+    "code": "d = {'a': 1}; d.update(a=2, b=3); print(d['a'], d['b']);",
+    "question": "What will be the output?",
+    "options": [
+      "2 3",
+      "1 3",
+      "2 None",
+      "Error"
+    ],
+    "correctAnswer": "2 3",
+    "explanation": "`update()` overwrites existing keys and adds new ones.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for dict."
+  },
+  {
+    "id": "py-079",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "slices",
+      "step-delete"
+    ],
+    "code": "a = [0, 1, 2, 3, 4]; del a[::2]; print(a);",
+    "question": "What will be the output?",
+    "options": [
+      "[1, 3]",
+      "[0, 2, 4]",
+      "[]",
+      "IndexError"
+    ],
+    "correctAnswer": "[1, 3]",
+    "explanation": "Deleting `a[::2]` removes elements at even indices (0, 2, 4), leaving `[1, 3]`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for slices."
+  },
+  {
+    "id": "py-080",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "hex"
+    ],
+    "code": "print(hex(16));",
+    "question": "What will be the output?",
+    "options": [
+      "'0x10'",
+      "'0x16'",
+      "'10'",
+      "'0xF'"
+    ],
+    "correctAnswer": "'0x10'",
+    "explanation": "16 in base 16 hexadecimal representation is `'0x10'`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-081",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "math",
+      "isclose"
+    ],
+    "code": "import math; print(math.isclose(0.1 + 0.2, 0.3));",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": "True",
+    "explanation": "`math.isclose()` tests floating point equality within a tolerance.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for math."
+  },
+  {
+    "id": "py-082",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "partition"
+    ],
+    "code": "print('key=val'.partition('='));",
+    "question": "What will be the output?",
+    "options": [
+      "('key', '=', 'val')",
+      "('key', 'val')",
+      "['key', 'val']",
+      "Error"
+    ],
+    "correctAnswer": "('key', '=', 'val')",
+    "explanation": "`partition` splits string into a 3-tuple `(head, sep, tail)`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-083",
+    "language": "python",
+    "difficulty": "expert",
+    "concepts": [
+      "sys",
+      "intern"
+    ],
+    "code": "import sys; a = sys.intern('custom_string'); b = sys.intern('custom_string'); print(a is b);",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": "True",
+    "explanation": "`sys.intern` guarantees string identity `is` by sharing the interned string pointer.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for sys."
+  },
+  {
+    "id": "py-084",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "bin"
+    ],
+    "code": "print(bin(5));",
+    "question": "What will be the output?",
+    "options": [
+      "'0b101'",
+      "'101'",
+      "'0b5'",
+      "'0x5'"
+    ],
+    "correctAnswer": "'0b101'",
+    "explanation": "5 in binary is `'0b101'`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-085",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "slots"
+    ],
+    "code": "class S:\n  __slots__ = ['x']\ns = S(); s.x = 1\ntry: s.y = 2\nexcept AttributeError: print('No Y')",
+    "question": "What will be the output?",
+    "options": [
+      "'No Y'",
+      "2",
+      "None",
+      "TypeError"
+    ],
+    "correctAnswer": "'No Y'",
+    "explanation": "`__slots__` prevents creation of `__dict__`, raising `AttributeError` on undeclared attributes.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for classes."
+  },
+  {
+    "id": "py-086",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "functions",
+      "positional-only"
+    ],
+    "code": "def f(a, /, b): return a + b\nprint(f(2, b=3));",
+    "question": "What will be the output?",
+    "options": [
+      "5",
+      "TypeError",
+      "None",
+      "6"
+    ],
+    "correctAnswer": "5",
+    "explanation": "The `/` syntax marks parameters to its left as positional-only.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for functions."
+  },
+  {
+    "id": "py-087",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "functions",
+      "keyword-only"
+    ],
+    "code": "def f(*, a): return a * 2\nprint(f(a=4));",
+    "question": "What will be the output?",
+    "options": [
+      "8",
+      "TypeError",
+      "4",
+      "None"
+    ],
+    "correctAnswer": "8",
+    "explanation": "Parameters after bare `*` must be passed as keyword arguments.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for functions."
+  },
+  {
+    "id": "py-088",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "lists",
+      "reverse-inplace"
+    ],
+    "code": "a = [1, 2]; a.reverse(); print(a);",
+    "question": "What will be the output?",
+    "options": [
+      "[2, 1]",
+      "[1, 2]",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": "[2, 1]",
+    "explanation": "`reverse()` mutates the list in-place.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for lists."
+  },
+  {
+    "id": "py-089",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "exceptions",
+      "from-none"
+    ],
+    "code": "try:\n  try: 1/0\n  except ZeroDivisionError: raise ValueError from None\nexcept Exception as e: print(e.__cause__)",
+    "question": "What will be the output?",
+    "options": [
+      "None",
+      "ZeroDivisionError",
+      "ValueError",
+      "Error"
+    ],
+    "correctAnswer": "None",
+    "explanation": "`raise ... from None` suppresses the exception context in `__cause__`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for exceptions."
+  },
+  {
+    "id": "py-090",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "swapcase"
+    ],
+    "code": "print('Py'.swapcase());",
+    "question": "What will be the output?",
+    "options": [
+      "'pY'",
+      "'PY'",
+      "'py'",
+      "Error"
+    ],
+    "correctAnswer": "'pY'",
+    "explanation": "`swapcase()` flips uppercase to lowercase and vice versa.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-091",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "itertools",
+      "count"
+    ],
+    "code": "import itertools; c = itertools.count(start=5, step=2); print(next(c), next(c));",
+    "question": "What will be the output?",
+    "options": [
+      "5 7",
+      "5 6",
+      "0 2",
+      "5 5"
+    ],
+    "correctAnswer": "5 7",
+    "explanation": "`itertools.count(5, 2)` produces an infinite arithmetic progression: 5, 7, 9...",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for itertools."
+  },
+  {
+    "id": "py-092",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "dictionaries",
+      "fromkeys"
+    ],
+    "code": "d = dict.fromkeys(['a', 'b'], 0); print(d['a'], d['b']);",
+    "question": "What will be the output?",
+    "options": [
+      "0 0",
+      "None None",
+      "KeyError",
+      "0 None"
+    ],
+    "correctAnswer": "0 0",
+    "explanation": "`dict.fromkeys(keys, val)` initializes all keys with the specified value.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for dictionaries."
+  },
+  {
+    "id": "py-093",
+    "language": "python",
+    "difficulty": "expert",
+    "concepts": [
+      "types",
+      "method-binding"
+    ],
+    "code": "class A:\n  def f(self): return 1\nprint(type(A.f).__name__, type(A().f).__name__)",
+    "question": "What will be the output?",
+    "options": [
+      "'function' 'method'",
+      "'method' 'method'",
+      "'function' 'function'",
+      "Error"
+    ],
+    "correctAnswer": "'function' 'method'",
+    "explanation": "On the class it is an unbound `function`; on an instance it becomes a bound `method`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for types."
+  },
+  {
+    "id": "py-094",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "chr-ord"
+    ],
+    "code": "print(chr(ord('A') + 1));",
+    "question": "What will be the output?",
+    "options": [
+      "'B'",
+      "'A'",
+      "66",
+      "TypeError"
+    ],
+    "correctAnswer": "'B'",
+    "explanation": "`ord('A')` is 65; 65 + 1 is 66; `chr(66)` is `'B'`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-095",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "Counter"
+    ],
+    "code": "from collections import Counter; c = Counter('abac'); print(c['a']);",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "KeyError"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`Counter` counts frequencies of elements; 'a' appears twice.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for collections."
+  },
+  {
+    "id": "py-096",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "builtins",
+      "filter-none"
+    ],
+    "code": "print(list(filter(None, [0, 1, False, 2])));",
+    "question": "What will be the output?",
+    "options": [
+      "[1, 2]",
+      "[0, 1, 2]",
+      "[]",
+      "TypeError"
+    ],
+    "correctAnswer": "[1, 2]",
+    "explanation": "Passing `None` to `filter()` uses identity truth testing, keeping only truthy items.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for builtins."
+  },
+  {
+    "id": "py-097",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "types",
+      "Ellipsis"
+    ],
+    "code": "print(... == Ellipsis);",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "SyntaxError",
+      "None"
+    ],
+    "correctAnswer": "True",
+    "explanation": "The literal `...` is the singleton object `Ellipsis` in Python.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for types."
+  },
+  {
+    "id": "py-098",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "sets",
+      "issubset"
+    ],
+    "code": "print({1}.issubset({1, 2}));",
+    "question": "What will be the output?",
+    "options": [
+      "True",
+      "False",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": "True",
+    "explanation": "`{1}` is a subset of `{1, 2}`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for sets."
+  },
+  {
+    "id": "py-099",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "strings",
+      "rfind"
+    ],
+    "code": "print('banana'.rfind('a'));",
+    "question": "What will be the output?",
+    "options": [
+      "5",
+      "1",
+      "3",
+      "-1"
+    ],
+    "correctAnswer": "5",
+    "explanation": "`rfind` searches from right to left, returning the highest index (5).",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for strings."
+  },
+  {
+    "id": "py-100",
+    "language": "python",
+    "difficulty": "expert",
+    "concepts": [
+      "dunder",
+      "subclasses"
+    ],
+    "code": "class Base: pass\nclass Sub(Base): pass\nprint(len(Base.__subclasses__()))",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "0",
+      "2",
+      "AttributeError"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`__subclasses__()` returns a list of weak references to direct subclasses.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for dunder."
+  },
+  {
+    "id": "py-101",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "tuples",
+      "addition"
+    ],
+    "code": "print((1, 2) + (3,));",
+    "question": "What will be the output?",
+    "options": [
+      "(1, 2, 3)",
+      "(1, 2, (3,))",
+      "TypeError",
+      "[1, 2, 3]"
+    ],
+    "correctAnswer": "(1, 2, 3)",
+    "explanation": "Concatenating two tuples creates a new combined tuple.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for tuples."
+  },
+  {
+    "id": "py-102",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "math",
+      "gcd"
+    ],
+    "code": "import math; print(math.gcd(12, 18));",
+    "question": "What will be the output?",
+    "options": [
+      "6",
+      "3",
+      "2",
+      "36"
+    ],
+    "correctAnswer": "6",
+    "explanation": "The greatest common divisor of 12 and 18 is 6.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for math."
+  },
+  {
+    "id": "py-103",
+    "language": "python",
+    "difficulty": "medium",
+    "concepts": [
+      "numbers",
+      "oct"
+    ],
+    "code": "print(oct(8));",
+    "question": "What will be the output?",
+    "options": [
+      "'0o10'",
+      "'0o8'",
+      "'8'",
+      "'10'"
+    ],
+    "correctAnswer": "'0o10'",
+    "explanation": "8 in octal representation is `'0o10'`.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for numbers."
+  },
+  {
+    "id": "py-104",
+    "language": "python",
+    "difficulty": "hard",
+    "concepts": [
+      "functions",
+      "annotations"
+    ],
+    "code": "def f(x: int) -> str: pass\nprint(f.__annotations__['x'].__name__)",
+    "question": "What will be the output?",
+    "options": [
+      "'int'",
+      "'str'",
+      "AttributeError",
+      "KeyError"
+    ],
+    "correctAnswer": "'int'",
+    "explanation": "Function type annotations are stored in the `__annotations__` dictionary.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for functions."
+  },
+  {
+    "id": "py-105",
+    "language": "python",
+    "difficulty": "expert",
+    "concepts": [
+      "gc",
+      "is-tracked"
+    ],
+    "code": "import gc; print(gc.is_tracked(42));",
+    "question": "What will be the output?",
+    "options": [
+      "False",
+      "True",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": "False",
+    "explanation": "Simple atomic types like integers, strings, and floats are not tracked by the cyclic garbage collector.",
+    "runtime": "Python 3.10+",
+    "hint": "Recall Python's rules for gc."
+  }
+]

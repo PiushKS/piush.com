@@ -1,0 +1,945 @@
+[
+  {
+    "id": "kt-001",
+    "language": "kotlin",
+    "difficulty": "easy",
+    "concepts": [
+      "nullability",
+      "elvis-operator"
+    ],
+    "code": "val name: String? = null\nprintln(name ?: \"Default\")",
+    "question": "What will be printed?",
+    "options": [
+      "Default",
+      "null",
+      "Compilation error",
+      "NullPointerException"
+    ],
+    "correctAnswer": "Default",
+    "explanation": "The Elvis operator `?:` evaluates the left operand; if it is null, it evaluates and returns the right operand ('Default').",
+    "runtime": "Kotlin 1.9+"
+  },
+  {
+    "id": "kt-002",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "scope-functions",
+      "let",
+      "safe-call"
+    ],
+    "code": "val str: String? = \"Kotlin\"\nval len = str?.let { it.length } ?: 0\nprintln(len)",
+    "question": "What will be printed?",
+    "options": [
+      "6",
+      "0",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "6",
+    "explanation": "Because `str` is not null, the safe call `?.` invokes `let`, executing `it.length` which produces 6.",
+    "runtime": "Kotlin 1.9+"
+  },
+  {
+    "id": "kt-003",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "data-classes",
+      "copy",
+      "equality"
+    ],
+    "code": "data class User(val id: Int, val name: String)\nval u1 = User(1, \"Alice\")\nval u2 = u1.copy(name = \"Bob\")\nprintln(u1 == u2)",
+    "question": "What will be printed?",
+    "options": [
+      "false",
+      "true",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "false",
+    "explanation": "Data classes generate structural equality `equals()` comparing all primary constructor properties. Since `u1.name != u2.name`, `u1 == u2` is `false`.",
+    "runtime": "Kotlin 1.9+"
+  },
+  {
+    "id": "kt-004",
+    "language": "kotlin",
+    "difficulty": "easy",
+    "concepts": [
+      "val",
+      "mutability",
+      "collections"
+    ],
+    "code": "val list = mutableListOf(1, 2)\nlist.add(3)\nprintln(list.size)",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "2",
+      "Compilation error",
+      "UnsupportedOperationException"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`val` guarantees reference immutability (the variable `list` cannot be reassigned to a new list), but the underlying `MutableList` instance itself remains mutable.",
+    "runtime": "Kotlin 1.9+"
+  },
+  {
+    "id": "kt-005",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "scope-functions",
+      "apply"
+    ],
+    "code": "val items = mutableListOf<Int>().apply {\n    add(10)\n    add(20)\n}\nprintln(items.sum())",
+    "question": "What will be printed?",
+    "options": [
+      "30",
+      "20",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "30",
+    "explanation": "`apply` executes the lambda block with the context object as receiver `this`, and returns the context object itself. The sum of 10 + 20 is 30.",
+    "runtime": "Kotlin 1.9+"
+  },
+  {
+    "id": "kt-006",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "scope-functions",
+      "also"
+    ],
+    "code": "var x = 10\nval y = x.also { x += 5 }\nprintln(\"$x $y\")",
+    "question": "What will be printed?",
+    "options": [
+      "15 10",
+      "15 15",
+      "10 10",
+      "10 15"
+    ],
+    "correctAnswer": "15 10",
+    "explanation": "`also` returns the receiver value prior to the block assignment (10), while `x += 5` mutates outer `x` to 15.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for scope-functions."
+  },
+  {
+    "id": "kt-007",
+    "language": "kotlin",
+    "difficulty": "easy",
+    "concepts": [
+      "when",
+      "expressions"
+    ],
+    "code": "val x = 2\nval res = when (x) {\n    1 -> \"A\"\n    2 -> \"B\"\n    else -> \"C\"\n}\nprintln(res)",
+    "question": "What will be printed?",
+    "options": [
+      "B",
+      "A",
+      "C",
+      "Compilation error"
+    ],
+    "correctAnswer": "B",
+    "explanation": "The `when` expression branches on matching `2`, evaluating to \"B\".",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for when."
+  },
+  {
+    "id": "kt-008",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "extensions",
+      "static-dispatch"
+    ],
+    "code": "open class Base\nclass Derived : Base()\nfun Base.name() = \"Base\"\nfun Derived.name() = \"Derived\"\nval b: Base = Derived()\nprintln(b.name())",
+    "question": "What will be printed?",
+    "options": [
+      "Base",
+      "Derived",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "Base",
+    "explanation": "Extension functions in Kotlin are dispatched statically based on the declared reference type (`Base`), not the runtime instance.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for extensions."
+  },
+  {
+    "id": "kt-009",
+    "language": "kotlin",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "templates"
+    ],
+    "code": "val a = 3; val b = 4\nprintln(\"Total: ${a + b}\")",
+    "question": "What will be printed?",
+    "options": [
+      "Total: 7",
+      "Total: 34",
+      "Total: a + b",
+      "Compilation error"
+    ],
+    "correctAnswer": "Total: 7",
+    "explanation": "Expressions within `${}` in string templates evaluate dynamically (3 + 4 = 7).",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for strings."
+  },
+  {
+    "id": "kt-010",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "companion-objects",
+      "access"
+    ],
+    "code": "class Config {\n    companion object {\n        const val VERSION = 2\n    }\n}\nprintln(Config.VERSION)",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "Config",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Members of a companion object are accessible directly via the enclosing class name.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for companion-objects."
+  },
+  {
+    "id": "kt-011",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "ranges",
+      "until"
+    ],
+    "code": "val r = 1 until 4\nprintln(r.toList().size)",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "4",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`until` produces a half-open range excluding the end point: `[1, 2, 3]` (size 3).",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for ranges."
+  },
+  {
+    "id": "kt-012",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "ranges",
+      "step"
+    ],
+    "code": "val list = (1..5 step 2).toList()\nprintln(list)",
+    "question": "What will be printed?",
+    "options": [
+      "[1, 3, 5]",
+      "[1, 2, 3, 4, 5]",
+      "[2, 4]",
+      "[1, 3]"
+    ],
+    "correctAnswer": "[1, 3, 5]",
+    "explanation": "`step 2` increments by 2: 1, 3, 5.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for ranges."
+  },
+  {
+    "id": "kt-013",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "destructuring",
+      "data-classes"
+    ],
+    "code": "data class Point(val x: Int, val y: Int)\nval (a, b) = Point(10, 20)\nprintln(\"$b $a\")",
+    "question": "What will be printed?",
+    "options": [
+      "20 10",
+      "10 20",
+      "Point",
+      "Compilation error"
+    ],
+    "correctAnswer": "20 10",
+    "explanation": "Destructuring maps positional components: `a = 10`, `b = 20`. Printing `\"$b $a\"` yields \"20 10\".",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for destructuring."
+  },
+  {
+    "id": "kt-014",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "filter-map"
+    ],
+    "code": "val res = listOf(1, 2, 3).filter { it > 1 }.map { it * 2 }\nprintln(res)",
+    "question": "What will be printed?",
+    "options": [
+      "[4, 6]",
+      "[2, 4, 6]",
+      "[4]",
+      "[]"
+    ],
+    "correctAnswer": "[4, 6]",
+    "explanation": "Filter keeps 2 and 3; mapping doubles each to `[4, 6]`.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-015",
+    "language": "kotlin",
+    "difficulty": "easy",
+    "concepts": [
+      "null-safety",
+      "not-null-assertion"
+    ],
+    "code": "val s: String? = \"Hi\"\nprintln(s!!.length)",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "null",
+      "NullPointerException",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`!!` asserts that the operand is non-null; since `s` is \"Hi\", length is 2.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for null-safety."
+  },
+  {
+    "id": "kt-016",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "lazy",
+      "delegates"
+    ],
+    "code": "var init = 0\nval x by lazy { init++; 42 }\nprintln(\"$init ${x} $init\")",
+    "question": "What will be printed?",
+    "options": [
+      "0 42 1",
+      "1 42 1",
+      "0 42 0",
+      "Compilation error"
+    ],
+    "correctAnswer": "0 42 1",
+    "explanation": "`by lazy` evaluates on first read: initially `init` is 0; reading `x` sets `init = 1` and returns 42.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for lazy."
+  },
+  {
+    "id": "kt-017",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "smart-casts",
+      "is"
+    ],
+    "code": "val obj: Any = \"Kotlin\"\nif (obj is String) {\n    println(obj.length)\n}",
+    "question": "What will be printed?",
+    "options": [
+      "6",
+      "Compilation error",
+      "ClassCastException",
+      "null"
+    ],
+    "correctAnswer": "6",
+    "explanation": "The compiler smart-casts `obj` to `String` inside the `is String` check.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for smart-casts."
+  },
+  {
+    "id": "kt-018",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "named-arguments",
+      "defaults"
+    ],
+    "code": "fun greet(name: String = \"Guest\", prefix: String = \"Hi\") = \"$prefix $name\"\nprintln(greet(prefix = \"Hey\"))",
+    "question": "What will be printed?",
+    "options": [
+      "Hey Guest",
+      "Hi Guest",
+      "Hey Hey",
+      "Compilation error"
+    ],
+    "correctAnswer": "Hey Guest",
+    "explanation": "Named argument `prefix = \"Hey\"` overrides prefix while `name` keeps its default \"Guest\".",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for named-arguments."
+  },
+  {
+    "id": "kt-019",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "sealed-classes",
+      "when-exhaustiveness"
+    ],
+    "code": "sealed class Result\nclass Ok(val v: Int) : Result()\nclass Err : Result()\nfun check(r: Result) = when(r) { is Ok -> r.v; is Err -> -1 }\nprintln(check(Ok(99)))",
+    "question": "What will be printed?",
+    "options": [
+      "99",
+      "-1",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "99",
+    "explanation": "Sealed hierarchies allow exhaustive `when` matching without an `else` branch.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for sealed-classes."
+  },
+  {
+    "id": "kt-020",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "scope-functions",
+      "run"
+    ],
+    "code": "val res = \"Code\".run {\n    length * 2\n}\nprintln(res)",
+    "question": "What will be printed?",
+    "options": [
+      "8",
+      "4",
+      "Code",
+      "Compilation error"
+    ],
+    "correctAnswer": "8",
+    "explanation": "`run` executes with context receiver `this = \"Code\"` and returns the lambda result 4 * 2 = 8.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for scope-functions."
+  },
+  {
+    "id": "kt-021",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "scope-functions",
+      "with"
+    ],
+    "code": "val sb = StringBuilder()\nwith(sb) {\n    append(\"A\")\n    append(\"B\")\n}\nprintln(sb.toString())",
+    "question": "What will be printed?",
+    "options": [
+      "AB",
+      "A",
+      "B",
+      "Compilation error"
+    ],
+    "correctAnswer": "AB",
+    "explanation": "`with` takes the receiver as argument and appends 'A' and 'B' in-place.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for scope-functions."
+  },
+  {
+    "id": "kt-022",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "fold"
+    ],
+    "code": "val sum = listOf(1, 2, 3).fold(10) { acc, e -> acc + e }\nprintln(sum)",
+    "question": "What will be printed?",
+    "options": [
+      "16",
+      "6",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "16",
+    "explanation": "`fold` begins with initial value 10: 10 + 1 + 2 + 3 = 16.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-023",
+    "language": "kotlin",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "raw-multiline"
+    ],
+    "code": "val s = \"\"\"Hello\nWorld\"\"\".trimIndent()\nprintln(s.lines().size)",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "The multiline raw string consists of 2 lines: \"Hello\" and \"World\".",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for strings."
+  },
+  {
+    "id": "kt-024",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "operator-overload",
+      "plus"
+    ],
+    "code": "data class Num(val v: Int) {\n    operator fun plus(o: Num) = Num(v + o.v)\n}\nprintln((Num(2) + Num(3)).v)",
+    "question": "What will be printed?",
+    "options": [
+      "5",
+      "6",
+      "23",
+      "Compilation error"
+    ],
+    "correctAnswer": "5",
+    "explanation": "The `operator fun plus` enables the `+` operator, computing 2 + 3 = 5.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for operator-overload."
+  },
+  {
+    "id": "kt-025",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "associateby"
+    ],
+    "code": "val m = listOf(\"apple\", \"fig\").associateBy { it.length }\nprintln(m[3])",
+    "question": "What will be printed?",
+    "options": [
+      "fig",
+      "apple",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "fig",
+    "explanation": "`associateBy` maps each item to its key `it.length`. \"fig\" has length 3, so `m[3]` is \"fig\".",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-026",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "singleton",
+      "object"
+    ],
+    "code": "object Counter { var c = 0 }\nCounter.c++\nprintln(Counter.c)",
+    "question": "What will be printed?",
+    "options": [
+      "1",
+      "0",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`object` creates a thread-safe singleton instance.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for singleton."
+  },
+  {
+    "id": "kt-027",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "generics",
+      "invariance"
+    ],
+    "code": "val l: List<Number> = listOf<Int>(1, 2)\nprintln(l.size)",
+    "question": "What will be printed?",
+    "options": [
+      "2",
+      "Compilation error",
+      "ClassCastException",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`List<out E>` in Kotlin is covariant, allowing assignment of `List<Int>` to `List<Number>`.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for generics."
+  },
+  {
+    "id": "kt-028",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "primitive-arrays"
+    ],
+    "code": "val a = intArrayOf(1, 2, 3)\nprintln(a.sum())",
+    "question": "What will be printed?",
+    "options": [
+      "6",
+      "123",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "6",
+    "explanation": "`intArrayOf` creates an unboxed primitive `int[]` array; `.sum()` computes 6.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for arrays."
+  },
+  {
+    "id": "kt-029",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "zip"
+    ],
+    "code": "val pairs = listOf(1, 2).zip(listOf(\"A\", \"B\"))\nprintln(pairs[0])",
+    "question": "What will be printed?",
+    "options": [
+      "(1, A)",
+      "(1, 1)",
+      "1A",
+      "Compilation error"
+    ],
+    "correctAnswer": "(1, A)",
+    "explanation": "`zip` combines two lists into pairs: index 0 is `(1, A)`.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-030",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "inline",
+      "functions"
+    ],
+    "code": "inline fun runOp(fn: () -> Int) = fn() * 2\nprintln(runOp { 5 })",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "5",
+      "Compilation error",
+      "2"
+    ],
+    "correctAnswer": "10",
+    "explanation": "The inline function inlines the lambda at the callsite, evaluating 5 * 2 = 10.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for inline."
+  },
+  {
+    "id": "kt-031",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "nullability",
+      "safe-cast"
+    ],
+    "code": "val obj: Any = 123\nval s = obj as? String\nprintln(s)",
+    "question": "What will be printed?",
+    "options": [
+      "null",
+      "123",
+      "ClassCastException",
+      "Compilation error"
+    ],
+    "correctAnswer": "null",
+    "explanation": "The safe cast operator `as?` returns `null` instead of throwing `ClassCastException` on mismatch.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for nullability."
+  },
+  {
+    "id": "kt-032",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "partition"
+    ],
+    "code": "val (even, odd) = listOf(1, 2, 3).partition { it % 2 == 0 }\nprintln(even)",
+    "question": "What will be printed?",
+    "options": [
+      "[2]",
+      "[1, 3]",
+      "[1, 2, 3]",
+      "Compilation error"
+    ],
+    "correctAnswer": "[2]",
+    "explanation": "`partition` splits into a pair of lists: first has elements matching the predicate (`[2]`).",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-033",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "typealias",
+      "usage"
+    ],
+    "code": "typealias ID = Int\nval x: ID = 42\nprintln(x + 8)",
+    "question": "What will be printed?",
+    "options": [
+      "50",
+      "42",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "50",
+    "explanation": "`typealias` provides an alternative name for an existing type without creating a new runtime type.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for typealias."
+  },
+  {
+    "id": "kt-034",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "firstornull"
+    ],
+    "code": "val res = listOf(1, 2).firstOrNull { it > 5 }\nprintln(res)",
+    "question": "What will be printed?",
+    "options": [
+      "null",
+      "NoSuchElementException",
+      "0",
+      "false"
+    ],
+    "correctAnswer": "null",
+    "explanation": "`firstOrNull` safely returns `null` if no element satisfies the condition.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-035",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "reified",
+      "type-parameters"
+    ],
+    "code": "inline fun <reified T> isType(v: Any) = v is T\nprintln(isType<String>(\"test\"))",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "true",
+    "explanation": "`reified` type parameters retain type information at runtime in inline functions.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for reified."
+  },
+  {
+    "id": "kt-036",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "takelast"
+    ],
+    "code": "println(\"Kotlin\".takeLast(3))",
+    "question": "What will be printed?",
+    "options": [
+      "lin",
+      "Kot",
+      "tlin",
+      "Error"
+    ],
+    "correctAnswer": "lin",
+    "explanation": "`takeLast(3)` takes the final 3 characters: \"lin\".",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for strings."
+  },
+  {
+    "id": "kt-037",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "vararg",
+      "spread"
+    ],
+    "code": "fun sumAll(vararg nums: Int) = nums.sum()\nval a = intArrayOf(2, 3)\nprintln(sumAll(1, *a))",
+    "question": "What will be printed?",
+    "options": [
+      "6",
+      "5",
+      "Compilation error",
+      "1"
+    ],
+    "correctAnswer": "6",
+    "explanation": "The spread operator `*a` unpacks array elements into the vararg parameter: 1 + 2 + 3 = 6.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for vararg."
+  },
+  {
+    "id": "kt-038",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "distinct"
+    ],
+    "code": "println(listOf(1, 2, 2, 3, 1).distinct())",
+    "question": "What will be printed?",
+    "options": [
+      "[1, 2, 3]",
+      "[1, 2, 2, 3, 1]",
+      "[2, 1]",
+      "Compilation error"
+    ],
+    "correctAnswer": "[1, 2, 3]",
+    "explanation": "`distinct()` returns a list containing only unique elements in original encounter order.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-039",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "constructors",
+      "init-blocks"
+    ],
+    "code": "class C(val x: Int) {\n    var y = 0\n    init { y = x * 2 }\n}\nprintln(C(5).y)",
+    "question": "What will be printed?",
+    "options": [
+      "10",
+      "0",
+      "5",
+      "Compilation error"
+    ],
+    "correctAnswer": "10",
+    "explanation": "The `init` block runs immediately during primary constructor invocation, setting `y = 5 * 2 = 10`.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for constructors."
+  },
+  {
+    "id": "kt-040",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "ranges",
+      "downto"
+    ],
+    "code": "val list = (3 downTo 1).toList()\nprintln(list)",
+    "question": "What will be printed?",
+    "options": [
+      "[3, 2, 1]",
+      "[1, 2, 3]",
+      "[3, 1]",
+      "Compilation error"
+    ],
+    "correctAnswer": "[3, 2, 1]",
+    "explanation": "`downTo` creates a reverse progression: 3, 2, 1.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for ranges."
+  },
+  {
+    "id": "kt-041",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "chunked"
+    ],
+    "code": "val chunks = listOf(1, 2, 3, 4, 5).chunked(2)\nprintln(chunks.size)",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "2",
+      "5",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`chunked(2)` divides the list into `[1, 2]`, `[3, 4]`, and `[5]` (3 chunks).",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-042",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "drop"
+    ],
+    "code": "println(\"Hello\".drop(2))",
+    "question": "What will be printed?",
+    "options": [
+      "llo",
+      "He",
+      "ll",
+      "Compilation error"
+    ],
+    "correctAnswer": "llo",
+    "explanation": "`drop(2)` drops the first 2 characters, returning \"llo\".",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for strings."
+  },
+  {
+    "id": "kt-043",
+    "language": "kotlin",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "flatten"
+    ],
+    "code": "val nested = listOf(listOf(1), listOf(2, 3))\nprintln(nested.flatten().size)",
+    "question": "What will be printed?",
+    "options": [
+      "3",
+      "2",
+      "4",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`flatten()` combines nested collections into a single list `[1, 2, 3]` (size 3).",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for collections."
+  },
+  {
+    "id": "kt-044",
+    "language": "kotlin",
+    "difficulty": "medium",
+    "concepts": [
+      "boolean",
+      "equality-triple"
+    ],
+    "code": "val a = Integer.valueOf(128)\nval b = Integer.valueOf(128)\nprintln(a == b)",
+    "question": "What will be printed?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Structural equality `==` translates to `.equals()`, which evaluates to `true` for equal Integer values.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for boolean."
+  },
+  {
+    "id": "kt-045",
+    "language": "kotlin",
+    "difficulty": "expert",
+    "concepts": [
+      "referential-equality",
+      "triple-equals"
+    ],
+    "code": "val a = Integer.valueOf(200)\nval b = Integer.valueOf(200)\nprintln(a === b)",
+    "question": "What will be printed?",
+    "options": [
+      "false",
+      "true",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "false",
+    "explanation": "Referential equality `===` checks memory reference. 200 is outside the cached integer range, producing `false`.",
+    "runtime": "Kotlin 1.9+",
+    "hint": "Recall Kotlin language rules for referential-equality."
+  }
+]

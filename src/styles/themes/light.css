@@ -1,61 +1,69 @@
-/* Light theme tokens. Applied when an ancestor sets [data-theme="light"] */
-[data-theme="light"] {
-  --accent: #F97316;
-  --accent-light: #FB923C;
-  --accent-dark: #EA580C;
-  --accent-rgb: 249, 115, 22;
-  --accent-glow: rgba(249, 115, 22, 0.25);
-  --accent-gradient: linear-gradient(135deg, #EA580C 0%, #F97316 50%, #FBBF24 100%);
-  --accent-gradient-subtle: linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(251, 191, 36, 0.03) 100%);
+/* Light theme tokens - Built with only iPhone Green Colors
+ * iPhone 11 (Green): #ade1cd | rgb(173, 225, 205)
+ * iPhone 11 Pro (Midnight Green): #4e5850 | rgb(78, 88, 80)
+ * iPhone 12 (Green): #E1F8DC | rgb(225, 248, 220)
+ * iPhone 13 (Green): #1B5448 | rgb(27, 84, 72)
+ * iPhone 13 Pro (Alpine Green): #23382B | rgb(35, 56, 43)
+ */
+:root,
+[data-theme="light"],
+:root:not(.dark) {
+  --accent: #1B5448;
+  --accent-light: #23382B;
+  --accent-dark: #143e35;
+  --accent-rgb: 27, 84, 72;
+  --accent-glow: rgba(27, 84, 72, 0.25);
+  --accent-gradient: linear-gradient(135deg, #1B5448 0%, #23382B 50%, #4e5850 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(27, 84, 72, 0.08) 0%, rgba(35, 56, 43, 0.03) 100%);
 
-  --black: 15, 23, 42;
-  --gray: 100, 116, 139;
-  --gray-light: 241, 245, 249;
-  --gray-dark: 51, 65, 85;
+  --black: 20, 36, 27;
+  --gray: 78, 88, 80;
+  --gray-light: 225, 248, 220;
+  --gray-dark: 35, 56, 43;
 
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f4fbf3;
+  --foreground: #14241b;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #14241b;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: var(--accent);
-  --primary-foreground: #ffffff;
-  --secondary: #FB923C;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent-foreground: #0f172a;
+  --popover-foreground: #14241b;
+  --primary: #1B5448;
+  --primary-foreground: #E1F8DC;
+  --secondary: #23382B;
+  --secondary-foreground: #E1F8DC;
+  --muted: #e7f5e5;
+  --muted-foreground: #4e5850;
+  --accent-foreground: #14241b;
 
   /* Semantic Color Tokens for components */
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #334155;
-  --color-text-muted: #64748b;
-  --color-bg-primary: #f8fafc;
-  --color-bg-secondary: rgba(0, 0, 0, 0.025);
-  --color-bg-tertiary: rgba(0, 0, 0, 0.045);
+  --color-text-primary: #14241b;
+  --color-text-secondary: #2c4235;
+  --color-text-muted: #536b5c;
+  --color-bg-primary: #f4fbf3;
+  --color-bg-secondary: rgba(78, 88, 80, 0.06);
+  --color-bg-tertiary: rgba(78, 88, 80, 0.12);
 
   /* Borders */
-  --color-border: #e2e8f0;
-  --color-border-light: #eef2f6;
-  --color-border-glow: rgba(249, 115, 22, 0.3);
+  --color-border: rgba(78, 88, 80, 0.18);
+  --color-border-light: rgba(78, 88, 80, 0.1);
+  --color-border-glow: rgba(27, 84, 72, 0.35);
   --color-accent-text: var(--accent);
   --color-accent-bg: rgba(var(--accent-rgb), 0.08);
 
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(226, 232, 240, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(78, 88, 80, 0.18);
   --glass-blur: 16px;
 
-  --info: #0ea5e9;
-  --info-foreground: #ffffff;
-  --success: #10b981;
-  --success-foreground: #ffffff;
-  --warning: #f59e0b;
-  --warning-foreground: #ffffff;
-  --error: #ef4444;
-  --error-foreground: #ffffff;
+  --info: #1B5448;
+  --info-foreground: #E1F8DC;
+  --success: #1B5448;
+  --success-foreground: #E1F8DC;
+  --warning: #4e5850;
+  --warning-foreground: #E1F8DC;
+  --error: #23382B;
+  --error-foreground: #E1F8DC;
 
-  --border: #e2e8f0;
-  --input: #e2e8f0;
+  --border: rgba(78, 88, 80, 0.18);
+  --input: rgba(78, 88, 80, 0.18);
   --outline: var(--accent);
 }

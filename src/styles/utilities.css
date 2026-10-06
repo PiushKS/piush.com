@@ -4,7 +4,7 @@
   max-width: 72ch;
 }
 
-/* Glassmorphism Card Surface */
+/* Glassmorphism Card Surface with Kinetic GPU Physics */
 .card-surface {
   background: var(--card);
   color: var(--card-foreground);
@@ -13,9 +13,11 @@
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  transition: transform 280ms var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)),
+              box-shadow 280ms var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)),
+              border-color 280ms ease;
   position: relative;
   overflow: hidden;
 }
@@ -26,29 +28,39 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(173, 225, 205, 0.25) 50%, transparent 100%);
+  opacity: 0.6;
   pointer-events: none;
+  transition: opacity 280ms ease, background 280ms ease;
+  z-index: 1;
 }
 
 .card-surface:hover {
-  transform: translateY(-3px);
+  transform: translate3d(0, -4px, 0);
   box-shadow: var(--shadow-xl);
-  border-color: rgba(var(--accent-rgb), 0.3);
-}
-
-/* Dark mode specific glow on card hover */
-.dark .card-surface,
-[data-theme="dark"] .card-surface {
-  background: rgba(14, 20, 32, 0.65);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.dark .card-surface:hover,
-[data-theme="dark"] .card-surface:hover {
   border-color: rgba(var(--accent-rgb), 0.35);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(var(--accent-rgb), 0.18);
+}
+
+.card-surface:hover::before {
+  opacity: 1;
+  background: linear-gradient(90deg, transparent 5%, rgba(173, 225, 205, 0.75) 50%, transparent 95%);
+}
+
+.card-surface:active {
+  transform: translate3d(0, -1px, 0) scale(0.995);
+}
+
+/* Card Surface theme specific adjustments */
+.card-surface {
+  background: #ffffff;
+  border-color: rgba(78, 88, 80, 0.18);
+  box-shadow: 0 4px 20px -2px rgba(35, 56, 43, 0.06), 0 2px 6px -1px rgba(78, 88, 80, 0.04);
+}
+
+.card-surface:hover {
+  border-color: rgba(27, 84, 72, 0.35);
+  box-shadow: 0 12px 28px -4px rgba(35, 56, 43, 0.1), 0 4px 10px -2px rgba(78, 88, 80, 0.05);
 }
 
 /* Ambient glow accents */
@@ -60,14 +72,10 @@
   position: absolute;
   pointer-events: none;
   border-radius: 9999px;
-  filter: blur(80px);
-  opacity: 0.22;
+  filter: blur(100px);
+  opacity: 0.06;
   z-index: 0;
   will-change: transform;
-}
-
-.dark .ambient-glow-orb {
-  opacity: 0.16;
 }
 
 /* Gradient Text */
@@ -97,8 +105,8 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 9999px;
-  background-color: #10b981;
-  box-shadow: 0 0 8px #10b981;
+  background-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
   animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
@@ -107,7 +115,105 @@
   50% { opacity: 0.5; transform: scale(0.85); }
 }
 
-/* Tech chip */
+@keyframes float-slow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
+}
+
+@keyframes float-reverse {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, 6px, 0); }
+}
+
+.animate-float-slow {
+  animation: float-slow 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 4.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Ambient Breathe Glow Pulse */
+@keyframes ambientBreathe {
+  0%, 100% {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.18;
+  }
+  50% {
+    transform: scale(1.08) translate3d(0, -6px, 0);
+    opacity: 0.32;
+  }
+}
+
+.animate-ambient-breathe {
+  animation: ambientBreathe 7s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Staggered Page & Hero Entrance Transitions (Zero-JS, Pure GPU) */
+@keyframes heroEntry {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes heroWindowEntry {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.hero-enter-1 {
+  animation: heroEntry 0.65s var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) 0ms backwards;
+}
+.hero-enter-2 {
+  animation: heroEntry 0.65s var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) 90ms backwards;
+}
+.hero-enter-3 {
+  animation: heroEntry 0.65s var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) 180ms backwards;
+}
+.hero-enter-4 {
+  animation: heroEntry 0.65s var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) 270ms backwards;
+}
+.hero-enter-5 {
+  animation: heroEntry 0.65s var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) 360ms backwards;
+}
+.hero-enter-window {
+  animation: heroWindowEntry 0.85s var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) 180ms backwards;
+}
+
+/* Headline text sheen */
+@keyframes textSheen {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-text-sheen {
+  background-size: 200% auto;
+  animation: textSheen 10s ease infinite;
+}
+
+.hero-mesh-grid {
+  background-image: radial-gradient(rgba(var(--accent-rgb), 0.12) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, #000 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, #000 50%, transparent 100%);
+}
+
+/* Tech chip with tactile micro-lift */
 .tech-chip {
   display: inline-flex;
   align-items: center;
@@ -116,16 +222,104 @@
   font-weight: 500;
   padding: 0.25rem 0.65rem;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-secondary);
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
-  transition: all 180ms ease;
+  transform: translate3d(0, 0, 0);
+  transition: transform 200ms var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)),
+              background-color 180ms ease,
+              border-color 180ms ease,
+              color 180ms ease;
+  will-change: transform;
 }
 
 .tech-chip:hover {
-  background: rgba(var(--accent-rgb), 0.1);
+  transform: translate3d(0, -2px, 0) scale(1.02);
+  background: rgba(var(--accent-rgb), 0.12);
   color: var(--accent);
-  border-color: rgba(var(--accent-rgb), 0.3);
+  border-color: rgba(var(--accent-rgb), 0.35);
+}
+
+/* Snappy bouncy icon badge micro-interaction on card hover */
+.icon-badge-interactive {
+  transform: translate3d(0, 0, 0);
+  transition: transform 320ms var(--ease-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)),
+              background-color 260ms ease,
+              border-color 260ms ease;
+  will-change: transform;
+}
+
+.group:hover .icon-badge-interactive {
+  transform: translate3d(0, -2px, 0) scale(1.08) rotate(2.5deg);
+}
+
+/* Tactile interactive button hover & active press */
+.btn-interactive {
+  transform: translate3d(0, 0, 0);
+  transition: transform 180ms var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)),
+              box-shadow 180ms ease,
+              filter 180ms ease;
+  will-change: transform;
+}
+
+.btn-interactive:hover {
+  transform: translate3d(0, -1.5px, 0);
+}
+
+.btn-interactive:active {
+  transform: translate3d(0, 0.5px, 0) scale(0.97);
+}
+
+/* Native Zero-JS Scroll Progress Bar */
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 100;
+  pointer-events: none;
+  background: transparent;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #1B5448 0%, #ade1cd 50%, #E1F8DC 100%);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+  box-shadow: 0 0 12px rgba(173, 225, 205, 0.5);
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress-bar {
+    animation: nativeScrollProgress auto linear;
+    animation-timeline: scroll();
+  }
+  @keyframes nativeScrollProgress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+/* Mobile dropdown smooth slide */
+.mobile-nav-panel {
+  animation: mobileNavSlide 220ms var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+@keyframes mobileNavSlide {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 /* Carousel animation */
@@ -142,25 +336,26 @@
   animation-play-state: paused;
 }
 
-/* Separators */
+/* Separators with fluid kinetics */
 .sw-separator-arrow {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
   color: var(--accent);
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 .sw-separator-arrow .sw-chevron {
   display: block;
-  animation: chevron-bounce 2s ease-in-out infinite;
+  animation: chevron-bounce 2.4s ease-in-out infinite;
   filter: drop-shadow(0 2px 6px rgba(var(--accent-rgb), 0.3));
+  will-change: transform;
 }
 
 @keyframes chevron-bounce {
-  0%, 100% { transform: translateY(0); opacity: 0.7; }
-  50% { transform: translateY(5px); opacity: 1; }
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.7; }
+  50% { transform: translate3d(0, 5px, 0); opacity: 1; }
 }
 
 .sw-separator-glow {
@@ -170,7 +365,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1.5rem 0;
+  margin: 0.75rem 0;
 }
 
 .sw-separator-glow .sw-glow {
@@ -180,6 +375,21 @@
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
   filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.6));
   border-radius: 999px;
+  animation: glowBeamPulse 4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes glowBeamPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scaleX(0.94);
+    filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.35));
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.05);
+    filter: drop-shadow(0 0 14px rgba(var(--accent-rgb), 0.75));
+  }
 }
 
 /* Blog utilities */
@@ -390,3 +600,160 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.45);
 }
+
+/* Blog index grid */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (min-width: 640px) {
+  .blog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .blog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1536px) {
+  .blog-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================================================
+   Hero Stage & Atmospheric Background System (iPhone Green)
+   ========================================================================== */
+
+.hero-stage {
+  position: relative;
+  isolation: isolate;
+  background-color: #f4fbf3;
+  background-image: 
+    radial-gradient(110% 75% at 50% -10%, #E1F8DC 0%, rgba(173, 225, 205, 0.42) 35%, rgba(244, 251, 243, 0.85) 70%, transparent 100%),
+    radial-gradient(circle at 10% 20%, rgba(173, 225, 205, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 90% 30%, rgba(225, 248, 220, 0.6) 0%, transparent 50%);
+}
+
+/* Cinematic Keynote Spotlight Beam */
+.hero-spotlight {
+  position: absolute;
+  top: -160px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 960px;
+  height: 650px;
+  background: conic-gradient(
+    from 180deg at 50% 0%,
+    transparent 135deg,
+    rgba(173, 225, 205, 0.35) 170deg,
+    rgba(225, 248, 220, 0.55) 180deg,
+    rgba(173, 225, 205, 0.35) 190deg,
+    transparent 225deg
+  );
+  filter: blur(55px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.75;
+}
+
+/* Concentric Architectural Radar Rings */
+.hero-radar-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1400px;
+  height: 850px;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 25%, #000 35%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 25%, #000 35%, transparent 80%);
+}
+
+.hero-radar-ring {
+  position: absolute;
+  top: -240px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
+  pointer-events: none;
+  animation: radarBreathe 8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes radarBreathe {
+  0%, 100% {
+    opacity: 0.12;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: translateX(-50%) scale(1.025);
+  }
+}
+
+[data-theme="light"] .hero-radar-ring,
+:root:not(.dark) .hero-radar-ring {
+  border-color: rgba(27, 84, 72, 0.1);
+}
+
+/* Shimmer Top Laser Hairline */
+.hero-top-laser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(173, 225, 205, 0.4) 30%, rgba(225, 248, 220, 0.8) 50%, rgba(173, 225, 205, 0.4) 70%, transparent 95%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+[data-theme="light"] .hero-top-laser,
+:root:not(.dark) .hero-top-laser {
+  background: linear-gradient(90deg, transparent 5%, rgba(27, 84, 72, 0.25) 30%, rgba(27, 84, 72, 0.6) 50%, rgba(27, 84, 72, 0.25) 70%, transparent 95%);
+}
+
+/* Bottom Fade Mask */
+.hero-bottom-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  background: linear-gradient(to bottom, transparent, var(--color-bg-primary));
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Accessibility: Full reduced motion fallback (Zero CPU, Immediate display) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .scroll-progress-container {
+    display: none !important;
+  }
+  .card-surface,
+  .btn-interactive,
+  .tech-chip,
+  .icon-badge-interactive {
+    transform: none !important;
+  }
+}
+
+

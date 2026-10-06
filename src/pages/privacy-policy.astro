@@ -9,14 +9,14 @@ const pageDescription = "Privacy practices, cookies, and data protections at piu
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" class="dark">
+<html lang="en" data-theme="light">
   <head>
     <BaseHead title={`${pageTitle} – Piush KS`} description={pageDescription} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
-    <main class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-10">
-      <div class="card-surface p-6 sm:p-10 space-y-8">
+    <main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-10">
+      <div class="card-surface p-6 sm:p-10 space-y-8 max-w-5xl mx-auto w-full">
         <header class="space-y-2 border-b border-[var(--color-border)] pb-6">
           <h1 class="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight m-0">
             {pageTitle}
@@ -26,7 +26,7 @@ const pageDescription = "Privacy practices, cookies, and data protections at piu
           </p>
         </header>
 
-        <div class="prose prose-invert max-w-none text-[var(--color-text-secondary)] space-y-6">
+        <div class="prose dark:prose-invert max-w-none text-[var(--color-text-secondary)] space-y-6">
           <p>
             At <strong>piush.com</strong>, privacy and data minimization are fundamental principles. This Privacy Policy explains how information is handled when you visit and interact with this website.
           </p>

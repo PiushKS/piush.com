@@ -1,0 +1,1581 @@
+[
+  {
+    "id": "java-001",
+    "language": "java",
+    "difficulty": "easy",
+    "concepts": [
+      "strings",
+      "string-pool",
+      "equality"
+    ],
+    "code": "String s1 = \"Java\";\nString s2 = new String(\"Java\");\nSystem.out.println(s1 == s2);",
+    "question": "What will be the output?",
+    "options": [
+      "false",
+      "true",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "false",
+    "explanation": "`==` tests reference equality. `s1` refers to the string literal in the string intern pool, whereas `new String(...)` allocates an explicit new object in the heap.",
+    "runtime": "Java 17+"
+  },
+  {
+    "id": "java-002",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "intern",
+      "string-pool"
+    ],
+    "code": "String s1 = \"Java\";\nString s2 = new String(\"Java\").intern();\nSystem.out.println(s1 == s2);",
+    "question": "What will be the output?",
+    "options": [
+      "true",
+      "false",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Calling `.intern()` returns the canonical representation from the string pool, which matches the reference of `s1`.",
+    "runtime": "Java 17+"
+  },
+  {
+    "id": "java-003",
+    "language": "java",
+    "difficulty": "easy",
+    "concepts": [
+      "operators",
+      "integer-division"
+    ],
+    "code": "int a = 5 / 2;\ndouble b = 5 / 2;\nSystem.out.println(a + \" \" + b);",
+    "question": "What will be the output?",
+    "options": [
+      "2 2.0",
+      "2 2.5",
+      "2.5 2.5",
+      "2.0 2.0"
+    ],
+    "correctAnswer": "2 2.0",
+    "explanation": "Both operands of `5 / 2` are integer literals, performing integer truncation to 2. Assigning 2 to `double b` converts it to `2.0`.",
+    "runtime": "Java 17+"
+  },
+  {
+    "id": "java-004",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "autoboxing",
+      "integer-cache"
+    ],
+    "code": "Integer a = 100, b = 100;\nInteger c = 200, d = 200;\nSystem.out.println((a == b) + \" \" + (c == d));",
+    "question": "What will be the output?",
+    "options": [
+      "true false",
+      "true true",
+      "false false",
+      "false true"
+    ],
+    "correctAnswer": "true false",
+    "explanation": "Java caches boxed Integer instances for values between -128 and 127. Values outside this range (such as 200) create separate instances in heap memory.",
+    "runtime": "Java 17+"
+  },
+  {
+    "id": "java-005",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "exceptions",
+      "finally",
+      "control-flow"
+    ],
+    "code": "static int getVal() {\n    int x = 1;\n    try {\n        return x;\n    } finally {\n        x = 2;\n    }\n}\nSystem.out.println(getVal());",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "2",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "The value of primitive `x` (1) is copied to the return register before the `finally` block executes. Modifying the local variable `x` afterwards has no effect on the returned value.",
+    "runtime": "Java 17+"
+  },
+  {
+    "id": "java-006",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "overloading",
+      "null",
+      "polymorphism"
+    ],
+    "code": "class T { void f(Object o){System.out.print(\"Obj\");} void f(String s){System.out.print(\"Str\");} }\nnew T().f(null);",
+    "question": "What will be the output?",
+    "options": [
+      "Str",
+      "Obj",
+      "Compilation error",
+      "NullPointerException"
+    ],
+    "correctAnswer": "Str",
+    "explanation": "Java resolves overloaded methods by choosing the most specific applicable parameter type (`String` is a subtype of `Object`).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles overloading."
+  },
+  {
+    "id": "java-007",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "stringbuilder",
+      "append"
+    ],
+    "code": "StringBuilder sb = new StringBuilder(\"A\"); sb.append(\"B\"); System.out.println(sb);",
+    "question": "What will be the output?",
+    "options": [
+      "AB",
+      "A",
+      "B",
+      "Compilation error"
+    ],
+    "correctAnswer": "AB",
+    "explanation": "StringBuilder is mutable and `.append()` appends in-place.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles stringbuilder."
+  },
+  {
+    "id": "java-008",
+    "language": "java",
+    "difficulty": "easy",
+    "concepts": [
+      "arrays",
+      "length"
+    ],
+    "code": "int[] arr = new int[3]; System.out.println(arr.length);",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "0",
+      "undefined",
+      "NullPointerException"
+    ],
+    "correctAnswer": "3",
+    "explanation": "Array length in Java is a final property `.length` holding the allocated capacity.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles arrays."
+  },
+  {
+    "id": "java-009",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "operators",
+      "post-increment"
+    ],
+    "code": "int i = 0; i = i++; System.out.println(i);",
+    "question": "What will be the output?",
+    "options": [
+      "0",
+      "1",
+      "-1",
+      "Compilation error"
+    ],
+    "correctAnswer": "0",
+    "explanation": "`i++` evaluates to the old value (0) and queues the increment, which is immediately overwritten by the assignment of 0.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles operators."
+  },
+  {
+    "id": "java-010",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "inheritance",
+      "static-methods"
+    ],
+    "code": "class P { static void m(){System.out.print(\"P\");} }\nclass C extends P { static void m(){System.out.print(\"C\");} }\nP obj = new C(); obj.m();",
+    "question": "What will be the output?",
+    "options": [
+      "P",
+      "C",
+      "Compilation error",
+      "Runtime error"
+    ],
+    "correctAnswer": "P",
+    "explanation": "Static methods cannot be overridden dynamically; they are shadowed and dispatched based on the reference type (`P`).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles inheritance."
+  },
+  {
+    "id": "java-011",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "arraylist",
+      "remove"
+    ],
+    "code": "List<Integer> list = new ArrayList<>(List.of(1, 2, 3)); list.remove(1); System.out.println(list.get(1));",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "2",
+      "1",
+      "IndexOutOfBoundsException"
+    ],
+    "correctAnswer": "3",
+    "explanation": "`list.remove(int index)` removes the element at index 1 (value 2), shifting value 3 into index 1.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-012",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "arraylist",
+      "remove-object"
+    ],
+    "code": "List<Integer> list = new ArrayList<>(List.of(1, 2, 3)); list.remove(Integer.valueOf(1)); System.out.println(list.get(0));",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "3",
+      "IndexOutOfBoundsException"
+    ],
+    "correctAnswer": "2",
+    "explanation": "`remove(Object o)` removes the first occurrence of value 1, leaving `[2, 3]` with element 0 being 2.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-013",
+    "language": "java",
+    "difficulty": "easy",
+    "concepts": [
+      "types",
+      "char-arithmetic"
+    ],
+    "code": "char c = 'A'; System.out.println((char)(c + 1));",
+    "question": "What will be the output?",
+    "options": [
+      "B",
+      "66",
+      "A1",
+      "Compilation error"
+    ],
+    "correctAnswer": "B",
+    "explanation": "Char 'A' is numeric code 65; 65 + 1 is 66, cast back to char is 'B'.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles types."
+  },
+  {
+    "id": "java-014",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "boolean",
+      "short-circuit"
+    ],
+    "code": "int a = 0; if (false && ++a > 0) {} System.out.println(a);",
+    "question": "What will be the output?",
+    "options": [
+      "0",
+      "1",
+      "false",
+      "Compilation error"
+    ],
+    "correctAnswer": "0",
+    "explanation": "The `&&` operator short-circuits on `false` without evaluating the right operand.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles boolean."
+  },
+  {
+    "id": "java-015",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "boolean",
+      "bitwise-and-eval"
+    ],
+    "code": "int a = 0; if (false & ++a > 0) {} System.out.println(a);",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "0",
+      "false",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Non-short-circuit `&` evaluates both operands even when the left operand is `false`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles boolean."
+  },
+  {
+    "id": "java-016",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "default-values"
+    ],
+    "code": "boolean[] b = new boolean[1]; System.out.println(b[0]);",
+    "question": "What will be the output?",
+    "options": [
+      "false",
+      "true",
+      "null",
+      "0"
+    ],
+    "correctAnswer": "false",
+    "explanation": "Array elements in Java are initialized with their default values (boolean defaults to `false`).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles arrays."
+  },
+  {
+    "id": "java-017",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "constructors",
+      "chaining"
+    ],
+    "code": "class B { B(){System.out.print(\"B\");} }\nclass D extends B { D(){System.out.print(\"D\");} }\nnew D();",
+    "question": "What will be the output?",
+    "options": [
+      "BD",
+      "D",
+      "DB",
+      "Compilation error"
+    ],
+    "correctAnswer": "BD",
+    "explanation": "The superclass constructor `B()` runs automatically before the subclass constructor body `D()`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles constructors."
+  },
+  {
+    "id": "java-018",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "switch",
+      "fallthrough"
+    ],
+    "code": "int x = 2; switch(x){ case 1: x+=1; case 2: x+=2; case 3: x+=3; } System.out.println(x);",
+    "question": "What will be the output?",
+    "options": [
+      "7",
+      "4",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "7",
+    "explanation": "Case 2 matches (`x = 2 + 2 = 4`), then without `break`, it falls through to case 3 (`x = 4 + 3 = 7`).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles switch."
+  },
+  {
+    "id": "java-019",
+    "language": "java",
+    "difficulty": "easy",
+    "concepts": [
+      "math",
+      "max"
+    ],
+    "code": "System.out.println(Math.max(10, 20));",
+    "question": "What will be the output?",
+    "options": [
+      "20",
+      "10",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "20",
+    "explanation": "`Math.max(10, 20)` returns the greater value, 20.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles math."
+  },
+  {
+    "id": "java-020",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "generics",
+      "type-erasure"
+    ],
+    "code": "List<String> l1 = new ArrayList<>(); List<Integer> l2 = new ArrayList<>(); System.out.println(l1.getClass() == l2.getClass());",
+    "question": "What will be the output?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "TypeError"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Due to generic type erasure at compile time, both instances share the exact same runtime `ArrayList.class`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles generics."
+  },
+  {
+    "id": "java-021",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "string",
+      "substring"
+    ],
+    "code": "String s = \"Hello\"; System.out.println(s.substring(1, 4));",
+    "question": "What will be the output?",
+    "options": [
+      "ell",
+      "ello",
+      "Hel",
+      "ellh"
+    ],
+    "correctAnswer": "ell",
+    "explanation": "`substring(1, 4)` takes characters from index 1 inclusive to 4 exclusive ('e', 'l', 'l').",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles string."
+  },
+  {
+    "id": "java-022",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "initializers",
+      "instance-blocks"
+    ],
+    "code": "class A { int x = 1; { x = 2; } A(){ x = 3; } }\nSystem.out.println(new A().x);",
+    "question": "What will be the output?",
+    "options": [
+      "3",
+      "2",
+      "1",
+      "Compilation error"
+    ],
+    "correctAnswer": "3",
+    "explanation": "Instance initialization blocks execute before the constructor body, so `x = 3` is the final assignment.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles initializers."
+  },
+  {
+    "id": "java-023",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "wrapper",
+      "parseint"
+    ],
+    "code": "System.out.println(Integer.parseInt(\"101\", 2));",
+    "question": "What will be the output?",
+    "options": [
+      "5",
+      "101",
+      "Compilation error",
+      "NumberFormatException"
+    ],
+    "correctAnswer": "5",
+    "explanation": "Radix 2 specifies binary string parsing: `101` in binary is decimal 5.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles wrapper."
+  },
+  {
+    "id": "java-024",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "final",
+      "references"
+    ],
+    "code": "final List<Integer> l = new ArrayList<>(); l.add(5); System.out.println(l.size());",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "Compilation error",
+      "0",
+      "UnsupportedOperationException"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`final` prevents the reference `l` from being reassigned, but the underlying object remains mutable.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles final."
+  },
+  {
+    "id": "java-025",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "concat-null"
+    ],
+    "code": "String s = null; System.out.println(\"Hi \" + s);",
+    "question": "What will be the output?",
+    "options": [
+      "Hi null",
+      "NullPointerException",
+      "Hi ",
+      "Compilation error"
+    ],
+    "correctAnswer": "Hi null",
+    "explanation": "String concatenation coerces a `null` reference to the string literal `\"null\"`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles strings."
+  },
+  {
+    "id": "java-026",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "try-finally",
+      "exit"
+    ],
+    "code": "try { System.out.print(\"A\"); System.exit(0); } finally { System.out.print(\"B\"); }",
+    "question": "What will be the output?",
+    "options": [
+      "A",
+      "AB",
+      "B",
+      "Compilation error"
+    ],
+    "correctAnswer": "A",
+    "explanation": "`System.exit(0)` halts the JVM immediately without executing pending `finally` blocks.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles try-finally."
+  },
+  {
+    "id": "java-027",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "types",
+      "widening"
+    ],
+    "code": "int a = 10; double b = a; System.out.println(b);",
+    "question": "What will be the output?",
+    "options": [
+      "10.0",
+      "10",
+      "Compilation error",
+      "ClassCastException"
+    ],
+    "correctAnswer": "10.0",
+    "explanation": "Widening primitive conversion from `int` to `double` occurs implicitly.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles types."
+  },
+  {
+    "id": "java-028",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "types",
+      "narrowing-cast"
+    ],
+    "code": "int x = 130; byte b = (byte) x; System.out.println(b);",
+    "question": "What will be the output?",
+    "options": [
+      "-126",
+      "130",
+      "127",
+      "Compilation error"
+    ],
+    "correctAnswer": "-126",
+    "explanation": "`byte` ranges from -128 to 127. 130 overflows and wraps around to -126.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles types."
+  },
+  {
+    "id": "java-029",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "clone"
+    ],
+    "code": "int[] a = {1, 2}; int[] b = a.clone(); b[0] = 9; System.out.println(a[0]);",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "9",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Cloning a primitive array creates a independent copy of the array elements.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles arrays."
+  },
+  {
+    "id": "java-030",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "inheritance",
+      "field-shadowing"
+    ],
+    "code": "class P { int x = 1; }\nclass C extends P { int x = 2; }\nP obj = new C(); System.out.println(obj.x);",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "2",
+      "Compilation error",
+      "Runtime error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Fields are not polymorphic in Java; they are resolved according to the compile-time reference type (`P`).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles inheritance."
+  },
+  {
+    "id": "java-031",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "hashmap",
+      "null-key"
+    ],
+    "code": "Map<String, Integer> map = new HashMap<>(); map.put(null, 42); System.out.println(map.get(null));",
+    "question": "What will be the output?",
+    "options": [
+      "42",
+      "NullPointerException",
+      "null",
+      "0"
+    ],
+    "correctAnswer": "42",
+    "explanation": "`HashMap` in Java explicitly permits one `null` key, hashed to bucket 0.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-032",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "hashtable",
+      "null-key"
+    ],
+    "code": "Map<String, Integer> map = new Hashtable<>(); try { map.put(null, 1); } catch (NullPointerException e) { System.out.println(\"NPE\"); }",
+    "question": "What will be the output?",
+    "options": [
+      "NPE",
+      "null",
+      "Compilation error",
+      "1"
+    ],
+    "correctAnswer": "NPE",
+    "explanation": "Unlike `HashMap`, legacy `Hashtable` throws `NullPointerException` on null keys or null values.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-033",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "replace"
+    ],
+    "code": "String s = \"a.b.c\"; System.out.println(s.replace(\".\", \"-\"));",
+    "question": "What will be the output?",
+    "options": [
+      "a-b-c",
+      "---",
+      "a.b.c",
+      "Compilation error"
+    ],
+    "correctAnswer": "a-b-c",
+    "explanation": "`String.replace(CharSequence, CharSequence)` replaces literal matches without evaluating as regex.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles strings."
+  },
+  {
+    "id": "java-034",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "strings",
+      "replaceall-regex"
+    ],
+    "code": "String s = \"a.b.c\"; System.out.println(s.replaceAll(\".\", \"-\"));",
+    "question": "What will be the output?",
+    "options": [
+      "-----",
+      "a-b-c",
+      "a.b.c",
+      "Compilation error"
+    ],
+    "correctAnswer": "-----",
+    "explanation": "`replaceAll` interprets `.` as a regex wildcard matching any character, replacing all 5 chars with `-`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles strings."
+  },
+  {
+    "id": "java-035",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "math",
+      "round"
+    ],
+    "code": "System.out.println(Math.round(2.5f) + \" \" + Math.round(-2.5f));",
+    "question": "What will be the output?",
+    "options": [
+      "3 -2",
+      "3 -3",
+      "2 -2",
+      "2 -3"
+    ],
+    "correctAnswer": "3 -2",
+    "explanation": "`Math.round` adds 0.5 and takes floor: 2.5 + 0.5 = 3.0 (3); -2.5 + 0.5 = -2.0 (-2).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles math."
+  },
+  {
+    "id": "java-036",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "objects",
+      "equals-contract"
+    ],
+    "code": "Integer x = 5; Long y = 5L; System.out.println(x.equals(y));",
+    "question": "What will be the output?",
+    "options": [
+      "false",
+      "true",
+      "Compilation error",
+      "ClassCastException"
+    ],
+    "correctAnswer": "false",
+    "explanation": "`Integer.equals(Object)` returns `false` immediately if the passed object is not an instance of `Integer`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles objects."
+  },
+  {
+    "id": "java-037",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "operators",
+      "compound-assignment"
+    ],
+    "code": "int a = 5; a *= 2 + 3; System.out.println(a);",
+    "question": "What will be the output?",
+    "options": [
+      "25",
+      "13",
+      "10",
+      "Compilation error"
+    ],
+    "correctAnswer": "25",
+    "explanation": "Compound assignment groups the right-hand expression: `a = a * (2 + 3) = 5 * 5 = 25`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles operators."
+  },
+  {
+    "id": "java-038",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "varargs",
+      "overloading"
+    ],
+    "code": "class T { static void f(int a){System.out.print(\"1\");} static void f(int... a){System.out.print(\"N\");} }\nT.f(5);",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "N",
+      "Compilation error",
+      "Ambiguous error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Exact parameter matches take precedence over varargs method variants.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles varargs."
+  },
+  {
+    "id": "java-039",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "hashset",
+      "duplicates"
+    ],
+    "code": "Set<String> s = new HashSet<>(List.of(\"a\", \"b\", \"a\")); System.out.println(s.size());",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "3",
+      "Compilation error",
+      "1"
+    ],
+    "correctAnswer": "2",
+    "explanation": "HashSet stores only unique elements, ignoring the duplicate 'a'.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-040",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "enums",
+      "ordinal"
+    ],
+    "code": "enum Day { MON, TUE, WED } System.out.println(Day.TUE.ordinal());",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "2",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Enum ordinal indices are zero-based (`MON=0`, `TUE=1`, `WED=2`).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles enums."
+  },
+  {
+    "id": "java-041",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "trim"
+    ],
+    "code": "String s = \"   \"; System.out.println(s.trim().isEmpty());",
+    "question": "What will be the output?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "NullPointerException"
+    ],
+    "correctAnswer": "true",
+    "explanation": "`trim()` removes all spaces, resulting in an empty string `\"\"`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles strings."
+  },
+  {
+    "id": "java-042",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "records",
+      "immutability"
+    ],
+    "code": "record Point(int x, int y) {} Point p = new Point(1, 2); System.out.println(p.x());",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "2",
+      "Compilation error",
+      "undefined"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Records automatically generate canonical public accessor methods matching component names (`p.x()`).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles records."
+  },
+  {
+    "id": "java-043",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "interfaces",
+      "default-methods"
+    ],
+    "code": "interface I { default int v(){ return 10; } } class C implements I {} System.out.println(new C().v());",
+    "question": "What will be the output?",
+    "options": [
+      "10",
+      "0",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "10",
+    "explanation": "Implementing classes inherit default interface method implementations.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles interfaces."
+  },
+  {
+    "id": "java-044",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "anonymous-inner"
+    ],
+    "code": "Runnable r = new Runnable() { public void run() { System.out.print(\"OK\"); } }; r.run();",
+    "question": "What will be the output?",
+    "options": [
+      "OK",
+      "null",
+      "Compilation error",
+      "Thread error"
+    ],
+    "correctAnswer": "OK",
+    "explanation": "Directly invoking `r.run()` on the anonymous Runnable instance executes the method synchronously.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles classes."
+  },
+  {
+    "id": "java-045",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "binary-search"
+    ],
+    "code": "int[] a = {10, 20, 30}; System.out.println(Arrays.binarySearch(a, 20));",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "2",
+      "0",
+      "-1"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Binary search finds element 20 at zero-based index 1.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles arrays."
+  },
+  {
+    "id": "java-046",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "streams",
+      "count"
+    ],
+    "code": "long c = Stream.of(1, 2, 3).filter(x -> x > 1).count(); System.out.println(c);",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "3",
+      "1",
+      "Compilation error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Filter keeps values 2 and 3, yielding a stream count of 2.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles streams."
+  },
+  {
+    "id": "java-047",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "optional",
+      "orelse"
+    ],
+    "code": "Optional<String> o = Optional.empty(); System.out.println(o.orElse(\"fallback\"));",
+    "question": "What will be the output?",
+    "options": [
+      "fallback",
+      "null",
+      "NoSuchElementException",
+      "empty"
+    ],
+    "correctAnswer": "fallback",
+    "explanation": "`orElse` returns the fallback value when the Optional is empty.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles optional."
+  },
+  {
+    "id": "java-048",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "optional",
+      "orelseget"
+    ],
+    "code": "Optional<String> o = Optional.of(\"val\"); System.out.println(o.orElseGet(() -> \"alt\"));",
+    "question": "What will be the output?",
+    "options": [
+      "val",
+      "alt",
+      "null",
+      "Compilation error"
+    ],
+    "correctAnswer": "val",
+    "explanation": "`orElseGet` returns the contained value 'val' without executing the supplier.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles optional."
+  },
+  {
+    "id": "java-049",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "string",
+      "charat"
+    ],
+    "code": "String s = \"Code\"; System.out.println(s.charAt(2));",
+    "question": "What will be the output?",
+    "options": [
+      "d",
+      "o",
+      "e",
+      "C"
+    ],
+    "correctAnswer": "d",
+    "explanation": "Index 2 corresponds to the third character, 'd'.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles string."
+  },
+  {
+    "id": "java-050",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "unmodifiable"
+    ],
+    "code": "List<Integer> list = List.of(1, 2); try { list.add(3); } catch (UnsupportedOperationException e) { System.out.println(\"ERR\"); }",
+    "question": "What will be the output?",
+    "options": [
+      "ERR",
+      "3",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "ERR",
+    "explanation": "`List.of(...)` creates an unmodifiable list; mutating calls throw `UnsupportedOperationException`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-051",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "types",
+      "instanceof-pattern"
+    ],
+    "code": "Object obj = \"Test\"; if (obj instanceof String s) { System.out.println(s.length()); }",
+    "question": "What will be the output?",
+    "options": [
+      "4",
+      "Compilation error",
+      "0",
+      "ClassCastException"
+    ],
+    "correctAnswer": "4",
+    "explanation": "Java 16+ pattern matching for `instanceof` binds the variable `s` directly with type String.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles types."
+  },
+  {
+    "id": "java-052",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "reflection",
+      "class-loading"
+    ],
+    "code": "System.out.println(int.class.isPrimitive());",
+    "question": "What will be the output?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "NullPointerException"
+    ],
+    "correctAnswer": "true",
+    "explanation": "Primitive type tokens like `int.class` return `true` for `.isPrimitive()`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles reflection."
+  },
+  {
+    "id": "java-053",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "math",
+      "sqrt"
+    ],
+    "code": "System.out.println((int) Math.sqrt(25));",
+    "question": "What will be the output?",
+    "options": [
+      "5",
+      "25",
+      "5.0",
+      "Compilation error"
+    ],
+    "correctAnswer": "5",
+    "explanation": "`Math.sqrt(25)` evaluates to 5.0, cast to int is 5.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles math."
+  },
+  {
+    "id": "java-054",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "concurrency",
+      "volatile"
+    ],
+    "code": "class S { volatile int x = 0; } System.out.println(new S().x);",
+    "question": "What will be the output?",
+    "options": [
+      "0",
+      "null",
+      "Compilation error",
+      "ThreadError"
+    ],
+    "correctAnswer": "0",
+    "explanation": "The `volatile` modifier ensures memory visibility; initial value is 0.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles concurrency."
+  },
+  {
+    "id": "java-055",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "strip-vs-trim"
+    ],
+    "code": "System.out.println(\" a \".strip().length());",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "3",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "1",
+    "explanation": "`String.strip()` removes Unicode whitespace, leaving 'a' (length 1).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles strings."
+  },
+  {
+    "id": "java-056",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "functional",
+      "predicate"
+    ],
+    "code": "Predicate<Integer> p = x -> x > 5; System.out.println(p.test(10));",
+    "question": "What will be the output?",
+    "options": [
+      "true",
+      "false",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "true",
+    "explanation": "`p.test(10)` tests 10 > 5, returning `true`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles functional."
+  },
+  {
+    "id": "java-057",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "collections",
+      "sort-comparator"
+    ],
+    "code": "List<Integer> list = new ArrayList<>(List.of(3, 1, 2)); list.sort(Comparator.naturalOrder()); System.out.println(list.get(0));",
+    "question": "What will be the output?",
+    "options": [
+      "1",
+      "3",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "1",
+    "explanation": "Natural order sorts ascending; index 0 is 1.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-058",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "streams",
+      "maptoint-sum"
+    ],
+    "code": "int sum = List.of(\"1\", \"2\", \"3\").stream().mapToInt(Integer::parseInt).sum(); System.out.println(sum);",
+    "question": "What will be the output?",
+    "options": [
+      "6",
+      "123",
+      "0",
+      "Compilation error"
+    ],
+    "correctAnswer": "6",
+    "explanation": "`mapToInt` maps to primitives and `.sum()` computes 1 + 2 + 3 = 6.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles streams."
+  },
+  {
+    "id": "java-059",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "bitwise",
+      "xor"
+    ],
+    "code": "System.out.println(6 ^ 3);",
+    "question": "What will be the output?",
+    "options": [
+      "5",
+      "3",
+      "9",
+      "0"
+    ],
+    "correctAnswer": "5",
+    "explanation": "6 (110) XOR 3 (011) = 5 (101).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles bitwise."
+  },
+  {
+    "id": "java-060",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "text-blocks",
+      "indentation"
+    ],
+    "code": "String block = \"\"\"\n    Hi\"\"\"; System.out.println(block);",
+    "question": "What will be the output?",
+    "options": [
+      "Hi",
+      "    Hi",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "Hi",
+    "explanation": "Text blocks strip common leading indentation whitespace automatically.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles text-blocks."
+  },
+  {
+    "id": "java-061",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "strings",
+      "repeat"
+    ],
+    "code": "System.out.println(\"A\".repeat(3));",
+    "question": "What will be the output?",
+    "options": [
+      "AAA",
+      "A 3",
+      "Compilation error",
+      "Error"
+    ],
+    "correctAnswer": "AAA",
+    "explanation": "`String.repeat(3)` returns 'AAA'.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles strings."
+  },
+  {
+    "id": "java-062",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "linkedhashmap-order"
+    ],
+    "code": "Map<String, Integer> m = new LinkedHashMap<>(); m.put(\"z\", 1); m.put(\"a\", 2); System.out.println(m.keySet().iterator().next());",
+    "question": "What will be the output?",
+    "options": [
+      "z",
+      "a",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "z",
+    "explanation": "LinkedHashMap preserves predictable insertion order; 'z' was inserted first.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-063",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "numbers",
+      "double-nan"
+    ],
+    "code": "double d = 0.0 / 0.0; System.out.println(d != d);",
+    "question": "What will be the output?",
+    "options": [
+      "true",
+      "false",
+      "ArithmeticException",
+      "Compilation error"
+    ],
+    "correctAnswer": "true",
+    "explanation": "`0.0 / 0.0` yields `Double.NaN`, which is the only value strictly not equal to itself.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles numbers."
+  },
+  {
+    "id": "java-064",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "numbers",
+      "infinity"
+    ],
+    "code": "System.out.println(1.0 / 0.0);",
+    "question": "What will be the output?",
+    "options": [
+      "Infinity",
+      "ArithmeticException",
+      "NaN",
+      "0"
+    ],
+    "correctAnswer": "Infinity",
+    "explanation": "Floating-point division by zero produces `Double.POSITIVE_INFINITY` without throwing an exception.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles numbers."
+  },
+  {
+    "id": "java-065",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "numbers",
+      "int-divide-zero"
+    ],
+    "code": "try { int x = 1 / 0; } catch (ArithmeticException e) { System.out.println(\"DIV0\"); }",
+    "question": "What will be the output?",
+    "options": [
+      "DIV0",
+      "Infinity",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "DIV0",
+    "explanation": "Integer division by zero throws an `ArithmeticException`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles numbers."
+  },
+  {
+    "id": "java-066",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "streams",
+      "findfirst"
+    ],
+    "code": "Optional<String> res = List.of(\"a\", \"b\").stream().findFirst(); System.out.println(res.get());",
+    "question": "What will be the output?",
+    "options": [
+      "a",
+      "b",
+      "Optional[a]",
+      "null"
+    ],
+    "correctAnswer": "a",
+    "explanation": "`findFirst()` returns an Optional containing the first element 'a'.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles streams."
+  },
+  {
+    "id": "java-067",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "arrays",
+      "fill"
+    ],
+    "code": "int[] a = new int[2]; Arrays.fill(a, 9); System.out.println(a[1]);",
+    "question": "What will be the output?",
+    "options": [
+      "9",
+      "0",
+      "2",
+      "Compilation error"
+    ],
+    "correctAnswer": "9",
+    "explanation": "`Arrays.fill` populates all indices with 9.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles arrays."
+  },
+  {
+    "id": "java-068",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "classes",
+      "inner-class-access"
+    ],
+    "code": "class Outer { int x = 10; class Inner { int get(){ return Outer.this.x; } } }\nSystem.out.println(new Outer().new Inner().get());",
+    "question": "What will be the output?",
+    "options": [
+      "10",
+      "0",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "10",
+    "explanation": "`Outer.this.x` accesses the outer enclosing instance member.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles classes."
+  },
+  {
+    "id": "java-069",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "string",
+      "compareto"
+    ],
+    "code": "System.out.println(\"a\".compareTo(\"b\"));",
+    "question": "What will be the output?",
+    "options": [
+      "-1",
+      "0",
+      "1",
+      "Compilation error"
+    ],
+    "correctAnswer": "-1",
+    "explanation": "'a' (97) minus 'b' (98) is -1.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles string."
+  },
+  {
+    "id": "java-070",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "collections",
+      "unsupported-remove"
+    ],
+    "code": "List<String> list = Arrays.asList(\"a\", \"b\"); try { list.remove(0); } catch (UnsupportedOperationException e) { System.out.println(\"FIXED\"); }",
+    "question": "What will be the output?",
+    "options": [
+      "FIXED",
+      "b",
+      "Compilation error",
+      "null"
+    ],
+    "correctAnswer": "FIXED",
+    "explanation": "`Arrays.asList` returns a fixed-size list backed by the array; removing elements throws `UnsupportedOperationException`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles collections."
+  },
+  {
+    "id": "java-071",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "math",
+      "hypot"
+    ],
+    "code": "System.out.println((int) Math.hypot(3, 4));",
+    "question": "What will be the output?",
+    "options": [
+      "5",
+      "7",
+      "25",
+      "Compilation error"
+    ],
+    "correctAnswer": "5",
+    "explanation": "Pythagorean theorem: sqrt(3^2 + 4^2) = sqrt(25) = 5.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles math."
+  },
+  {
+    "id": "java-072",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "atomic",
+      "atomicinteger"
+    ],
+    "code": "AtomicInteger ai = new AtomicInteger(10); System.out.println(ai.addAndGet(5));",
+    "question": "What will be the output?",
+    "options": [
+      "15",
+      "10",
+      "5",
+      "Compilation error"
+    ],
+    "correctAnswer": "15",
+    "explanation": "`addAndGet(5)` atomically increments by 5 and returns the new value (15).",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles atomic."
+  },
+  {
+    "id": "java-073",
+    "language": "java",
+    "difficulty": "medium",
+    "concepts": [
+      "string",
+      "join"
+    ],
+    "code": "System.out.println(String.join(\"/\", \"usr\", \"bin\"));",
+    "question": "What will be the output?",
+    "options": [
+      "usr/bin",
+      "usr/bin/",
+      "/usr/bin",
+      "Compilation error"
+    ],
+    "correctAnswer": "usr/bin",
+    "explanation": "`String.join` joins with delimiter between items.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles string."
+  },
+  {
+    "id": "java-074",
+    "language": "java",
+    "difficulty": "hard",
+    "concepts": [
+      "time",
+      "localdate"
+    ],
+    "code": "LocalDate d = LocalDate.of(2025, 1, 1).plusDays(1); System.out.println(d.getDayOfMonth());",
+    "question": "What will be the output?",
+    "options": [
+      "2",
+      "1",
+      "Compilation error",
+      "0"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Jan 1 + 1 day is Jan 2.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles time."
+  },
+  {
+    "id": "java-075",
+    "language": "java",
+    "difficulty": "expert",
+    "concepts": [
+      "threads",
+      "thread-state"
+    ],
+    "code": "Thread t = new Thread(() -> {}); System.out.println(t.getState());",
+    "question": "What will be the output?",
+    "options": [
+      "NEW",
+      "RUNNABLE",
+      "TERMINATED",
+      "WAITING"
+    ],
+    "correctAnswer": "NEW",
+    "explanation": "Before `start()` is invoked, a Thread's state is `NEW`.",
+    "runtime": "Java 17+",
+    "hint": "Consider how Java handles threads."
+  }
+]
