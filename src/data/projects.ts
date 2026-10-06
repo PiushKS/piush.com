@@ -1,3 +1,4 @@
+import FunputerIcon from '../assets/logos/funputer-logo.svg?raw';
 import PhoenixIcon from '../assets/logos/Phoenix-logo.svg?raw';
 import N8nIcon from '../assets/logos/N8n-logo.svg?raw';
 import SupabaseIcon from '../assets/logos/Supabase-logo.svg?raw';
@@ -9,6 +10,14 @@ import KotlinIcon from '../assets/logos/kotlin.svg?raw';
 import SwiftIcon from '../assets/logos/swift.svg?raw';
 
 export const projects = [
+	{
+		title: "Funputer: Creative Coding & STEM",
+		techStack: "TypeScript • React • WebAssembly • Educational AI • Canvas",
+		description: "A playful learning platform and digital workshop where kids and teens explore coding, artificial intelligence, robotics, game physics, and digital creativity through hands-on discovery.",
+		ctaText: "Visit Platform →",
+		ctaLink: "https://funputer.com/",
+		icon: FunputerIcon
+	},
 	{
 	  title: "Workflow Automation Orchestrator",
 	  techStack: "n8n • Node.js • TypeScript • PostgreSQL",
