@@ -10,7 +10,7 @@ author: 'Piush KS'
 
 If you have ever opened a high-frequency trading screen, an interactive audio visualizer, or a deeply nested social feed in Flutter and watched the frame rate crater from a silky 120 Hz down to a stuttering 42 FPS on an iPhone 16 Pro, you know that Flutter's declarative syntax can easily disguise what is happening down in the engine.
 
-Most developers write `Widget build(BuildContext context)` and imagine the framework redraws the world. But widgets are just lightweight configuration blueprints. They are cheap to create, throw away, and recreate fifty times a second. The real heavy lifting—the math that turns layout constraints into GPU instructions—happens in two internal trees that rarely get discussed in tutorial videos: the **Element tree** and the **RenderObject tree**.
+Most developers write `Widget build(BuildContext context)` and imagine the framework redraws the world. But widgets are just lightweight configuration blueprints. They are cheap to create, throw away, and recreate fifty times a second. The real heavy lifting (the math that turns layout constraints into GPU instructions) happens in two internal trees that rarely get discussed in tutorial videos: the **Element tree** and the **RenderObject tree**.
 
 Last month, we tackled a production performance regression where our infinite product catalog began stuttering during rapid fling gestures. Here is what we found under the hood with the Flutter DevTools CPU profiler, how the render pipeline actually moves pixels, and how we got our frame budget back under 8.33 milliseconds.
 
@@ -81,7 +81,7 @@ void performLayout() {
 ```
 
 #### The `parentUsesSize: true` Trap
-Notice the second parameter in `child.layout()`. When `parentUsesSize` is `false`, the framework marks the child as a **relayout boundary**. If the child later calls `markNeedsLayout()`, the dirty layout pass stops right there—it never bubbles up to the parent!
+Notice the second parameter in `child.layout()`. When `parentUsesSize` is `false`, the framework marks the child as a **relayout boundary**. If the child later calls `markNeedsLayout()`, the dirty layout pass stops right there; it never bubbles up to the parent!
 
 When developers blindly nest `IntrinsicHeight` or unconstrained `Column`s, `parentUsesSize` flips to `true` all the way up to the root `RenderView`. Every single animation tick on a tiny badge triggers a full-tree re-layout pass across 400 widgets.
 
@@ -138,7 +138,7 @@ Impeller pre-compiles a static set of shaders at engine build time rather than c
 ### 3 Hard Rules for 120 FPS Flutter Apps
 
 1. **Constrain list delegates strictly**: Never use `ListView(children: [...])` for collections larger than 10 items. Always use `ListView.builder` with `itemExtent` or `prototypeItem` so the scroll engine can calculate scroll positions via math without laying out offscreen children.
-2. **Push state down to the leaf nodes**: If an icon animates, the `AnimationController` listener should live in a dedicated stateful widget around that icon—not in the parent page scaffold.
+2. **Push state down to the leaf nodes**: If an icon animates, the `AnimationController` listener should live in a dedicated stateful widget around that icon, not in the parent page scaffold.
 3. **Audit custom painters with `shouldRepaint`**: In your `CustomPainter`, never return `true` blindly. Compare old and new properties:
    ```dart
    @override

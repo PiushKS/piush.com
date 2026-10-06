@@ -43,7 +43,7 @@ All benchmarks were executed in release builds with compilation optimization ena
 | :--- | :--- | :--- | :--- | :--- |
 | **MMKV (Raw Key-Value)** | 148 ms | 212 ms | 390 ms | 68.4 MB |
 | **SQLite (WAL mode + PRAGMA)** | **312 ms** | **428 ms** | **840 ms** | **48.2 MB** |
-| **Room (Android ORM)** | — | 680 ms | 1,240 ms | 49.1 MB |
+| **Room (Android ORM)** | N/A | 680 ms | 1,240 ms | 49.1 MB |
 | **Realm (Object Store)** | 480 ms | 640 ms | 1,180 ms | 82.6 MB |
 | **SQLite (Default without WAL)** | 14,200 ms | 18,900 ms | 36,400 ms | 47.9 MB |
 
@@ -63,12 +63,12 @@ Query: `SELECT * FROM audits WHERE status = 'pending' ORDER BY timestamp DESC LI
 | Storage Engine | Query + Parse Time (iPhone 15) | Query + Parse Time (Pixel 8) | Memory Allocation Spike |
 | :--- | :--- | :--- | :--- |
 | **SQLite (Direct Index Scan)** | **14.2 ms** | **19.8 ms** | 12 MB |
-| **Room (Flow / LiveData)** | — | 34.6 ms | 22 MB |
+| **Room (Flow / LiveData)** | N/A | 34.6 ms | 22 MB |
 | **Realm (Lazy Objects)** | 18.5 ms | 26.1 ms | **6 MB** |
 | **MMKV (Linear Memory Scan)** | 142.0 ms | 198.0 ms | 86 MB |
 
 Here the architectural differences become stark:
-- **MMKV is not a database**: Because MMKV is a flat key-value store backed by memory-mapped files (`mmap`), running complex queries requires scanning every single key in RAM and parsing JSON strings in user-space. It is brilliant for user tokens, feature flags, and UI states—unusable for relational queries.
+- **MMKV is not a database**: Because MMKV is a flat key-value store backed by memory-mapped files (`mmap`), running complex queries requires scanning every single key in RAM and parsing JSON strings in user-space. It is brilliant for user tokens, feature flags, and UI states, but unusable for relational queries.
 - **Realm's lazy-loading brilliance**: Realm does not deserialize entire object graphs into memory up front. It returns an iterator of virtual memory pointers. Memory overhead remains under 6 MB even when handling 5,000 query results.
 - **SQLite with B-Tree Indexes**: With a composite index on `(status, timestamp DESC)`, SQLite executes an index-only seek and stream-reads rows off disk in under 15 milliseconds.
 

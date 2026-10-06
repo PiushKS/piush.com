@@ -1,6 +1,6 @@
 ---
 title: 'The 3-Watt Micro-Server: Running 24/7 Docker Containers on an Old Android Phone'
-description: 'Can retired smartphone hardware outshine a dedicated Raspberry Pi for self-hosting? From Podroid Alpine VMs and Termux PRoot environments to thermal limits, battery bypass, and real container benchmarks—here is what 30 days of continuous uptime revealed.'
+description: 'Can retired smartphone hardware outshine a dedicated Raspberry Pi for self-hosting? From Podroid Alpine VMs and Termux PRoot environments to thermal limits, battery bypass, and real container benchmarks, here is what 30 days of continuous uptime revealed.'
 pubDate: 'Sep 13 2026'
 heroImage: '../../assets/images/android-docker-server.jpg'
 category: 'DevOps & Infrastructure'
@@ -8,7 +8,7 @@ tags: ['docker', 'android', 'homelab', 'linux', 'arm64', 'devops', 'self-hosting
 author: 'Piush KS'
 ---
 
-Almost every software engineer and homelab enthusiast has an "e-waste drawer" containing two or three retired Android smartphones. They usually sit in darkness—perhaps with a cracked screen protector or a worn-out chassis—despite containing silicon that puts classic single-board computers (SBCs) to shame.
+Almost every software engineer and homelab enthusiast has an "e-waste drawer" containing two or three retired Android smartphones. They usually sit in darkness, perhaps with a cracked screen protector or a worn-out chassis, despite containing silicon that puts classic single-board computers (SBCs) to shame.
 
 Think about the specs of a mid-range phone from three or four years ago: an octa-core 64-bit ARM processor, 6GB to 8GB of LPDDR4X RAM, 128GB of UFS 2.2 storage, integrated Wi-Fi 5/6, Bluetooth, and an onboard lithium battery that functions as a zero-latency uninterruptible power supply (UPS). 
 
@@ -246,7 +246,7 @@ To keep your expectations grounded, here is an honest breakdown of workloads sui
 
 If you have a spare device running Android 10 or later, here is the fastest way to verify it yourself:
 
-1. **Install F-Droid & Termux**: Always download Termux from [F-Droid](https://f-droid.org/packages/com.termux/) or GitHub releases—never from the outdated Google Play Store build.
+1. **Install F-Droid & Termux**: Always download Termux from [F-Droid](https://f-droid.org/packages/com.termux/) or GitHub releases, never from the outdated Google Play Store build.
 2. **Disable Doze & Killers**: Head to Settings → Apps → Termux → Battery, and switch to "Unrestricted". Run the ADB phantom process command shown in Phase 1.
 3. **Choose Your Runtime**:
    - For **Full Docker & Compose**: Install the latest release of **Podroid** (Alpine-based container host). Launch it, assign it 2GB–3GB of memory, and run `docker run hello-world`.

@@ -12,7 +12,7 @@ For years, the universal criticism of React Native was always the **Bridge**. Ev
 
 If you ever tried to synchronize a 60 FPS gesture with a native sheet dismissal, you watched the JavaScript thread fall two frames behind the native touch responder, resulting in the dreaded "rubber-band lag."
 
-In 2024 and 2025, Meta completed the rollout of the **New Architecture**—centered around **JSI (JavaScript Interface)**, **Fabric (the concurrent C++ renderer)**, and **TurboModules (lazy, synchronous native bindings)**. 
+In 2024 and 2025, Meta completed the rollout of the **New Architecture**, centered around **JSI (JavaScript Interface)**, **Fabric (the concurrent C++ renderer)**, and **TurboModules (lazy, synchronous native bindings)**. 
 
 Earlier this quarter, we flipped the `newArchEnabled=true` flag on a production codebase serving over 100,000 daily active users. We monitored crash rates, cold startup times, frame timings, and memory overhead across 14 release builds. Here is what the real data says, minus the conference talk hype.
 

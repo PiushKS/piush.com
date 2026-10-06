@@ -20,7 +20,7 @@ Here is the exact architectural playbook we used to cut 420 KB of JavaScript fro
 
 ### The Problem With Universal Hydration
 
-In standard SSR frameworks, the server renders HTML, streams it to the browser, and then downloads a massive JavaScript bundle containing the entire component tree. The browser must then walk every single paragraph, heading, and footer element to re-attach event listeners—a process called **full hydration**.
+In standard SSR frameworks, the server renders HTML, streams it to the browser, and then downloads a massive JavaScript bundle containing the entire component tree. The browser must then walk every single paragraph, heading, and footer element to re-attach event listeners, a process called **full hydration**.
 
 ```
 TRADITIONAL FULL HYDRATION (Next.js / CRA):

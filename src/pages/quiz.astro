@@ -878,11 +878,11 @@ const description = "Test your programming logic with code output challenges acr
             if (isCorrect) {
               explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 animate-fadeIn";
               if (resultIconEl) resultIconEl.textContent = "✓";
-              if (resultHeadingEl) resultHeadingEl.textContent = `Correct — Output: ${q.correctAnswer}`;
+              if (resultHeadingEl) resultHeadingEl.textContent = `Correct! Output: ${q.correctAnswer}`;
             } else {
               explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-rose-500/40 bg-rose-500/10 text-rose-950 dark:text-rose-100 animate-fadeIn";
               if (resultIconEl) resultIconEl.textContent = "✕";
-              if (resultHeadingEl) resultHeadingEl.textContent = `Not quite — Expected: ${q.correctAnswer}`;
+              if (resultHeadingEl) resultHeadingEl.textContent = `Not quite. Expected: ${q.correctAnswer}`;
             }
             if (explanationBodyEl) explanationBodyEl.textContent = q.explanation;
           }

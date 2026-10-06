@@ -8,7 +8,7 @@ tags: ['css', 'design-systems', 'ui-ux', 'frontend']
 author: 'Piush KS'
 ---
 
-If you have ever attempted to build an algorithmic design system palette in CSS—generating your `50`, `100`, `500`, and `900` color shades by taking a base color in HSL and incrementally stepping the `lightness` percentage—you have almost certainly run into a baffling optical illusion.
+If you have ever attempted to build an algorithmic design system palette in CSS (generating your `50`, `100`, `500`, and `900` color shades by taking a base color in HSL and incrementally stepping the `lightness` percentage), you have almost certainly run into a baffling optical illusion.
 
 Consider these two colors in standard HSL:
 - `hsl(240, 100%, 50%)` (Pure Blue)
@@ -16,7 +16,7 @@ Consider these two colors in standard HSL:
 
 Both colors claim to have exactly **50% Lightness**. Both claim to have **100% Saturation**. Yet if you place white text over the blue, it passes WCAG AAA contrast effortlessly. If you place white text over the yellow, it is completely illegible. The yellow looks blindingly bright; the blue looks dark and heavy.
 
-Why? Because **sRGB and HSL are not perceptually uniform**. They were created in the 1970s to match how cathode-ray electron guns fired phosphor beams onto glass TV tubes—not how the human eye and visual cortex perceive luminance.
+Why? Because **sRGB and HSL are not perceptually uniform**. They were created in the 1970s to match how cathode-ray electron guns fired phosphor beams onto glass TV tubes, not how the human eye and visual cortex perceive luminance.
 
 Enter **OKLCH**, the CSS Color Module Level 4 standard that is quietly revolutionizing how frontend engineers and design systems teams build scalable color architectures.
 

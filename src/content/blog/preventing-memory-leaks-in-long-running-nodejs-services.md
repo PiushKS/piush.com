@@ -10,7 +10,7 @@ author: 'Piush KS'
 
 Few things in backend engineering are as demoralizing as watching a Kubernetes pod graph show a steady, unyielding 45-degree upward slope in resident memory.
 
-Last quarter, our real-time notification gateway—a Node.js service handling approximately 4,500 WebSocket connections and HTTP webhook dispatches per second—started dying with `SIGABRT (Out of Memory)` every 72 hours. The container would boot at 120 MB of RSS (Resident Set Size), climb steadily by roughly 12 MB per hour, hit the 1.4 GB container limit, and get unceremoniously terminated by the Linux OOM killer.
+Last quarter, our real-time notification gateway (a Node.js service handling approximately 4,500 WebSocket connections and HTTP webhook dispatches per second) started dying with `SIGABRT (Out of Memory)` every 72 hours. The container would boot at 120 MB of RSS (Resident Set Size), climb steadily by roughly 12 MB per hour, hit the 1.4 GB container limit, and get unceremoniously terminated by the Linux OOM killer.
 
 The immediate band-aid was automated container restarts. But restarts drop active WebSockets and degrade latency. We needed the root cause. Here is the post-mortem of how we captured the leak in production without taking the cluster offline.
 

@@ -227,7 +227,7 @@ console.log(a.length);</code></pre>
             <div class="space-y-1.5">
               <div class="flex items-center gap-2 font-bold text-sm sm:text-base" id="quiz-result-title">
                 <span id="quiz-result-icon">✓</span>
-                <span id="quiz-result-heading">Correct — Output: 4</span>
+                <span id="quiz-result-heading">Correct! Output: 4</span>
               </div>
               <p class="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed" id="quiz-explanation-body">
                 `a` and `b` reference the same mutable array in memory. Adding an item through `b` modifies the shared array, so `a.length` becomes `4`.
@@ -578,11 +578,11 @@ console.log(a.length);</code></pre>
         if (isCorrect) {
           explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100 animate-fadeIn";
           if (resultIconEl) resultIconEl.textContent = "✓";
-          if (resultHeadingEl) resultHeadingEl.textContent = `Correct — Output: ${q.correctAnswer}`;
+          if (resultHeadingEl) resultHeadingEl.textContent = `Correct! Output: ${q.correctAnswer}`;
         } else {
           explanationCard.className = "rounded-2xl p-4 sm:p-5 border border-rose-500/40 bg-rose-500/10 text-rose-950 dark:text-rose-100 animate-fadeIn";
           if (resultIconEl) resultIconEl.textContent = "✕";
-          if (resultHeadingEl) resultHeadingEl.textContent = `Not quite — Expected: ${q.correctAnswer}`;
+          if (resultHeadingEl) resultHeadingEl.textContent = `Not quite. Expected: ${q.correctAnswer}`;
         }
         if (explanationBodyEl) explanationBodyEl.textContent = q.explanation;
       }

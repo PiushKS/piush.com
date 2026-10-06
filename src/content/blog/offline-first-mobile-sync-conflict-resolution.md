@@ -12,7 +12,7 @@ Most mobile apps claim to work offline, but in practice, "offline support" usual
 
 Last year, we built an enterprise mobile suite for field technicians auditing telecom infrastructure in remote valleys and subterranean utility vaults. In these environments, cell signal drops out for four to six hours at a time. Technicians must be able to create work orders, annotate circuit diagrams, edit equipment statuses, and reassign tasks without experiencing UI locks.
 
-When they emerge from the underground vault into a 5G zone, the app must synchronize hundreds of queued mutations against concurrent edits made by dispatchers back at headquarters—with **zero data loss** and zero conflicting overwrites.
+When they emerge from the underground vault into a 5G zone, the app must synchronize hundreds of queued mutations against concurrent edits made by dispatchers back at headquarters, with **zero data loss** and zero conflicting overwrites.
 
 Here is the exact synchronization architecture we designed, comparing **Last-Write-Wins (LWW)** timestamps, **CRDTs (Conflict-Free Replicated Data Types)**, and local mutation journals.
 

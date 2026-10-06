@@ -423,7 +423,7 @@ If you deploy to Netlify, use:
 
 ## 📄 License
 
-MIT — you’re free to use, modify, and redistribute. See `LICENSE` for details.
+MIT - you’re free to use, modify, and redistribute. See `LICENSE` for details.
 
 Check my site live at 'https://guihubie.com'
 
