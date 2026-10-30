@@ -61,16 +61,6 @@ const tools = [
     chips: ['OKLCH Engine', '50-950 Shades', 'WCAG Contrast', 'Harmonies'],
     iconType: 'colors',
     ctaText: 'Open Color Studio'
-  },
-  {
-    id: 'app-icon',
-    title: 'App Icon Creator',
-    description: 'Create and export production-ready Android & iOS app icons.',
-    href: '/tools/app-icon',
-    tag: 'Mobile',
-    chips: ['Android Adaptive', 'iOS Squircle', 'Safe Zone 66%', 'Xcode ZIP'],
-    iconType: 'app-icon',
-    ctaText: 'Create App Icon'
   }
 ];
 ---
@@ -133,13 +123,6 @@ const tools = [
                     <circle cx="9" cy="9" r="6"/>
                     <circle cx="15" cy="9" r="6"/>
                     <circle cx="12" cy="15" r="6"/>
-                  </svg>
-                )}
-                {t.iconType === 'app-icon' && (
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="18" height="18" x="3" y="3" rx="5"/>
-                    <path d="M3 9h18"/>
-                    <path d="M9 21V9"/>
                   </svg>
                 )}
               </div>

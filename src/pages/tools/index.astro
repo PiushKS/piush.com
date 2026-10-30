@@ -6,7 +6,7 @@ import Button from '../../components/ui/button/Button.astro';
 import GlowLineSeparator from '../../components/ui/separator/GlowLineSeparator.astro';
 
 const pageTitle = "Free Developer Tools & Online Utilities | Piush";
-const pageDescription = "Free browser-based developer tools for formatting JSON, testing code, creating app icons, working with colors, SVGs, UI styles and more.";
+const pageDescription = "Free browser-based developer tools for formatting JSON, testing code, working with colors, SVGs, UI styles and more.";
 
 const toolCategories = [
   {
@@ -68,21 +68,6 @@ const toolCategories = [
         chips: ['OKLCH Engine', '50-950 Shades', 'WCAG Contrast', 'Harmonies', 'Cross-Platform Tokens'],
         iconType: 'color',
         badge: 'Perceptual Studio'
-      }
-    ]
-  },
-  {
-    id: 'mobile',
-    name: 'MOBILE',
-    subtitle: 'Platform-compliant mobile launcher and app icon asset pipelines',
-    tools: [
-      {
-        title: 'App Icon Creator',
-        description: 'Create and export production-ready Android & iOS app icons.',
-        href: '/tools/app-icon',
-        chips: ['Android Adaptive', 'iOS Squircle', 'Safe Zone 66%', '84 Icon Library', 'Xcode ZIP'],
-        iconType: 'app-icon',
-        badge: 'Android + iOS'
       }
     ]
   }
@@ -199,13 +184,6 @@ const toolCategories = [
                           <circle cx="9" cy="9" r="6"/>
                           <circle cx="15" cy="9" r="6"/>
                           <circle cx="12" cy="15" r="6"/>
-                        </svg>
-                      )}
-                      {t.iconType === 'app-icon' && (
-                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <rect width="18" height="18" x="3" y="3" rx="5"/>
-                          <path d="M3 9h18"/>
-                          <path d="M9 21V9"/>
                         </svg>
                       )}
                     </div>

@@ -1,6 +1,6 @@
 ---
 import Button from "../ui/button/Button.astro";
-import LottieAnimation from "../ui/lottie/LottieAnimation.astro";
+import InteractivePortrait from "../hero/InteractivePortrait.astro";
 
 interface Cta {
   text: string;
@@ -139,69 +139,9 @@ const techPills = [
         )}
       </div>
 
-      <!-- Right Column: Apple Studio Showcase Window with Floating Accents -->
-      <div class="lg:col-span-5 flex justify-center relative hero-enter-window">
-        <div class="relative w-full max-w-lg">
-          
-          <!-- Floating Accent Badge: Top Right -->
-          <div class="hidden sm:flex absolute -top-3 -right-3 z-20 items-center gap-2 px-3 py-1 rounded-full bg-[var(--card)]/90 border border-[var(--color-border)] shadow-lg backdrop-blur-md animate-float-slow text-xs font-medium text-foreground">
-            <span class="size-2 rounded-full bg-[var(--accent)]"></span>
-            <span>⚡ Sub-40ms P95 Latency</span>
-          </div>
-
-          <!-- Floating Accent Badge: Bottom Left -->
-          <div class="hidden sm:flex absolute -bottom-3 -left-3 z-20 items-center gap-2 px-3 py-1 rounded-full bg-[var(--card)]/90 border border-[var(--color-border)] shadow-lg backdrop-blur-md animate-float-reverse text-xs font-medium text-foreground">
-            <span class="text-[var(--accent)] font-bold">✦</span>
-            <span>Native iOS & Android Core</span>
-          </div>
-
-          <!-- Studio Window Frame -->
-          <div class="w-full card-surface rounded-3xl p-4 sm:p-5 border border-[var(--color-border)] shadow-xl relative overflow-hidden backdrop-blur-xl group">
-            
-            <!-- Window Titlebar with iPhone Green traffic dots -->
-            <div class="flex items-center justify-between pb-3.5 mb-2 border-b border-[var(--color-border)]/50 text-xs font-mono text-[var(--color-text-muted)]">
-              <div class="flex items-center gap-2">
-                <span class="size-3 rounded-full bg-[#1B5448] border border-[rgba(255,255,255,0.1)]"></span>
-                <span class="size-3 rounded-full bg-[#4e5850] border border-[rgba(255,255,255,0.1)]"></span>
-                <span class="size-3 rounded-full bg-[#ade1cd] border border-[rgba(255,255,255,0.1)]"></span>
-              </div>
-              <span class="text-xs font-medium text-[var(--color-text-secondary)] tracking-tight">
-                ~/piush.dev/Architecture.swift
-              </span>
-              <span class="flex items-center gap-1.5 text-[11px] font-medium text-[var(--accent)]">
-                <span class="size-1.5 rounded-full bg-[var(--accent)] animate-ping"></span>
-                60 FPS
-              </span>
-            </div>
-
-            <!-- Lottie Animation Graphic (Recolored with iPhone Green) -->
-            <div class="relative py-2 flex items-center justify-center">
-              <div class="ambient-glow-orb inset-0 bg-[#ade1cd] opacity-15 pointer-events-none animate-ambient-breathe"></div>
-              <LottieAnimation
-                src="/assets/lottie/coding.json"
-                class="w-full max-w-[340px] sm:max-w-[400px] aspect-[4/3] mx-auto filter drop-shadow-md"
-                alt="Software Engineer Coding Animation"
-              />
-            </div>
-
-            <!-- Studio Telemetry Footer -->
-            <div class="pt-3.5 mt-1 border-t border-[var(--color-border)]/50 grid grid-cols-3 gap-2 text-center text-xs font-mono">
-              <div class="p-2 rounded-xl bg-[var(--color-bg-secondary)]/60 border border-[var(--color-border)]/40">
-                <div class="text-[10px] text-[var(--color-text-muted)]">Engine</div>
-                <div class="font-semibold text-foreground text-xs mt-0.5">Apple Silicon</div>
-              </div>
-              <div class="p-2 rounded-xl bg-[var(--color-bg-secondary)]/60 border border-[var(--color-border)]/40">
-                <div class="text-[10px] text-[var(--color-text-muted)]">Reliability</div>
-                <div class="font-semibold text-[var(--accent)] text-xs mt-0.5">99.99% SLO</div>
-              </div>
-              <div class="p-2 rounded-xl bg-[var(--color-bg-secondary)]/60 border border-[var(--color-border)]/40">
-                <div class="text-[10px] text-[var(--color-text-muted)]">Build</div>
-                <div class="font-semibold text-foreground text-xs mt-0.5">Instant</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+      <!-- Right Column: Interactive Elastic Portrait -->
+      <div class="lg:col-span-5 flex flex-col items-center justify-center relative hero-enter-window">
+        <InteractivePortrait />
       </div>
 
     </div>

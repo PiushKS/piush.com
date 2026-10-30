@@ -1,0 +1,262 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`flex flex-col items-center w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[420px] mx-auto select-none ${className}`}>
+  <!-- Strict Square Wrapper for the Circle Portrait -->
+  <div class="relative w-full aspect-square">
+    <!-- Plush Container matching reference circle geometry -->
+    <div
+      id="portrait-root"
+      class="plush relative w-full h-full"
+      data-frame="circle"
+    >
+      <!-- Round Circle Background Frame in #1B5448 -->
+      <div class="plush-frame"></div>
+
+      <!-- The plain photograph (shows until WebGL is up, and as accessible fallback) -->
+      <img
+        id="portrait-fallback"
+        src="/images/portrait/piush.png?v=2"
+        alt="Piush Kumar Singh - Senior Software Engineer"
+        width="700"
+        height="700"
+        loading="eager"
+      />
+
+      <!-- WebGL Canvas for elastic soft-toy skin mesh simulation -->
+      <canvas id="portrait-canvas"></canvas>
+
+      <!-- Invisible button hit layer that captures pointer & keyboard events -->
+      <button
+        id="portrait-hit"
+        type="button"
+        class="plush-hit"
+        aria-label="Interactive portrait of Piush. Click, drag, or press Space to stretch and interact."
+      ></button>
+    </div>
+  </div>
+
+  <!-- Label underneath portrait matching reference - completely outside the circle wrapper -->
+  <div class="text-center mt-3 sm:mt-4">
+    <a
+      href="https://x.com/piushks"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-widest uppercase text-[var(--color-text-muted)] hover:text-[#1B5448] dark:hover:text-[#ade1cd] transition-colors"
+    >
+      <span>𝕏</span>
+      <span>FOLLOW ME ON X</span>
+      <span class="text-[10px]">→</span>
+    </a>
+  </div>
+</div>
+
+<style is:global>
+  /* --- The Plush Elastic Portrait System --- */
+  .plush {
+    --frame-x: 0.5;
+    --frame-y: 0.5;
+    --frame-r: 0.5;
+    --frame-top: 0;
+    --frame-left: 0;
+    --frame-right: 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    container-type: inline-size;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .plush-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: #1B5448;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 24px rgba(27, 84, 72, 0.4);
+    border: 2px solid rgba(27, 84, 72, 0.85);
+  }
+
+  .plush[data-frame="circle"] > :is(img, .plush-hit) {
+    border-radius: 50%;
+    clip-path: circle(50% at 50% 50%);
+  }
+
+  .plush > img,
+  .plush-hit {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .plush > img {
+    z-index: 2;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+  }
+
+  .plush.is-live > img {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .plush-hit {
+    z-index: 3;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    touch-action: pan-y pinch-zoom;
+    outline: 0;
+    cursor: grab;
+  }
+
+  .plush-hit:active {
+    cursor: grabbing;
+  }
+
+  .plush.is-stretched > .plush-hit {
+    clip-path: none;
+  }
+
+  .plush:has(.plush-hit:focus-visible) .plush-frame {
+    outline: 3px solid #0a0a0a;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 9px #fff;
+  }
+
+  .plush canvas {
+    position: absolute;
+    z-index: 2;
+    left: calc(var(--plush-pad, 0.3) * -100%);
+    top: calc(var(--plush-pad, 0.3) * -100%);
+    width: calc(100% + var(--plush-pad, 0.3) * 200%);
+    height: calc(100% + var(--plush-pad, 0.3) * 200%);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  import { createPlushie } from './plushie.js';
+  import { attachSqueak } from './squeak.js';
+  import confetti from 'canvas-confetti';
+
+  let currentPlush: any = null;
+  let currentSqueak: any = null;
+  let initializedCanvas: HTMLCanvasElement | null = null;
+  let isInitializing = false;
+
+  async function cleanup() {
+    if (currentSqueak) {
+      try { currentSqueak.destroy(); } catch {}
+      currentSqueak = null;
+    }
+    if (currentPlush) {
+      try { currentPlush.destroy(); } catch {}
+      currentPlush = null;
+    }
+    initializedCanvas = null;
+  }
+
+  async function initInteractivePortrait() {
+    const root = document.getElementById('portrait-root');
+    const canvas = document.getElementById('portrait-canvas') as HTMLCanvasElement | null;
+    const hitBtn = document.getElementById('portrait-hit') as HTMLButtonElement | null;
+
+    if (!root || !canvas || !hitBtn) return;
+    if (initializedCanvas === canvas || isInitializing) return;
+
+    isInitializing = true;
+    await cleanup();
+
+    try {
+      const plush = await createPlushie(canvas, {
+        faces: { smile: '/images/portrait/piush.png?v=2' },
+        hit: hitBtn,
+        frame: { kind: 'circle', x: 0.5, y: 0.5, r: 0.5 },
+        pad: 0.3,
+        wobble: 2.3,
+        reach: 0.085,
+        damping: 0.14,
+        flesh: 0.35,
+        grabRadius: 0.085,
+        maxPull: 0.6,
+        rub: 500,
+        rubRadius: 0.075,
+        rubSlip: 0.09,
+        hold: 400,
+        prod: 1,
+        relief: 1,
+        sway: 1,
+        neck: { x: 0.5, y: 0.8 },
+      });
+
+      currentPlush = plush;
+      initializedCanvas = canvas;
+      root.classList.add('is-live');
+
+      // Audio synthesizer
+      const squeak = attachSqueak(plush, { volume: 0.6 });
+      currentSqueak = squeak;
+
+      // Elastic events
+      plush.on('grab', () => {
+        root.classList.add('is-handled');
+      });
+
+      plush.on('release', () => {
+        root.classList.remove('is-handled');
+      });
+
+      // Keyboard & accessibility interactions
+      hitBtn.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (currentPlush) {
+            currentPlush.tap(0.5, 0.455);
+          }
+        } else if (e.key.toLowerCase() === 'p') {
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.4 },
+            colors: ['#1B5448', '#ade1cd', '#ffffff'],
+          });
+        }
+      });
+    } catch (err) {
+      console.warn('WebGL Plushie initialization fallback:', err);
+    } finally {
+      isInitializing = false;
+    }
+  }
+
+  // Support initial load and Astro View Transitions
+  document.addEventListener('astro:page-load', initInteractivePortrait);
+  document.addEventListener('astro:before-swap', cleanup);
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initInteractivePortrait();
+  }
+</script>
+
