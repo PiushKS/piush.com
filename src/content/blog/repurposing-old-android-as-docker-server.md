@@ -1,6 +1,7 @@
 ---
 title: 'The 3-Watt Micro-Server: Running 24/7 Docker Containers on an Old Android Phone'
-description: 'Can retired smartphone hardware outshine a dedicated Raspberry Pi for self-hosting? From Podroid Alpine VMs and Termux PRoot environments to thermal limits, battery bypass, and real container benchmarks, here is what 30 days of continuous uptime revealed.'
+seoTitle: "Running 24/7 Docker Containers on Old Android"
+description: "Turn retired Android hardware into a 24/7 low-power 3-watt Docker server. Complete guide on Termux PRoot, Alpine Linux VMs, thermals, and container tests."
 pubDate: 'Sep 13 2026'
 heroImage: '../../assets/images/android-docker-server.jpg'
 category: 'DevOps & Infrastructure'
@@ -22,7 +23,7 @@ Here is the complete engineering breakdown of what worked, what broke, how I nav
 
 ---
 
-### The Fundamental Obstacle: Why Docker on Android Is Non-Trivial
+## The Fundamental Obstacle: Why Docker on Android Is Non-Trivial
 
 Before jumping into the setup, it helps to understand why running Docker on Android is notoriously tricky.
 
@@ -52,11 +53,11 @@ For real Docker workflows requiring `docker compose`, isolated networking bridge
 
 ---
 
-### Phase 1: Preparing Android for Headless Server Duty
+## Phase 1: Preparing Android for Headless Server Duty
 
 Before firing up containers, you must strip away Android’s consumer power-saving quirks that will otherwise kill your server the moment you turn off the screen.
 
-#### 1. Neutralize the Phantom Process Killer
+### 1. Neutralize the Phantom Process Killer
 Connect your phone to your workstation via USB, enable **USB Debugging** in Developer Options, and execute these ADB commands:
 
 ```bash
@@ -68,7 +69,7 @@ adb shell "/system/bin/device_config put activity_manager max_phantom_processes 
 adb shell "/system/bin/device_config get activity_manager max_phantom_processes"
 ```
 
-#### 2. Prevent Sleep & Kill Battery Optimization
+### 2. Prevent Sleep & Kill Battery Optimization
 Inside Android Settings:
 - Set **Battery Optimization** for Termux and Podroid to **"Unrestricted / Don't Optimize"**.
 - Enable **"Stay Awake"** under Developer Options (useful when debugging on AC power).
@@ -95,7 +96,7 @@ ssh -p 8022 u0_a245@192.168.1.140
 
 ---
 
-### Phase 2: Deploying the Container Stack
+## Phase 2: Deploying the Container Stack
 
 With the environment stabilized, I configured Podroid with an Alpine Linux ARM64 root filesystem. Podroid provides pre-compiled `docker`, `podman`, and `lxc` packages configured specifically for rootless execution.
 
@@ -170,7 +171,7 @@ docker compose up -d
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 ```
 
-#### The Microservice Lineup
+### The Microservice Lineup
 1. **Uptime Kuma**: Monitored 18 public and local endpoints (including my router, NAS, personal portfolio, and DNS resolvers) at 60-second intervals. Average RAM usage: **142 MB**.
 2. **BentoPDF & ConvertX**: Handled document mergers, compression, and image conversion requests locally over my home LAN, completely eliminating reliance on shady ad-riddled online conversion portals.
 3. **PocketBase**: Served as a lightning-fast key-value/document store sync target for background telemetry scripts.
@@ -178,7 +179,7 @@ docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 ---
 
-### The Critical Challenge: Battery Chemistry & Thermals
+## The Critical Challenge: Battery Chemistry & Thermals
 
 If you take a standard smartphone, connect an ordinary charger, and let it compute at high load indefinitely, you are inviting a **swollen battery (pillow battery)** within a few months. Lithium-ion cells degrade rapidly when held at 100% state-of-charge under sustained elevated temperatures.
 
@@ -205,7 +206,7 @@ Here is how I engineered around this problem:
 
 ---
 
-### 30-Day Benchmark: Phone vs. Raspberry Pi 5 vs. Intel N100
+## 30-Day Benchmark: Phone vs. Raspberry Pi 5 vs. Intel N100
 
 How does an older handset actually measure up against traditional home server hardware? Here are the numbers recorded over 30 days of continuous monitoring:
 
@@ -225,24 +226,24 @@ The standout surprise here was storage performance. Cheap MicroSD cards frequent
 
 ---
 
-### Where It Shines vs. Where It Fails
+## Where It Shines vs. Where It Fails
 
 To keep your expectations grounded, here is an honest breakdown of workloads suited for an Android server versus workloads you should avoid.
 
-#### Workloads That Excel:
+### Workloads That Excel:
 - **Network Observability**: Uptime Kuma, Beszel agents, Statping.
 - **Lightweight Productivity Services**: Stirling-PDF/BentoPDF, ConvertX, Linkwarden, Wallabag.
 - **Headless Development Backends**: SQLite endpoints, PocketBase, Node.js or Go microservices.
 - **Edge LLM Inference (Native via Termux llama.cpp)**: Quantized 2-billion to 3-billion parameter models (such as Gemma-2-2B or Qwen-2.5-3B) run via `llama.cpp` in Termux at a respectable **7 to 9 tokens/second** using ARM NEON acceleration.
 
-#### Workloads You Should Never Run on a Phone:
+### Workloads You Should Never Run on a Phone:
 - **Transcoding Media Servers (Plex / Jellyfin 4K HDR)**: Phones lack the cooling capacity for continuous multi-hour hardware transcoding, and OEM GPU drivers are difficult to expose cleanly to containers without root.
 - **Heavy Multi-Terabyte NAS (ZFS / RAID)**: You are tethered to a single USB-C port, bottlenecking bandwidth and introducing disk disconnect risks.
 - **High-Concurrency PostgreSQL or MySQL Clusters**: The rootless VM emulation layer introduces I/O synchronization latency that degrades performance under hundreds of simultaneous database transactions.
 
 ---
 
-### Step-by-Step Quickstart: Try It Yourself in 20 Minutes
+## Step-by-Step Quickstart: Try It Yourself in 20 Minutes
 
 If you have a spare device running Android 10 or later, here is the fastest way to verify it yourself:
 
@@ -260,7 +261,7 @@ If you have a spare device running Android 10 or later, here is the fastest way 
 
 ---
 
-### The Verdict
+## The Verdict
 
 Turning an old phone into a Docker server is not just a quirky weekend hack. It is a surprisingly viable, hyper-efficient solution for hosting utility containers. 
 

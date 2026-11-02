@@ -1,6 +1,7 @@
 ---
 title: 'Crafting Native Micro-Interactions: Physics-Based Spring Animations Without Dropping Frames'
-description: 'Why tween curves often feel robotic while spring physics feels alive. Profiling compositing layers, avoiding layout reflows, and hardware acceleration in modern mobile & web UI.'
+seoTitle: "60 FPS Physics Spring Animations in Mobile & Web UI"
+description: "Master 60 FPS physics-based spring animations. Learn how to profile compositing layers, eliminate layout reflows, and leverage hardware acceleration in UI."
 pubDate: 'Mar 04 2026'
 heroImage: '../../assets/images/hero-micro-animations-60fps.webp'
 category: 'UI/UX Design'
@@ -20,7 +21,7 @@ Here is a masterclass on how to build fluid micro-interactions that feel human, 
 
 ---
 
-### Why Cubic Bezier (`ease-in-out`) Feels Robotic
+## Why Cubic Bezier (`ease-in-out`) Feels Robotic
 
 In CSS and traditional animation libraries, most animations are defined by a duration and a curve:
 ```css
@@ -44,7 +45,7 @@ SPRING PHYSICS (Natural Momentum):
 
 ---
 
-### The Three Spring Parameters You Need to Know
+## The Three Spring Parameters You Need to Know
 
 A real spring does not care about duration. Its motion is governed by Newtonian physics:
 $$\ddot{x} + 2\zeta\omega_0\dot{x} + \omega_0^2 x = 0$$
@@ -58,7 +59,7 @@ In code, whether in Swift (`CASpringAnimation`), Flutter (`SpringSimulation`), o
    - $\zeta = 1.0$ (**Critically Damped**): Settles into position as fast as mathematically possible *without* overshooting. Best for menus and enterprise tables.
    - $\zeta > 1.0$ (**Overdamped**): Sluggish, syrupy motion. Avoid in UI design.
 
-#### The Ideal Sweet Spot for UI Micro-Interactions:
+### The Ideal Sweet Spot for UI Micro-Interactions:
 ```javascript
 // The Goldilocks Spring Configuration for Buttons & Dialogs
 const springConfig = {
@@ -70,7 +71,7 @@ const springConfig = {
 
 ---
 
-### The Performance Killers: What Drops Frames
+## The Performance Killers: What Drops Frames
 
 Even the most beautiful spring equation will stutter if you animate the wrong DOM or RenderObject properties.
 
@@ -85,14 +86,14 @@ $$\text{JavaScript / Dart} \longrightarrow \text{Style / Layout} \longrightarrow
 | **`transform` (scale, translate)** | **NO** | **NO** | **YES (GPU Texture)** | **Solid 120 FPS** |
 | **`opacity`** | **NO** | **NO** | **YES (GPU Blending)** | **Solid 120 FPS** |
 
-#### The Golden Rule:
+### The Golden Rule:
 > **Animate ONLY `transform` and `opacity`.** Never animate `height`, `margin`, `top`, or `padding`.
 
 If you need an expanding card, do not animate `height: 80px -> 300px`. Scale the card using `transform: scaleY()` while counter-scaling the inner content, or use a FLIP (First, Last, Invert, Play) technique.
 
 ---
 
-### Production Flutter Implementation: Haptic Spring Button
+## Production Flutter Implementation: Haptic Spring Button
 
 Here is a drop-in Flutter button component that marries kinetic spring physics with subtle native haptics on physical devices:
 
@@ -164,7 +165,7 @@ Notice the asymmetry: `Curves.easeOutCubic` when the finger presses down (instan
 
 ---
 
-### Summary Checklist for Fluid Interactions
+## Summary Checklist for Fluid Interactions
 
 - [ ] Does your animation use physical spring dynamics rather than fixed-time beziers for touch interactions?
 - [ ] Are all animated properties strictly isolated to GPU compositor channels (`transform`, `opacity`)?

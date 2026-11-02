@@ -1,6 +1,7 @@
 ---
 title: 'Building Rock-Solid Offline-First Mobile Apps: CRDTs, Replicache, and Last-Write-Wins'
-description: 'Real-world strategies for field technicians and spotty network connectivity. How we implemented optimistic local mutations, delta syncing, and conflict-free replicated data types.'
+seoTitle: "Offline-First Mobile Architecture: CRDTs & Delta Sync"
+description: "Build resilient offline-first mobile apps. Practical strategies for optimistic UI mutations, delta syncing, and CRDT conflict resolution in unstable networks."
 pubDate: 'Jan 29 2026'
 heroImage: '../../assets/images/hero-offline-first-sync.webp'
 category: 'Mobile Architecture'
@@ -18,7 +19,7 @@ Here is the exact synchronization architecture we designed, comparing **Last-Wri
 
 ---
 
-### The Three Fundamental Offline Architectures
+## The Three Fundamental Offline Architectures
 
 ```
 1. NAIVE TIMESTAMP / LAST-WRITE-WINS (LWW):
@@ -38,7 +39,7 @@ Here is the exact synchronization architecture we designed, comparing **Last-Wri
 
 ---
 
-### Why Last-Write-Wins Causes Silent Data Corruption
+## Why Last-Write-Wins Causes Silent Data Corruption
 
 Many mobile backends slap a `updated_at` column on their database tables and implement sync like this:
 ```sql
@@ -52,7 +53,7 @@ This is fundamentally flawed for two reasons:
 
 ---
 
-### Our Production Architecture: Local Mutation Queue + Server Rebase
+## Our Production Architecture: Local Mutation Queue + Server Rebase
 
 To achieve deterministic consistency without the complexity overhead of full text CRDTs (like Yjs or Automerge) for non-document data, we implemented an **Optimistic Mutation Journal**:
 
@@ -73,7 +74,7 @@ To achieve deterministic consistency without the complexity overhead of full tex
 [ Server Validates, Commits in SQL Transaction, & Returns New Version Vector ]
 ```
 
-#### The Client Mutation Schema
+### The Client Mutation Schema
 ```sql
 CREATE TABLE local_mutations (
   mutation_id TEXT PRIMARY KEY,
@@ -98,7 +99,7 @@ When network connectivity resumes:
 
 ---
 
-### Synchronization Benchmarks Under Heavy Load
+## Synchronization Benchmarks Under Heavy Load
 
 We simulated 1,000 queued offline operations created across an 8-hour shift, syncing over an intermittent 3G connection with 250ms round-trip latency:
 
@@ -111,7 +112,7 @@ We simulated 1,000 queued offline operations created across an 8-hour shift, syn
 
 ---
 
-### 3 Hard-Won Lessons from the Field
+## 3 Hard-Won Lessons from the Field
 
 1. **Never sync raw binary blobs over the wire**: If a user attaches an offline inspection photo (5 MB JPEG), compress it locally to a 1024px WebP (180 KB), compute its SHA-256 hash, and upload it via a dedicated background upload queue. Never let file uploads block the JSON metadata sync queue.
 2. **Idempotency keys are non-negotiable**: Every mutation MUST have a UUID generated on the client. If an HTTP POST succeeds on the server but the mobile connection drops before receiving the 200 OK response, the client will retry. Without idempotency keys, you will charge customers twice or duplicate records.

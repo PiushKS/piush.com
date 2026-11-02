@@ -1,6 +1,7 @@
 ---
 title: 'Inside the Flutter Render Pipeline: From RenderObject to 120 FPS on iOS and Android'
-description: "A deep architectural dive into Flutter's rendering pipeline. Profiling layout passes, paint boundaries, layer trees, and Impeller vs. Skia to eliminate dropped frames in complex mobile list views."
+seoTitle: "Flutter Render Pipeline: RenderObject to 120 FPS"
+description: "Deep dive into Flutter rendering: layout passes, paint boundaries, layer trees, and Skia vs Impeller to eliminate frame drops in high-speed mobile apps."
 pubDate: 'Sep 14 2025'
 heroImage: '../../assets/images/hero-flutter-render-pipeline.webp'
 category: 'Mobile Architecture'
@@ -16,7 +17,7 @@ Last month, we tackled a production performance regression where our infinite pr
 
 ---
 
-### The 8.33ms Budget on 120Hz Displays
+## The 8.33ms Budget on 120Hz Displays
 
 Modern flagship smartphones run at 120Hz ProMotion or dynamic refresh rates. That gives you exactly **8.33 milliseconds** to execute your Dart logic, resolve layout constraints, paint display lists, and hand them off to the rasterizer thread.
 
@@ -30,7 +31,7 @@ If your UI thread takes 6.2ms and your raster thread takes 3.4ms, you have misse
 
 ---
 
-### The Three Trees: What Actually Lives in Memory
+## The Three Trees: What Actually Lives in Memory
 
 When your application starts, Flutter manages three parallel hierarchies:
 
@@ -50,7 +51,7 @@ The real bottlenecks live in the **RenderObject**.
 
 ---
 
-### Phase 1: Constraints Go Down, Sizes Come Up
+## Phase 1: Constraints Go Down, Sizes Come Up
 
 Flutter's layout protocol follows one golden rule:
 > **Constraints go down; sizes come up. The parent sets position.**
@@ -80,14 +81,14 @@ void performLayout() {
 }
 ```
 
-#### The `parentUsesSize: true` Trap
+### The `parentUsesSize: true` Trap
 Notice the second parameter in `child.layout()`. When `parentUsesSize` is `false`, the framework marks the child as a **relayout boundary**. If the child later calls `markNeedsLayout()`, the dirty layout pass stops right there; it never bubbles up to the parent!
 
 When developers blindly nest `IntrinsicHeight` or unconstrained `Column`s, `parentUsesSize` flips to `true` all the way up to the root `RenderView`. Every single animation tick on a tiny badge triggers a full-tree re-layout pass across 400 widgets.
 
 ---
 
-### Phase 2: Paint Boundaries and Display Lists
+## Phase 2: Paint Boundaries and Display Lists
 
 Painting does not write raw pixels to screen buffers. It records drawing commands into a `Picture` object using an internal `Canvas`.
 
@@ -115,13 +116,13 @@ In the Flutter DevTools Performance overlay, toggle **Highlight Repaints**. If y
 
 ---
 
-### Benchmarking Impeller vs. Skia in Production
+## Benchmarking Impeller vs. Skia in Production
 
 On iOS, Flutter now defaults to **Impeller**, its ground-up graphics runtime designed to eradicate shader compilation jank. On Android, Impeller uses Vulkan (with OpenGL fallback).
 
 We ran automated macrobenchmarks on physical devices (iPhone 15 running iOS 18 and Google Pixel 8 running Android 14) scrolling through a 500-item grid with shadows, rounded clips, and SVG icons.
 
-#### Benchmark Results: First-Frame & Scroll Jank
+### Benchmark Results: First-Frame & Scroll Jank
 
 | Metric | Skia (OpenGL) | Impeller (Metal / Vulkan) | Variance |
 | :--- | :--- | :--- | :--- |
@@ -135,7 +136,7 @@ Impeller pre-compiles a static set of shaders at engine build time rather than c
 
 ---
 
-### 3 Hard Rules for 120 FPS Flutter Apps
+## 3 Hard Rules for 120 FPS Flutter Apps
 
 1. **Constrain list delegates strictly**: Never use `ListView(children: [...])` for collections larger than 10 items. Always use `ListView.builder` with `itemExtent` or `prototypeItem` so the scroll engine can calculate scroll positions via math without laying out offscreen children.
 2. **Push state down to the leaf nodes**: If an icon animates, the `AnimationController` listener should live in a dedicated stateful widget around that icon, not in the parent page scaffold.

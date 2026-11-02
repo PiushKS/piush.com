@@ -1,6 +1,7 @@
 ---
 title: 'Cutting 420 KB of JavaScript: Practical Zero-Runtime & Island Architecture Strategies'
-description: 'How we transitioned a bloated single-page application into an Islands Architecture. Core Web Vitals breakdown, eliminating hydration overhead, and real Lighthouse field data.'
+seoTitle: "Zero-Runtime & Island Architecture: Cut 420KB JS"
+description: "Cut 420 KB of client JavaScript using Island Architecture and zero-runtime patterns. Eliminate hydration overhead and boost Core Web Vitals scores."
 pubDate: 'Nov 11 2025'
 heroImage: '../../assets/images/hero-zero-bundle-frontend.webp'
 category: 'Frontend'
@@ -18,7 +19,7 @@ Here is the exact architectural playbook we used to cut 420 KB of JavaScript fro
 
 ---
 
-### The Problem With Universal Hydration
+## The Problem With Universal Hydration
 
 In standard SSR frameworks, the server renders HTML, streams it to the browser, and then downloads a massive JavaScript bundle containing the entire component tree. The browser must then walk every single paragraph, heading, and footer element to re-attach event listeners, a process called **full hydration**.
 
@@ -44,7 +45,7 @@ Why are we sending 40 KB of JavaScript to render an "About Us" paragraph or a pr
 
 ---
 
-### The Migration: Moving to Islands Architecture
+## The Migration: Moving to Islands Architecture
 
 We rebuilt our web architecture using **Astro**, adopting a strict **zero-JavaScript-by-default** stance. 
 
@@ -73,7 +74,7 @@ import InteractiveFilter from '../components/InteractiveFilter.tsx';
 </html>
 ```
 
-#### Client Directive Strategy:
+### Client Directive Strategy:
 - `client:load`: Hydrates immediately on page boot. Reserved strictly for critical above-the-fold UI (e.g. search bars).
 - `client:visible`: Uses an internal `IntersectionObserver`. JavaScript code is not even downloaded until the user scrolls within 200px of the component!
 - `client:media="(max-width: 768px)"`: Loads JavaScript only on mobile viewports (e.g. mobile drawer navigation).
@@ -81,7 +82,7 @@ import InteractiveFilter from '../components/InteractiveFilter.tsx';
 
 ---
 
-### The Field Measurement Results
+## The Field Measurement Results
 
 We measured real-user performance before and after migration across 25,000 live sessions using Chrome User Experience Report (CrUX) and Web Vitals telemetry:
 
@@ -95,19 +96,19 @@ We measured real-user performance before and after migration across 25,000 live 
 
 ---
 
-### 3 Pragmatic Rules to Keep Your Bundle Lean
+## 3 Pragmatic Rules to Keep Your Bundle Lean
 
-#### 1. Ban Monolithic Icon Packages
+### 1. Ban Monolithic Icon Packages
 Never write `import { ChevronRight } from 'lucide-react'` or `@tabler/icons` in a client bundle unless your bundler's tree-shaking is verified. In many Webpack and Vite configurations, importing from root barrels bundles dozens of unused SVGs. Instead, inline SVG path data or use an icon micro-component.
 
-#### 2. Replace Client-Side Routers for Content Sites
+### 2. Replace Client-Side Routers for Content Sites
 Client-side routers (`react-router-dom`, Next router) add roughly 25–40 KB of minified runtime logic to intercept link clicks and manage simulated history stacks. Modern browser navigation with HTTP/2 and spec-compliant view transitions (`document.startViewTransition`) provides app-like cross-fade animations natively without a single line of client routing code.
 
-#### 3. Offload Heavy Work to Build Time
+### 3. Offload Heavy Work to Build Time
 If you need markdown syntax highlighting, do not ship `Prism.js` or `highlight.js` to the client. Pre-render code blocks into HTML with syntax tokens on the server or at static build time using `Shiki`. Your users receive pre-highlighted spans and zero runtime parser code.
 
 ---
 
-### Conclusion
+## Conclusion
 
 Fast websites are not built by adding more JavaScript libraries to optimize your JavaScript. They are built by deleting unnecessary JavaScript entirely. Islands Architecture gives you the developer ergonomics of React, Svelte, or Vue components during development, while delivering the blazing-fast performance of 1999 static HTML to your users.

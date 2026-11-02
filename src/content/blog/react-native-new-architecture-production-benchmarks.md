@@ -1,6 +1,7 @@
 ---
 title: 'React Native New Architecture in Real Production: JSI, TurboModules, and Fabric Benchmarks'
-description: 'What actually happens when you flip the New Architecture switch in a 100k DAU app? Concrete memory consumption numbers, bridge elimination stats, and bridging C++ to native.'
+seoTitle: "React Native New Architecture Production Benchmarks"
+description: "Real production benchmarks of React Native New Architecture at 100k DAU: memory metrics, TurboModules, Fabric rendering, and C++ JSI bridge elimination."
 pubDate: 'Oct 02 2025'
 heroImage: '../../assets/images/hero-react-native-new-architecture.webp'
 category: 'Mobile Architecture'
@@ -18,7 +19,7 @@ Earlier this quarter, we flipped the `newArchEnabled=true` flag on a production 
 
 ---
 
-### What Actually Changed: The Bridge vs. JSI
+## What Actually Changed: The Bridge vs. JSI
 
 To understand the benchmark data, you have to understand the memory layout before and after the New Architecture.
 
@@ -57,11 +58,11 @@ When you call `computeBlake3Hash()`, Hermes executes a direct C++ function point
 
 ---
 
-### Production Benchmark Data: 100,000 DAU Measurement
+## Production Benchmark Data: 100,000 DAU Measurement
 
 We sampled telemetry from 50,000 iOS sessions (iPhone 12 through 16 Pro) and 50,000 Android sessions (Samsung Galaxy A54 through S24 Ultra). Here are the real results:
 
-#### 1. Cold Startup Latency (Time to First Meaningful Paint)
+### 1. Cold Startup Latency (Time to First Meaningful Paint)
 
 | Device Tier | Old Architecture (Bridge) | New Architecture (Fabric + Turbo) | Delta |
 | :--- | :--- | :--- | :--- |
@@ -71,7 +72,7 @@ We sampled telemetry from 50,000 iOS sessions (iPhone 12 through 16 Pro) and 50,
 
 Why the massive startup gain? In the old architecture, all native modules had to be initialized up front during app boot, regardless of whether the user visited the screens that required them. TurboModules are loaded **lazily** on first access. If a user never opens the Bluetooth scanner or Camera tab, those native libraries never load into RAM.
 
-#### 2. Native Bridge Throughput & Serialization Bottlenecks
+### 2. Native Bridge Throughput & Serialization Bottlenecks
 
 We benchmarked 10,000 rapid event dispatches (simulating high-frequency GPS or sensor streaming):
 
@@ -89,17 +90,17 @@ New Architecture (JSI HostObjects):
 
 ---
 
-### The Reality Check: What Broke in Migration
+## The Reality Check: What Broke in Migration
 
 Transitioning a 100k DAU application was not as simple as flipping a gradle flag. If you are preparing to migrate, anticipate these three common stumbling blocks:
 
-#### 1. Community Libraries Without Codegen Specs
+### 1. Community Libraries Without Codegen Specs
 Any third-party library that still relies on `RCTBridgeModule` on iOS or `@ReactMethod` without a TurboModule spec will run in an emulated backward-compatibility bridge mode. If a library attempts direct view manipulation using old native tags (`findNodeHandle`), Fabric will throw a runtime exception.
 
-#### 2. Synchronous Render Crashes
+### 2. Synchronous Render Crashes
 In Fabric, layout measurement happens in C++ using the **Yoga** engine directly. If you have JavaScript state updates that assume the DOM-like render cycle was deferred, you may encounter layout re-entrancy issues where components mount before an asynchronous network hook has hydrated.
 
-#### 3. iOS IPA and Android APK Size Increments
+### 3. iOS IPA and Android APK Size Increments
 Because Fabric bundles additional C++ runtimes (`libreactnative.so`, `libfabricjni.so`, and Yoga C++ sources), our baseline binary size grew slightly:
 - **Android APK (universal)**: +2.8 MB
 - **iOS IPA (compressed)**: +1.9 MB
@@ -108,6 +109,6 @@ For our team, shaving 1.1 seconds off budget device startup times and having but
 
 ---
 
-### The Verdict
+## The Verdict
 
 The New Architecture is no longer an experimental beta. It transforms React Native from a web-view-adjacent runtime into a compiled C++ host application with JavaScript acting as a high-level scripting language. If your app is still running React Native 0.72 or below, modernizing your dependency graph and enabling Fabric is the single highest-ROI performance engineering sprint you can schedule this year.

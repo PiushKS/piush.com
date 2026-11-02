@@ -7,8 +7,13 @@
   RewriteEngine On
   RewriteBase /
 
-  # Redirect /work to /portfolio
-  RewriteRule ^work/?$ /portfolio [R=301,L]
+  # Redirect /work to /portfolio/
+  RewriteRule ^work/?$ https://piush.com/portfolio/ [R=301,L]
+
+  # 301 Redirect directories without trailing slash to canonical trailing slash
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} !(.*)/$
+  RewriteRule ^(.*)$ https://piush.com/$1/ [R=301,L]
 
   # If direct directory exists, serve its index.html
   RewriteCond %{REQUEST_FILENAME} -d

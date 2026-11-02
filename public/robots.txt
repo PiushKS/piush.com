@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /demo
+Disallow: /demo/
 
 Sitemap: https://piush.com/sitemap-index.xml

@@ -11,7 +11,7 @@ import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astr
 <html lang="en" data-theme="light">
   <head>
     <BaseHead
-      title="Selected Projects & Work | Piush"
+      title="Engineering Portfolio – Mobile Apps & Cloud Systems | Piush"
       description="Explore selected mobile apps, educational platforms, backend orchestrations, and full-stack systems built by Piush KS."
     />
     <!-- Structured Data: CollectionPage & BreadcrumbList -->
@@ -20,15 +20,15 @@ import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astr
       "@graph": [
         {
           "@type": "CollectionPage",
-          "name": "Selected Projects & Work | Piush",
+          "name": "Engineering Portfolio – Mobile Apps & Cloud Systems | Piush",
           "description": "Explore selected mobile apps, educational platforms, backend orchestrations, and full-stack systems built by Piush KS.",
-          "url": new URL('/portfolio', Astro.site || 'https://piush.com').toString()
+          "url": new URL('/portfolio/', Astro.site || 'https://piush.com').toString()
         },
         {
           "@type": "BreadcrumbList",
           "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": new URL('/', Astro.site || 'https://piush.com').toString() },
-            { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": new URL('/portfolio', Astro.site || 'https://piush.com').toString() }
+            { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": new URL('/portfolio/', Astro.site || 'https://piush.com').toString() }
           ]
         }
       ]

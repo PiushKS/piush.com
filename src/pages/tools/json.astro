@@ -22,7 +22,7 @@ const pageDescription = "Format, validate, minify and inspect JSON directly in y
           applicationCategory: 'DeveloperApplication',
           operatingSystem: 'All',
           browserRequirements: 'Requires JavaScript',
-          url: new URL('/tools/json', Astro.site || 'https://piush.com').toString(),
+          url: new URL('/tools/json/', Astro.site || 'https://piush.com').toString(),
           description: pageDescription,
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
         },
@@ -30,8 +30,8 @@ const pageDescription = "Format, validate, minify and inspect JSON directly in y
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
-            { '@type': 'ListItem', position: 2, name: 'Tools', item: new URL('/tools', Astro.site || 'https://piush.com').toString() },
-            { '@type': 'ListItem', position: 3, name: 'JSON Toolkit', item: new URL('/tools/json', Astro.site || 'https://piush.com').toString() }
+            { '@type': 'ListItem', position: 2, name: 'Tools', item: new URL('/tools/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: 'JSON Toolkit', item: new URL('/tools/json/', Astro.site || 'https://piush.com').toString() }
           ]
         }
       ]
@@ -46,7 +46,7 @@ const pageDescription = "Format, validate, minify and inspect JSON directly in y
         <nav aria-label="Breadcrumb" class="flex items-center gap-2">
           <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
           <span>/</span>
-          <a href="/tools" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
+          <a href="/tools/" class="hover:text-[var(--accent)] transition-colors no-underline">Tools</a>
           <span>/</span>
           <span class="text-[var(--accent)] font-medium">JSON Toolkit</span>
         </nav>
@@ -367,7 +367,7 @@ const pageDescription = "Format, validate, minify and inspect JSON directly in y
           <span><kbd class="px-1.5 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] font-mono text-[11px]">Cmd/Ctrl + Shift + C</kbd> Copy Output</span>
           <span><kbd class="px-1.5 py-0.5 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] font-mono text-[11px]">Cmd/Ctrl + K</kbd> Clear</span>
         </div>
-        <a href="/tools/text" class="text-[var(--accent)] hover:underline no-underline font-medium flex items-center gap-1">
+        <a href="/tools/text/" class="text-[var(--accent)] hover:underline no-underline font-medium flex items-center gap-1">
           <span>Need text & case conversions? Open Developer Text Toolkit</span>
           <span>→</span>
         </a>
@@ -456,9 +456,9 @@ const pageDescription = "Format, validate, minify and inspect JSON directly in y
         <div class="pt-4 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-4 text-xs">
           <span class="font-medium text-[var(--color-text-muted)]">Related developer utilities:</span>
           <div class="flex flex-wrap items-center gap-3">
-            <a href="/tools/text" class="text-[var(--accent)] hover:underline no-underline font-medium">Developer Text Toolkit &rarr;</a>
-            <a href="/tools/playground" class="text-[var(--accent)] hover:underline no-underline font-medium">Online Code Playground &rarr;</a>
-            <a href="/quiz" class="text-[var(--accent)] hover:underline no-underline font-medium">Code Output Quiz &rarr;</a>
+            <a href="/tools/text/" class="text-[var(--accent)] hover:underline no-underline font-medium">Developer Text Toolkit &rarr;</a>
+            <a href="/tools/playground/" class="text-[var(--accent)] hover:underline no-underline font-medium">Online Code Playground &rarr;</a>
+            <a href="/quiz/" class="text-[var(--accent)] hover:underline no-underline font-medium">Code Output Quiz &rarr;</a>
           </div>
         </div>
       </section>

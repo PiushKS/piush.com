@@ -1,6 +1,7 @@
 ---
 title: 'Mobile Storage Showdown: Benchmarking SQLite, Realm, MMKV, and Room with 100,000 Records'
-description: 'We benchmarked reads, writes, transactions, and binary serialization on physical iPhones and Pixel devices across 100,000 real-world entities. Here are the raw stats.'
+seoTitle: "Mobile Storage Benchmarks: SQLite, Realm & MMKV"
+description: "Benchmark 100,000 real records across SQLite, Room, Realm, and MMKV on iPhone and Android. Raw speed, memory footprints, and architectural trade-offs."
 pubDate: 'Oct 24 2025'
 heroImage: '../../assets/images/hero-mobile-storage-benchmarks.webp'
 category: 'Databases'
@@ -19,7 +20,7 @@ We pitted **Raw SQLite (via C-bindings/sqflite/sqlite3)** against **Realm (Mongo
 
 ---
 
-### The Benchmark Dataset & Methodology
+## The Benchmark Dataset & Methodology
 
 To mirror realistic mobile payloads, each record represents an inspection entity containing:
 - `id`: UUID string (36 bytes)
@@ -33,11 +34,11 @@ Total uncompressed data volume across 100,000 records: **approximately 44 Megaby
 
 ---
 
-### The Raw Performance Numbers
+## The Raw Performance Numbers
 
 All benchmarks were executed in release builds with compilation optimization enabled, running after a cold device reboot. Every test ran 10 iterations; numbers reflect median timings.
 
-#### Test 1: Bulk Insertion (100,000 Records Inside a Single Transaction)
+### Test 1: Bulk Insertion (100,000 Records Inside a Single Transaction)
 
 | Storage Engine | iPhone 15 Pro | Pixel 8 | Galaxy A34 (Budget) | Disk Footprint on Flash |
 | :--- | :--- | :--- | :--- | :--- |
@@ -56,7 +57,7 @@ PRAGMA synchronous = NORMAL;
 PRAGMA temp_store = MEMORY;
 ```
 
-#### Test 2: Filtered Query & Deserialization (Fetch 5,000 Records with Filter & Sort)
+### Test 2: Filtered Query & Deserialization (Fetch 5,000 Records with Filter & Sort)
 
 Query: `SELECT * FROM audits WHERE status = 'pending' ORDER BY timestamp DESC LIMIT 5000`
 
@@ -74,7 +75,7 @@ Here the architectural differences become stark:
 
 ---
 
-### Flash Storage Durability & Corruption Safety
+## Flash Storage Durability & Corruption Safety
 
 Raw speed is useless if an unexpected battery pull or OS process termination leaves your database corrupted.
 
@@ -90,7 +91,7 @@ ACID & Crash Resilience Profile:
 
 ---
 
-### Architectural Recommendation Matrix
+## Architectural Recommendation Matrix
 
 So, which should your engineering team adopt?
 

@@ -7,12 +7,13 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://piush.com',
+  trailingSlash: 'always',
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'hover',
   },
   redirects: {
-    '/work': '/portfolio',
+    '/work': '/portfolio/',
   },
   integrations: [
     mdx(),

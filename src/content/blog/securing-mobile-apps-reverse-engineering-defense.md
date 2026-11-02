@@ -1,6 +1,7 @@
 ---
 title: 'Hardening Mobile Apps in the Wild: Practical Defense Against Frida, Reverse Engineering & Tampering'
-description: 'What actually happens when a security researcher decompiles your APK or IPA with Frida and Ghidra? Root detection, certificate pinning, and protecting sensitive keys.'
+seoTitle: "Mobile Security: Defending Against Frida & Tampering"
+description: "Practical mobile app hardening against Frida, Ghidra, and runtime hooks. Implement robust root detection, dynamic certificate pinning, and obfuscation."
 pubDate: 'May 02 2026'
 heroImage: '../../assets/images/hero-securing-mobile-apps.webp'
 category: 'Mobile Architecture'
@@ -19,7 +20,7 @@ Last quarter, ahead of an enterprise security audit for a fintech application, w
 
 ---
 
-### The Anatomy of a Frida Runtime Hook
+## The Anatomy of a Frida Runtime Hook
 
 **Frida** is a dynamic instrumentation toolkit that allows attackers to inject JavaScript snippets directly into the running native process of your application.
 
@@ -53,7 +54,7 @@ The user types `0000`, the method is intercepted in RAM, returns `true`, and the
 
 ---
 
-### Layer 1: Defeating Dynamic Hooks with Integrity Attestation
+## Layer 1: Defeating Dynamic Hooks with Integrity Attestation
 
 Client-side boolean checks can always be patched. Security must rely on **Hardware-Backed Cryptographic Attestation**:
 
@@ -65,13 +66,13 @@ Client-side boolean checks can always be patched. Security must rely on **Hardwa
 
 ---
 
-### Layer 2: Network Protection with Dynamic Certificate Pinning
+## Layer 2: Network Protection with Dynamic Certificate Pinning
 
 If an attacker installs a custom CA certificate on their device and routes traffic through **Charles Proxy** or **Burp Suite**, they can read all HTTPS network traffic, session tokens, and financial payloads in plain text.
 
 Standard TLS validation only verifies that the server certificate was signed by *any* trusted Certificate Authority in the device's trust store. Since rooted devices allow adding arbitrary CAs, standard HTTPS does not protect you.
 
-#### The Fix: Public Key Pinning (HPKP)
+### The Fix: Public Key Pinning (HPKP)
 Instead of trusting any root CA, pin the **SHA-256 hash of the server's Subject Public Key Info (SPKI)**:
 
 ```dart
@@ -94,11 +95,11 @@ If an attacker proxies traffic through a man-in-the-middle tool, the TLS handsha
 
 ---
 
-### Layer 3: Hardening Code Against Decompilation (Obfuscation)
+## Layer 3: Hardening Code Against Decompilation (Obfuscation)
 
 By default, ProGuard and R8 shrink code, but they leave symbol names and class hierarchies easily readable in decompiled output.
 
-#### R8 Full Mode (`proguard-rules.pro`):
+### R8 Full Mode (`proguard-rules.pro`):
 ```proguard
 # Enable aggressive optimization and obfuscation
 -repackageclasses 'a'
@@ -119,7 +120,7 @@ This strips symbol tables and method names from `libapp.so`. When an attacker op
 
 ---
 
-### Security Checklist for Production Mobile Apps
+## Security Checklist for Production Mobile Apps
 
 | Vulnerability Vector | Ineffective Approach | Battle-Tested Production Approach |
 | :--- | :--- | :--- |
@@ -131,6 +132,6 @@ This strips symbol tables and method names from `libapp.so`. When an attacker op
 
 ---
 
-### The Fundamental Rule
+## The Fundamental Rule
 
 Remember: **Never trust the mobile client with authorization decisions.** The mobile application is merely an untrusted display terminal. All business validation, permissions checks, transaction authorization, and data auditing must be strictly verified on your backend infrastructure.

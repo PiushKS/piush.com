@@ -1,6 +1,7 @@
 ---
 title: 'Eliminating Mobile Runtime Crashes: End-to-End Type Safety with Protocol Buffers & tRPC'
-description: 'How we eradicated undefined property exceptions on mobile clients. Comparing JSON REST, GraphQL, and Protobuf/gRPC on payload overhead and serialization benchmarks.'
+seoTitle: "End-to-End Type Safety with Protobuf & tRPC"
+description: "Eliminate runtime mobile crashes with end-to-end type safety. Benchmarks comparing REST, GraphQL, and Protobuf with tRPC for rock-solid API contracts."
 pubDate: 'Mar 22 2026'
 heroImage: '../../assets/images/hero-type-safe-mobile-api.webp'
 category: 'Engineering'
@@ -22,7 +23,7 @@ Two years ago, we initiated a company-wide initiative: **Zero runtime decoding c
 
 ---
 
-### The Contenders: Architecture Comparison
+## The Contenders: Architecture Comparison
 
 ```
 1. UNTYPED JSON REST:
@@ -40,7 +41,7 @@ Two years ago, we initiated a company-wide initiative: **Zero runtime decoding c
 
 ---
 
-### Wire Size & Serialization Benchmarks
+## Wire Size & Serialization Benchmarks
 
 We benchmarked a feed payload containing 250 items with metadata, timestamps, and nested author profiles across three serialization formats on an Android device:
 
@@ -50,14 +51,14 @@ We benchmarked a feed payload containing 250 items with metadata, timestamps, an
 | **GraphQL (Over JSON)** | 142 KB | 38.6 ms | 4.2 MB |
 | **Protocol Buffers (Binary wire)** | **48 KB (-74%)** | **9.8 ms (4.3x faster!)** | **1.1 MB (-77%)** |
 
-#### Why Is Protobuf So Much Faster?
+### Why Is Protobuf So Much Faster?
 JSON is text. To parse a JSON number `1694208400`, the mobile device must scan ten ASCII characters, check for decimal points and whitespace, and perform software base-10 arithmetic.
 
 In Protocol Buffers, numbers are packed into compact binary **Varints** and IEEE 754 floating-point bytes. The CPU copies memory directly into native structs without string tokenization or regex passes.
 
 ---
 
-### The Protobuf Contract: Guaranteed Backward Compatibility
+## The Protobuf Contract: Guaranteed Backward Compatibility
 
 In Protobuf, field names are **never sent over the wire**. Instead, fields are identified by compact numerical integer tags:
 
@@ -83,7 +84,7 @@ You cannot break mobile clients by renaming a field, because the wire protocol o
 
 ---
 
-### Where tRPC Wins: The TypeScript Full-Stack Ecosystem
+## Where tRPC Wins: The TypeScript Full-Stack Ecosystem
 
 If your backend is Node.js/Bun and your mobile stack is React Native (Expo), **tRPC** provides the ultimate developer ergonomics because it requires **zero compilation steps**.
 
@@ -126,7 +127,7 @@ If the backend developer changes a property name or removes a column, **the mobi
 
 ---
 
-### The Decision Matrix: Which Should You Use?
+## The Decision Matrix: Which Should You Use?
 
 | Requirement | Recommended Protocol |
 | :--- | :--- |
@@ -137,6 +138,6 @@ If the backend developer changes a property name or removes a column, **the mobi
 
 ---
 
-### Summary
+## Summary
 
 The era of trusting arbitrary JSON payloads on mobile clients without schema guarantees is over. Adopting Protocol Buffers or tRPC eliminates runtime `null` reference exceptions, cuts network payload sizes by up to 74%, and lets your mobile and backend teams ship updates with complete architectural confidence.

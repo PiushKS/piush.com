@@ -17,7 +17,7 @@ const toolCategories = [
       {
         title: 'JSON Toolkit',
         description: 'Format, validate and inspect JSON.',
-        href: '/tools/json',
+        href: '/tools/json/',
         chips: ['Formatter', 'Syntax Validator', 'Minifier', 'Tree Inspector', 'Sort Keys'],
         iconType: 'json',
         badge: 'Client-side AST'
@@ -25,7 +25,7 @@ const toolCategories = [
       {
         title: 'Developer Text Toolkit',
         description: 'Transform, encode and clean developer text.',
-        href: '/tools/text',
+        href: '/tools/text/',
         chips: ['10 Case Formats', 'Base64 UTF-8', 'URL & HTML', 'Deduplication', 'Metrics'],
         iconType: 'text',
         badge: 'Instant execution'
@@ -33,7 +33,7 @@ const toolCategories = [
       {
         title: 'Code Playground',
         description: 'Write, compile and run code online across 12+ programming languages.',
-        href: '/tools/playground',
+        href: '/tools/playground/',
         chips: ['Python', 'C/C++', 'JavaScript', 'Java', 'Go', 'Rust'],
         iconType: 'code',
         badge: 'Isolated Execution'
@@ -48,7 +48,7 @@ const toolCategories = [
       {
         title: 'SVG Studio',
         description: 'Edit, optimize and export SVG graphics.',
-        href: '/tools/svg',
+        href: '/tools/svg/',
         chips: ['Vector Canvas', 'SVG Optimizer', 'Color Swatches', 'PNG 1x-4x', 'Transforms'],
         iconType: 'svg',
         badge: 'Live Canvas'
@@ -56,7 +56,7 @@ const toolCategories = [
       {
         title: 'UI Design Lab',
         description: 'Visually generate CSS, colors and reusable UI styles.',
-        href: '/tools/ui',
+        href: '/tools/ui/',
         chips: ['Border Radius', 'Box Shadows', 'Gradients', 'Palette 50-950', 'Buttons & Cards'],
         iconType: 'ui',
         badge: '3-Panel Studio'
@@ -64,7 +64,7 @@ const toolCategories = [
       {
         title: 'Color Studio',
         description: 'Pick, generate, test and export modern UI color systems.',
-        href: '/tools/colors',
+        href: '/tools/colors/',
         chips: ['OKLCH Engine', '50-950 Shades', 'WCAG Contrast', 'Harmonies', 'Cross-Platform Tokens'],
         iconType: 'color',
         badge: 'Perceptual Studio'
@@ -84,7 +84,7 @@ const toolCategories = [
       '@type': 'CollectionPage',
       name: pageTitle,
       description: pageDescription,
-      url: new URL('/tools', Astro.site || 'https://piush.com').toString(),
+      url: new URL('/tools/', Astro.site || 'https://piush.com').toString(),
       hasPart: toolCategories.flatMap(c => c.tools.map(t => ({
         '@type': 'WebApplication',
         name: t.title,

@@ -1,6 +1,7 @@
 ---
 title: 'PostgreSQL Indexing Under Fire: B-Tree, BRIN, and Partial Indexes for 20M+ Rows'
-description: 'Stop putting standard B-Trees on every column. How swapping to BRIN and partial expression indexes saved 18 GB of RAM and 4x’d ingestion throughput on a production cluster.'
+seoTitle: "PostgreSQL Indexing for High-Write 20M+ Rows"
+description: "Optimize PostgreSQL for high-write workloads. How replacing B-Trees with BRIN and partial indexes saved 18 GB RAM and quadrupled ingestion throughput."
 pubDate: 'Feb 18 2026'
 heroImage: '../../assets/images/hero-postgresql-indexing.webp'
 category: 'Databases'
@@ -19,7 +20,7 @@ Here is how replacing unconstrained B-Trees with **BRIN (Block Range Index)** an
 
 ---
 
-### Why B-Trees Break Down on Massive Append-Only Tables
+## Why B-Trees Break Down on Massive Append-Only Tables
 
 A standard PostgreSQL B-Tree stores a pointer for **every single row** in your table. If your table has 30,000,000 rows, your B-Tree index has 30,000,000 leaf entries.
 
@@ -40,7 +41,7 @@ If you have five B-Tree indexes on a table (e.g. `created_at`, `status`, `user_i
 
 ---
 
-### The Secret Weapon: BRIN (Block Range Indexes)
+## The Secret Weapon: BRIN (Block Range Indexes)
 
 If your data is naturally correlated with physical insertion order (like a `created_at` timestamp, an auto-incrementing ID, or sequential sensor log dates), you almost certainly do **not** need a B-Tree.
 
@@ -60,7 +61,7 @@ WHERE created_at BETWEEN '2026-02-01' AND '2026-02-02';
 ```
 PostgreSQL consults the tiny BRIN index, instantly skips 98% of physical disk blocks that lie outside that date range, and reads only the relevant physical pages.
 
-#### Storage & RAM Comparison (20 Million Rows)
+### Storage & RAM Comparison (20 Million Rows)
 
 | Index Type | Index Size on Disk | Creation Time | RAM Buffer Footprint |
 | :--- | :--- | :--- | :--- |
@@ -70,7 +71,7 @@ PostgreSQL consults the tiny BRIN index, instantly skips 98% of physical disk bl
 
 ---
 
-### Technique 2: Partial Indexes for Skewed Status Flags
+## Technique 2: Partial Indexes for Skewed Status Flags
 
 In our telemetry table, 98% of events were processed successfully (`status = 'processed'`). Only 2% were failures requiring operational triage (`status = 'failed'`).
 
@@ -91,14 +92,14 @@ ON client_events (created_at DESC, error_code)
 WHERE status = 'failed';
 ```
 
-#### The Results:
+### The Results:
 - **Index Size**: Dropped from 1.8 GB down to **18 MB**.
 - **Insert Cost**: 98% of inserts do not touch the index at all! Zero write amplification for successful events.
 - **Query Speed**: Operations dashboard query dropped from 1,840ms to **1.8ms**.
 
 ---
 
-### Step-by-Step Production Audit Query
+## Step-by-Step Production Audit Query
 
 Want to see which unused B-Trees are currently eating your production RAM? Run this diagnostic query on your PostgreSQL cluster:
 
@@ -121,6 +122,6 @@ If you see a 4 GB index with `number_of_scans = 0` or a very low scan count, it 
 
 ---
 
-### Conclusion
+## Conclusion
 
 PostgreSQL is one of the greatest pieces of engineering software ever written, but default settings and naive indexing patterns will catch up with you at scale. Before adding your next B-Tree, ask yourself: Is this data sequentially ordered on disk? Is this query filtering for a tiny subset of rows? If so, BRIN and Partial Indexes will save your storage budget and keep your database lightning fast.

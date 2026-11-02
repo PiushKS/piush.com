@@ -41,13 +41,13 @@ const blogDescription = "In-depth engineering articles on Android, Kotlin, Flutt
           '@type': 'CollectionPage',
           name: blogTitle,
           description: blogDescription,
-          url: new URL('/blog', Astro.site || 'https://piush.com').toString()
+          url: new URL('/blog/', Astro.site || 'https://piush.com').toString()
         },
         {
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
-            { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog', Astro.site || 'https://piush.com').toString() }
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog/', Astro.site || 'https://piush.com').toString() }
           ]
         }
       ]

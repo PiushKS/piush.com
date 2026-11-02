@@ -1,6 +1,7 @@
 ---
 title: 'Hunting Down Silent Memory Leaks in High-Throughput Node.js Microservices'
-description: 'A post-mortem on debugging an elusive 12 MB/hour heap leak under 4,500 req/sec load. V8 heap snapshots, weak references, closure traps, and event listener leak detection.'
+seoTitle: "Fixing Silent Memory Leaks in Node.js Services"
+description: "Debug elusive Node.js memory leaks under heavy load. Step-by-step V8 heap snapshot comparison, weak references, closure traps, and event listener cleanups."
 pubDate: 'Jan 08 2026'
 heroImage: '../../assets/images/hero-nodejs-memory-leaks.webp'
 category: 'Engineering'
@@ -16,7 +17,7 @@ The immediate band-aid was automated container restarts. But restarts drop activ
 
 ---
 
-### The V8 Garbage Collection Mental Model
+## The V8 Garbage Collection Mental Model
 
 Node.js delegates memory management to Google's V8 engine. V8 divides the heap into two primary generations:
 1. **Young Generation (Nursery & Intermediate)**: Small (16–64 MB). Fast "Scavenge" garbage collection cycles run every few hundred milliseconds. Most objects (request payloads, short-lived promises) die here.
@@ -41,7 +42,7 @@ A leak in Node.js occurs when an object that is no longer needed remains reachab
 
 ---
 
-### Step 1: Generating Heap Snapshots in Production Without Downtime
+## Step 1: Generating Heap Snapshots in Production Without Downtime
 
 You cannot attach Chrome DevTools or a debugger directly to a production Kubernetes pod under heavy load without introducing severe latency penalties.
 
@@ -76,7 +77,7 @@ We captured three snapshots:
 
 ---
 
-### Step 2: Comparing Snapshots in Chrome DevTools
+## Step 2: Comparing Snapshots in Chrome DevTools
 
 We pulled the `.heapsnapshot` files locally and loaded them into Chrome DevTools (**Memory tab -> Load**).
 
@@ -95,7 +96,7 @@ Over 140,000 instances of `SocketContext` were alive, even though our active con
 
 ---
 
-### The Culprit: The Innocent Event Listener Trap
+## The Culprit: The Innocent Event Listener Trap
 
 Looking at the **Retainers Tree** for `SocketContext`, we traced the retention path up to the global singleton metrics client.
 
@@ -124,7 +125,7 @@ Every time a mobile user reconnected over a flaky cellular connection, a new `So
 
 ---
 
-### The Fix: WeakRefs & Explicit Cleanup
+## The Fix: WeakRefs & Explicit Cleanup
 
 We solved the issue with two surgical changes:
 
@@ -168,7 +169,7 @@ this.eventEmitter.on('telemetry_tick', () => {
 
 ---
 
-### The Impact: Flat 140 MB Memory Line
+## The Impact: Flat 140 MB Memory Line
 
 Following the deployment, memory stabilized at a flat **138 MB RSS**, running continuously for 30 days without a single restart.
 

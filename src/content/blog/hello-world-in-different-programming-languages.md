@@ -1,6 +1,7 @@
 ---
-title: '"Hello World" In Different Programming Languages'
-description: 'Here are some examples of how to write a "Hello, world!" program in various programming languages:'
+title: "Hello World in Different Programming Languages"
+seoTitle: "Hello World in 20+ Programming Languages"
+description: "Explore how to write a clean Hello World program across 20+ programming languages including Python, Java, Rust, Swift, Go, Kotlin, TypeScript and C++."
 pubDate: 'Mar 21 2023'
 heroImage: '../../assets/images/hello_world.png'
 tags: ['helloworld']
@@ -9,13 +10,13 @@ author: Piush KS
 
 Here are some examples of how to write a "Hello, world!" program in various programming languages:
 
-### Python:
+## Python
 
 ```python
 print("Hello, world!")
 ```
 
-### Java:
+## Java
 
 ```java
 public class HelloWorld {
@@ -25,7 +26,7 @@ public class HelloWorld {
 }
 ```
 
-### C:
+## C
 
 ```c
 #include <stdio.h>
@@ -36,7 +37,7 @@ int main() {
 }
 ```
 
-### C++:
+## C++
 
 ```c++
 #include <iostream>
@@ -47,19 +48,19 @@ int main() {
 }
 ```
 
-### JavaScript:
+## JavaScript
 
 ```javascript
 console.log("Hello, world!");
 ```
 
-### Ruby:
+## Ruby
 
 ```ruby
 puts "Hello, world!"
 ```
 
-### PHP:
+## PHP
 
 ```php
 <?php
@@ -67,7 +68,7 @@ echo "Hello, world!";
 ?>
 ```
 
-### Go:
+## Go
 
 ```go
 package main
@@ -79,45 +80,45 @@ func main() {
 }
 ```
 
-### Swift:
+## Swift
 ```swift
 print("Hello, world!")
 ```
 
-### Dart:
+## Dart
 ```dart
 void main() {
   print('Hello, World!');
 }
 ```
 
-### Rust:
+## Rust
 ```rust
 fn main() {
     println!("Hello, world!");
 }
 ```
 
-### Kotlin:
+## Kotlin
 ```kotlin
 fun main() {
     println("Hello, world!")
 }
 ```
 
-### Lua:
+## Lua
 
 ```lua
 print("Hello, world!")
 ```
 
-### Perl:
+## Perl
 
 ```perl
 print "Hello, world!\n";
 ```
 
-### Bash:
+## Bash
 
 ```bash
 #!/bin/bash

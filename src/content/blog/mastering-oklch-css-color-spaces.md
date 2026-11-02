@@ -1,6 +1,7 @@
 ---
 title: 'Why RGB Is Broken for Design Systems: Mastering OKLCH and Perceptual Color Spaces in CSS'
-description: 'Why your calculated HEX and HSL hover states look muddy or blinding. How OKLCH solves perceptual uniformity across light/dark modes with actionable CSS tokens.'
+seoTitle: "Mastering OKLCH and Perceptual Color Spaces in CSS"
+description: "Why RGB and HSL break design systems. Learn how OKLCH solves perceptual uniformity across light and dark modes with robust modern CSS color design tokens."
 pubDate: 'Dec 05 2025'
 heroImage: '../../assets/images/hero-mastering-oklch-css.webp'
 category: 'Design Systems'
@@ -22,7 +23,7 @@ Enter **OKLCH**, the CSS Color Module Level 4 standard that is quietly revolutio
 
 ---
 
-### The Anatomy of OKLCH
+## The Anatomy of OKLCH
 
 In modern CSS (supported natively across Chrome, Safari, Firefox, and Edge since 2023), `oklch()` breaks a color into three perceptual coordinates:
 
@@ -49,7 +50,7 @@ The revolutionary distinction: **Lightness in OKLCH represents perceived human l
 
 ---
 
-### Why HSL Fails at UI State Generation
+## Why HSL Fails at UI State Generation
 
 Watch what happens when you build a hover state in HSL vs. OKLCH:
 
@@ -82,7 +83,7 @@ Because OKLCH is linear with respect to human perception, bumping lightness by `
 
 ---
 
-### Accessing Wider Color Gamuts (Display P3)
+## Accessing Wider Color Gamuts (Display P3)
 
 Another critical advantage: sRGB covers only about **35% of the visible colors** the human eye can discern. Modern Apple Retina displays and OLED panels can display the much wider **Display P3** color gamut.
 
@@ -98,7 +99,7 @@ In OKLCH, high-chroma values (e.g. `C > 0.22`) naturally stretch into Display P3
 
 ---
 
-### Building an Automated 50–950 Shade Scale
+## Building an Automated 50–950 Shade Scale
 
 Instead of manually picking 11 hexadecimal codes in Figma and hoping their contrast ratios hold up in dark mode, you can calculate an entire 11-step design token system with simple CSS variables:
 
@@ -126,6 +127,6 @@ Notice how chroma gently scales down at the extreme ends (`50` and `950`). This 
 
 ---
 
-### Key Takeaway for Modern Frontends
+## Key Takeaway for Modern Frontends
 
 If your project is built in 2025 or beyond, there is virtually zero architectural reason to define new design system primitives in raw HEX or HSL. OKLCH guarantees mathematical predictability, unlocks vivid P3 hardware displays, and ensures your accessibility contrast calculations remain truthful across every screen.
