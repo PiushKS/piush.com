@@ -1,5 +1,5 @@
 /**
- * Plushie — a photo you can grab and stretch like a soft toy.
+ * Plushie - a photo you can grab and stretch like a soft toy.
  *
  * The picture is a textured grid. Each node carries a displacement `u` from
  * where it belongs, and the whole sheet obeys a damped wave equation with a
@@ -702,8 +702,8 @@ export async function createPlushie(canvas, options = {}) {
 
   // The end of a touch or a grab. With the event of a pointer lifting it is a
   // release (or, from a finger that never took hold, a tap); with anything
-  // else — the browser taking the finger for a scroll, a second finger, the
-  // window losing focus, the tab being hidden — he is simply let go of, and
+  // else - the browser taking the finger for a scroll, a second finger, the
+  // window losing focus, the tab being hidden - he is simply let go of, and
   // makes nothing of it.
   function letGo(e) {
     const lifted = !!e && e.type === "pointerup";
@@ -1229,8 +1229,8 @@ export async function createPlushie(canvas, options = {}) {
   // --- frame loop ------------------------------------------------------
   let raf = 0, last = 0, quiet = 0;
   // What he is up to, for add-ons (sound, props, the lab's readout). `pull`,
-  // `speed` and `stretch` — how far the hand has pulled, how fast it is
-  // moving, the furthest any skin is from home — are in image widths.
+  // `speed` and `stretch` - how far the hand has pulled, how fast it is
+  // moving, the furthest any skin is from home - are in image widths.
   // `finger` is whether the last pointer seen was a finger (null: none yet).
   const state = { pull: 0, speed: 0, stretch: 0, grabbing: false, look: "", face: "", act: null, ghost: null, blink: 0, finger: null };
 

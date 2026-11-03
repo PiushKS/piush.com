@@ -1,5 +1,5 @@
 /**
- * Squeak — optional rubber-toy sounds for a Plushie.
+ * Squeak - optional rubber-toy sounds for a Plushie.
  *
  * Everything is synthesised; there are no audio files. A stretched-rubber
  * creak follows the pull (higher the further it goes, louder the faster the

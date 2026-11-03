@@ -71,8 +71,8 @@ for (const filePath of htmlFiles) {
     errors++;
   } else {
     const title = titleMatch[1].trim();
-    if (title.includes('—')) {
-      console.error(`❌ [${route}] Title contains prohibited em-dash '—': "${title}"`);
+    if (title.includes('\u2014')) {
+      console.error(`❌ [${route}] Title contains prohibited em-dash (U+2014): "${title}"`);
       errors++;
     }
     if (!isDemo && !is404 && titlesSeen.has(title)) {
@@ -93,8 +93,8 @@ for (const filePath of htmlFiles) {
     }
   } else {
     const desc = descMatch[1].trim();
-    if (desc.includes('—')) {
-      console.error(`❌ [${route}] Description contains prohibited em-dash '—'`);
+    if (desc.includes('\u2014')) {
+      console.error(`❌ [${route}] Description contains prohibited em-dash (U+2014)`);
       errors++;
     }
     if (!isDemo && !is404 && descriptionsSeen.has(desc)) {

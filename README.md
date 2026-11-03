@@ -1,4 +1,4 @@
-# Piush KS — Mobile Architect, Full-Stack Engineer & Solopreneur
+# Piush KS – Mobile Architect, Full-Stack Engineer & Solopreneur
 
 [![Website](https://img.shields.io/badge/Website-piush.com-1B5448?style=flat&logo=googlechrome&logoColor=white)](https://piush.com/)
 [![Astro 5](https://img.shields.io/badge/Astro-5.x-BC52EE?style=flat&logo=astro&logoColor=white)](https://astro.build/)
@@ -6,7 +6,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The official source code for [**piush.com**](https://piush.com/) — a lightning-fast, production-hardened developer platform, engineering blog, and privacy-first web utilities suite built by **Piush KS**.
+The official source code for [**piush.com**](https://piush.com/) – a lightning-fast, production-hardened developer platform, engineering blog, and privacy-first web utilities suite built by **Piush KS**.
 
 Built with **Astro 5 SSG**, **Tailwind CSS v4**, **TypeScript**, and **Starwind UI design tokens**, the site achieves near-instant page loads, 100/100 Core Web Vitals, and strict SEO compliance with zero client-side tracking or telemetry.
 
