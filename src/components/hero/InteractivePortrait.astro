@@ -19,14 +19,28 @@ const { class: className = "" } = Astro.props;
       <div class="plush-frame"></div>
 
       <!-- The plain photograph (shows until WebGL is up, and as accessible fallback) -->
-      <img
-        id="portrait-fallback"
-        src="/images/portrait/piush.png?v=2"
-        alt="Piush Kumar Singh - Senior Software Engineer"
-        width="700"
-        height="700"
-        loading="eager"
-      />
+      <picture>
+        <source
+          type="image/avif"
+          srcset="/images/portrait/piush-600.avif 600w, /images/portrait/piush.avif 840w"
+          sizes="(max-width: 640px) 340px, 420px"
+        />
+        <source
+          type="image/webp"
+          srcset="/images/portrait/piush-600.webp 600w, /images/portrait/piush.webp 840w"
+          sizes="(max-width: 640px) 340px, 420px"
+        />
+        <img
+          id="portrait-fallback"
+          src="/images/portrait/piush-600.webp"
+          alt="Piush Kumar Singh - Senior Software Engineer"
+          width="420"
+          height="420"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </picture>
 
       <!-- WebGL Canvas for elastic soft-toy skin mesh simulation -->
       <canvas id="portrait-canvas"></canvas>
@@ -90,12 +104,14 @@ const { class: className = "" } = Astro.props;
     border: 2px solid rgba(27, 84, 72, 0.85);
   }
 
-  .plush[data-frame="circle"] > :is(img, .plush-hit) {
+  .plush[data-frame="circle"] > :is(img, picture, .plush-hit) {
     border-radius: 50%;
     clip-path: circle(50% at 50% 50%);
   }
 
   .plush > img,
+  .plush > picture,
+  .plush > picture > img,
   .plush-hit {
     position: absolute;
     inset: 0;
@@ -103,13 +119,15 @@ const { class: className = "" } = Astro.props;
     height: 100%;
   }
 
-  .plush > img {
+  .plush > img,
+  .plush > picture > img {
     z-index: 2;
     object-fit: cover;
     transition: opacity 0.2s ease;
   }
 
-  .plush.is-live > img {
+  .plush.is-live > img,
+  .plush.is-live > picture {
     opacity: 0;
     pointer-events: none;
   }
@@ -157,10 +175,6 @@ const { class: className = "" } = Astro.props;
 </style>
 
 <script>
-  import { createPlushie } from './plushie.js';
-  import { attachSqueak } from './squeak.js';
-  import confetti from 'canvas-confetti';
-
   let currentPlush: any = null;
   let currentSqueak: any = null;
   let initializedCanvas: HTMLCanvasElement | null = null;
@@ -187,11 +201,20 @@ const { class: className = "" } = Astro.props;
     if (initializedCanvas === canvas || isInitializing) return;
 
     isInitializing = true;
-    await cleanup();
 
     try {
+      // Dynamic imports preserve main thread and keep initial load bundle ultra-lean
+      const [{ createPlushie }, { attachSqueak }, confettiModule] = await Promise.all([
+        import('./plushie.js'),
+        import('./squeak.js'),
+        import('canvas-confetti'),
+      ]);
+      const confetti = confettiModule.default || confettiModule;
+
+      await cleanup();
+
       const plush = await createPlushie(canvas, {
-        faces: { smile: '/images/portrait/piush.png?v=2' },
+        faces: { smile: '/images/portrait/piush.webp' },
         hit: hitBtn,
         frame: { kind: 'circle', x: 0.5, y: 0.5, r: 0.5 },
         pad: 0.3,
@@ -251,12 +274,42 @@ const { class: className = "" } = Astro.props;
     }
   }
 
+  // Schedule WebGL initialization on user interaction OR when main thread is idle
+  function scheduleInit() {
+    const root = document.getElementById('portrait-root');
+    if (!root) return;
+
+    let triggered = false;
+    const trigger = () => {
+      if (triggered) return;
+      triggered = true;
+      cleanupListeners();
+      initInteractivePortrait();
+    };
+
+    const cleanupListeners = () => {
+      root.removeEventListener('pointerenter', trigger);
+      root.removeEventListener('pointerdown', trigger);
+      root.removeEventListener('focusin', trigger);
+    };
+
+    root.addEventListener('pointerenter', trigger, { once: true, passive: true });
+    root.addEventListener('pointerdown', trigger, { once: true, passive: true });
+    root.addEventListener('focusin', trigger, { once: true, passive: true });
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => trigger(), { timeout: 2000 });
+    } else {
+      setTimeout(trigger, 1500);
+    }
+  }
+
   // Support initial load and Astro View Transitions
-  document.addEventListener('astro:page-load', initInteractivePortrait);
+  document.addEventListener('astro:page-load', scheduleInit);
   document.addEventListener('astro:before-swap', cleanup);
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    initInteractivePortrait();
+    scheduleInit();
   }
 </script>
 

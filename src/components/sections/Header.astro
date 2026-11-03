@@ -7,9 +7,12 @@ import HeaderLink from './HeaderLink.astro';
   <nav class="w-full px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between">
     <!-- Brand Logo / Name -->
     <div class="flex items-center gap-6">
-      <a class="no-underline group flex items-center gap-2.5" href="/" aria-label="Home">
+      <a class="no-underline group flex items-center gap-2.5" href="/" aria-label="Piush. - Home">
         <div class="relative size-9 rounded-xl overflow-hidden ring-1 ring-[var(--color-border)] group-hover:ring-[var(--accent)] transition-all duration-300 shadow-sm flex items-center justify-center bg-[var(--color-bg-secondary)] group-hover:scale-105 group-hover:-rotate-3">
-          <img src="/favicon.png?v=1" alt="Piush KS" class="w-full h-full object-cover transition-transform duration-300" width="36" height="36" />
+          <picture>
+            <source srcset="/images/avatar-72.webp" type="image/webp" />
+            <img src="/images/avatar-72.png" alt="Piush KS" class="w-full h-full object-cover transition-transform duration-300" width="36" height="36" loading="eager" decoding="async" />
+          </picture>
         </div>
         <span class="font-bold text-lg tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
           Piush<span class="text-[var(--accent)]">.</span>

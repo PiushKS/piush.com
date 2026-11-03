@@ -19,6 +19,8 @@ import GlowLineSeparator from '../components/ui/separator/GlowLineSeparator.astr
 <html lang="en" data-theme="light">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <link rel="preload" as="image" href="/images/portrait/piush-600.webp" type="image/webp" media="(max-width: 640px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/portrait/piush.webp" type="image/webp" media="(min-width: 641px)" fetchpriority="high" />
     <!-- JSON-LD: Person & WebSite Entities -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',

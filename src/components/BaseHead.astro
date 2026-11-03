@@ -56,12 +56,13 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
 />
 <meta name="generator" content={Astro.generator} />
 
-<!-- ✅ Umami Analytics -->
+<!-- ✅ Umami Analytics (Runs only on production piush.com) -->
 <script
   is:inline
   defer
   src="https://cloud.umami.is/script.js"
   data-website-id="a20b757f-1391-4280-908f-a846b9734e76"
+  data-domains="piush.com,www.piush.com"
 ></script>
 
 <!-- Font preloads -->

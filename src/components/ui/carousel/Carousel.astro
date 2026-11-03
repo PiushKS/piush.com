@@ -16,7 +16,7 @@ const { tools = [], speedMs = 45000 } = Astro.props as Props;
       class="flex w-max will-change-transform animate-carousel items-center gap-4 py-2"
       style={`animation-duration: ${speedMs}ms`}
     >
-      {[...tools, ...tools, ...tools].map((tool) => (
+      {[...tools, ...tools].map((tool) => (
         <div class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--color-border)] hover:border-[rgba(var(--accent-rgb),0.35)] hover:bg-[var(--color-bg-tertiary)] transition-all duration-200 shadow-xs cursor-default">
           <div class="size-6 flex items-center justify-center shrink-0">
             <img
