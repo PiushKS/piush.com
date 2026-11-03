@@ -1,429 +1,226 @@
-# Astro + Starwind UI Blog Template
+# Piush KS — Mobile Architect, Full-Stack Engineer & Solopreneur
 
-<img width="1536" height="1024" alt="free-astro-theme" src="https://github.com/user-attachments/assets/0419a038-def9-4e88-916d-23add03ce366" />
+[![Website](https://img.shields.io/badge/Website-piush.com-1B5448?style=flat&logo=googlechrome&logoColor=white)](https://piush.com/)
+[![Astro 5](https://img.shields.io/badge/Astro-5.x-BC52EE?style=flat&logo=astro&logoColor=white)](https://astro.build/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38BDF8?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Production-ready Astro blog using Tailwind CSS v4 and Starwind UI patterns, with a full theming system via CSS variables and reusable `.astro` components.
+The official source code for [**piush.com**](https://piush.com/) — a lightning-fast, production-hardened developer platform, engineering blog, and privacy-first web utilities suite built by **Piush KS**.
 
-Demo at https://piush.com/
+Built with **Astro 5 SSG**, **Tailwind CSS v4**, **TypeScript**, and **Starwind UI design tokens**, the site achieves near-instant page loads, 100/100 Core Web Vitals, and strict SEO compliance with zero client-side tracking or telemetry.
 
-## ✨ Features
+---
 
-- ✅ Astro SSG with fast dev experience
-- ✅ Tailwind CSS v4 + Starwind UI patterns and theming
-- ✅ Dark theme via CSS variables (`.dark` / `[data-theme="dark"]`)
-- ✅ Centralized data in TypeScript (`skills`, `work`, `studies`, `projects`, `logos`)
-- ✅ Reusable UI components (Badge, Button, Timeline, Carousel, Separators)
-- ✅ Organized sections (Header, Hero, Skills, Work Experience, Studies, Footer)
-- ✅ Blog with Markdown & MDX content collections
-- ✅ SEO: canonical URLs, OpenGraph, sitemap, RSS feed, sharing icons, etc
-- ✅ Accessibility-oriented tokens (contrast-ready) and card surface utilities
+## 📸 Website Screens & Visual Showcase
 
-<img width="941" height="519" alt="image" src="https://github.com/user-attachments/assets/e88187b8-6ed1-459e-bb81-61b64e06ee2a" />
+### 🏠 Home & Engineering Portfolio
+*Modern personal brand, interactive experience metrics, live skills carousel, and featured mobile/cloud projects.*
 
-## 🔧 Requirements
+![Piush.com Home Screen](./public/screenshots/home.png)
 
-- Node.js 18+ (or 20+ recommended)
-- npm (or pnpm/yarn)
+---
 
-## 🚀 Quick Start
+### 🛠️ Developer & Design Tools Hub
+*100% client-side, zero-telemetry suite of utilities for mobile engineers, frontend developers, and UI designers.*
 
-```bash
-# 1) Install deps
-npm install
+![Developer Tools Hub](./public/screenshots/tools.png)
 
-# 2) Start dev server
-npm run dev
-# open http://localhost:4321
-```
+---
 
-Build and preview:
+### ⚡ Code Output Challenge (550+ Questions)
+*Interactive programming output challenge supporting 9 languages, multiple challenge modes, streak tracking, and lifetime stats.*
 
-```bash
-npm run build
-npm run preview
-```
+![Code Output Challenge](./public/screenshots/quiz.png)
+
+---
+
+### 💻 Multi-Language Online Compiler & Playground
+*Instant browser-based code playground supporting Python, JavaScript, Java, C, C++, Kotlin, Swift, Dart, Go, and Rust.*
+
+![Online Compiler Playground](./public/screenshots/tools-playground.png)
+
+---
+
+### ✍️ Technical Systems & Architecture Blog
+*Deep dives into mobile engineering, memory profiling, system architecture, render pipelines, and zero-bundle frontend patterns.*
+
+![Technical Blog](./public/screenshots/blog.png)
+
+---
+
+### 👤 About Piush KS & Engineering Journey
+*Interactive timeline documenting an 8-year evolution across iOS, Android, cross-platform apps, and distributed cloud systems.*
+
+![About Piush KS](./public/screenshots/about.png)
+
+---
+
+## 🙋‍♂️ About Piush KS
+
+I am a **Senior Mobile Architect, Full-Stack Engineer, and Solopreneur** with **8+ years of production experience** engineering resilient client applications and distributed systems scaled to **over 10M+ users globally**.
+
+### 🛠️ Core Stack & Expertise:
+- **Mobile Engineering**: Swift (iOS / UIKit / SwiftUI), Kotlin (Android / Jetpack Compose), Flutter, React Native, Cross-platform architecture.
+- **Client Storage & Sync**: Room DB, SQLite, MMKV, Realm, Offline-First Sync & Conflict Resolution.
+- **Backend & Cloud Systems**: Node.js, TypeScript, PostgreSQL, Redis, Docker, Kafka, gRPC, AWS, RESTful & GraphQL APIs.
+- **Frontend & Web**: Astro, React, Tailwind CSS, WebAssembly, Starwind UI design systems.
+- **Engineering Principles**: High Craft & Speed • Resilient Architecture • Builder Mindset.
+
+### 📬 Connect & Contact
+- **Website**: [https://piush.com/](https://piush.com/)
+- **Email**: [hi@piush.com](mailto:hi@piush.com)
+- **GitHub**: [@PiushKS](https://github.com/PiushKS)
+- **LinkedIn**: [Piush KS](https://linkedin.com/in/piush-ks)
+- **X (Twitter)**: [@piush_ks](https://x.com/piush_ks)
+
+---
+
+## ✨ Features & Architecture
+
+### 1. 🧰 100% Client-Side Developer Tools (`/tools/`)
+All developer tools execute purely inside the browser using JavaScript and WebAssembly. **Zero data leaves the user's device.**
+- **JSON Toolkit (`/tools/json/`)**: Format, minify, sort keys, inspect tree nodes, and validate JSON syntax with instant error highlighting.
+- **Developer Text Toolkit (`/tools/text/`)**: Convert 10 case formats (camelCase, snake_case, PascalCase, kebab-case, CONSTANT_CASE, etc.), encode/decode Base64 UTF-8, URL encode, HTML entity escape, clean whitespace, and calculate character metrics.
+- **Code Playground & Compiler (`/tools/playground/`)**: Multi-language code editor and execution sandbox with templates for Python, JS, C, C++, Java, Kotlin, Swift, Go, and Rust.
+- **SVG Studio (`/tools/svg/`)**: Real-time SVG editor, SVG path optimizer/minifier, and high-DPI PNG exporter.
+- **UI Design Studio (`/tools/ui/`)**: Visual generator for CSS glassmorphism, neumorphism, complex multi-layer box shadows, and gradient backgrounds with exportable CSS tokens.
+- **Color Space Studio (`/tools/colors/`)**: Advanced color conversions across OKLCH, HEX, RGB, and HSL with contrast checking and palette generation.
+
+### 2. 🎯 Code Output Challenge Quiz (`/quiz/`)
+- **550+ Hand-Curated Questions**: Spanning C, C++, Java, Python, JavaScript, Kotlin, Swift, Dart, and Go.
+- **Diverse Game Modes**: Quick Challenge (5 questions), Standard Quiz (10 questions), Deep Challenge (20 questions), Daily Challenge, Endless Mode, and Single-Language Drills.
+- **Client-Side Engine**: Randomized question generation, streak tracking via localStorage, instantaneous feedback explanations, and confetti animations.
+
+### 3. 📚 Technical Systems Engineering Blog (`/blog/`)
+- **16 Deep-Dive Architecture Articles**: Real-world benchmarks, memory leak prevention in Node.js, OKLCH color spaces, Flutter render pipeline internals, React Native new architecture benchmarks, SQLite vs Realm vs MMKV, etc.
+- **Content Collections Schema**: Strict frontmatter validation using Zod with `seoTitle`, `pubDate`, `tags`, `category`, and `readingTime`.
+- **Taxonomy & Discovery**: Multi-tag filtering (`/tags/`, `/blog/tag/[tag]/`), paginated listing (`/blog/page/[page]/`), and instantaneous client-side search via Fuse.js.
+- **Full RSS Feed**: Global RSS feed (`/rss.xml`) with autodiscovery tags on every page.
+
+### 4. 🚀 Top-Tier SEO & Performance Architecture
+- **Canonical Trailing Slash Routing**: Strict trailing slash enforcement (`trailingSlash: 'always'`) eliminating crawl duplicates across all internal links, sitemaps, and Apache rewrites.
+- **Structured Data (JSON-LD)**: Rich schema markup including `ProfilePage`, `WebApplication`, `BreadcrumbList`, and `BlogPosting`.
+- **Automated Quality Checks**: Dedicated test suites `npm run validate:seo` (checks sitemaps, meta tags, and broken links across 74 static pages) and `npm run validate:quiz` (verifies all 550 quiz entries).
+- **Core Web Vitals**: Lossless asset compression, font preloading, zero layout shifts, and inline SVG rendering.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Framework** | [Astro 5](https://astro.build/) (Static Site Generation / SSG) |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/), Starwind UI Design Tokens |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) |
+| **Content** | Markdown & MDX with Content Collections (`astro:content`) |
+| **Icons & Media** | Tabler Icons, Custom Handcrafted SVGs, Lottie Web Animations |
+| **Search & Logic** | Fuse.js (Client-side indexing), Canvas Confetti |
+| **Image Processing**| Sharp 0.35.5 (Lossless compression & AVIF/WebP generation) |
+| **Hosting** | Apache / LiteSpeed (Hostinger) with custom `.htaccess` optimization |
+
+---
 
 ## 📁 Project Structure
 
 ```text
-free-astro-template/
+piush.com/
 ├── public/
-│   └── favicon.svg
+│   ├── .htaccess             # Production Apache rewrite, caching & security rules
+│   ├── robots.txt            # Crawl instructions pointing to canonical sitemap
+│   ├── data/quiz/            # 550+ verified coding questions in JSON
+│   ├── screenshots/          # High-resolution website screenshot showcase
+│   └── images/               # High-efficiency avatars and portraits
 ├── src/
-│   ├── assets/
-│   │   ├── icons/               # Inline icons for UI (e.g., timeline)
-│   │   ├── images/              # JPG/PNG hero/blog images
-│   │   └── logos/               # Brand logos used by Carousel & projects
+│   ├── assets/               # Raw SVG logos, UI icons, and illustrations
 │   ├── components/
-│   │   ├── sections/            # Page sections
-│   │   │   ├── Header.astro
-│   │   │   ├── Footer.astro
-│   │   │   ├── HeroSection.astro
-│   │   │   ├── SkillsSection.astro
-│   │   │   ├── WorkExperience.astro
-│   │   │   └── Studies.astro
-│   │   └── ui/                  # Reusable UI components
-│   │       ├── badge/Badge.astro
-│   │       ├── button/Button.astro
-│   │       ├── card/            # Card variants (e.g., PostCard)
-│   │       ├── carousel/Carousel.astro
-│   │       ├── separator/
-│   │       │   ├── ArrowSeparator.astro
-│   │       │   └── GlowLineSeparator.astro
-│   │       └── timeline/Timeline.astro
+│   │   ├── quiz/             # Code challenge game boards, counters, results
+│   │   ├── sections/         # Header, Hero, Skills, Portfolio, Tools, Footer
+│   │   └── ui/               # Reusable buttons, badges, modals, search, cards
 │   ├── content/
-│   │   └── blog/                # Markdown & MDX posts
-│   ├── data/                    # All structured data for sections/UI
-│   │   ├── skills.ts
-│   │   ├── work.ts
-│   │   ├── studies.ts
-│   │   ├── projects.ts
-│   │   └── logos.ts             # Globs SVG logos and normalizes names
-│   ├── layouts/
-│   │   └── BlogPost.astro
-│   ├── lib/
-│   │   └── svg.ts               # sanitizeToOutline(svg, size)
+│   │   └── blog/             # 16 in-depth systems engineering markdown posts
+│   ├── data/                 # Centralized site data (skills, projects, timeline)
+│   ├── layouts/              # BaseHead, BlogPost, Root Layout templates
 │   ├── pages/
-│   │   ├── index.astro
-│   │   ├── about.astro
-│   │   ├── portfolio.astro
-│   │   ├── demo.astro  # Component showcase
-│   │   └── blog/[...slug].astro
-│   └── styles/
-│       ├── global.css           # Imports base styles in correct order
-│       ├── starwind.css         # Tailwind + Starwind base & layer order
-│       ├── tokens.css           # Light tokens & Starwind variable mapping
-│       ├── themes/dark.css      # Dark theme overrides
-│       └── utilities.css        # Project utilities, effects, animations
-├── astro.config.mjs
-├── starwind.config.json
-├── tsconfig.json
-└── package.json
+│   │   ├── index.astro       # Homepage
+│   │   ├── about.astro       # Engineering story & career timeline
+│   │   ├── portfolio.astro   # Projects & client work
+│   │   ├── quiz.astro        # Code Output Challenge
+│   │   ├── tags.astro        # Topics directory
+│   │   ├── tools/            # JSON, Text, SVG, UI, Colors, Playground tools
+│   │   └── blog/             # Blog archives, paginated views, and post routes
+│   └── styles/               # Tailwind base, dark mode tokens, typography utilities
+├── scripts/
+│   ├── build-quiz-database.mjs # Quiz bundle aggregator
+│   ├── validate-quiz.mjs       # Question schema & integrity validator
+│   └── validate-seo.mjs        # Production SEO & structured data linter
+└── astro.config.mjs          # Astro build & integration configuration
 ```
-
-## 🧩 Components & Sections
-
-- Header: favicon brand mark, left‑aligned nav, social icons with hover color.
-- HeroSection: primary CTAs via shared `Button` component.
-- SkillsSection: pulls data from `src/data/skills.ts`; icon hover effects.
-- WorkExperience: uses `Timeline.astro`, icons sanitized via `lib/svg.ts`.
-- Studies: simple list of studies from `src/data/studies.ts`.
-- UI components: `Badge`, `Button`, `Timeline`, `Carousel`, `ArrowSeparator`, `GlowLineSeparator`.
-
-Note: Keep components free of scoped CSS whenever possible. Prefer utilities in `styles/utilities.css` and design tokens in `styles/tokens.css` and `styles/themes/dark.css`.
-
-## 🎨 Theming & Styles
-
-This template uses Starwind UI’s theming patterns with Tailwind v4:
-
-- `src/styles/starwind.css`: imports Tailwind and Starwind base layers.
-- `src/styles/tokens.css`: base light tokens and maps to Starwind variables.
-- `src/styles/themes/dark.css`: dark mode overrides (backgrounds, text, shadows, semantic colors).
-- `src/styles/utilities.css`: project‑specific utilities and effects, including:
-  - `.card-surface` surface style (translucent background, radius, shadow, backdrop-filter)
-  - Carousel animation (`@keyframes carousel-scroll`, `.animate-carousel`)
-  - Separator effects (arrow and glow line)
-
-Dark mode is enabled by applying `.dark` or `[data-theme="dark"]` on a root element. The home page defaults to dark. To customize:
-
-1) Edit tokens in `styles/tokens.css` (light theme base).
-2) Refine dark theme overrides in `styles/themes/dark.css` (e.g., `--background`, `--card`, shadows, semantic colors).
-3) Prefer adjusting `.card-surface` and utilities in `styles/utilities.css` instead of component‑scoped styles.
-
-Accessibility: If Lighthouse flags contrast, slightly increase background luminance and/or raise text contrast by tweaking tokens in `dark.css` (e.g., `--background`, `--card`, and text color variables).
-
-## 🗂️ Editing Content
-
-- Blog posts: add Markdown or MDX files under `src/content/blog/`.
-- Skills: edit `src/data/skills.ts` (icon, title, description). Inline SVGs are supported.
-- Work experience: edit `src/data/work.ts` (title, company, region, description, technologies).
-- Studies: edit `src/data/studies.ts`.
-- Projects: edit `src/data/projects.ts` (icon, title, stack, description, link).
-- Logos for carousel: drop SVGs into `src/assets/logos/`. They’re collected and normalized by `src/data/logos.ts` using `import.meta.glob` (configured for Vite v5 with `{ query: '?url', import: 'default', eager: true }`). Names like "Something-logo.svg" are normalized by removing the "logo" suffix and title-casing automatically.
-
-## 🧠 SVG Handling
-
-- Use `lib/svg.ts` → `sanitizeToOutline(svg: string, size: number)` to normalize inline SVGs (removes XML/comments, forces `fill="none"`, `stroke="currentColor"`, and applies width/height). This keeps timeline icons crisp and themable.
-
-## 🖱️ Carousel Usage
-
-- Component: `src/components/ui/carousel/Carousel.astro`
-- Data: `src/data/logos.ts`
-- Props:
-  - `tools`: array of normalized logos from `logos.ts`
-  - `speedMs` (optional): lower value → faster scroll. Increase to slow down.
-- Behavior: logos render as white by default; on hover, they reveal their original colors.
-
-## 📌 Adding logos to the carousel
-
-- Drop SVGs in `src/assets/logos/` and they’ll be auto‑globbed by `src/data/logos.ts`. Names are normalized (removes `-logo`, title‑cases, etc.).
-
-## 🧰 Cards & Surfaces
-
-- Use the `.card-surface` utility for consistent cards:
-  - dark, translucent background via `--card`
-  - no border; rely on shadows for depth
-  - heavier base shadow in dark mode; lighter on hover with accent glow
-- Tweak in `styles/utilities.css` and `styles/themes/dark.css`.
-
-## 🔗 Header & Footer
-
-- Header nav is left‑aligned; social icons use group hover to change icon color on hover.
-- Footer includes a CTA with a primary button.
-
-## 🧞 Commands (Astro)
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Install dependencies                             |
-| `npm run dev`             | Start dev server at `http://localhost:4321`      |
-| `npm run build`           | Build production site to `./dist/`               |
-| `npm run preview`         | Preview your build locally                       |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## ✅ Best Practices
-
-- Keep `.astro` files free of component‑scoped CSS unless absolutely necessary.
-- Centralize design decisions in `tokens.css`, `themes/dark.css`, and `utilities.css`.
-- Prefer data‑driven components: move content into `src/data/` and import into sections.
-- Use inline SVGs for icons when you need themable stroke/fill control; otherwise reference static assets from `src/assets/`.
-
-## 🛰️ Demo Page
-
-Visit `/demo` to see the themed Starwind UI components (Badge, Button, Timeline, Carousel) with this template’s styling.
 
 ---
 
-Docs: [Astro Docs](https://docs.astro.build) • [Starwind UI](https://starwind.dev)
+## 🚀 Quick Start & Development
 
-## 🧭 What’s Included (quick reference)
+### 1. Prerequisites
+- **Node.js**: `v20.0.0` or higher
+- **Package Manager**: `npm`
 
-- Blog content collections (Markdown + MDX) with author, tags, and category taxonomy
-- Author pages (slugified), Tag pages, Category pages
-- Reading time estimation for cards and posts
-- Share buttons (X, HN, LinkedIn, Reddit)
-- Previous/Next post navigation
-- RSS feeds: global, per‑tag, per‑category (+ autodiscovery `<link>` on pages)
-- SEO: canonical URLs, Open Graph + Twitter cards, JSON‑LD (Article, Breadcrumbs, Organization), sitemap
-- Robots: `public/robots.txt`
-- Dark‑mode friendly Markdown defaults (tables, lists, code, blockquotes)
+### 2. Clone & Install
+```bash
+# Clone the repository
+git clone https://github.com/PiushKS/piush.com.git
+cd piush.com
 
-## 🧱 Content Model (frontmatter)
+# Install dependencies
+npm install
+```
 
-Each blog post (`src/content/blog/*.md|mdx`) supports the following frontmatter keys:
+### 3. Start Development Server
+```bash
+npm run dev
+# The local development server will start at http://localhost:4321/
+```
 
-```yaml
+### 4. Run Verification Suites
+```bash
+# Validate all 550 quiz questions
+npm run validate:quiz
+
+# Build static production bundle
+npm run build
+
+# Validate SEO, sitemaps, links, and schema markup
+npm run validate:seo
+```
+
 ---
-title: "Your post title"
-description: "Short summary for cards and meta"
-pubDate: 2025-06-19
-updatedDate: 2024-07-02 # optional
-heroImage: ../../assets/images/your-image.jpg # optional
-tags: [astro, ui] # optional, many-to-many labels
-category: Growth # optional, 1 broad bucket per post recommended
-author: Site Author # optional; defaults to site author
+
+## 🌐 Production Deployment
+
+The project compiles to pure static HTML, CSS, JavaScript, and SVG assets in the `dist/` directory.
+
+### Deploying to Hostinger (Apache / LiteSpeed)
+1. Run `npm run build` to generate the production `dist/` folder.
+2. Upload the contents of `dist/` directly into your server's `public_html/` directory.
+3. Ensure the included [`.htaccess`](./public/.htaccess) file is placed in `public_html/` to enable:
+   - Canonical trailing slash 301 redirects.
+   - Gzip / Deflate compression for text, SVGs, and JSON payloads.
+   - 1-year browser cache-control headers for static fonts, styles, scripts, and images.
+   - Strict security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`).
+
+### Deploying to Vercel, Netlify, or Cloudflare Pages
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Node.js Version**: `20.x`
+
 ---
-```
-
-Notes:
-- Author pages use a slugified version of the author name (e.g., `site-author`).
-- Tag pages use slugified tag names (e.g., `astro`).
-- Category pages use slugified category names (e.g., `growth`).
-
-## 🔖 Routes & URLs
-
-- Posts: `/blog/<slug>/`
-- Author: `/blog/author/<author-slug>/`
-- Tag: `/blog/tag/<tag-slug>/`
-- Category: `/blog/category/<category-slug>/`
-
-## 📡 Feeds (RSS)
-
-- Global: `/rss.xml`
-- By tag: `/rss/tag/<tag-slug>.xml`
-- By category: `/rss/category/<category-slug>.xml`
-
-Tip: Feed readers can auto‑discover tag/category feeds via the `<link rel="alternate" type="application/rss+xml">` tags we include on those pages. The footer also provides quick links for Feedly/Inoreader and a “Copy RSS link” action.
-
-## 🔎 SEO details
-
-- `src/components/BaseHead.astro`: common head tags (canonical, OG/Twitter, robots, theme‑color, RSS link). Images and URLs are absolute to `Astro.site`.
-- `src/layouts/BlogPost.astro`: Article OG metas, JSON‑LD (Article + BreadcrumbList).
-- Blog index and pagination pages include `<link rel="prev/next">`.
-- Sitemap via `@astrojs/sitemap` is emitted at build; `public/robots.txt` points to it.
-
-## ✍️ Markdown UX
-
-- Enhanced defaults for tables and lists live in `src/styles/utilities.css` under the `.prose` scope.
-- Tables: rounded borders, zebra stripes, responsive overflow; Lists: restored bullets/numbering with proper indentation.
-
-## ⏱️ Reading Time
-
-- Cards estimate from Markdown using `calculateReadingTimeFromMarkdown()` (`src/lib/reading.ts`).
-- Post pages estimate from rendered HTML using `calculateReadingTimeFromHtml()`.
-- Default speed is 200 WPM; tweak by changing the optional parameter in these helpers if you prefer another baseline.
-
-## 🧩 Customizing Taxonomy
-
-- Tag SEO titles/descriptions: edit `src/data/tags.ts` (`getTagMeta`).
-- Category SEO titles/descriptions: edit `src/data/categories.ts` (`getCategoryMeta`).
-
-## 🚀 Deploy
-
-- Static output in `dist/`. Any static host works (Vercel, Netlify, Cloudflare Pages, GitHub Pages).
-- Ensure `site` is set in `astro.config.mjs` for correct absolute URLs in feeds and metadata.
-
-## 🚀 GitHub Pages (deploy)
-
-Deploy to GitHub Pages with one workflow.
-
-1) Configure site and base in `astro.config.mjs` (critical)
-
-```js
-// astro.config.mjs
-import { defineConfig } from 'astro/config';
-
-export default defineConfig({
-  // User/Org Pages (https://<user>.github.io):
-  //   site: 'https://<user>.github.io',
-  //   base: '/'
-  // Project Pages (https://<user>.github.io/<repo>/):
-  //   site: 'https://<user>.github.io/<repo>/',
-  //   base: '/<repo>/'
-  site: 'https://your-user.github.io',
-  base: '/',
-});
-```
-
-2) Enable GitHub Pages in your repo
-- Settings → Pages → Build and deployment → Source: GitHub Actions
-
-3) Add the workflow (ready to copy)
-
-Create `.github/workflows/deploy.yml` with:
-
-```yaml
-name: Deploy Astro to GitHub Pages
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-```
-
-4) Commit and push to `main`
-- First run may take a minute. Check Actions tab for logs and the Pages URL.
-
-Troubleshooting
-- CSS/assets 404 on project pages → `base` is missing or wrong. Set `base: '/<repo>/'` and rebuild.
-- Wrong canonical URLs/RSS → `site` incorrect. Use your real Pages URL (or your custom domain if you set one).
-- Custom domain (CNAME) → Set `site: 'https://example.com'` and keep `base: '/'`.
-
-## ⚙️ Configuration (do this first)
-
-1) Set your canonical site URL in `astro.config.mjs`:
-```js
-// astro.config.mjs
-export default defineConfig({
-  site: 'https://your-domain.com',
-  // ...
-})
-```
-
-2) Update global meta in `src/consts.ts`:
-```ts
-export const SITE_TITLE = 'Your Site Title';
-export const SITE_DESCRIPTION = 'Short description for social/meta.';
-```
-
-3) Author profile in `src/data/author.ts` (name, avatar, social URLs).
-
-4) Replace favicon/app icons in `public/` (keep file names the same).
-
-5) Optional: Customize theme tokens in `src/styles/tokens.css` and dark overrides in `src/styles/themes/dark.css`.
-
-## 🧪 Optional: Analytics
-
-This template ships without analytics by default. To add GA4 later, place the GA snippet in `src/components/BaseHead.astro` and (optionally) guard it with `import.meta.env.PROD`.
-
-## 🔧 Toggling features
-
-- Categories: frontmatter supports a single `category`. To disable category pages entirely, remove `src/pages/blog/category/[category].astro` and the category RSS route; posts will continue to work with tags.
-- Per-tag/category RSS: remove the routes under `src/pages/rss/tag/` and `src/pages/rss/category/` if you only want a global feed.
-
-## 🧰 Netlify (example)
-
-If you deploy to Netlify, use:
-```toml
-# netlify.toml
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
-```
-
-## ✅ Launch checklist
-
-- [ ] `astro.config.mjs` site URL set
-- [ ] `SITE_TITLE` / `SITE_DESCRIPTION` updated
-- [ ] Author data and avatar set
-- [ ] Favicons/app icons replaced in `public/`
-- [ ] Social share image (fallback) looks good
-- [ ] Lighthouse pass (SEO + Accessibility)
-- [ ] Deploy (Netlify/Vercel/etc.) and verify `/rss.xml` and `/sitemap-index.xml`
 
 ## 📄 License
 
-MIT - you’re free to use, modify, and redistribute. See `LICENSE` for details.
+This project is licensed under the [MIT License](./LICENSE).
 
-Check my site live at 'https://guihubie.com'
+---
 
+<p align="center">
+  Crafted with care by <a href="https://piush.com/"><strong>Piush KS</strong></a>.
+</p>
