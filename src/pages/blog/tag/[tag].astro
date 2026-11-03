@@ -23,6 +23,26 @@ const meta = getTagMeta(tag);
   <head>
     <BaseHead title={`${meta.title} | Piush`} description={meta.description} />
     <link rel="alternate" type="application/rss+xml" title={`Tag: ${tag} feed`} href={`/rss/tag/${tag}.xml`} />
+    <!-- Structured Data: CollectionPage & Breadcrumbs -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          name: `${meta.title} Articles`,
+          description: meta.description,
+          url: new URL(`/blog/tag/${tag}/`, Astro.site || 'https://piush.com').toString(),
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Tags', item: new URL('/tags/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: meta.title, item: new URL(`/blog/tag/${tag}/`, Astro.site || 'https://piush.com').toString() },
+          ],
+        },
+      ],
+    })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />

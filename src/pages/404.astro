@@ -9,8 +9,7 @@ import LottieAnimation from '../components/ui/lottie/LottieAnimation.astro';
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
-    <BaseHead title="404 – Page Not Found | Piush" description="The page you are looking for doesn’t exist or has been moved." />
-    <meta name="robots" content="noindex, follow" />
+    <BaseHead title="404 – Page Not Found | Piush" description="The page you are looking for doesn’t exist or has been moved." noindex={true} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />

@@ -9,14 +9,14 @@ import { author } from '../data/author';
 import { SITE_TITLE } from '../consts';
 
 const pageTitle = "About Piush KS – Mobile & Full-Stack Developer | Piush";
-const pageDescription = "Learn about Piush KS, mobile and full-stack developer building native Android, iOS, Flutter and web applications with craft and production resilience.";
+const pageDescription = "Learn about Piush KS, Senior Mobile Architect and Full-Stack Engineer building Android, iOS, Flutter, and cloud platforms scaled to 10M+ users.";
 ---
 
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
     <BaseHead title={pageTitle} description={pageDescription} />
-    <!-- Structured Data: AboutPage & BreadcrumbList -->
+    <!-- Structured Data: ProfilePage & BreadcrumbList -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
@@ -27,9 +27,16 @@ const pageDescription = "Learn about Piush KS, mobile and full-stack developer b
           "url": new URL('/about/', Astro.site || 'https://piush.com').toString(),
           "mainEntity": {
             "@type": "Person",
+            "@id": new URL('/#person', Astro.site || 'https://piush.com').toString(),
             "name": "Piush KS",
-            "jobTitle": "Mobile & Full-Stack Developer",
-            "url": new URL('/', Astro.site || 'https://piush.com').toString()
+            "jobTitle": "Senior Mobile & Cloud Engineer",
+            "url": new URL('/', Astro.site || 'https://piush.com').toString(),
+            "sameAs": [
+              "https://github.com/PiushKS",
+              "https://x.com/piushks",
+              "https://youtube.com/@PiushKS",
+              "https://linkedin.com/in/piushks/"
+            ]
           }
         },
         {

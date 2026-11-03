@@ -12,7 +12,7 @@ const pageDescription = "Free browser-based developer text tools: convert camelC
 <html lang="en" data-theme="light">
   <head>
     <BaseHead title={pageTitle} description={pageDescription} />
-    <!-- Structured Data: WebApplication & BreadcrumbList -->
+    <!-- Structured Data: WebApplication, BreadcrumbList & FAQPage -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
       '@graph': [
@@ -32,6 +32,35 @@ const pageDescription = "Free browser-based developer text tools: convert camelC
             { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
             { '@type': 'ListItem', position: 2, name: 'Tools', item: new URL('/tools/', Astro.site || 'https://piush.com').toString() },
             { '@type': 'ListItem', position: 3, name: 'Developer Text Toolkit', item: new URL('/tools/text/', Astro.site || 'https://piush.com').toString() }
+          ]
+        },
+        {
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: 'Are my text inputs or tokens stored or uploaded?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'No. All string manipulation, Base64 conversion, and regex sanitization run 100% locally in your browser. No data ever leaves your device, making it safe for authentication secrets, base64 certificates, and proprietary data.'
+              }
+            },
+            {
+              '@type': 'Question',
+              name: 'Does the Base64 tool support non-ASCII Unicode characters and emojis?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Yes. Standard browser btoa() throws an exception when encountering characters outside the Latin1 range. This toolkit uses modern TextEncoder and TextDecoder Web APIs to correctly encode and decode UTF-8 byte streams, safely preserving emojis and international scripts.'
+              }
+            },
+            {
+              '@type': 'Question',
+              name: 'What is the difference between encodeURI and encodeURIComponent?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'encodeURI is intended for complete URLs and preserves protocol separators like colons, slashes, and question marks. encodeURIComponent encodes all reserved characters, making it suitable for individual query parameter values to prevent URL parameter injection.'
+              }
+            }
           ]
         }
       ]

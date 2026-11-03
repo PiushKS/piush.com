@@ -41,8 +41,7 @@ const [firstPost, secondPost, thirdPost] = posts.slice(0, 3);
 
 <html lang="en" data-theme="light">
   <head>
-    <BaseHead title={pageTitle} description={pageDescription} />
-    <meta name="robots" content="noindex, nofollow" />
+    <BaseHead title={pageTitle} description={pageDescription} noindex={true} />
   </head>
   <body>
     <Header />

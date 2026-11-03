@@ -24,11 +24,48 @@ const authorName = posts[0]?.data.author || 'Piush KS';
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
-    <BaseHead title={`Articles by ${authorName} | Piush`} description={`Engineering articles and technical guides written by ${authorName}.`} />
+    <BaseHead
+      title={`Articles by ${authorName} – Mobile & Cloud Engineer | Piush`}
+      description={`Engineering deep dives, systems architecture guides, and technical benchmarks authored by ${authorName} on piush.com.`}
+    />
+    <!-- Structured Data: ProfilePage & Breadcrumbs -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'ProfilePage',
+          name: `Articles by ${authorName}`,
+          description: `Engineering articles and technical guides written by ${authorName}.`,
+          url: new URL(`/blog/author/${slug}/`, Astro.site || 'https://piush.com').toString(),
+          mainEntity: {
+            '@type': 'Person',
+            '@id': new URL('/#person', Astro.site || 'https://piush.com').toString(),
+            name: authorName,
+            url: new URL('/about/', Astro.site || 'https://piush.com').toString(),
+          },
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: authorName, item: new URL(`/blog/author/${slug}/`, Astro.site || 'https://piush.com').toString() },
+          ],
+        },
+      ],
+    })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
     <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10 space-y-8">
+      <nav aria-label="Breadcrumb" class="text-xs text-[var(--color-text-muted)] flex items-center gap-2">
+        <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+        <span>/</span>
+        <a href="/blog/" class="hover:text-[var(--accent)] transition-colors no-underline">Blog</a>
+        <span>/</span>
+        <span class="text-[var(--accent)] font-medium">{authorName}</span>
+      </nav>
+
       <div class="border-b border-[var(--color-border)] pb-6">
         <div class="inline-flex mb-2">
           <span class="status-pill text-xs">Author Archive</span>

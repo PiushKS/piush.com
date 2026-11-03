@@ -5,6 +5,7 @@ description: "Explore how to write a clean Hello World program across 20+ progra
 pubDate: 'Mar 21 2023'
 heroImage: '../../assets/images/hello_world.png'
 tags: ['helloworld']
+category: 'Engineering'
 author: Piush KS
 ---
 

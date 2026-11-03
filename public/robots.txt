@@ -1,6 +1,75 @@
-User-agent: *
+# ------------------------------------------------------------------------------
+# Robots Policy for Piush.com
+# Search Engines, AI Retrieval & Citation Bots Policy
+# ------------------------------------------------------------------------------
+
+# 1. Primary Search Engine Crawlers
+User-agent: Googlebot
 Allow: /
-Disallow: /demo
 Disallow: /demo/
 
+User-agent: Bingbot
+Allow: /
+Disallow: /demo/
+
+User-agent: Applebot
+Allow: /
+Disallow: /demo/
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /demo/
+
+User-agent: Yandex
+Allow: /
+Disallow: /demo/
+
+# 2. AI Search, Retrieval & Citation Bots (AEO / GEO / LLMO)
+# OpenAI Search & Retrieval
+User-agent: GPTBot
+Allow: /
+Disallow: /demo/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /demo/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /demo/
+
+# Perplexity AI Discovery & Search
+User-agent: PerplexityBot
+Allow: /
+Disallow: /demo/
+
+# Anthropic Claude Search & Discovery
+User-agent: ClaudeBot
+Allow: /
+Disallow: /demo/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /demo/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /demo/
+
+# Cohere AI
+User-agent: Cohere-ai
+Allow: /
+Disallow: /demo/
+
+# Google AI Overviews & Extended
+User-agent: Google-Extended
+Allow: /
+Disallow: /demo/
+
+# 3. Default Policy for All Other Respectful Web Crawlers
+User-agent: *
+Allow: /
+Disallow: /demo/
+
+# 4. Canonical Sitemap
 Sitemap: https://piush.com/sitemap-index.xml

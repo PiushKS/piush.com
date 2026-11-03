@@ -9,6 +9,7 @@ import PostMeta from '../components/ui/meta/PostMeta.astro';
 import ShareButtons from '../components/ui/share/ShareButtons.astro';
 import PostNav from '../components/ui/nav/PostNav.astro';
 import GlowLineSeparator from '../components/ui/separator/GlowLineSeparator.astro';
+import { slugifyCategory } from '../data/categories';
 
 type BlogData = CollectionEntry<'blog'>['data'];
 type Props = BlogData & {
@@ -48,22 +49,27 @@ const docTitle = seoTitle
 		  <meta property="article:tag" content={t} />
 		))}
 
-		<!-- JSON-LD: BlogPosting -->
+		<!-- JSON-LD: TechArticle & BlogPosting -->
 		<script type="application/ld+json" set:html={JSON.stringify({
 		  '@context': 'https://schema.org',
-		  '@type': 'BlogPosting',
+		  '@type': ['TechArticle', 'BlogPosting'],
 		  headline: title,
 		  description,
 		  image: Astro.props.heroImage ? new URL(Astro.props.heroImage.src, Astro.site).toString() : undefined,
 		  datePublished: pubDate ? new Date(pubDate).toISOString() : undefined,
 		  dateModified: updatedDate ? new Date(updatedDate).toISOString() : (pubDate ? new Date(pubDate).toISOString() : undefined),
-		  author: [{
+		  inLanguage: 'en-US',
+		  articleSection: Astro.props.category || 'Software Engineering',
+		  keywords: Array.isArray(Astro.props.tags) ? Astro.props.tags.join(', ') : undefined,
+		  author: {
 		    '@type': 'Person',
+		    '@id': new URL('/#person', Astro.site).toString(),
 		    name: Astro.props.author || 'Piush KS',
 		    url: new URL('/about/', Astro.site).toString()
-		  }],
+		  },
 		  publisher: {
 		    '@type': 'Person',
+		    '@id': new URL('/#person', Astro.site).toString(),
 		    name: 'Piush KS',
 		    url: new URL('/', Astro.site).toString()
 		  },
@@ -78,7 +84,18 @@ const docTitle = seoTitle
 		  itemListElement: [
 		    { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site).toString() },
 		    { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog/', Astro.site).toString() },
-		    { '@type': 'ListItem', position: 3, name: title, item: new URL(Astro.url.pathname, Astro.site).toString() },
+		    ...(Astro.props.category ? [{
+		      '@type': 'ListItem',
+		      position: 3,
+		      name: Astro.props.category,
+		      item: new URL(`/blog/category/${slugifyCategory(Astro.props.category)}/`, Astro.site).toString()
+		    }] : []),
+		    {
+		      '@type': 'ListItem',
+		      position: Astro.props.category ? 4 : 3,
+		      name: title,
+		      item: new URL(Astro.url.pathname, Astro.site).toString()
+		    },
 		  ],
 		})} />
 	</head>
@@ -97,8 +114,16 @@ const docTitle = seoTitle
           <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
           <span>/</span>
           <a href="/blog/" class="hover:text-[var(--accent)] transition-colors no-underline">Blog</a>
+          {Astro.props.category && (
+            <>
+              <span>/</span>
+              <a href={`/blog/category/${slugifyCategory(Astro.props.category)}/`} class="hover:text-[var(--accent)] transition-colors no-underline">
+                {Astro.props.category}
+              </a>
+            </>
+          )}
           <span>/</span>
-          <span class="text-[var(--accent)] font-medium truncate max-w-[240px] sm:max-w-md">{title}</span>
+          <span class="text-[var(--accent)] font-medium truncate max-w-[200px] sm:max-w-xs">{title}</span>
         </nav>
 
         {showHeader && (

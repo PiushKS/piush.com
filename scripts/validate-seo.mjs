@@ -105,6 +105,13 @@ for (const filePath of htmlFiles) {
     }
   }
 
+  // 2b. Check Robots Meta Tags (Ensure no conflicting duplicates)
+  const robotsMatches = [...headHtml.matchAll(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/gi)];
+  if (robotsMatches.length > 1) {
+    console.error(`❌ [${route}] Duplicate <meta name="robots"> tags found (${robotsMatches.length})`);
+    errors++;
+  }
+
   // 3. Check Canonical
   const canonicalMatch = headHtml.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']*)["']/i) ||
                          headHtml.match(/<link\s+href=["']([^"']*)["']\s+rel=["']canonical["']/i);

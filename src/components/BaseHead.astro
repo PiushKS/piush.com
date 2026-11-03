@@ -11,13 +11,14 @@ interface Props {
   title: string;
   description: string;
   image?: ImageMetadata;
+  noindex?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const absoluteUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const siteOrigin = Astro.site ?? new URL(Astro.url).origin;
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = FallbackImage, noindex = false } = Astro.props;
 const imageUrl = new URL(image.src, siteOrigin).toString();
 ---
 
@@ -83,7 +84,11 @@ const imageUrl = new URL(image.src, siteOrigin).toString();
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Robots -->
-<meta name="robots" content="index,follow,max-image-preview:large" />
+{noindex ? (
+  <meta name="robots" content="noindex,nofollow" />
+) : (
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+)}
 
 <!-- Theme color (supports dark/light - iPhone Green Palette) -->
 <meta

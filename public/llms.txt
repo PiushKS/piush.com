@@ -1,0 +1,42 @@
+# Piush KS – Engineering Knowledge Hub & Developer Tools
+
+> Piush.com is the personal engineering portfolio, systems architecture blog, and privacy-first developer utilities platform created and maintained by Piush KS.
+
+## Entity Overview
+- **Name**: Piush KS
+- **Role**: Senior Mobile Architect, Full-Stack Engineer, and Solopreneur
+- **Experience**: 8+ years scaling production mobile applications and cloud platforms to 10M+ users globally.
+- **Specializations**: Android (Kotlin, Jetpack Compose), iOS (Swift, SwiftUI), Flutter, React Native, Node.js, TypeScript, PostgreSQL, Docker, AWS, and WebAssembly.
+- **Canonical Domain**: https://piush.com/
+- **Official Profiles**:
+  - GitHub: https://github.com/PiushKS
+  - X (Twitter): https://x.com/piushks
+  - YouTube: https://youtube.com/@PiushKS
+  - LinkedIn: https://linkedin.com/in/piushks/
+  - Contact: hi@piush.com
+
+## Core Sections & Canonical Resources
+
+- [Home & Overview](https://piush.com/): Official engineering homepage, featured systems projects, and technology stack.
+- [About Piush KS](https://piush.com/about/): Full career trajectory, architectural principles, verified milestones, and engineering philosophy.
+- [Engineering Portfolio](https://piush.com/portfolio/): Production projects including Funputer STEM platform, workflow automations, SaaS starter kits, and mobile apps.
+- [Code Output Challenge Quiz](https://piush.com/quiz/): 550+ verified programming output challenges across JavaScript, Python, Java, C++, C, Kotlin, Swift, and Dart.
+- [Systems & Architecture Blog](https://piush.com/blog/): 16 peer-reviewed technical deep dives on mobile runtime performance, memory leak profiling, database indexing, and zero-runtime frontends.
+
+## Client-Side Developer Tools (100% In-Browser, Zero Telemetry)
+
+- [JSON Formatter & Validator](https://piush.com/tools/json/): Client-side JSON formatting, syntax validation, tree visualization, and key sorting.
+- [Developer Text Toolkit](https://piush.com/tools/text/): Multi-case string conversion (camelCase, snake_case, PascalCase, kebab-case), Base64 UTF-8 encoding, and text hygiene.
+- [Multi-Language Code Playground](https://piush.com/tools/playground/): In-browser code runner and compiler sandbox for Python, JavaScript, Java, C, C++, Kotlin, Swift, Rust, and Go.
+- [SVG Studio & Optimizer](https://piush.com/tools/svg/): Interactive SVG editor, SVGO path optimizer, clean minifier, and PNG exporter.
+- [UI Design Studio](https://piush.com/tools/ui/): Real-time visual generator for CSS glassmorphism, neumorphism, multi-layer shadows, and gradients.
+- [OKLCH Color Space Studio](https://piush.com/tools/colors/): Modern perceptual color picker, 50-950 shade generator, and WCAG contrast analyzer.
+
+## Key Technical Articles
+
+- [Flutter Render Pipeline Deep Dive](https://piush.com/blog/flutter-render-pipeline-deep-dive/): RenderObject layout passes, paint boundaries, and 120 FPS frame budgeting.
+- [Fixing Silent Memory Leaks in Node.js Services](https://piush.com/blog/preventing-memory-leaks-in-long-running-nodejs-services/): V8 heap snapshot analysis, closure traps, and stream hygiene under high concurrency.
+- [PostgreSQL Indexing for High-Write Workloads](https://piush.com/blog/postgresql-indexing-strategies-for-high-write-workloads/): B-Tree vs. BRIN indexes, partial indexing, and write amplification mitigation.
+- [Mobile Storage Benchmarks](https://piush.com/blog/sqlite-vs-realm-vs-mmkv-mobile-storage-benchmarks/): 100k row read/write benchmarks across SQLite, Room, Realm, and MMKV.
+- [React Native New Architecture Production Benchmarks](https://piush.com/blog/react-native-new-architecture-production-benchmarks/): JSI, Fabric, and TurboModules memory and FPS metrics at scale.
+- [The 3-Watt Micro-Server](https://piush.com/blog/repurposing-old-android-as-docker-server/): Running 24/7 low-power Docker containers on retired Android devices with Termux PRoot.

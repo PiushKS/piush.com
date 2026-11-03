@@ -5,6 +5,7 @@ description: "Accelerate your JavaScript mastery with practical learning methods
 pubDate: 'Dec 08 2022'
 heroImage: '../../assets/images/learn-javascript.jpeg'
 tags: ['javascript']
+category: 'Frontend'
 author: Piush KS
 ---
 

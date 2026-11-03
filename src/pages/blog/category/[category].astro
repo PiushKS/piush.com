@@ -27,15 +27,60 @@ const meta = getCategoryMeta(category);
   <head>
     <BaseHead title={`${meta.title} Articles | Piush`} description={meta.description} />
     <link rel="alternate" type="application/rss+xml" title={`Category: ${category} feed`} href={`/rss/category/${category}.xml`} />
+    <!-- Structured Data: CollectionPage & Breadcrumbs -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          name: `${meta.title} Articles`,
+          description: meta.description,
+          url: new URL(`/blog/category/${category}/`, Astro.site || 'https://piush.com').toString(),
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 3, name: meta.title, item: new URL(`/blog/category/${category}/`, Astro.site || 'https://piush.com').toString() },
+          ],
+        },
+      ],
+    })} />
   </head>
-  <body>
+  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
     <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10 space-y-8">
-      <div class="flex items-center justify-between gap-3">
-        <h1 class="text-3xl font-bold">{meta.title}</h1>
-        <a class="sw-btn-sm" href={`/rss/category/${category}.xml`}>Subscribe</a>
+      <nav aria-label="Breadcrumb" class="text-xs text-[var(--color-text-muted)] flex items-center gap-2">
+        <a href="/" class="hover:text-[var(--accent)] transition-colors no-underline">Home</a>
+        <span>/</span>
+        <a href="/blog/" class="hover:text-[var(--accent)] transition-colors no-underline">Blog</a>
+        <span>/</span>
+        <span class="text-[var(--accent)] font-medium">{meta.title}</span>
+      </nav>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-border)] pb-6">
+        <div>
+          <div class="inline-flex mb-2">
+            <span class="status-pill text-xs">Category Cluster</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight m-0">
+            {meta.title}
+          </h1>
+          <p class="text-sm text-[var(--color-text-muted)] mt-1 m-0">
+            Showing {posts.length} {posts.length === 1 ? 'article' : 'articles'} in this category
+          </p>
+        </div>
+        <a class="sw-btn-sm self-start sm:self-auto" href={`/rss/category/${category}.xml`}>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+          <span>RSS Feed</span>
+        </a>
       </div>
-      <p class="text-[color:var(--color-text-muted)]">{meta.description}</p>
+      <p class="text-[color:var(--color-text-secondary)] leading-relaxed m-0">{meta.description}</p>
       <div class="blog-grid">
         {posts.map((p) => (
           <PostCard post={p} />

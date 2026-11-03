@@ -5,6 +5,7 @@ description: "React Native vs Flutter in 2025: Architectural comparison, benchma
 pubDate: 'Aug 30 2025'
 heroImage: '../../assets/images/react-native-vs-flutter.png'
 tags: ['flutter', 'react-native']
+category: 'Mobile Architecture'
 author: Piush KS
 ---
 

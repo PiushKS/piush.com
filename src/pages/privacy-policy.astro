@@ -5,13 +5,32 @@ import Footer from "../components/sections/Footer.astro";
 import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astro";
 
 const pageTitle = "Privacy Policy";
-const pageDescription = "Privacy practices, cookies, and data protections at piush.com";
+const pageDescription = "Read the piush.com privacy policy: our commitment to zero personal data harvesting, cookieless analytics, and 100% in-browser developer utilities.";
 ---
 
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
-    <BaseHead title="Privacy Policy | Piush" description="Privacy policy and data protection practices for piush.com." />
+    <BaseHead title="Privacy Policy – Data Protection & Analytics | Piush" description={pageDescription} />
+    <!-- Structured Data: WebPage & Breadcrumbs -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          name: 'Privacy Policy',
+          description: pageDescription,
+          url: new URL('/privacy-policy/', Astro.site || 'https://piush.com').toString(),
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site || 'https://piush.com').toString() },
+            { '@type': 'ListItem', position: 2, name: 'Privacy Policy', item: new URL('/privacy-policy/', Astro.site || 'https://piush.com').toString() },
+          ],
+        },
+      ],
+    })} />
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
     <Header />
