@@ -37,6 +37,7 @@ const pageTitle = "Component & Sections Demo";
 const pageDescription = "Showcase of components and sections with light/dark theming.";
 const posts = await getCollection('blog');
 const [firstPost, secondPost, thirdPost] = posts.slice(0, 3);
+const site = Astro.site;
 ---
 
 <html lang="en" data-theme="light">

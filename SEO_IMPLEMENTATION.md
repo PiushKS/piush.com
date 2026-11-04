@@ -139,3 +139,4 @@ Agentic Browsing      2 / 2 (100%)      2 / 2 (100%)      PASS (llms.txt + Seman
 - `npm run validate:seo`: Checked 74 HTML documents for canonical tags, Open Graph images, schema validity, sitemap consistency, and broken links. **Result: 0 errors, 0 warnings**.
 - `npm run validate:quiz`: Checked 550 interactive developer quiz questions across 9 languages. **Result: 0 errors**.
 - `npm run build`: Full SSG production build executes in **1.41 seconds**.
+

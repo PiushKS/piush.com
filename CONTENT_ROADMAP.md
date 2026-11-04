@@ -92,3 +92,4 @@ Every new piece of technical content must satisfy the following checklist before
 4. **Interactive Tool Cross-Link**: At least one contextual bridge to an in-browser tool (`/tools/*`) or interactive quiz (`/quiz/`).
 5. **JSON-LD Schema**: Automatically inherited via `BlogPost.astro` (`TechArticle`, `BlogPosting`, `BreadcrumbList`).
 6. **Descriptive Anchors**: Internal links formatted with keyword-rich anchors (never generic *"click here"*).
+

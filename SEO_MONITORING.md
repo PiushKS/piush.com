@@ -89,3 +89,4 @@ If organic traffic or search impressions experience sudden declines:
 2. **Robots Accessibility**: Confirm `https://piush.com/robots.txt` returns the correct agent policies without disallowing root.
 3. **Internal Consistency**: Run `npm run validate:seo` to detect any broken internal links or canonical discrepancies.
 4. **Google Search Console**: Check the Security & Manual Actions tab for penalties, and inspect the Page Indexing report for excluded pages.
+

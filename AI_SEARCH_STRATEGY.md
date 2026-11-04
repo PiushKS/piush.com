@@ -111,3 +111,4 @@ Run monthly prompt tests across ChatGPT Search, Perplexity, Google AI Mode, and 
 
 ### B. Analytics Tracking
 - Monitor incoming traffic in Umami analytics from `chatgpt.com`, `perplexity.ai`, `bing.com/chat`, and Google AI Overview referral parameters.
+
