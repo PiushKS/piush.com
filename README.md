@@ -162,7 +162,7 @@ piush.com/
 ## 🚀 Quick Start & Development
 
 ### 1. Prerequisites
-- **Node.js**: `v20.0.0` or higher
+- **Node.js**: `v22.23.4` or higher (Node 22 LTS)
 - **Package Manager**: `npm`
 
 ### 2. Clone & Install
@@ -211,7 +211,7 @@ The project compiles to pure static HTML, CSS, JavaScript, and SVG assets in the
 ### Deploying to Vercel, Netlify, or Cloudflare Pages
 - **Build Command**: `npm run build`
 - **Output Directory**: `dist`
-- **Node.js Version**: `20.x`
+- **Node.js Version**: `22.x` (or `22.23.4`)
 
 ---
 
