@@ -51,54 +51,54 @@ const site = Astro.site;
 			],
 		})} />
 	</head>
-	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-		<Header />
-		<main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10">
-			<header class="text-center max-w-2xl mx-auto mb-10 space-y-3">
-        <div class="inline-flex">
-          <span class="status-pill">
-            Explore Categories
-          </span>
+	<body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
+      <main class="use-utility-layout flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <header class="text-center max-w-2xl mx-auto mb-6 sm:mb-8 space-y-2">
+          <div class="inline-flex">
+            <span class="status-pill text-xs">
+              Explore Categories
+            </span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-black tracking-tight m-0 font-mono">
+            {pageTitle}
+          </h1>
+          <p class="text-sm sm:text-base text-gray-800 font-mono">
+            Browse all topic collections, tutorials, and engineering deep dives.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {sortedTags.map(tag => (
+            <a 
+              href={`/blog/tag/${tag.toLowerCase()}/`}
+              class="bg-white border-2 border-black p-4 block group no-underline shadow-[3px_3px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-transform"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <h2 class="text-base font-bold text-black group-hover:text-[#0057CC] transition-colors m-0 font-mono">
+                  #{tag}
+                </h2>
+                <span class="text-xs font-mono font-bold px-2 py-0.5 border border-black bg-[#E8EEF5] text-[#0057CC]">
+                  {tagCounts.get(tag)} {tagCounts.get(tag) === 1 ? 'post' : 'posts'}
+                </span>
+              </div>
+              <p class="text-xs text-gray-700 m-0 font-sans">
+                Explore all guides tagged with <span class="font-bold text-black">"{tag}"</span>
+              </p>
+            </a>
+          ))}
         </div>
-				<h1 class="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight m-0">
-					<span class="bg-gradient-to-r from-[#1B5448] via-[#23382B] to-[#4e5850] dark:from-[#ade1cd] dark:via-[#c6eedc] dark:to-[#E1F8DC] bg-clip-text text-transparent">
-						{pageTitle}
-					</span>
-				</h1>
-				<p class="text-base sm:text-lg text-[var(--color-text-secondary)]">
-					Browse all topic collections, tutorials, and engineering deep dives.
-				</p>
-			</header>
 
-			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-				{sortedTags.map(tag => (
-					<a 
-						href={`/blog/tag/${tag.toLowerCase()}/`}
-						class="card-surface p-5 block group no-underline"
-					>
-						<div class="flex items-center justify-between mb-2">
-							<h2 class="text-lg font-bold text-foreground group-hover:text-[var(--accent)] transition-colors m-0">
-								#{tag}
-							</h2>
-							<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)]">
-								{tagCounts.get(tag)} {tagCounts.get(tag) === 1 ? 'post' : 'posts'}
-							</span>
-						</div>
-						<p class="text-xs sm:text-sm text-[var(--color-text-muted)] m-0">
-							Explore all guides tagged with <span class="text-[var(--color-text-secondary)]">"{tag}"</span>
-						</p>
-					</a>
-				))}
-			</div>
-
-			{sortedTags.length === 0 && (
-				<div class="card-surface p-12 text-center">
-					<p class="text-[var(--color-text-secondary)] text-base m-0">
-						No tags found. Check back later for new content!
-					</p>
-				</div>
-			)}
-		</main>
-		<Footer />
+        {sortedTags.length === 0 && (
+          <div class="bg-white border-2 border-black p-8 text-center shadow-[4px_4px_0px_#000000]">
+            <p class="text-gray-800 text-sm m-0 font-mono">
+              No tags found. Check back later for new content!
+            </p>
+          </div>
+        )}
+      </main>
+      <Footer />
+    </div>
 	</body>
 </html>

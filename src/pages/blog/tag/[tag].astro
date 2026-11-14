@@ -44,9 +44,10 @@ const meta = getTagMeta(tag);
       ],
     })} />
   </head>
-  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-    <Header />
-    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-10 space-y-8">
+  <body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
+      <main class="use-utility-layout flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-border)] pb-6">
         <div>
           <div class="inline-flex mb-2">
@@ -76,5 +77,6 @@ const meta = getTagMeta(tag);
       </div>
     </main>
     <Footer />
+    </div>
   </body>
 </html>

@@ -23,16 +23,20 @@ const {
 } = Astro.props as Props;
 ---
 
-<section class="w-full py-4 sm:py-6 md:py-8">
+<section class="w-full py-4 sm:py-6 md:py-8 select-none">
   <div class="w-full">
-    <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
+    <!-- Header matching reference mockups 7.png & 8.png -->
+    <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8 space-y-2">
+      <div class="inline-flex justify-center">
+        <span class="retro-info-bubble" aria-hidden="true">i</span>
+      </div>
       {title && (
-        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black font-mono tracking-tight text-[#0057cc] uppercase m-0">
           {title}
         </h2>
       )}
       {subtitle && (
-        <p class="mt-3 text-base text-[var(--color-text-muted)]">
+        <p class="text-xs sm:text-sm font-mono text-[#222222] leading-relaxed max-w-xl mx-auto m-0">
           {subtitle}
         </p>
       )}

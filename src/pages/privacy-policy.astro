@@ -33,55 +33,57 @@ const site = Astro.site;
       ],
     })} />
   </head>
-  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-    <Header />
-    <main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-10">
-      <div class="card-surface p-6 sm:p-10 space-y-8 max-w-5xl mx-auto w-full">
-        <header class="space-y-2 border-b border-[var(--color-border)] pb-6">
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight m-0">
-            {pageTitle}
-          </h1>
-          <p class="text-sm text-[var(--color-text-muted)] m-0">
-            Last Updated: January 2025 • Effective immediately
-          </p>
-        </header>
+  <body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
+      <main class="flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div class="bg-white border-2 border-black p-5 sm:p-8 space-y-6 max-w-5xl mx-auto w-full shadow-[4px_4px_0px_#000000]">
+          <header class="space-y-2 border-b-2 border-black pb-4">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-black tracking-tight m-0 font-mono">
+              {pageTitle}
+            </h1>
+            <p class="text-xs sm:text-sm text-gray-700 m-0 font-mono">
+              Last Updated: January 2025 • Effective immediately
+            </p>
+          </header>
 
-        <div class="prose dark:prose-invert max-w-none text-[var(--color-text-secondary)] space-y-6">
-          <p>
-            At <strong>piush.com</strong>, privacy and data minimization are fundamental principles. This Privacy Policy explains how information is handled when you visit and interact with this website.
-          </p>
+          <div class="prose max-w-none text-gray-800 space-y-4 font-sans text-sm sm:text-base">
+            <p>
+              At <strong>piush.com</strong>, privacy and data minimization are fundamental principles. This Privacy Policy explains how information is handled when you visit and interact with this website.
+            </p>
 
-          <h2 class="text-xl font-bold text-foreground">1. Information We Collect</h2>
-          <h3 class="text-lg font-semibold text-foreground">a. Information You Voluntarily Provide</h3>
-          <ul class="list-disc pl-5 space-y-1">
-            <li>Contact inquiries sent directly via email (e.g. name, email address, message body).</li>
-          </ul>
+            <h2 class="text-lg font-bold text-black font-mono">1. Information We Collect</h2>
+            <h3 class="text-base font-semibold text-black font-mono">a. Information You Voluntarily Provide</h3>
+            <ul class="list-disc pl-5 space-y-1">
+              <li>Contact inquiries sent directly via email (e.g. name, email address, message body).</li>
+            </ul>
 
-          <h3 class="text-lg font-semibold text-foreground">b. Privacy-First Analytics</h3>
-          <p>
-            This site uses privacy-focused, cookieless analytics (Umami) to understand aggregate traffic trends without tracking individual identities, collecting personal data, or storing persistent advertising cookies across sessions.
-          </p>
+            <h3 class="text-base font-semibold text-black font-mono">b. Privacy-First Analytics</h3>
+            <p>
+              This site uses privacy-focused, cookieless analytics (Umami) to understand aggregate traffic trends without tracking individual identities, collecting personal data, or storing persistent advertising cookies across sessions.
+            </p>
 
-          <h2 class="text-xl font-bold text-foreground">2. How We Use Information</h2>
-          <ul class="list-disc pl-5 space-y-1">
-            <li>To respond to your inquiries and collaboration requests.</li>
-            <li>To ensure website performance, security, and uptime.</li>
-          </ul>
+            <h2 class="text-lg font-bold text-black font-mono">2. How We Use Information</h2>
+            <ul class="list-disc pl-5 space-y-1">
+              <li>To respond to your inquiries and collaboration requests.</li>
+              <li>To ensure website performance, security, and uptime.</li>
+            </ul>
 
-          <h2 class="text-xl font-bold text-foreground">3. Sharing of Information</h2>
-          <p>
-            We do <strong>not</strong> sell, trade, or rent your personal information to third parties. Information is only shared if required by law or with trusted infrastructure providers required to operate this site.
-          </p>
+            <h2 class="text-lg font-bold text-black font-mono">3. Sharing of Information</h2>
+            <p>
+              We do <strong>not</strong> sell, trade, or rent your personal information to third parties. Information is only shared if required by law or with trusted infrastructure providers required to operate this site.
+            </p>
 
-          <h2 class="text-xl font-bold text-foreground">4. Contact</h2>
-          <p>
-            If you have questions about privacy on this site, reach out at <a href="mailto:hi@piush.com" class="text-[var(--accent)] font-medium">hi@piush.com</a>.
-          </p>
+            <h2 class="text-lg font-bold text-black font-mono">4. Contact</h2>
+            <p>
+              If you have questions about privacy on this site, reach out at <a href="mailto:hi@piush.com" class="text-[#0057CC] font-bold">hi@piush.com</a>.
+            </p>
+          </div>
+
+          <GlowLineSeparator />
         </div>
-
-        <GlowLineSeparator />
-      </div>
-    </main>
-    <Footer />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

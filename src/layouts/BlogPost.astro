@@ -100,14 +100,15 @@ const docTitle = seoTitle
 		})} />
 	</head>
 
-	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-		<!-- Native GPU Scroll Progress Indicator -->
-		<div class="scroll-progress-container" aria-hidden="true">
-			<div class="scroll-progress-bar" id="article-progress-bar"></div>
-		</div>
+	<body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <!-- Native GPU Scroll Progress Indicator -->
+      <div class="scroll-progress-container" aria-hidden="true">
+        <div class="scroll-progress-bar" id="article-progress-bar"></div>
+      </div>
 
-		<Header />
-		<main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-8">
+      <Header />
+      <main class="flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
 			<article class="max-w-4xl mx-auto space-y-8">
         <!-- Visible Breadcrumb Navigation -->
         <nav aria-label="Breadcrumb" class="text-xs text-[var(--color-text-muted)] flex items-center gap-2">
@@ -231,5 +232,6 @@ const docTitle = seoTitle
 				}
 			}
 		</script>
+    </div>
 	</body>
 </html>

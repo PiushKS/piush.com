@@ -35,10 +35,11 @@ const site = Astro.site;
       ]
     })} />
   </head>
-  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
-    <Header />
+  <body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
 
-    <main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-6 sm:py-10 max-w-5xl mx-auto">
+      <main class="flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-5xl mx-auto">
       <!-- Page Hero / Introduction -->
       <section class="text-center space-y-3 mb-8 sm:mb-12">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium bg-[#1B5448]/15 dark:bg-[#ade1cd]/15 text-[#1B5448] dark:text-[#ade1cd] border border-[#1B5448]/25 dark:border-[#ade1cd]/25 shadow-xs">
@@ -498,6 +499,7 @@ const site = Astro.site;
     </main>
 
     <Footer />
+    </div>
 
     <!-- Quiz Client Logic -->
     <script>

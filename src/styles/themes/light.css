@@ -1,69 +1,69 @@
-/* Light theme tokens - Built with only iPhone Green Colors
- * iPhone 11 (Green): #ade1cd | rgb(173, 225, 205)
- * iPhone 11 Pro (Midnight Green): #4e5850 | rgb(78, 88, 80)
- * iPhone 12 (Green): #E1F8DC | rgb(225, 248, 220)
- * iPhone 13 (Green): #1B5448 | rgb(27, 84, 72)
- * iPhone 13 Pro (Alpine Green): #23382B | rgb(35, 56, 43)
- */
+/* Light theme tokens - Retro Desktop OS Palette */
 :root,
 [data-theme="light"],
 :root:not(.dark) {
-  --accent: #1B5448;
-  --accent-light: #23382B;
-  --accent-dark: #143e35;
-  --accent-rgb: 27, 84, 72;
-  --accent-glow: rgba(27, 84, 72, 0.25);
-  --accent-gradient: linear-gradient(135deg, #1B5448 0%, #23382B 50%, #4e5850 100%);
-  --accent-gradient-subtle: linear-gradient(135deg, rgba(27, 84, 72, 0.08) 0%, rgba(35, 56, 43, 0.03) 100%);
+  --accent: #0057cc;
+  --accent-light: #2e7dff;
+  --accent-dark: #003e99;
+  --accent-rgb: 0, 87, 204;
+  --accent-glow: rgba(0, 87, 204, 0.25);
+  --accent-gradient: linear-gradient(135deg, #0057cc 0%, #003e99 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(0, 87, 204, 0.08) 0%, rgba(0, 62, 153, 0.03) 100%);
 
-  --black: 20, 36, 27;
-  --gray: 78, 88, 80;
-  --gray-light: 225, 248, 220;
-  --gray-dark: 35, 56, 43;
+  --black: 0, 0, 0;
+  --gray: 128, 128, 128;
+  --gray-light: 212, 212, 212;
+  --gray-dark: 64, 64, 64;
 
-  --background: #f4fbf3;
-  --foreground: #14241b;
+  --background: #cacaca;
+  --foreground: #000000;
   --card: #ffffff;
-  --card-foreground: #14241b;
+  --card-foreground: #000000;
   --popover: #ffffff;
-  --popover-foreground: #14241b;
-  --primary: #1B5448;
-  --primary-foreground: #E1F8DC;
-  --secondary: #23382B;
-  --secondary-foreground: #E1F8DC;
-  --muted: #e7f5e5;
-  --muted-foreground: #4e5850;
-  --accent-foreground: #14241b;
+  --popover-foreground: #000000;
+  --primary: #0057cc;
+  --primary-foreground: #ffffff;
+  --secondary: #c0c0c0;
+  --secondary-foreground: #000000;
+  --muted: #e8e8e8;
+  --muted-foreground: #555555;
+  --accent-foreground: #ffffff;
 
   /* Semantic Color Tokens for components */
-  --color-text-primary: #14241b;
-  --color-text-secondary: #2c4235;
-  --color-text-muted: #536b5c;
-  --color-bg-primary: #f4fbf3;
-  --color-bg-secondary: rgba(78, 88, 80, 0.06);
-  --color-bg-tertiary: rgba(78, 88, 80, 0.12);
+  --color-text-primary: #000000;
+  --color-text-secondary: #222222;
+  --color-text-muted: #555555;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f0f0f0;
+  --color-bg-tertiary: #d4d4d4;
 
   /* Borders */
-  --color-border: rgba(78, 88, 80, 0.18);
-  --color-border-light: rgba(78, 88, 80, 0.1);
-  --color-border-glow: rgba(27, 84, 72, 0.35);
+  --color-border: #000000;
+  --color-border-light: #808080;
+  --color-border-glow: rgba(0, 87, 204, 0.35);
   --color-accent-text: var(--accent);
   --color-accent-bg: rgba(var(--accent-rgb), 0.08);
 
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(78, 88, 80, 0.18);
-  --glass-blur: 16px;
+  --glass-bg: #ffffff;
+  --glass-border: #000000;
+  --glass-blur: 0px;
 
-  --info: #1B5448;
-  --info-foreground: #E1F8DC;
-  --success: #1B5448;
-  --success-foreground: #E1F8DC;
-  --warning: #4e5850;
-  --warning-foreground: #E1F8DC;
-  --error: #23382B;
-  --error-foreground: #E1F8DC;
+  --info: #0057cc;
+  --info-foreground: #ffffff;
+  --success: #008000;
+  --success-foreground: #ffffff;
+  --warning: #cc8800;
+  --warning-foreground: #ffffff;
+  --error: #cc0000;
+  --error-foreground: #ffffff;
 
-  --border: rgba(78, 88, 80, 0.18);
-  --input: rgba(78, 88, 80, 0.18);
+  --radius: 0px;
+  --shadow-sm: 2px 2px 0px #000000;
+  --shadow-md: 4px 4px 0px #000000;
+  --shadow-lg: 6px 6px 0px #000000;
+  --shadow-xl: 8px 8px 0px #000000;
+
+  --border: #000000;
+  --input: #000000;
   --outline: var(--accent);
 }

@@ -24,19 +24,19 @@ const {
 
 const Tag = href ? 'a' : 'button';
 
-const base = 'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer no-underline active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none';
+const base = 'inline-flex items-center justify-center font-mono font-bold cursor-pointer no-underline select-none border-t-2 border-l-2 border-r-2 border-b-2 disabled:opacity-50 disabled:pointer-events-none';
 
 const sizes: Record<string, string> = {
-  sm: 'px-3.5 py-1.5 text-xs rounded-lg gap-1.5',
-  md: 'px-5 py-2.5 text-sm rounded-xl gap-2 shadow-sm',
-  lg: 'px-6 py-3.5 text-base rounded-xl gap-2.5 shadow-md',
+  sm: 'px-2.5 py-1 text-xs gap-1.5',
+  md: 'px-4 py-2 text-sm gap-2',
+  lg: 'px-6 py-2.5 text-base gap-2.5',
 };
 
 const variants: Record<string, string> = {
-  primary: 'font-semibold bg-gradient-to-r from-[#1B5448] to-[#23382B] text-[#E1F8DC] !text-[#E1F8DC] border border-[#1B5448] shadow-[0_4px_14px_rgba(27,84,72,0.3)] hover:brightness-110 dark:from-[#ade1cd] dark:via-[#c2ecd9] dark:to-[#E1F8DC] dark:text-[#0d1712] dark:!text-[#0d1712] dark:border-[#E1F8DC]/60 dark:shadow-[0_4px_16px_rgba(173,225,205,0.35)]',
-  secondary: 'text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.3)] bg-[rgba(var(--accent-rgb),0.08)] hover:bg-[rgba(var(--accent-rgb),0.16)] hover:border-[var(--accent)] backdrop-blur-sm',
-  outline: 'text-foreground border border-[var(--color-border)] bg-[var(--card)] hover:border-[rgba(var(--accent-rgb),0.4)] hover:text-[var(--accent)] backdrop-blur-sm',
-  ghost: 'text-[color:var(--color-text-secondary)] bg-transparent hover:bg-[rgba(var(--accent-rgb),0.08)] hover:text-[var(--accent)]',
+  primary: 'bg-[#c0c0c0] text-black !text-black border-t-white border-l-white border-r-black border-b-black shadow-[1px_1px_0px_#000000] hover:bg-[#d4d4d4] active:border-t-black active:border-l-black active:border-r-white active:border-b-white active:translate-x-[1px] active:translate-y-[1px]',
+  secondary: 'bg-[#0057cc] text-white !text-white border-t-[#528eff] border-l-[#528eff] border-r-[#002b66] border-b-[#002b66] shadow-[1px_1px_0px_#000000] hover:bg-[#004bbb] active:border-t-[#002b66] active:border-l-[#002b66] active:border-r-[#528eff] active:border-b-[#528eff] active:translate-x-[1px] active:translate-y-[1px]',
+  outline: 'bg-white text-black !text-black border-t-white border-l-white border-r-black border-b-black shadow-[1px_1px_0px_#000000] hover:bg-[#f0f0f0] active:border-t-black active:border-l-black active:border-r-white active:border-b-white active:translate-x-[1px] active:translate-y-[1px]',
+  ghost: 'bg-transparent text-black border-transparent hover:bg-[#d4d4d4] hover:border-t-white hover:border-l-white hover:border-r-black hover:border-b-black active:border-t-black active:border-l-black active:border-r-white active:border-b-white active:translate-x-[1px] active:translate-y-[1px]',
 };
 
 const classes = [base, sizes[size], variants[variant], className].filter(Boolean).join(' ');

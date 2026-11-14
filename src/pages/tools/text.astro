@@ -67,7 +67,8 @@ const site = Astro.site;
       ]
     })} />
   </head>
-  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans">
+  <body class="retro-desktop-viewport">
+    <div class="retro-window">
     <Header />
     <main class="flex-1 w-full px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-4 max-w-[1600px] mx-auto">
       
@@ -425,6 +426,7 @@ const site = Astro.site;
       <GlowLineSeparator />
     </main>
     <Footer />
+    </div>
 
     <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" aria-live="assertive"></div>

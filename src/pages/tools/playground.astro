@@ -71,7 +71,8 @@ const site = Astro.site;
       ]
     })} />
   </head>
-  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col font-sans selection:bg-[var(--accent)]/20">
+  <body class="retro-desktop-viewport">
+    <div class="retro-window">
     <div id="site-header-container">
       <Header />
     </div>
@@ -674,6 +675,7 @@ const site = Astro.site;
 
     <div id="site-footer-container">
       <Footer />
+    </div>
     </div>
 
     <!-- MODAL 1: MY SNIPPETS (IndexedDB/Local Storage) -->

@@ -69,31 +69,33 @@ const site = Astro.site;
       ]
     })} />
 	</head>
-	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-		<Header />
-		<main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-2 sm:py-4">
-      <HeroSection
-        badge="Available for Projects & Engineering"
-        title="Piush KS"
-        subtitle="Senior Engineer & Solopreneur crafting high-performance mobile applications, resilient cloud architectures, and digital products."
-        showCTA
-        primaryCTA={{ text: 'View Portfolio', href: '/portfolio' }}
-        secondaryCTA={{ text: 'Read Blog Articles', href: '/blog' }}
-        showHighlights={true}
-      />
+	<body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
+      <main class="flex-1 w-full px-3 sm:px-6 lg:px-8 py-2 sm:py-4">
+        <HeroSection
+          badge="Available for Projects & Engineering"
+          title="Piush KS"
+          subtitle="Senior Engineer & Solopreneur crafting high-performance mobile applications, resilient cloud architectures, and digital products."
+          showCTA
+          primaryCTA={{ text: 'View Portfolio', href: '/portfolio' }}
+          secondaryCTA={{ text: 'Read Blog Articles', href: '/blog' }}
+          showHighlights={true}
+        />
 
-      <section class="py-2 sm:py-4 space-y-2 sm:space-y-3">
-        <ArrowSeparator />
-        <DeveloperToolsSection />
-        <ArrowSeparator />
-        <SkillsSection title="Skills & Tools" skills={skills} />   
-        <ArrowSeparator />
-        <WorkExperience title="Work Experience" items={work} />
-        <ArrowSeparator />
-        <Studies title="Education & Studies" items={studies} />
-        <GlowLineSeparator />
-      </section>
-		</main>
-		<Footer />
+        <section class="py-2 sm:py-4 space-y-2 sm:space-y-3">
+          <ArrowSeparator />
+          <DeveloperToolsSection />
+          <ArrowSeparator />
+          <SkillsSection title="Skills & Tools" skills={skills} />   
+          <ArrowSeparator />
+          <WorkExperience title="Work Experience" items={work} />
+          <ArrowSeparator />
+          <Studies title="Education & Studies" items={studies} />
+          <GlowLineSeparator />
+        </section>
+      </main>
+      <Footer />
+    </div>
 	</body>
 </html>

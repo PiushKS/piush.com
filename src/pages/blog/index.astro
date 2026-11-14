@@ -53,22 +53,24 @@ const blogDescription = "In-depth engineering articles on Android, Kotlin, Flutt
       ]
     })} />
 	</head>
-	<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-    <Header />
-    <BlogHero
-      title="Articles & Notes"
-      subtitle="Deep dives, architectural insights, and practical guides on mobile development, cloud systems, and scaling digital products."
-    />
-    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-2 sm:py-4 space-y-6 sm:space-y-8">
-      {featured && (
-        <section class="card-surface p-5 sm:p-7 md:p-8 w-full">
-          <FeaturedPost post={featured} readingTimeMin={featuredReading} />
-        </section>
-      )}
+	<body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
+      <BlogHero
+        title="Articles & Notes"
+        subtitle="Deep dives, architectural insights, and practical guides on mobile development, cloud systems, and scaling digital products."
+      />
+      <main class="use-utility-layout flex-1 w-full px-3 sm:px-6 lg:px-8 py-2 sm:py-4 space-y-6 sm:space-y-8">
+        {featured && (
+          <section class="bg-white border-2 border-black p-5 sm:p-7 md:p-8 w-full shadow-[4px_4px_0px_#000000]">
+            <FeaturedPost post={featured} readingTimeMin={featuredReading} />
+          </section>
+        )}
 
-      <BlogAllArticles posts={firstPagePosts} title="Latest Articles" />
-      <BlogPagination currentPage={1} totalPages={totalPages} />
-    </main>
-    <Footer />
+        <BlogAllArticles posts={firstPagePosts} title="Latest Articles" />
+        <BlogPagination currentPage={1} totalPages={totalPages} />
+      </main>
+      <Footer />
+    </div>
 	</body>
 </html>

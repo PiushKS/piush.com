@@ -35,13 +35,15 @@ const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
       <link rel="next" href={`/blog/page/${currentPage + 1}/`} />
     )}
   </head>
-  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-    <Header />
-    <BlogHero title="Articles & Notes" subtitle="Stories, architectural deep dives, and learnings." />
-    <main class="use-utility-layout flex-1 w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
-      <BlogAllArticles posts={pagePosts} title={`Articles (Page ${currentPage})`} />
-      <BlogPagination currentPage={currentPage} totalPages={totalPages} />
-    </main>
-    <Footer />
+  <body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
+      <BlogHero title="Articles & Notes" subtitle="Stories, architectural deep dives, and learnings." />
+      <main class="use-utility-layout flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-8">
+        <BlogAllArticles posts={pagePosts} title={`Articles (Page ${currentPage})`} />
+        <BlogPagination currentPage={currentPage} totalPages={totalPages} />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

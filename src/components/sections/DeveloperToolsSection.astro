@@ -65,20 +65,21 @@ const tools = [
 ];
 ---
 
-<section class="w-full py-4 sm:py-6 md:py-8" id="developer-tools">
+<section class="w-full py-4 sm:py-6 md:py-8 select-none" id="developer-tools">
   <div class="w-full">
-    <!-- Header -->
-    <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[rgba(var(--accent-rgb),0.1)] text-[var(--accent)] border border-[rgba(var(--accent-rgb),0.2)] mb-3 shadow-xs">
-        <span class="size-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
+    <!-- Header matching reference mockups 9.png & 10.png -->
+    <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8 space-y-2">
+      <div class="inline-flex justify-center">
+        <span class="retro-info-bubble" aria-hidden="true">i</span>
+      </div>
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-bold bg-[#c0c0c0] text-black border-t-2 border-l-2 border-white border-r-2 border-b-2 border-black shadow-xs">
+        <span class="size-2 bg-[#0057cc]"></span>
         <span>100% Client-Side • Zero Network Requests</span>
       </div>
-      <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-        <span class="bg-gradient-to-r from-foreground via-foreground to-[var(--color-text-secondary)] bg-clip-text">
-          Developer & Design Tools
-        </span>
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-black font-mono tracking-tight text-[#0057cc] uppercase m-0">
+        Developer & Design Tools
       </h2>
-      <p class="mt-3 text-base text-[var(--color-text-muted)] leading-relaxed">
+      <p class="text-xs sm:text-sm font-mono text-[#222222] leading-relaxed max-w-xl mx-auto m-0">
         Fast, privacy-friendly utilities for developers, designers, and mobile creators. No signup, no uploads; everything runs inside your browser.
       </p>
     </div>
@@ -86,25 +87,25 @@ const tools = [
     <!-- 6 Interactive Tool Cards Grid (3 cols on desktop) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full">
       {tools.map((t) => (
-        <article class="card-surface p-5 sm:p-6 group flex flex-col justify-between h-full border border-[var(--color-border)] hover:border-[var(--accent)] transition-all duration-300">
+        <article class="retro-card p-4 sm:p-5 group flex flex-col justify-between h-full">
           <div>
             <!-- Top Row: Developer Icon + Category Pill -->
-            <div class="flex items-center justify-between mb-4">
-              <div class="icon-badge-interactive size-11 rounded-xl flex items-center justify-center text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[rgba(var(--accent-rgb),0.2)] group-hover:bg-[rgba(var(--accent-rgb),0.18)] group-hover:border-[var(--accent)] shadow-xs">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b-2 border-black">
+              <div class="icon-badge-interactive size-9 flex items-center justify-center text-black font-mono font-bold">
                 {t.iconType === 'json' && (
-                  <span class="font-mono font-bold text-base leading-none">&#123; &#125;</span>
+                  <span class="font-mono font-bold text-sm leading-none">&#123; &#125;</span>
                 )}
                 {t.iconType === 'text' && (
-                  <span class="font-serif font-bold text-base leading-none">Aa</span>
+                  <span class="font-serif font-bold text-sm leading-none">Aa</span>
                 )}
                 {t.iconType === 'code' && (
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="16 18 22 12 16 6"/>
                     <polyline points="8 6 2 12 8 18"/>
                   </svg>
                 )}
                 {t.iconType === 'svg' && (
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 19l7-7 3 3-7 7-3-3z"/>
                     <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
                     <path d="M2 2l7.586 7.586"/>
@@ -112,37 +113,37 @@ const tools = [
                   </svg>
                 )}
                 {t.iconType === 'ui' && (
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect width="18" height="18" x="3" y="3" rx="2"/>
                     <path d="M3 9h18"/>
                     <path d="M9 21V9"/>
                   </svg>
                 )}
                 {t.iconType === 'colors' && (
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="9" cy="9" r="6"/>
                     <circle cx="15" cy="9" r="6"/>
                     <circle cx="12" cy="15" r="6"/>
                   </svg>
                 )}
               </div>
-              <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)] uppercase tracking-wider">
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 bg-[#e0e0e0] text-black border border-black uppercase tracking-wider">
                 {t.tag}
               </span>
             </div>
 
             <!-- Title & Description -->
-            <h3 class="text-base sm:text-lg font-bold text-foreground mb-1.5 group-hover:text-[var(--accent)] transition-colors tracking-tight leading-snug">
+            <h3 class="text-base font-bold font-mono text-black mb-1 group-hover:text-[#0057cc] transition-colors tracking-tight leading-snug">
               {t.title}
             </h3>
-            <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed mb-4">
+            <p class="text-xs font-mono text-[#333333] leading-relaxed mb-3">
               {t.description}
             </p>
 
             <!-- Capabilities Chips -->
             <div class="flex flex-wrap gap-1 mb-4">
               {t.chips.map((c) => (
-                <span class="tech-chip text-[0.65rem] py-0.5 px-2">
+                <span class="tech-chip text-[0.65rem] py-0.5 px-1.5">
                   {c}
                 </span>
               ))}
@@ -150,13 +151,13 @@ const tools = [
           </div>
 
           <!-- Bottom Action CTA -->
-          <div class="mt-4 pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
-            <span class="text-[11px] font-mono text-[var(--color-text-muted)]">
+          <div class="mt-2 pt-2 border-t-2 border-black flex items-center justify-between">
+            <span class="text-[10px] font-mono text-[#555555]">
               {t.href}
             </span>
-            <Button href={t.href} variant="secondary" size="sm" class="btn-interactive">
+            <Button href={t.href} variant="primary" size="sm">
               <span>{t.ctaText}</span>
-              <span class="transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+              <span class="ml-1 font-bold">→</span>
             </Button>
           </div>
         </article>
@@ -167,10 +168,9 @@ const tools = [
     <div class="text-center mt-6 sm:mt-8">
       <a
         href="/tools/"
-        class="btn-interactive group inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[var(--color-text-secondary)] hover:text-[var(--accent)] transition-colors no-underline px-4 py-2 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--accent)] shadow-xs"
+        class="retro-btn"
       >
-        <span>Explore all tools</span>
-        <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+        <span>[ Explore all tools → ]</span>
       </a>
     </div>
   </div>

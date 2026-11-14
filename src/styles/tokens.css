@@ -1,77 +1,76 @@
-/* Base design tokens and defaults - Built with iPhone Green Palette */
+/* Base design tokens - Retro Desktop OS Theme */
 :root {
-  /* iPhone Green Palette Reference:
-   * iPhone 11 (Green): #ade1cd | rgb(173, 225, 205)
-   * iPhone 11 Pro (Midnight Green): #4e5850 | rgb(78, 88, 80)
-   * iPhone 12 (Green): #E1F8DC | rgb(225, 248, 220)
-   * iPhone 13 (Green): #1B5448 | rgb(27, 84, 72)
-   * iPhone 13 Pro (Alpine Green): #23382B | rgb(35, 56, 43)
-   */
+  /* Retro Desktop OS Color Palette */
+  --win-bg: #cacaca;
+  --win-blue: #0057cc;
+  --win-blue-light: #2e7dff;
+  --win-blue-dark: #003e99;
+  --win-surface: #ffffff;
+  --win-gray: #c0c0c0;
+  --win-gray-light: #d4d4d4;
+  --win-gray-dark: #808080;
+  --win-dark: #000000;
 
   /* Brand Primary & Accents */
-  --accent: #ade1cd;
-  --accent-light: #E1F8DC;
-  --accent-dark: #1B5448;
-  --accent-rgb: 173, 225, 205;
-  --accent-glow: rgba(173, 225, 205, 0.35);
-  --accent-gradient: linear-gradient(135deg, #ade1cd 0%, #1B5448 50%, #23382B 100%);
-  --accent-gradient-subtle: linear-gradient(135deg, rgba(173, 225, 205, 0.15) 0%, rgba(27, 84, 72, 0.05) 100%);
+  --accent: #0057cc;
+  --accent-light: #2e7dff;
+  --accent-dark: #003e99;
+  --accent-rgb: 0, 87, 204;
+  --accent-glow: rgba(0, 87, 204, 0.25);
+  --accent-gradient: linear-gradient(135deg, #0057cc 0%, #003e99 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(0, 87, 204, 0.08) 0%, rgba(0, 62, 153, 0.03) 100%);
 
-  /* Secondary Accent (iPhone 13 Green / Alpine Green) */
-  --accent-secondary: #1B5448;
-  --accent-secondary-rgb: 27, 84, 72;
+  --accent-secondary: #000000;
+  --accent-secondary-rgb: 0, 0, 0;
 
-  /* iPhone Green Neutrals */
-  --black: 13, 23, 18;
-  --gray: 78, 88, 80;
-  --gray-light: 225, 248, 220;
-  --gray-dark: 35, 56, 43;
+  /* Neutrals */
+  --black: 0, 0, 0;
+  --gray: 128, 128, 128;
+  --gray-light: 212, 212, 212;
+  --gray-dark: 64, 64, 64;
 
-  /* Elevation Shadows */
-  --shadow-xs: 0 1px 2px rgba(13, 23, 18, 0.04);
-  --shadow-sm: 0 1px 3px rgba(13, 23, 18, 0.06), 0 1px 2px rgba(13, 23, 18, 0.04);
-  --shadow-md: 0 4px 12px -1px rgba(13, 23, 18, 0.08), 0 2px 6px -1px rgba(13, 23, 18, 0.04);
-  --shadow-lg: 0 10px 25px -3px rgba(13, 23, 18, 0.1), 0 4px 10px -2px rgba(13, 23, 18, 0.05);
-  --shadow-xl: 0 20px 35px -5px rgba(13, 23, 18, 0.12), 0 8px 16px -4px rgba(13, 23, 18, 0.06);
-  --shadow-2xl: 0 25px 50px -12px rgba(13, 23, 18, 0.2);
-  --shadow-glow: 0 0 25px rgba(173, 225, 205, 0.25);
+  /* Elevation Shadows - Retro 3D hard shadows */
+  --shadow-xs: 1px 1px 0px #000000;
+  --shadow-sm: 2px 2px 0px #000000;
+  --shadow-md: 4px 4px 0px #000000;
+  --shadow-lg: 6px 6px 0px #000000;
+  --shadow-xl: 8px 8px 0px #000000;
+  --shadow-2xl: 10px 10px 0px #000000;
+  --shadow-glow: 0 0 15px rgba(0, 87, 204, 0.35);
 
-  --box-shadow:
-    0 2px 6px rgba(13, 23, 18, 0.06),
-    0 8px 24px rgba(13, 23, 18, 0.06),
-    0 16px 32px rgba(13, 23, 18, 0.06);
+  --box-shadow: 4px 4px 0px #000000;
 
-  /* Starwind theme mapped variables */
-  --background: #f4fbf3;
-  --foreground: #14241b;
+  /* Theme mapped variables */
+  --background: #cacaca;
+  --foreground: #000000;
   --card: #ffffff;
-  --card-foreground: #14241b;
+  --card-foreground: #000000;
   --popover: #ffffff;
-  --popover-foreground: #14241b;
-  --primary: var(--accent);
-  --primary-foreground: #0d1712;
-  --secondary: #1B5448;
-  --secondary-foreground: #E1F8DC;
-  --muted: #edf8eb;
-  --muted-foreground: #4e5850;
-  --accent-foreground: #14241b;
-  --info: #ade1cd;
-  --info-foreground: #14241b;
-  --success: #ade1cd;
-  --success-foreground: #14241b;
-  --warning: #ade1cd;
-  --warning-foreground: #14241b;
-  --error: #4e5850;
-  --error-foreground: #E1F8DC;
-  --border: rgba(78, 88, 80, 0.2);
-  --input: rgba(78, 88, 80, 0.2);
-  --outline: var(--accent);
-  --radius: 0.875rem;
+  --popover-foreground: #000000;
+  --primary: #0057cc;
+  --primary-foreground: #ffffff;
+  --secondary: #c0c0c0;
+  --secondary-foreground: #000000;
+  --muted: #e8e8e8;
+  --muted-foreground: #444444;
+  --accent-foreground: #ffffff;
+  --info: #0057cc;
+  --info-foreground: #ffffff;
+  --success: #008000;
+  --success-foreground: #ffffff;
+  --warning: #cc8800;
+  --warning-foreground: #ffffff;
+  --error: #cc0000;
+  --error-foreground: #ffffff;
+  --border: #000000;
+  --input: #000000;
+  --outline: #0057cc;
+  --radius: 0px;
 
   /* Glass & Mesh settings */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(78, 88, 80, 0.25);
-  --glass-blur: 16px;
+  --glass-bg: #ffffff;
+  --glass-border: #000000;
+  --glass-blur: 0px;
 
   /* Kinetic Motion & Physics Easing Tokens */
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);

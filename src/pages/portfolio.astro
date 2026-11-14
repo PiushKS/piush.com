@@ -35,17 +35,19 @@ const site = Astro.site;
       ]
     })} />
   </head>
-  <body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
-    <Header />
-    <main class="flex-1 w-full px-4 sm:px-8 lg:px-12 py-2 sm:py-4">
-      <HeroSection
-        badge="Portfolio & Selected Works"
-        title="Apps, Systems & Playbooks"
-        subtitle="A curated showcase of engineering architecture, cross-platform mobile apps, workflow orchestrations, and developer tools."
-      />
-      <Projects />
-      <GlowLineSeparator />
-    </main>
-    <Footer />
+  <body class="retro-desktop-viewport">
+    <div class="retro-window">
+      <Header />
+      <main class="flex-1 w-full px-3 sm:px-6 lg:px-8 py-2 sm:py-4">
+        <HeroSection
+          badge="Portfolio & Selected Works"
+          title="Apps, Systems & Playbooks"
+          subtitle="A curated showcase of engineering architecture, cross-platform mobile apps, workflow orchestrations, and developer tools."
+        />
+        <Projects />
+        <GlowLineSeparator />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>
