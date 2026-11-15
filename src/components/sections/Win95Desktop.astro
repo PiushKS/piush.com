@@ -43,13 +43,14 @@
         <span class="win95-desktop-icon-label">My Portfolio</span>
       </button>
 
-      <!-- 3. README.TXT -->
+      <!-- 3. README.TXT (Notepad) -->
       <button
         type="button"
         class="win95-desktop-icon"
         id="d-icon-notepad"
-        title="Open README.TXT"
+        title="Open README.TXT in Notepad"
         tabindex="0"
+        data-app="notepad"
       >
         <img
           src="/images/windows-95-notepad.svg"
@@ -68,6 +69,7 @@
         id="d-icon-network"
         title="Network Neighborhood (Socials & GitHub)"
         tabindex="0"
+        data-app="network"
       >
         <img
           src="/images/windows-95-network.svg"
@@ -122,6 +124,81 @@
         </div>
         <span class="win95-desktop-icon-label">Tools.exe</span>
       </a>
+
+      <!-- 8. MS-DOS Prompt -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-dos"
+        title="MS-DOS Prompt"
+        tabindex="0"
+        data-app="dos"
+      >
+        <div class="size-9 bg-black border border-white flex items-center justify-center text-[#00ff00] text-sm font-bold font-mono drop-shadow-[1px_1px_0px_#000000]">
+          C:\&gt;
+        </div>
+        <span class="win95-desktop-icon-label">MS-DOS Prompt</span>
+      </button>
+
+      <!-- 9. 3D Pinball -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-pinball"
+        title="3D Pinball - Space Cadet"
+        tabindex="0"
+        data-app="pinball"
+      >
+        <div class="size-9 bg-[#111133] border border-blue-400 flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
+          🚀
+        </div>
+        <span class="win95-desktop-icon-label">Pinball.exe</span>
+      </button>
+
+      <!-- 10. Minesweeper -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-minesweeper"
+        title="Minesweeper"
+        tabindex="0"
+        data-app="minesweeper"
+      >
+        <div class="size-9 bg-[#c0c0c0] border border-black flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
+          💣
+        </div>
+        <span class="win95-desktop-icon-label">Minesweeper</span>
+      </button>
+
+      <!-- 11. Paint -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-paint"
+        title="Paint"
+        tabindex="0"
+        data-app="paint"
+      >
+        <div class="size-9 bg-[#fff0f5] border border-black flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
+          🎨
+        </div>
+        <span class="win95-desktop-icon-label">Paint.exe</span>
+      </button>
+
+      <!-- 12. Media Player -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-media"
+        title="Media Player"
+        tabindex="0"
+        data-app="mediaplayer"
+      >
+        <div class="size-9 bg-[#222222] border border-gray-400 flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
+          📼
+        </div>
+        <span class="win95-desktop-icon-label">Media Player</span>
+      </button>
     </div>
 
     <!-- Desktop Floating Helper Bubble -->
@@ -130,7 +207,7 @@
         <span>💡 Windows 95 Desktop</span>
       </div>
       <p class="mt-1 text-[11px] leading-snug">
-        The portfolio window has minimized to the desktop! Double-click <strong>"My Portfolio"</strong> or click the taskbar button below to restore the website.
+        The portfolio website has minimized to the desktop! Double-click <strong>"My Portfolio"</strong> or click the taskbar button below to restore the website.
       </p>
       <button
         type="button"
@@ -141,7 +218,7 @@
       </button>
     </div>
 
-    <!-- Desktop Sub-Window: Notepad (README.TXT) -->
+    <!-- Desktop Sub-Window: Notepad (README.TXT) Fallback/Quick View -->
     <div
       id="d-notepad-window"
       class="hidden absolute top-12 left-4 sm:left-32 w-[92vw] sm:w-[500px] bg-[#c0c0c0] border-2 border-white shadow-[6px_6px_0px_#000000] z-50 text-black font-mono"
@@ -154,7 +231,6 @@
         <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="d-notepad-close">&#10005;</button>
       </div>
 
-      <!-- Menubar -->
       <div class="flex gap-3 px-2 py-0.5 text-xs bg-[#c0c0c0] border-b border-black/60">
         <span>File</span>
         <span>Edit</span>
@@ -162,7 +238,6 @@
         <span>Help</span>
       </div>
 
-      <!-- Text Surface -->
       <div class="p-2.5 bg-white text-black text-xs font-mono border-t border-black leading-relaxed whitespace-pre-wrap select-text max-h-[300px] overflow-auto">====================================================
 PIUSH KS – SENIOR MOBILE & CLOUD ENGINEER
 ====================================================
@@ -252,7 +327,7 @@ Double-click "My Portfolio" or click the taskbar button below.
   <!-- Windows 95 Classic Taskbar -->
   <footer class="win95-taskbar relative">
     <!-- Left: Start Button -->
-    <div class="flex items-center gap-1.5">
+    <div class="flex items-center gap-1.5 shrink-0">
       <button
         type="button"
         id="win95-start-btn"
@@ -283,15 +358,18 @@ Double-click "My Portfolio" or click the taskbar button below.
       </button>
     </div>
 
+    <!-- Active Running Applications Container -->
+    <div id="win95-running-apps" class="flex-1 flex items-center gap-1 overflow-x-auto px-1 max-w-[calc(100vw-320px)]"></div>
+
     <!-- Right: System Tray (Volume & Clock) -->
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1 shrink-0 ml-auto">
       <div class="retro-inset px-2 py-0.5 bg-[#c0c0c0] text-[11px] font-mono font-bold text-black flex items-center gap-1.5">
-        <span title="Audio On">🔊</span>
+        <span title="Audio On" class="cursor-pointer" id="win95-tray-audio">🔊</span>
         <span id="win95-taskbar-clock">--:--:--</span>
       </div>
     </div>
 
-    <!-- Windows 95 Start Menu Dropup Popup -->
+    <!-- Windows 95 Start Menu Dropup Popup (Hierarchical Flyout) -->
     <div id="win95-start-menu" class="win95-start-menu hidden" role="menu">
       <div class="win95-start-banner">
         <span>WINDOWS 95</span>
@@ -299,43 +377,270 @@ Double-click "My Portfolio" or click the taskbar button below.
 
       <div class="flex-1 py-1 text-black font-mono text-xs flex flex-col justify-between">
         <div class="space-y-0.5">
-          <button type="button" class="retro-menu-item !py-1" id="sm-restore" role="menuitem">
-            <span class="flex items-center gap-2">
-              <span>🗖</span>
-              <span class="font-bold">Restore Portfolio</span>
-            </span>
-          </button>
-          <button type="button" class="retro-menu-item !py-1" id="sm-readme" role="menuitem">
-            <span class="flex items-center gap-2">
-              <span>📝</span>
-              <span>README.TXT</span>
-            </span>
-          </button>
-          <a href="/quiz/" class="retro-menu-item !py-1 text-black no-underline" role="menuitem">
-            <span class="flex items-center gap-2">
-              <span>⚡</span>
-              <span>Developer Quiz</span>
-            </span>
-          </a>
-          <a href="/tools/" class="retro-menu-item !py-1 text-black no-underline" role="menuitem">
-            <span class="flex items-center gap-2">
-              <span>🛠️</span>
-              <span>Developer Tools</span>
-            </span>
-          </a>
+          <!-- 1. Programs ▶ -->
+          <div class="win95-menu-parent">
+            <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between" role="menuitem">
+              <span class="flex items-center gap-2">
+                <span>📁</span>
+                <span class="font-bold">Programs</span>
+              </span>
+              <span class="text-[10px]">▶</span>
+            </button>
+            <div class="win95-submenu" role="menu">
+              <!-- Accessories ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>📁</span><span>Accessories</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" data-app="notepad"><span>📝 Notepad</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="wordpad"><span>📄 WordPad</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="paint"><span>🎨 Paint</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="calc"><span>🧮 Calculator</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="charmap"><span>🔤 Character Map</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="clipbrd"><span>📋 Clipboard Viewer</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="addressbook"><span>📇 Address Book</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="phonedialer"><span>☎️ Phone Dialer</span></button>
 
-          <div class="retro-menu-separator"></div>
+                  <div class="retro-menu-separator"></div>
 
-          <button type="button" class="retro-menu-item !py-1" id="sm-about" role="menuitem">
+                  <!-- Games ▶ -->
+                  <div class="win95-menu-parent">
+                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                      <span class="flex items-center gap-2"><span>🕹️</span><span>Games</span></span>
+                      <span class="text-[10px]">▶</span>
+                    </button>
+                    <div class="win95-submenu" role="menu">
+                      <button type="button" class="retro-menu-item !py-1" data-app="minesweeper"><span>💣 Minesweeper</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="solitaire"><span>🃏 Solitaire</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="freecell"><span>🎴 FreeCell</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="hearts"><span>♥️ Hearts</span></button>
+                      <div class="retro-menu-separator"></div>
+                      <!-- Bonus Games ▶ -->
+                      <div class="win95-menu-parent">
+                        <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                          <span class="flex items-center gap-2"><span>⭐</span><span>Bonus Games</span></span>
+                          <span class="text-[10px]">▶</span>
+                        </button>
+                        <div class="win95-submenu" role="menu">
+                          <button type="button" class="retro-menu-item !py-1" data-app="pinball"><span>🚀 3D Pinball</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="snake"><span>🐍 Snake</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="chess"><span>♟️ Chess</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="brickbreaker"><span>🧱 Brick Breaker</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="spacedefender"><span>👾 Space Defender</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="tictactoe"><span>❌ Tic-Tac-Toe</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="memorymatch"><span>🧠 Memory Match</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="reversi"><span>⚪ Reversi</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="t2048"><span>🔢 2048</span></button>
+                          <button type="button" class="retro-menu-item !py-1" data-app="fallingblocks"><span>🧊 Falling Blocks</span></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Multimedia ▶ -->
+                  <div class="win95-menu-parent">
+                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                      <span class="flex items-center gap-2"><span>📼</span><span>Multimedia</span></span>
+                      <span class="text-[10px]">▶</span>
+                    </button>
+                    <div class="win95-submenu" role="menu">
+                      <button type="button" class="retro-menu-item !py-1" data-app="mediaplayer"><span>📼 Media Player</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="cdplayer"><span>💿 CD Player</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="soundrecorder"><span>🎙️ Sound Recorder</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="volume"><span>🔊 Volume Control</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="imageviewer"><span>🖼️ Image Viewer</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="midiplayer"><span>🎵 MIDI Player</span></button>
+                    </div>
+                  </div>
+
+                  <!-- System Tools ▶ -->
+                  <div class="win95-menu-parent">
+                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                      <span class="flex items-center gap-2"><span>🛠️</span><span>System Tools</span></span>
+                      <span class="text-[10px]">▶</span>
+                    </button>
+                    <div class="win95-submenu" role="menu">
+                      <button type="button" class="retro-menu-item !py-1" data-app="controlpanel"><span>⚙️ Control Panel</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="scandisk"><span>🔍 ScanDisk</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="defrag"><span>📊 Disk Defragmenter</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="taskmanager"><span>📋 Task Manager</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="explorer"><span>🗂️ File Manager</span></button>
+                    </div>
+                  </div>
+
+                  <!-- Communications ▶ -->
+                  <div class="win95-menu-parent">
+                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                      <span class="flex items-center gap-2"><span>📠</span><span>Communications</span></span>
+                      <span class="text-[10px]">▶</span>
+                    </button>
+                    <div class="win95-submenu" role="menu">
+                      <button type="button" class="retro-menu-item !py-1" data-app="hyperterminal"><span>💻 HyperTerminal</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="dialup"><span>📠 Dial-Up Networking</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="network"><span>🌐 Network Neighborhood</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="phonedialer"><span>☎️ Phone Dialer</span></button>
+                    </div>
+                  </div>
+
+                  <!-- Accessibility ▶ -->
+                  <div class="win95-menu-parent">
+                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                      <span class="flex items-center gap-2"><span>♿</span><span>Accessibility</span></span>
+                      <span class="text-[10px]">▶</span>
+                    </button>
+                    <div class="win95-submenu" role="menu">
+                      <button type="button" class="retro-menu-item !py-1" data-app="accessibility"><span>♿ Accessibility Options</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="magnifier"><span>🔎 Magnifier</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="osk"><span>⌨️ On-Screen Keyboard</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="highcontrast"><span>🌓 High Contrast</span></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Developer Tools ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>⚡</span><span>Developer Tools</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <a href="/tools/" class="retro-menu-item !py-1 text-black no-underline"><span>🛠️ All Developer Tools</span></a>
+                  <a href="/tools/json/" class="retro-menu-item !py-1 text-black no-underline"><span>📋 JSON Toolkit</span></a>
+                  <a href="/tools/playground/" class="retro-menu-item !py-1 text-black no-underline"><span>▶️ Code Playground</span></a>
+                  <a href="/tools/svg/" class="retro-menu-item !py-1 text-black no-underline"><span>🎨 SVG Studio</span></a>
+                  <a href="/tools/ui/" class="retro-menu-item !py-1 text-black no-underline"><span>🧪 UI Design Lab</span></a>
+                  <a href="/tools/colors/" class="retro-menu-item !py-1 text-black no-underline"><span>🌈 Color Studio</span></a>
+                  <div class="retro-menu-separator"></div>
+                  <button type="button" class="retro-menu-item !py-1" data-app="regex"><span>🔣 Regex Tester</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="base64"><span>🔐 Base64 Tool</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="url"><span>🔗 URL Encoder/Decoder</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="hash"><span>🔑 Hash Generator</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="uuid"><span>🏷️ UUID Generator</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="timestamp"><span>⏱️ Timestamp Converter</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="diff"><span>⚖️ Diff Checker</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="markdown"><span>📝 Markdown Editor</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="apitester"><span>📡 API Tester</span></button>
+                </div>
+              </div>
+
+              <!-- Internet ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>🌐</span><span>Internet</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" id="sm-internet-restore"><span>🌐 Internet Explorer</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="guestbook"><span>📖 Web Guestbook</span></button>
+                  <a href="https://github.com/piushks" target="_blank" rel="noopener noreferrer" class="retro-menu-item !py-1 text-black no-underline"><span>⭐ GitHub Profile</span></a>
+                </div>
+              </div>
+
+              <!-- Productivity ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>📅</span><span>Productivity</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" data-app="calendar"><span>📅 Calendar</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="clock"><span>⏰ Clock & Alarms</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="stickynotes"><span>📝 Sticky Notes</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="todolist"><span>☑️ To-Do List</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="addressbook"><span>📇 Contact Manager</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="filesearch"><span>🔍 File Search</span></button>
+                </div>
+              </div>
+
+              <div class="retro-menu-separator"></div>
+              <button type="button" class="retro-menu-item !py-1" data-app="dos"><span>⬛ MS-DOS Prompt</span></button>
+              <button type="button" class="retro-menu-item !py-1" data-app="explorer"><span>🗂️ Windows Explorer</span></button>
+            </div>
+          </div>
+
+          <!-- 2. Documents ▶ -->
+          <div class="win95-menu-parent">
+            <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between" role="menuitem">
+              <span class="flex items-center gap-2">
+                <span>📄</span>
+                <span>Documents</span>
+              </span>
+              <span class="text-[10px]">▶</span>
+            </button>
+            <div class="win95-submenu" role="menu">
+              <button type="button" class="retro-menu-item !py-1" id="sm-doc-readme"><span>📝 README.TXT</span></button>
+              <button type="button" class="retro-menu-item !py-1" data-app="notepad"><span>📝 ABOUT.TXT</span></button>
+              <button type="button" class="retro-menu-item !py-1" data-app="notepad"><span>📝 PROJECTS.TXT</span></button>
+              <button type="button" class="retro-menu-item !py-1" data-app="notepad"><span>📝 SKILLS.TXT</span></button>
+              <div class="retro-menu-separator"></div>
+              <button type="button" class="retro-menu-item !py-1" data-app="explorer"><span>📁 My Documents</span></button>
+            </div>
+          </div>
+
+          <!-- 3. Favorites ▶ -->
+          <div class="win95-menu-parent">
+            <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between" role="menuitem">
+              <span class="flex items-center gap-2">
+                <span>⭐</span>
+                <span>Favorites</span>
+              </span>
+              <span class="text-[10px]">▶</span>
+            </button>
+            <div class="win95-submenu" role="menu">
+              <button type="button" class="retro-menu-item !py-1" id="sm-fav-portfolio"><span>🚀 My Portfolio</span></button>
+              <a href="/work/" class="retro-menu-item !py-1 text-black no-underline"><span>💼 My Projects</span></a>
+              <a href="/blog/" class="retro-menu-item !py-1 text-black no-underline"><span>📰 My Blog</span></a>
+              <a href="/quiz/" class="retro-menu-item !py-1 text-black no-underline"><span>⚡ Developer Quiz</span></a>
+              <button type="button" class="retro-menu-item !py-1" data-app="network"><span>🌐 My Links</span></button>
+            </div>
+          </div>
+
+          <!-- 4. Settings ▶ -->
+          <div class="win95-menu-parent">
+            <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between" role="menuitem">
+              <span class="flex items-center gap-2">
+                <span>⚙️</span>
+                <span>Settings</span>
+              </span>
+              <span class="text-[10px]">▶</span>
+            </button>
+            <div class="win95-submenu" role="menu">
+              <button type="button" class="retro-menu-item !py-1" data-app="controlpanel"><span>⚙️ Control Panel</span></button>
+              <button type="button" class="retro-menu-item !py-1" id="sm-settings-sysinfo"><span>ℹ️ System Properties</span></button>
+            </div>
+          </div>
+
+          <!-- 5. Find ▶ -->
+          <div class="win95-menu-parent">
+            <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between" role="menuitem">
+              <span class="flex items-center gap-2">
+                <span>🔍</span>
+                <span>Find</span>
+              </span>
+              <span class="text-[10px]">▶</span>
+            </button>
+            <div class="win95-submenu" role="menu">
+              <button type="button" class="retro-menu-item !py-1" data-app="filesearch"><span>📄 Files or Folders...</span></button>
+              <button type="button" class="retro-menu-item !py-1" data-app="network"><span>🖥️ Computer...</span></button>
+            </div>
+          </div>
+
+          <!-- 6. Help -->
+          <button type="button" class="retro-menu-item !py-1" data-app="help" role="menuitem">
             <span class="flex items-center gap-2">
-              <span>ℹ️</span>
-              <span>System Properties...</span>
+              <span>❓</span>
+              <span>Help</span>
             </span>
           </button>
-          <button type="button" class="retro-menu-item !py-1" id="sm-boot" role="menuitem">
+
+          <!-- 7. Run... -->
+          <button type="button" class="retro-menu-item !py-1" data-app="run" role="menuitem">
             <span class="flex items-center gap-2">
-              <span>🔄</span>
-              <span>Restart OS (Boot)...</span>
+              <span>🏃</span>
+              <span>Run...</span>
             </span>
           </button>
         </div>
@@ -354,6 +659,9 @@ Double-click "My Portfolio" or click the taskbar button below.
 </div>
 
 <script>
+  import { launchApp } from '../../lib/win95/appRegistry';
+  import { windowManager } from '../../lib/win95/windowManager';
+
   // Windows 95 Desktop Screen & Taskbar Controller
   function setupWin95Desktop() {
     const desktopScreen = document.getElementById('win95-desktop-screen');
@@ -388,11 +696,11 @@ Double-click "My Portfolio" or click the taskbar button below.
     const recycleOkBtn = document.getElementById('d-recycle-ok-btn');
 
     // Start menu items
-    const smRestore = document.getElementById('sm-restore');
     const smShutdown = document.getElementById('sm-shutdown');
-    const smReadme = document.getElementById('sm-readme');
-    const smAbout = document.getElementById('sm-about');
-    const smBoot = document.getElementById('sm-boot');
+    const smDocReadme = document.getElementById('sm-doc-readme');
+    const smFavPortfolio = document.getElementById('sm-fav-portfolio');
+    const smInternetRestore = document.getElementById('sm-internet-restore');
+    const smSettingsSysinfo = document.getElementById('sm-settings-sysinfo');
 
     function playSound(type = 'click') {
       if (localStorage.getItem('retro_sound_enabled') === 'false') return;
@@ -447,6 +755,7 @@ Double-click "My Portfolio" or click the taskbar button below.
         desktopScreen.setAttribute('aria-hidden', 'false');
       }
       window.scrollTo({ top: 0 });
+      windowManager.updateTaskbar();
     };
 
     (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop = function () {
@@ -472,10 +781,16 @@ Double-click "My Portfolio" or click the taskbar button below.
     iconPortfolio?.addEventListener('dblclick', () => {
       (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
     });
-    smRestore?.addEventListener('click', () => {
+    smFavPortfolio?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
+      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+    });
+    smInternetRestore?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
       (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
     });
     smShutdown?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
       (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
     });
     notepadRestoreBtn?.addEventListener('click', () => {
@@ -490,9 +805,39 @@ Double-click "My Portfolio" or click the taskbar button below.
       startBtn.classList.toggle('is-active');
     });
 
+    // Handle all data-app launcher buttons inside Start Menu & Desktop
+    document.querySelectorAll('[data-app]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const appId = btn.getAttribute('data-app');
+        if (appId) {
+          launchApp(appId);
+          startMenu?.classList.add('hidden');
+          startBtn?.classList.remove('is-active');
+          document.querySelectorAll('.win95-menu-parent').forEach(p => p.classList.remove('is-open'));
+        }
+      });
+    });
+
+    // Mobile touch handling for flyout submenus
+    document.querySelectorAll('.win95-menu-parent > button').forEach((parentBtn) => {
+      parentBtn.addEventListener('click', (e) => {
+        if (window.innerWidth < 640) {
+          e.stopPropagation();
+          const parent = parentBtn.parentElement;
+          if (parent) {
+            parent.classList.toggle('is-open');
+          }
+        }
+      });
+    });
+
     // Sub-window handlers
-    iconNotepad?.addEventListener('click', () => {
-      playSound('click');
+    iconNotepad?.addEventListener('dblclick', () => {
+      launchApp('notepad');
+    });
+    smDocReadme?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
       notepadWindow?.classList.remove('hidden');
     });
     notepadClose?.addEventListener('click', () => {
@@ -503,14 +848,9 @@ Double-click "My Portfolio" or click the taskbar button below.
       playSound('click');
       notepadWindow?.classList.add('hidden');
     });
-    smReadme?.addEventListener('click', () => {
-      startMenu?.classList.add('hidden');
-      notepadWindow?.classList.remove('hidden');
-    });
 
-    iconNetwork?.addEventListener('click', () => {
-      playSound('click');
-      networkWindow?.classList.remove('hidden');
+    iconNetwork?.addEventListener('dblclick', () => {
+      launchApp('network');
     });
     networkClose?.addEventListener('click', () => {
       playSound('click');
@@ -540,7 +880,7 @@ Double-click "My Portfolio" or click the taskbar button below.
       }
     });
 
-    smAbout?.addEventListener('click', () => {
+    smSettingsSysinfo?.addEventListener('click', () => {
       startMenu?.classList.add('hidden');
       const aboutDlg = document.getElementById('retro-about-dialog');
       if (aboutDlg) {
@@ -550,20 +890,13 @@ Double-click "My Portfolio" or click the taskbar button below.
       }
     });
 
-    smBoot?.addEventListener('click', () => {
-      startMenu?.classList.add('hidden');
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-      setTimeout(() => {
-        (window as unknown as { triggerWin95Boot?: () => void }).triggerWin95Boot?.();
-      }, 50);
-    });
-
     // Close start menu on outside click
     document.addEventListener('click', (e) => {
       const target = e.target as Node;
       if (!startBtn?.contains(target) && !startMenu?.contains(target)) {
         startMenu?.classList.add('hidden');
         startBtn?.classList.remove('is-active');
+        document.querySelectorAll('.win95-menu-parent').forEach(p => p.classList.remove('is-open'));
       }
     });
 

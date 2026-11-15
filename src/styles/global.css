@@ -721,6 +721,89 @@ body.is-desktop-minimized #win95-desktop-screen {
 	letter-spacing: 2px;
 }
 
+/* Windows 95 Cascading Flyout Submenus */
+.win95-menu-parent {
+	position: relative;
+}
+
+.win95-menu-parent > .win95-submenu {
+	display: none;
+	position: absolute;
+	left: 100%;
+	top: -4px;
+	min-width: 210px;
+	max-height: calc(100vh - 60px);
+	overflow-y: auto;
+	background: #c0c0c0;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.45);
+	z-index: 10005;
+	padding: 2px;
+}
+
+/* Ensure nested flyouts layer above their parent */
+.win95-submenu .win95-menu-parent > .win95-submenu {
+	top: -4px;
+	z-index: 10010;
+}
+
+@media (max-width: 640px) {
+	.win95-menu-parent > .win95-submenu {
+		left: 16px;
+		top: 100%;
+		max-width: 88vw;
+		position: static;
+		box-shadow: none;
+		border-left: 3px solid #000080;
+	}
+}
+
+.win95-menu-parent:hover > .win95-submenu,
+.win95-menu-parent:focus-within > .win95-submenu,
+.win95-menu-parent.is-open > .win95-submenu {
+	display: flex !important;
+	flex-direction: column;
+}
+
+/* Windows 95 App Window */
+.win95-app-window {
+	position: absolute;
+	background-color: #c0c0c0;
+	border-top: 2.5px solid #ffffff;
+	border-left: 2.5px solid #ffffff;
+	border-right: 2.5px solid #000000;
+	border-bottom: 2.5px solid #000000;
+	box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.45);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.win95-window-content {
+	flex: 1;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	background: #c0c0c0;
+	color: #000000;
+}
+
+/* Classic Screen Saver Container */
+.win95-screensaver-overlay {
+	position: fixed;
+	inset: 0;
+	background: #000000;
+	z-index: 9999999;
+	cursor: none;
+	display: none;
+}
+.win95-screensaver-overlay.is-active {
+	display: block !important;
+}
+
 /* Retro Toast Notification */
 .retro-toast {
 	position: fixed;
