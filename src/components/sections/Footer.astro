@@ -239,38 +239,21 @@ const feedUrl = new URL('rss.xml', Astro.site || 'https://piush.com').toString()
       const thumb = document.getElementById('retro-scroll-thumb');
       const track = thumb?.parentElement;
       if (thumb && track) {
-        window.addEventListener('scroll', () => {
+        function updateThumb() {
           const scrollY = window.scrollY;
           const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
           if (maxScroll <= 0) return;
           const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
           const trackWidth = track.clientWidth - thumb.clientWidth - 8;
           thumb.style.transform = `translateX(${progress * trackWidth}px)`;
-        }, { passive: true });
+        }
+        window.addEventListener('scroll', updateThumb, { passive: true });
+        window.addEventListener('resize', updateThumb, { passive: true });
+        updateThumb();
       }
     }
 
     setupFooter();
     document.addEventListener('astro:after-swap', setupFooter);
-  </script>
-</footer>
-
-  <script type="module">
-    document.addEventListener('click', (e) => {
-      const target = e.target;
-      if (!(target instanceof HTMLElement)) return;
-      const btn = target.closest('button[data-copy]');
-      if (btn) {
-        const url = btn.getAttribute('data-copy');
-        if (!url) return;
-        navigator.clipboard?.writeText(url);
-        const textSpan = btn.querySelector('.btn-copy-text');
-        if (textSpan) {
-          const original = textSpan.textContent;
-          textSpan.textContent = 'Copied to Clipboard!';
-          setTimeout(() => { textSpan.textContent = original; }, 2000);
-        }
-      }
-    });
   </script>
 </footer>

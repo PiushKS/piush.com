@@ -87,8 +87,13 @@ import HeaderLink from './HeaderLink.astro';
       </button>
     </div>
 
-    <!-- Right Controls: Desktop Social Links -->
-    <div class="hidden md:flex items-center gap-1.5">
+    <!-- Right Controls: Retro Clock & Desktop Social Links -->
+    <div class="hidden md:flex items-center gap-2">
+      <div class="retro-inset px-2.5 py-0.5 bg-white text-xs font-mono font-bold text-black flex items-center gap-1.5 shadow-[inset_1px_1px_0px_#000000]">
+        <span class="inline-block size-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+        <span id="retro-live-clock">--:--:--</span>
+      </div>
+
       <a
         href="https://x.com/piushks"
         target="_blank"
@@ -199,6 +204,17 @@ import HeaderLink from './HeaderLink.astro';
         toggleMenu();
       }
     });
+
+    function updateLiveClock() {
+      const clockEl = document.getElementById('retro-live-clock');
+      if (clockEl) {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' });
+      }
+    }
+    updateLiveClock();
+    const clockInterval = setInterval(updateLiveClock, 1000);
+    document.addEventListener('astro:before-swap', () => clearInterval(clockInterval), { once: true });
   }
 
   setupHeader();
