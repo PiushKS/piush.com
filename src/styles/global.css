@@ -396,12 +396,22 @@ body.retro-mono-active a {
 .retro-dialog-backdrop {
 	position: fixed;
 	inset: 0;
-	background: rgba(0, 0, 0, 0.45);
-	display: flex;
+	background: rgba(0, 0, 0, 0.55);
+	display: none;
 	align-items: center;
 	justify-content: center;
 	z-index: 10000;
 	padding: 1rem;
+}
+
+.retro-dialog-backdrop.is-open,
+.retro-dialog-backdrop:not(.hidden) {
+	display: flex !important;
+}
+
+.retro-dialog-backdrop.hidden,
+.retro-dialog-backdrop[hidden] {
+	display: none !important;
 }
 
 .retro-dialog-window {
@@ -465,6 +475,7 @@ body.retro-mono-active a {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
+	display: none !important;
 }
 
 .win95-clouds-overlay {

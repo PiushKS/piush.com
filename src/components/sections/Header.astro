@@ -415,8 +415,16 @@ import Win95BootLoader from './Win95BootLoader.astro';
   </div>
 
   <!-- Authentic Windows 95 System Properties (About Dialog) -->
-  <div id="retro-about-dialog" class="retro-dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="retro-about-title">
-    <div class="retro-dialog-window">
+  <div
+    id="retro-about-dialog"
+    class="retro-dialog-backdrop hidden"
+    style="display: none;"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="retro-about-title"
+    onclick="if(event.target === this) { this.style.display='none'; this.classList.add('hidden'); this.classList.remove('is-open'); }"
+  >
+    <div class="retro-dialog-window" onclick="event.stopPropagation()">
       <!-- Dialog Titlebar -->
       <div class="retro-titlebar !h-8 !min-h-[32px] !px-2">
         <div class="flex items-center gap-2 overflow-hidden">
@@ -437,6 +445,7 @@ import Win95BootLoader from './Win95BootLoader.astro';
           id="retro-about-close-btn"
           aria-label="Close dialog"
           title="Close"
+          onclick="const d = document.getElementById('retro-about-dialog'); if(d) { d.style.display='none'; d.classList.add('hidden'); d.classList.remove('is-open'); }"
         >
           &#10005;
         </button>
@@ -520,6 +529,7 @@ import Win95BootLoader from './Win95BootLoader.astro';
             type="button"
             id="retro-about-ok-btn"
             class="retro-btn !px-7 !py-1 !text-xs font-bold"
+            onclick="const d = document.getElementById('retro-about-dialog'); if(d) { d.style.display='none'; d.classList.add('hidden'); d.classList.remove('is-open'); }"
           >
             OK
           </button>
@@ -543,16 +553,20 @@ import Win95BootLoader from './Win95BootLoader.astro';
 
   function getAudioCtx(): AudioContext | null {
     if (typeof window === 'undefined') return null;
-    if (!audioCtx) {
-      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (AudioCtxClass) {
-        audioCtx = new AudioCtxClass();
+    try {
+      if (!audioCtx) {
+        const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        if (AudioCtxClass) {
+          audioCtx = new AudioCtxClass();
+        }
       }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      return audioCtx;
+    } catch (_) {
+      return null;
     }
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-    return audioCtx;
   }
 
   function playRetroClick() {
@@ -788,15 +802,19 @@ import Win95BootLoader from './Win95BootLoader.astro';
 
     function openAboutDialog() {
       if (!aboutDialog) return;
-      playRetroChime();
+      aboutDialog.style.display = 'flex';
       aboutDialog.classList.remove('hidden');
+      aboutDialog.classList.add('is-open');
       aboutOkBtn?.focus();
+      try { playRetroChime(); } catch (_) {}
     }
 
     function closeAboutDialog() {
       if (!aboutDialog) return;
-      playRetroClick();
+      aboutDialog.style.display = 'none';
       aboutDialog.classList.add('hidden');
+      aboutDialog.classList.remove('is-open');
+      try { playRetroClick(); } catch (_) {}
     }
 
     aboutCloseBtn?.addEventListener('click', closeAboutDialog);
@@ -820,14 +838,12 @@ import Win95BootLoader from './Win95BootLoader.astro';
       }
     });
 
-    document.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeAllMenus();
-        if (!aboutDialog?.classList.contains('hidden')) {
-          closeAboutDialog();
-        }
-        if (!panel?.classList.contains('hidden')) {
-          panel?.classList.add('hidden');
+        closeAboutDialog();
+        if (panel && !panel.classList.contains('hidden')) {
+          panel.classList.add('hidden');
           btn?.setAttribute('aria-expanded', 'false');
         }
       }
