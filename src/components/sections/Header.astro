@@ -1,9 +1,13 @@
 ---
 import { SITE_TITLE } from '../../consts';
 import HeaderLink from './HeaderLink.astro';
+import Win95BootLoader from './Win95BootLoader.astro';
 ---
 
 <header class="w-full select-none z-50 sticky top-0">
+  <!-- Windows 95 Boot Animation & Website Loader -->
+  <Win95BootLoader />
+
   <!-- Retro Window Titlebar (Matching Reference Mockups) -->
   <div class="retro-titlebar">
     <div class="flex items-center gap-2 overflow-visible min-w-0 flex-1 relative">
@@ -56,6 +60,13 @@ import HeaderLink from './HeaderLink.astro';
             <span>Reload Window</span>
           </span>
           <span class="retro-menu-shortcut">Ctrl+R</span>
+        </button>
+        <button type="button" class="retro-menu-item" data-action="restart-boot" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>⚡</span>
+            <span>Restart OS (Boot Animation)</span>
+          </span>
+          <span class="retro-menu-shortcut">Boot</span>
         </button>
 
         <div class="retro-menu-separator"></div>
@@ -208,6 +219,13 @@ import HeaderLink from './HeaderLink.astro';
             </span>
             <span class="retro-menu-shortcut">Ctrl+R</span>
           </button>
+          <button type="button" class="retro-menu-item" data-action="restart-boot" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Restart OS (Boot Animation)</span>
+            </span>
+            <span class="retro-menu-shortcut">Boot</span>
+          </button>
 
           <div class="retro-menu-separator"></div>
 
@@ -357,6 +375,9 @@ import HeaderLink from './HeaderLink.astro';
       <button type="button" class="retro-menu-item !text-xs" data-action="toggle-fullscreen">
         <span>⛶ Maximize / Fullscreen</span>
       </button>
+      <button type="button" class="retro-menu-item !text-xs" data-action="restart-boot">
+        <span>⚡ Restart OS (Boot Animation)</span>
+      </button>
       <button type="button" class="retro-menu-item !text-xs" data-action="toggle-sound">
         <span id="mob-sound-label">[✓] Retro Sound FX</span>
       </button>
@@ -370,7 +391,7 @@ import HeaderLink from './HeaderLink.astro';
         <span>📋 Copy Page URL</span>
       </button>
       <button type="button" class="retro-menu-item !text-xs" data-action="open-about">
-        <span>ℹ️ About Piush.com...</span>
+        <span>ℹ️ System Properties (About)...</span>
       </button>
     </div>
 
@@ -393,20 +414,26 @@ import HeaderLink from './HeaderLink.astro';
     </div>
   </div>
 
-  <!-- Retro "About Piush.com" Modal Dialog -->
+  <!-- Authentic Windows 95 System Properties (About Dialog) -->
   <div id="retro-about-dialog" class="retro-dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="retro-about-title">
     <div class="retro-dialog-window">
       <!-- Dialog Titlebar -->
       <div class="retro-titlebar !h-8 !min-h-[32px] !px-2">
-        <div class="flex items-center gap-1.5">
-          <svg class="size-3.5 text-white fill-current" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h11A1.5 1.5 0 0 1 15 2.5v8a1.5 1.5 0 0 1-1.5 1.5h-3.75l.75 2h1.5a.5.5 0 0 1 0 1h-8a.5.5 0 0 1 0-1h1.5l.75-2H2.5A1.5 1.5 0 0 1 1 10.5v-8ZM2.5 2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-11Z"/>
-          </svg>
-          <span id="retro-about-title" class="font-mono font-bold text-xs text-white">About Piush.com Portfolio OS</span>
+        <div class="flex items-center gap-2 overflow-hidden">
+          <img
+            src="/images/windows-95-computer.svg"
+            alt="PC Icon"
+            width="16"
+            height="16"
+            class="shrink-0 size-4 [image-rendering:pixelated]"
+          />
+          <span id="retro-about-title" class="font-mono font-bold text-xs text-white truncate">
+            System Properties – About Piush.com
+          </span>
         </div>
         <button
           type="button"
-          class="retro-titlebar-btn !size-4 !text-[9px]"
+          class="retro-titlebar-btn !w-[22px] !h-[22px] text-[11px]"
           id="retro-about-close-btn"
           aria-label="Close dialog"
           title="Close"
@@ -415,51 +442,84 @@ import HeaderLink from './HeaderLink.astro';
         </button>
       </div>
 
-      <!-- Dialog Body -->
-      <div class="p-4 space-y-3 bg-[#c0c0c0] text-black">
-        <div class="flex items-start gap-3">
-          <div class="shrink-0 size-10 bg-white border border-black flex items-center justify-center shadow-[inset_1px_1px_0px_#000000]">
-            <span class="text-2xl select-none" aria-hidden="true">🖥️</span>
+      <!-- Tabbed Dialog Body -->
+      <div class="px-3 pt-2.5 pb-3 bg-[#c0c0c0] text-black">
+        <div class="flex">
+          <div class="retro-dialog-tab">General</div>
+        </div>
+
+        <div class="retro-dialog-panel space-y-2.5">
+          <!-- Top Row: Icon + OS Identity -->
+          <div class="flex items-start gap-4">
+            <img
+              src="/images/windows-95-computer.svg"
+              alt="Windows 95 Computer"
+              width="48"
+              height="48"
+              class="shrink-0 size-12 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#ffffff]"
+            />
+            <div class="space-y-0.5 text-xs text-black">
+              <div class="font-bold text-sm text-[#002266] tracking-wide">Piush.com Portfolio OS</div>
+              <div class="font-mono text-gray-800 text-[11px]">Release 2026.11 (Desktop Edition)</div>
+              <div class="text-[10px] text-gray-600 font-mono">Copyright &copy; 1995-2026 Piush KS.</div>
+            </div>
           </div>
-          <div>
-            <h3 class="font-bold text-sm tracking-wide text-black">Piush KS – Portfolio OS</h3>
-            <p class="text-xs text-gray-800">Version 2026.11 (Desktop Edition)</p>
-            <p class="text-xs text-gray-700 mt-0.5">Mobile Architect & Full-Stack Engineer</p>
+
+          <div class="retro-menu-separator"></div>
+
+          <!-- Registered To Section -->
+          <div class="text-xs text-black space-y-0.5 font-mono">
+            <div class="font-bold text-gray-800">Registered to:</div>
+            <div class="pl-3 text-black font-bold">Guest Visitor / Recruiter / Engineer</div>
+            <div class="pl-3 text-gray-700 text-[11px]">Host Domain: piush.com (Production)</div>
+          </div>
+
+          <div class="retro-menu-separator"></div>
+
+          <!-- Computer Specifications -->
+          <div class="text-xs text-black space-y-1">
+            <div class="font-bold text-gray-800 font-mono">Computer Specs:</div>
+            <div class="retro-inset p-2.5 text-[11px] font-mono space-y-0.5 bg-white text-black">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Architecture:</span>
+                <span class="font-bold">Apple Silicon / x86_64</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Base Engine:</span>
+                <span class="font-bold">Astro 5.18.2 Static Edge</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Physical Memory:</span>
+                <span class="font-bold">65,536 KB RAM Available</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Static Pages:</span>
+                <span class="font-bold">73 Routes Pre-rendered</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Quiz Database:</span>
+                <span class="font-bold">550 Verified Questions</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">System Resources:</span>
+                <span class="font-bold text-emerald-700">98% Free (Optimal)</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="retro-inset p-2.5 text-xs space-y-1 font-mono bg-white">
-          <div class="flex justify-between">
-            <span class="text-gray-600">Core Engine:</span>
-            <span class="font-bold">Astro 5.18 (Static Edge)</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-gray-600">Design System:</span>
-            <span class="font-bold">Windows 95 Neobrutalism</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-gray-600">Total Static Pages:</span>
-            <span class="font-bold">73 Published Routes</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-gray-600">Developer Quiz Bank:</span>
-            <span class="font-bold">550 Validated Questions</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-gray-600">Simulated RAM:</span>
-            <span class="font-bold">65,536 KB Available</span>
-          </div>
-        </div>
-
-        <p class="text-[11px] text-gray-700 text-center font-mono">
-          Engineered for extreme performance, accessibility, and offline speed.
-        </p>
-
-        <div class="flex justify-center pt-1">
+        <!-- Action Buttons Row -->
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <a
+            href="/about/"
+            class="retro-btn !px-3 !py-1 !text-xs text-black no-underline"
+          >
+            Full About Bio &rarr;
+          </a>
           <button
             type="button"
             id="retro-about-ok-btn"
-            class="retro-btn !px-6 !py-1 !text-xs font-bold"
+            class="retro-btn !px-7 !py-1 !text-xs font-bold"
           >
             OK
           </button>
@@ -673,6 +733,10 @@ import HeaderLink from './HeaderLink.astro';
           case 'reload-page':
             playRetroClick();
             window.location.reload();
+            break;
+          case 'restart-boot':
+            playRetroClick();
+            (window as unknown as { triggerWin95Boot?: () => void }).triggerWin95Boot?.();
             break;
           case 'toggle-sound': {
             const next = !isSoundEnabled();

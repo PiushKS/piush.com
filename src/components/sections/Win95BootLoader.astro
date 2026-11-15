@@ -1,0 +1,231 @@
+---
+// Windows 95 Boot Animation & Website Loader
+---
+
+<div id="win95-boot-screen" class="win95-boot-screen win95-boot-hidden" aria-hidden="true" role="dialog" aria-label="System Boot Sequence">
+  <div class="win95-clouds-overlay"></div>
+
+  <!-- Top: Iconic Windows 95 Brand Emblem -->
+  <div class="relative z-10 flex flex-col items-center text-center mt-2 sm:mt-6">
+    <div class="flex items-center gap-3 mb-2">
+      <!-- 4-Color Windows Flag / Retro Emblem -->
+      <div class="grid grid-cols-2 gap-1 p-1 bg-black/40 border border-black/60 shadow-[2px_2px_0px_rgba(0,0,0,0.5)]">
+        <div class="size-4 sm:size-5 bg-[#e74c3c] border-t border-l border-white/60"></div>
+        <div class="size-4 sm:size-5 bg-[#2ecc71] border-t border-l border-white/60"></div>
+        <div class="size-4 sm:size-5 bg-[#3498db] border-t border-l border-white/60"></div>
+        <div class="size-4 sm:size-5 bg-[#f1c40f] border-t border-l border-white/60"></div>
+      </div>
+
+      <div class="text-left">
+        <span class="block font-serif italic text-base sm:text-lg text-black font-bold tracking-tight leading-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)]">
+          Piush KS
+        </span>
+        <span class="block font-mono font-black text-2xl sm:text-4xl text-[#002266] tracking-wider leading-none drop-shadow-[1px_1px_0px_#ffffff]">
+          PORTFOLIO 95
+        </span>
+      </div>
+    </div>
+
+    <p class="font-mono text-xs sm:text-sm text-black/90 font-bold tracking-wide drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]">
+      Mobile Architect & Full-Stack Cloud Environment
+    </p>
+  </div>
+
+  <!-- Middle: Simulated Real-Time Background Process Boot Terminal -->
+  <div class="relative z-10 w-full flex justify-center my-auto py-2">
+    <div class="win95-boot-terminal flex flex-col justify-between">
+      <div class="flex items-center justify-between border-b border-[#00ff66]/40 pb-1 mb-1.5 text-[10px] text-[#00ff66]/80 font-bold uppercase tracking-wider">
+        <span>C:\> BOOTLOG.TXT</span>
+        <span id="win95-boot-clock">00:00:00</span>
+      </div>
+
+      <div id="win95-boot-log-lines" class="space-y-1 font-mono text-[10px] sm:text-[11px] leading-tight overflow-hidden">
+        <!-- Lines injected dynamically by script -->
+      </div>
+
+      <div class="flex items-center gap-1 text-[10px] text-[#00ff66]/80 pt-1 mt-1 border-t border-[#00ff66]/30">
+        <span class="animate-pulse">_</span>
+        <span id="win95-boot-status-text">Starting system background daemons...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom: Iconic Windows 95 Animated Blue Gradient Progress Bar -->
+  <div class="relative z-10 flex flex-col items-center gap-2 w-full max-w-lg mb-2 sm:mb-4">
+    <div class="win95-boot-progress-frame">
+      <div class="win95-boot-progress-runner"></div>
+    </div>
+
+    <div class="flex items-center justify-between w-full text-[11px] font-mono font-bold text-black px-1">
+      <span class="drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)]">
+        Starting Piush.com Desktop OS...
+      </span>
+      <button
+        type="button"
+        id="win95-boot-skip-btn"
+        class="retro-btn !py-0.5 !px-2 !text-[10px] text-black"
+        title="Skip Boot Sequence (Escape)"
+      >
+        Skip (Esc)
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Windows 95 Boot Animation Controller
+  const BOOT_KEY = 'piush_win95_booted';
+
+  const PROCESS_STEPS = [
+    '[OK] CPU: 64-Bit High-Performance Architecture Detected',
+    '[OK] Base Memory: 640 KB | Extended Memory: 65,536 KB OK',
+    '[OK] Mounting ASTRO.SYS Static Edge Engine v5.18.2',
+    '[OK] Indexing 73 Pre-rendered Routes & Assets',
+    '[OK] Initializing Developer Quiz Engine (550 Questions)',
+    '[OK] Sound Blaster 16 (Web Audio API) Online',
+    '[OK] Starting Desktop Environment (WIN.COM) ...'
+  ];
+
+  function playWin95Chime() {
+    if (typeof window === 'undefined') return;
+    if (localStorage.getItem('retro_sound_enabled') === 'false') return;
+
+    try {
+      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtxClass) return;
+      const ctx = new AudioCtxClass();
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const now = ctx.currentTime;
+
+      // 1. Warm base chord drone
+      const baseFreqs = [138.59, 207.65]; // Db3, Ab3
+      baseFreqs.forEach((freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 2.2);
+      });
+
+      // 2. Rising ethereal chime arpeggio
+      // Db4, Ab4, Db5, Eb5, F5, Ab5, Db6
+      const chimeNotes = [
+        { f: 277.18, t: 0.05 },
+        { f: 415.30, t: 0.22 },
+        { f: 554.37, t: 0.42 },
+        { f: 622.25, t: 0.65 },
+        { f: 698.46, t: 0.90 },
+        { f: 830.61, t: 1.15 },
+        { f: 1108.73, t: 1.35 },
+      ];
+
+      chimeNotes.forEach((note) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(note.f, now + note.t);
+        gain.gain.setValueAtTime(0.09, now + note.t);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + 1.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + note.t);
+        osc.stop(now + note.t + 1.2);
+      });
+    } catch (_) {}
+  }
+
+  function initWin95BootLoader() {
+    const screen = document.getElementById('win95-boot-screen');
+    const logBox = document.getElementById('win95-boot-log-lines');
+    const skipBtn = document.getElementById('win95-boot-skip-btn');
+    const statusText = document.getElementById('win95-boot-status-text');
+    const clockEl = document.getElementById('win95-boot-clock');
+
+    if (!screen || !logBox) return;
+
+    // Check if user already booted this session
+    const hasBooted = sessionStorage.getItem(BOOT_KEY);
+    if (hasBooted === '1') {
+      screen.classList.add('win95-boot-hidden');
+      screen.setAttribute('aria-hidden', 'true');
+      return;
+    }
+
+    // First visit: show boot screen
+    screen.classList.remove('win95-boot-hidden');
+    screen.setAttribute('aria-hidden', 'false');
+
+    if (clockEl) {
+      const now = new Date();
+      clockEl.textContent = now.toTimeString().split(' ')[0];
+    }
+
+    let isDismissed = false;
+
+    function finishBoot() {
+      if (isDismissed) return;
+      isDismissed = true;
+      sessionStorage.setItem(BOOT_KEY, '1');
+      playWin95Chime();
+      screen.classList.add('win95-boot-hidden');
+      screen.setAttribute('aria-hidden', 'true');
+    }
+
+    // Allow skip via button, click, or Escape
+    skipBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      finishBoot();
+    });
+
+    screen.addEventListener('click', finishBoot);
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        finishBoot();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+
+    // Sequence simulated background processes
+    logBox.innerHTML = '';
+    const totalSteps = PROCESS_STEPS.length;
+    const stepInterval = 220; // ms per step (~1.5s total)
+
+    PROCESS_STEPS.forEach((step, idx) => {
+      setTimeout(() => {
+        if (isDismissed) return;
+        const line = document.createElement('div');
+        line.textContent = step;
+        line.className = 'text-[#00ff66] font-mono tracking-wide';
+        logBox.appendChild(line);
+
+        if (statusText) {
+          statusText.textContent = `Running: ${step.replace(/^\[OK\]\s*/, '')}`;
+        }
+
+        // Last step completed
+        if (idx === totalSteps - 1) {
+          setTimeout(() => {
+            finishBoot();
+            window.removeEventListener('keydown', onKey);
+          }, 350);
+        }
+      }, idx * stepInterval);
+    });
+  }
+
+  // Expose global manual trigger for the Window Menu ("Restart OS")
+  (window as unknown as { triggerWin95Boot?: () => void }).triggerWin95Boot = function () {
+    sessionStorage.removeItem(BOOT_KEY);
+    initWin95BootLoader();
+  };
+
+  initWin95BootLoader();
+  document.addEventListener('astro:after-swap', initWin95BootLoader);
+</script>

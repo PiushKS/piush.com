@@ -406,7 +406,7 @@ body.retro-mono-active a {
 
 .retro-dialog-window {
 	width: 100%;
-	max-width: 460px;
+	max-width: 480px;
 	background: #c0c0c0;
 	border-top: 2px solid #ffffff;
 	border-left: 2px solid #ffffff;
@@ -414,6 +414,123 @@ body.retro-mono-active a {
 	border-bottom: 2px solid #000000;
 	box-shadow: 6px 6px 0px #000000;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Retro Tab Bar for Windows 95 Dialog */
+.retro-dialog-tab {
+	background: #c0c0c0;
+	color: #000000;
+	font-weight: 700;
+	font-size: 11px;
+	padding: 5px 14px;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #c0c0c0;
+	position: relative;
+	top: 2px;
+	z-index: 2;
+	user-select: none;
+}
+
+.retro-dialog-panel {
+	background: #c0c0c0;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	padding: 14px;
+	position: relative;
+	z-index: 1;
+}
+
+/* Windows 95 Boot Screen / Website Loader */
+.win95-boot-screen {
+	position: fixed;
+	inset: 0;
+	z-index: 999999;
+	background: linear-gradient(180deg, #10527f 0%, #1f6b9c 35%, #468ec4 65%, #72aede 100%);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 2rem 1.25rem 1.5rem;
+	color: #000000;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	user-select: none;
+	transition: opacity 350ms ease-out, visibility 350ms;
+}
+
+.win95-boot-screen.win95-boot-hidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+.win95-clouds-overlay {
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.22) 0%, transparent 35%),
+	            radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.18) 0%, transparent 30%),
+	            radial-gradient(circle at 50% 65%, rgba(255, 255, 255, 0.15) 0%, transparent 45%);
+	pointer-events: none;
+}
+
+/* The Iconic Windows 95 Animated Boot Progress Bar */
+.win95-boot-progress-frame {
+	width: 100%;
+	max-width: 520px;
+	height: 20px;
+	background: #000000;
+	border-top: 2px solid #404040;
+	border-left: 2px solid #404040;
+	border-right: 2px solid #ffffff;
+	border-bottom: 2px solid #ffffff;
+	position: relative;
+	overflow: hidden;
+	box-shadow: inset 1px 1px 0px #000000;
+}
+
+.win95-boot-progress-runner {
+	position: absolute;
+	top: 1px;
+	bottom: 1px;
+	width: 110px;
+	background: linear-gradient(90deg, 
+		transparent 0%, 
+		#00e5ff 25%, 
+		#0077ff 50%, 
+		#0022cc 75%, 
+		transparent 100%
+	);
+	animation: win95March 1.35s infinite linear;
+}
+
+@keyframes win95March {
+	0% {
+		left: -120px;
+	}
+	100% {
+		left: 100%;
+	}
+}
+
+/* Background Process Terminal Box */
+.win95-boot-terminal {
+	width: 100%;
+	max-width: 560px;
+	background: #000000;
+	color: #00ff66;
+	border-top: 2px solid #404040;
+	border-left: 2px solid #404040;
+	border-right: 2px solid #ffffff;
+	border-bottom: 2px solid #ffffff;
+	padding: 10px 12px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 11px;
+	line-height: 1.45;
+	box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.45);
+	min-height: 140px;
 }
 
 /* Retro Toast Notification */
