@@ -1,6 +1,5 @@
 ---
 import Button from "../ui/button/Button.astro";
-import LottieAnimation from "../ui/lottie/LottieAnimation.astro";
 
 const today = new Date();
 const feedUrl = new URL('rss.xml', Astro.site || 'https://piush.com').toString();
@@ -57,12 +56,20 @@ const feedUrl = new URL('rss.xml', Astro.site || 'https://piush.com').toString()
         </div>
 
         <div class="md:col-span-4 flex items-center justify-center">
-          <div class="relative size-32 sm:size-40 flex items-center justify-center retro-inset p-3 bg-white">
-            <LottieAnimation
-              src="/assets/lottie/rocket.json"
-              class="w-full h-full filter drop-shadow-xs"
-              alt="Launch Rocket Animation"
-            />
+          <div class="flex flex-col items-center justify-center gap-1.5 p-3 bg-[#F4F4F4] border-2 border-black shadow-[3px_3px_0px_#000000] group">
+            <div class="relative size-28 sm:size-32 flex items-center justify-center retro-inset p-2 bg-[#C0C0C0] overflow-hidden">
+              <img
+                src="/images/windows-95-rocket.svg"
+                alt="Windows 95 Pixel Rocket"
+                width="112"
+                height="112"
+                class="w-full h-full object-contain [image-rendering:pixelated] group-hover:-translate-y-1 transition-transform duration-200"
+                loading="lazy"
+              />
+            </div>
+            <span class="text-[10px] font-mono font-bold text-black uppercase tracking-wider px-2 py-0.5 bg-white border border-black shadow-[1px_1px_0px_#000000]">
+              rocket.exe
+            </span>
           </div>
         </div>
 
