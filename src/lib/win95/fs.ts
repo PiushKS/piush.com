@@ -399,6 +399,21 @@ class VirtualFileSystem {
     this.saveToStorage();
   }
 
+  public exists(path: string): boolean {
+    return !!this.getItem(path);
+  }
+
+  public list(path: string): Array<VFSItem & { type: 'directory' | 'file' }> {
+    return this.listDirectory(path).map((item) => ({
+      ...item,
+      type: item.isFolder ? 'directory' : 'file',
+    }));
+  }
+
+  public search(query: string): VFSItem[] {
+    return this.searchFiles(query);
+  }
+
   public getStats(): { totalFiles: number; totalFolders: number; totalBytes: number } {
     let files = 0;
     let folders = 0;

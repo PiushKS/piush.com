@@ -1562,7 +1562,7 @@ export function renderFreeCell(container: HTMLElement, win: Win95Window) {
               >
                 ${
                   card
-                    ? renderCardHtml(card, 'freecell', idx, selected && selected.source === 'freecell' && selected.index === idx)
+                    ? renderCardHtml(card, 'freecell', idx, Boolean(selected && selected.source === 'freecell' && selected.index === idx))
                     : `<span class="text-white/40 text-[10px] font-bold">Cell ${idx + 1}</span>`
                 }
               </div>
@@ -1595,7 +1595,7 @@ export function renderFreeCell(container: HTMLElement, win: Win95Window) {
                   ? '<div class="w-11 sm:w-13 h-16 border-2 border-dashed border-white/30 rounded flex items-center justify-center text-white/30 text-[10px]">Empty</div>'
                   : col.map((card, cIdx) => {
                       const isTop = cIdx === col.length - 1;
-                      const isSel = isTop && selected && selected.source === 'cascade' && selected.index === colIdx;
+                      const isSel = Boolean(isTop && selected && selected.source === 'cascade' && selected.index === colIdx);
                       return `
                         <div class="${cIdx > 0 ? '-mt-12 sm:-mt-14' : ''} transition-all">
                           ${renderCardHtml(card, 'cascade', colIdx, isSel)}

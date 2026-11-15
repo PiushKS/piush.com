@@ -1,13 +1,13 @@
 // Piush 95 - System Tools Collection
 // MS-DOS Prompt, Windows Explorer, Control Panel, System Information,
-// Disk Properties, ScanDisk, Disk Defragmenter, Backup & Restore, Task Manager, Resource Monitor
+// Disk Properties, ScanDisk, Disk Defragmenter, Task Manager
 
 import { audio } from '../audio';
 import { vfs } from '../fs';
 import { windowManager, type Win95Window } from '../windowManager';
 
 /**
- * 1. MS-DOS Prompt (Interactive Shell)
+ * 1. MS-DOS Prompt - Authentic Command Interpreter
  */
 export function renderDosPrompt(container: HTMLElement, win: Win95Window) {
   win.setTitle('MS-DOS Prompt - 80x25');
@@ -31,7 +31,7 @@ Type HELP for a list of available commands.
   const promptPath = container.querySelector('#dos-prompt-path') as HTMLElement;
 
   let currentPath = 'C:\\';
-  let history: string[] = [];
+  const history: string[] = [];
   let historyIdx = -1;
 
   function print(text: string) {
@@ -56,6 +56,8 @@ Type HELP for a list of available commands.
     const cmd = parts[0].toUpperCase();
     const arg = parts.slice(1).join(' ');
 
+    const globalLauncher = (window as unknown as { launchWin95App?: (id: string) => void }).launchWin95App;
+
     switch (cmd) {
       case 'HELP':
         print(`
@@ -64,7 +66,7 @@ COMMANDS:
   CD <path>         Change current directory (e.g. CD WINDOWS, CD ..)
   TYPE <file>       Display the contents of a text file
   MD / MKDIR <dir>  Create a new directory
-  DEL <file>        Delete a file
+  DEL <file>        Delete a file from VFS
   COPY <src> <dst>  Copy a file
   CLS               Clear the terminal screen
   VER               Display Windows 95 version information
@@ -76,7 +78,7 @@ COMMANDS:
   EXIT              Close the MS-DOS prompt
 
 APPLICATIONS:
-  NOTEPAD, CALC, PAINT, SOL, MINESWEEPER, PINBALL, SNAKE, CHESS
+  NOTEPAD, WORDPAD, CALC, PAINT, SOL, MINESWEEPER, PINBALL, SNAKE, CHESS, EXPLORER
 
 PORTFOLIO SHORTCUTS:
   ABOUT, PROJECTS, SKILLS, CONTACT, QUIZ, RESUME
@@ -159,6 +161,35 @@ PORTFOLIO SHORTCUTS:
         break;
       }
 
+      case 'MD':
+      case 'MKDIR': {
+        if (!arg) {
+          print('Required parameter missing');
+          break;
+        }
+        const targetPath = arg.startsWith('C:\\') ? arg : `${currentPath}${arg}`;
+        vfs.createFolder(targetPath);
+        print(`Directory created: ${targetPath}`);
+        audio.playClick();
+        break;
+      }
+
+      case 'DEL': {
+        if (!arg) {
+          print('Required parameter missing');
+          break;
+        }
+        const targetPath = arg.startsWith('C:\\') ? arg : `${currentPath}${arg}`;
+        const ok = vfs.deleteItem(targetPath);
+        if (ok) {
+          print(`File deleted: ${targetPath}`);
+          audio.playClick();
+        } else {
+          print('File not found');
+        }
+        break;
+      }
+
       case 'MEM':
         print(`
 Memory Type        Total       Used       Free
@@ -172,7 +203,6 @@ Total memory     65,536K     8,624K    56,912K
 
 Total under 1 MB    640K        48K       592K
 Largest executable program size       591K (605,440 bytes)
-Largest free upper memory block         0K (0 bytes)
 MS-DOS is resident in the high memory area.
 `);
         break;
@@ -211,6 +241,39 @@ C:\\
         } else {
           print('Invalid drive specification');
         }
+        break;
+
+      case 'NOTEPAD':
+        if (globalLauncher) globalLauncher('notepad');
+        break;
+      case 'WORDPAD':
+        if (globalLauncher) globalLauncher('wordpad');
+        break;
+      case 'CALC':
+        if (globalLauncher) globalLauncher('calc');
+        break;
+      case 'PAINT':
+        if (globalLauncher) globalLauncher('paint');
+        break;
+      case 'MINESWEEPER':
+      case 'WINMINE':
+        if (globalLauncher) globalLauncher('minesweeper');
+        break;
+      case 'SOL':
+      case 'SOLITAIRE':
+        if (globalLauncher) globalLauncher('solitaire');
+        break;
+      case 'PINBALL':
+        if (globalLauncher) globalLauncher('pinball');
+        break;
+      case 'SNAKE':
+        if (globalLauncher) globalLauncher('snake');
+        break;
+      case 'CHESS':
+        if (globalLauncher) globalLauncher('chess');
+        break;
+      case 'EXPLORER':
+        if (globalLauncher) globalLauncher('explorer');
         break;
 
       case 'ABOUT': {
@@ -274,66 +337,71 @@ C:\\
     }
   });
 
-  // Focus input when clicking anywhere in terminal
   container.addEventListener('click', () => {
     input?.focus();
   });
 }
 
 /**
- * 2. Windows Explorer
+ * 2. Windows Explorer - Full Dual-Pane File Manager
  */
 export function renderExplorer(container: HTMLElement, win: Win95Window, initialPath = 'C:\\') {
   win.setTitle(`Exploring - ${initialPath}`);
+
+  let currentPath = initialPath;
+  let viewMode: 'icons' | 'details' = 'icons';
+
   container.innerHTML = `
     <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
       <!-- Menubar -->
       <div class="flex gap-4 px-2 py-0.5 text-xs bg-[#c0c0c0] border-b border-black">
-        <span class="hover:underline cursor-pointer">File</span>
-        <span class="hover:underline cursor-pointer">Edit</span>
-        <span class="hover:underline cursor-pointer">View</span>
-        <span class="hover:underline cursor-pointer">Tools</span>
-        <span class="hover:underline cursor-pointer">Help</span>
+        <span class="hover:underline cursor-pointer" id="exp-menu-file">File</span>
+        <span class="hover:underline cursor-pointer" id="exp-menu-edit">Edit</span>
+        <span class="hover:underline cursor-pointer" id="exp-menu-view">View</span>
+        <span class="hover:underline cursor-pointer" id="exp-menu-tools">Tools</span>
+        <span class="hover:underline cursor-pointer" id="exp-menu-help">Help</span>
       </div>
 
       <!-- Address Toolbar -->
       <div class="flex items-center gap-2 px-2 py-1 bg-[#c0c0c0] border-b border-black text-xs">
-        <span class="text-gray-700">Address:</span>
+        <span class="text-gray-700 font-bold">Address:</span>
         <input type="text" id="exp-address" value="${initialPath}" class="retro-inset flex-1 px-1.5 py-0.5 bg-white text-black font-mono text-xs" />
         <button id="exp-up-btn" class="retro-btn !py-0.5 !px-2 font-bold text-xs" title="Up One Level">⬆ Up</button>
+        <button id="exp-view-toggle" class="retro-btn !py-0.5 !px-2 text-xs" title="Toggle Icons / Details">View Mode</button>
+        <button id="exp-new-folder" class="retro-btn !py-0.5 !px-2 text-xs font-bold text-blue-900" title="Create New Folder">+ Folder</button>
       </div>
 
       <!-- Main Dual Pane View -->
       <div class="flex-1 flex overflow-hidden">
         <!-- Left: Tree View -->
         <div class="w-44 sm:w-56 bg-white retro-inset m-1 p-2 overflow-auto text-xs space-y-1">
-          <div class="font-bold flex items-center gap-1 cursor-pointer" id="tree-desktop">
+          <div class="font-bold flex items-center gap-1 cursor-pointer hover:bg-gray-100" id="tree-desktop">
             <span>🖥️</span> <span>Desktop</span>
           </div>
           <div class="pl-3 space-y-1">
-            <div class="font-bold flex items-center gap-1 cursor-pointer" id="tree-c">
+            <div class="font-bold flex items-center gap-1 cursor-pointer hover:bg-gray-100" id="tree-c">
               <span>🖴</span> <span>(C:) PIUSH_OS</span>
             </div>
             <div class="pl-4 space-y-1">
-              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5" data-path="C:\\PIUSH">
+              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5 exp-tree-folder" data-path="C:\\PIUSH">
                 <span>📁</span> <span>PIUSH</span>
               </div>
-              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5" data-path="C:\\My Documents">
+              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5 exp-tree-folder" data-path="C:\\My Documents">
                 <span>📁</span> <span>My Documents</span>
               </div>
-              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5" data-path="C:\\WINDOWS">
+              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5 exp-tree-folder" data-path="C:\\WINDOWS">
                 <span>📁</span> <span>WINDOWS</span>
               </div>
-              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5" data-path="C:\\Program Files">
+              <div class="flex items-center gap-1 cursor-pointer hover:bg-[#000080] hover:text-white p-0.5 exp-tree-folder" data-path="C:\\Program Files">
                 <span>📁</span> <span>Program Files</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Right: Files Grid -->
+        <!-- Right: Files View -->
         <div class="flex-1 bg-white retro-inset m-1 ml-0 p-2 overflow-auto">
-          <div id="exp-files-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+          <div id="exp-files-container"></div>
         </div>
       </div>
 
@@ -345,22 +413,43 @@ export function renderExplorer(container: HTMLElement, win: Win95Window, initial
     </div>
   `;
 
-  let currentPath = initialPath;
   const addressInput = container.querySelector('#exp-address') as HTMLInputElement;
-  const filesGrid = container.querySelector('#exp-files-grid') as HTMLElement;
+  const filesContainer = container.querySelector('#exp-files-container') as HTMLElement;
   const statusEl = container.querySelector('#exp-status') as HTMLElement;
   const upBtn = container.querySelector('#exp-up-btn');
+  const viewToggle = container.querySelector('#exp-view-toggle');
+  const newFolderBtn = container.querySelector('#exp-new-folder');
+
+  function openFileInApp(fileName: string, fullPath: string) {
+    audio.playClick();
+    const globalLauncher = (window as unknown as { launchWin95App?: (id: string) => void }).launchWin95App;
+    if (!globalLauncher) return;
+
+    if (fileName.endsWith('.txt') || fileName.endsWith('.bat') || fileName.endsWith('.ini') || fileName.endsWith('.sys')) {
+      globalLauncher('notepad');
+    } else if (fileName.endsWith('.rtf') || fileName.endsWith('.doc')) {
+      globalLauncher('wordpad');
+    } else if (fileName.endsWith('.bmp') || fileName.endsWith('.png') || fileName.endsWith('.jpg')) {
+      globalLauncher('paint');
+    } else if (fileName.endsWith('.wav') || fileName.endsWith('.mid')) {
+      globalLauncher('mediaplayer');
+    } else {
+      const content = vfs.readFile(fullPath);
+      alert(`File: ${fileName}\n\n${content || '(Empty file)'}`);
+    }
+  }
 
   function renderFiles() {
     if (addressInput) addressInput.value = currentPath;
     win.setTitle(`Exploring - ${currentPath}`);
 
     const items = vfs.list(currentPath);
-    filesGrid.innerHTML = '';
+    filesContainer.innerHTML = '';
 
     if (items.length === 0) {
-      filesGrid.innerHTML = '<div class="col-span-4 text-gray-500 italic p-4 text-xs">This folder is empty.</div>';
-    } else {
+      filesContainer.innerHTML = '<div class="text-gray-500 italic p-4 text-xs">This folder is empty.</div>';
+    } else if (viewMode === 'icons') {
+      filesContainer.className = 'grid grid-cols-2 sm:grid-cols-4 gap-2';
       items.forEach((item) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'flex flex-col items-center p-2 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center select-none group';
@@ -379,16 +468,57 @@ export function renderExplorer(container: HTMLElement, win: Win95Window, initial
             audio.playClick();
             renderFiles();
           } else {
-            // Open file
-            audio.playClick();
             const fullPath = `${currentPath.replace(/\\$/, '')}\\${item.name}`;
-            const content = vfs.readFile(fullPath);
-            alert(`File: ${item.name}\n\n${content}`);
+            openFileInApp(item.name, fullPath);
           }
         };
 
-        filesGrid.appendChild(itemEl);
+        filesContainer.appendChild(itemEl);
       });
+    } else {
+      // Details view mode
+      filesContainer.className = 'space-y-0.5';
+      const table = document.createElement('table');
+      table.className = 'w-full text-left text-xs border-collapse';
+      table.innerHTML = `
+        <thead>
+          <tr class="border-b border-black font-bold text-gray-700 text-[11px]">
+            <th class="p-1">Name</th>
+            <th class="p-1">Type</th>
+            <th class="p-1">Size</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          ${items.map(item => `
+            <tr class="hover:bg-[#000080] hover:text-white cursor-pointer exp-detail-row" data-name="${item.name}" data-isdir="${item.type === 'directory'}">
+              <td class="p-1 flex items-center gap-1.5 truncate">
+                <span>${item.type === 'directory' ? '📁' : '📄'}</span>
+                <span>${item.name}</span>
+              </td>
+              <td class="p-1 text-gray-500 text-[10px]">${item.type === 'directory' ? 'Folder' : 'Document'}</td>
+              <td class="p-1 text-gray-500 text-[10px]">${item.type === 'directory' ? '-' : `${item.size || 0} B`}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+
+      table.querySelectorAll('.exp-detail-row').forEach(row => {
+        row.addEventListener('dblclick', () => {
+          const name = row.getAttribute('data-name');
+          const isDir = row.getAttribute('data-isdir') === 'true';
+          if (!name) return;
+          if (isDir) {
+            currentPath = `${currentPath.replace(/\\$/, '')}\\${name}\\`;
+            audio.playClick();
+            renderFiles();
+          } else {
+            const fullPath = `${currentPath.replace(/\\$/, '')}\\${name}`;
+            openFileInApp(name, fullPath);
+          }
+        });
+      });
+
+      filesContainer.appendChild(table);
     }
 
     if (statusEl) statusEl.textContent = `${items.length} object(s)`;
@@ -404,8 +534,29 @@ export function renderExplorer(container: HTMLElement, win: Win95Window, initial
     }
   });
 
-  // Tree clicks
-  container.querySelectorAll('[data-path]').forEach((el) => {
+  viewToggle?.addEventListener('click', () => {
+    viewMode = viewMode === 'icons' ? 'details' : 'icons';
+    audio.playClick();
+    renderFiles();
+  });
+
+  newFolderBtn?.addEventListener('click', () => {
+    const name = prompt('Enter new folder name:', 'New Folder');
+    if (name) {
+      vfs.createFolder(`${currentPath.replace(/\\$/, '')}\\${name}`);
+      audio.playClick();
+      renderFiles();
+    }
+  });
+
+  addressInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      currentPath = addressInput.value.trim();
+      renderFiles();
+    }
+  });
+
+  container.querySelectorAll('.exp-tree-folder').forEach((el) => {
     el.addEventListener('click', () => {
       const p = el.getAttribute('data-path');
       if (p) {
@@ -420,10 +571,20 @@ export function renderExplorer(container: HTMLElement, win: Win95Window, initial
 }
 
 /**
- * 3. Control Panel
+ * 3. Control Panel - Settings, Sounds, Display, Programs & Date/Time
  */
 export function renderControlPanel(container: HTMLElement, win: Win95Window) {
   win.setTitle('Control Panel');
+
+  const applets = [
+    { id: 'cp-display', name: 'Display', icon: '🖥️', desc: 'Wallpaper & Themes' },
+    { id: 'cp-sounds', name: 'Sounds', icon: '🔊', desc: 'Audio Schemes' },
+    { id: 'cp-datetime', name: 'Date/Time', icon: '📅', desc: 'Clock & Calendar' },
+    { id: 'cp-programs', name: 'Add/Remove', icon: '📦', desc: 'Installed Software' },
+    { id: 'cp-system', name: 'System', icon: '💻', desc: 'System Properties' },
+    { id: 'cp-mouse', name: 'Mouse', icon: '🖱️', desc: 'Pointer Settings' },
+  ];
+
   container.innerHTML = `
     <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
       <div class="p-2 border-b border-black text-xs text-gray-700">
@@ -431,63 +592,44 @@ export function renderControlPanel(container: HTMLElement, win: Win95Window) {
       </div>
 
       <div class="flex-1 bg-white retro-inset m-2 p-3 overflow-auto">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <!-- Display Applet -->
-          <div id="cp-display" class="flex flex-col items-center p-2 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center group">
-            <span class="text-3xl">🖥️</span>
-            <span class="text-xs font-bold mt-1">Display</span>
-            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">Wallpaper & Screensaver</span>
-          </div>
-
-          <!-- Sounds Applet -->
-          <div id="cp-sounds" class="flex flex-col items-center p-2 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center group">
-            <span class="text-3xl">🔊</span>
-            <span class="text-xs font-bold mt-1">Sounds</span>
-            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">Audio Schemes</span>
-          </div>
-
-          <!-- System Applet -->
-          <div id="cp-system" class="flex flex-col items-center p-2 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center group">
-            <span class="text-3xl">💻</span>
-            <span class="text-xs font-bold mt-1">System</span>
-            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">System Properties</span>
-          </div>
-
-          <!-- Date & Time Applet -->
-          <div id="cp-datetime" class="flex flex-col items-center p-2 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center group">
-            <span class="text-3xl">📅</span>
-            <span class="text-xs font-bold mt-1">Date/Time</span>
-            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">Clock & Calendar</span>
-          </div>
-
-          <!-- Mouse Applet -->
-          <div id="cp-mouse" class="flex flex-col items-center p-2 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center group">
-            <span class="text-3xl">🖱️</span>
-            <span class="text-xs font-bold mt-1">Mouse</span>
-            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">Pointer Settings</span>
-          </div>
-
-          <!-- Add/Remove Programs -->
-          <div id="cp-programs" class="flex flex-col items-center p-2 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center group">
-            <span class="text-3xl">📦</span>
-            <span class="text-xs font-bold mt-1">Add/Remove</span>
-            <span class="text-[10px] text-gray-500 group-hover:text-gray-300">Software Inventory</span>
-          </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          ${applets.map(a => `
+            <div id="${a.id}" class="flex flex-col items-center p-2.5 hover:bg-[#000080] hover:text-white cursor-pointer rounded text-center group">
+              <span class="text-3xl">${a.icon}</span>
+              <span class="text-xs font-bold mt-1">${a.name}</span>
+              <span class="text-[10px] text-gray-500 group-hover:text-gray-300">${a.desc}</span>
+            </div>
+          `).join('')}
         </div>
       </div>
     </div>
   `;
 
+  // Display Applet
   container.querySelector('#cp-display')?.addEventListener('click', () => {
     audio.playClick();
     renderDisplayProperties(container, win);
   });
 
+  // Sounds Applet
   container.querySelector('#cp-sounds')?.addEventListener('click', () => {
     audio.playClick();
-    alert('Windows 95 Sound Scheme: Standard 16-Bit Polyphony.\nAudio synthesis enabled using pure Web Audio API.');
+    renderSoundsProperties(container, win);
   });
 
+  // Date & Time Applet
+  container.querySelector('#cp-datetime')?.addEventListener('click', () => {
+    audio.playClick();
+    renderDateTimeProperties(container, win);
+  });
+
+  // Add / Remove Programs
+  container.querySelector('#cp-programs')?.addEventListener('click', () => {
+    audio.playClick();
+    renderAddRemovePrograms(container, win);
+  });
+
+  // System Applet
   container.querySelector('#cp-system')?.addEventListener('click', () => {
     audio.playClick();
     const aboutDlg = document.getElementById('retro-about-dialog');
@@ -498,9 +640,10 @@ export function renderControlPanel(container: HTMLElement, win: Win95Window) {
     }
   });
 
-  container.querySelector('#cp-datetime')?.addEventListener('click', () => {
+  // Mouse Applet
+  container.querySelector('#cp-mouse')?.addEventListener('click', () => {
     audio.playClick();
-    renderDateTimeProperties(container, win);
+    alert('Mouse Properties:\n\nDouble-Click Speed: Optimal\nPrimary Button: Left\nPointer Trail: Standard 60 FPS');
   });
 }
 
@@ -514,12 +657,11 @@ function renderDisplayProperties(container: HTMLElement, win: Win95Window) {
       <!-- Tabs -->
       <div class="flex gap-1 border-b border-black">
         <button class="retro-btn !py-0.5 !px-3 font-bold !bg-[#c0c0c0]">Background</button>
-        <button class="retro-btn !py-0.5 !px-3 !bg-[#a0a0a0]">Screen Saver</button>
       </div>
 
       <!-- Monitor Preview -->
       <div class="flex flex-col items-center justify-center p-3 bg-[#808080] border-2 border-black rounded">
-        <div id="disp-preview-screen" class="w-48 h-32 bg-[#008080] border-4 border-gray-900 rounded flex items-center justify-center text-white text-[10px] shadow-inner">
+        <div id="disp-preview-screen" class="w-48 h-32 bg-[#008080] border-4 border-gray-900 rounded flex items-center justify-center text-white text-[10px] shadow-inner font-bold">
           Piush 95
         </div>
         <div class="w-16 h-3 bg-gray-700 mt-1"></div>
@@ -569,6 +711,117 @@ function renderDisplayProperties(container: HTMLElement, win: Win95Window) {
     renderControlPanel(container, win);
   });
   container.querySelector('#disp-cancel')?.addEventListener('click', () => {
+    renderControlPanel(container, win);
+  });
+}
+
+/**
+ * Sounds Properties Dialog
+ */
+function renderSoundsProperties(container: HTMLElement, win: Win95Window) {
+  win.setTitle('Sound Properties');
+
+  const events = [
+    { name: 'Windows Start (Startup)', play: () => audio.playStart() },
+    { name: 'Asterisk (Info Tone)', play: () => audio.playAsterisk() },
+    { name: 'Chord (Window Open)', play: () => audio.playChord() },
+    { name: 'Ding (Alert)', play: () => audio.playDing() },
+    { name: 'Exclamation (Warning)', play: () => audio.playExclamation() },
+    { name: 'Critical Stop (Error)', play: () => audio.playError() },
+    { name: 'Tada (Game Victory)', play: () => audio.playTada() },
+  ];
+
+  let selectedIdx = 0;
+
+  container.innerHTML = `
+    <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none p-3 space-y-3">
+      <div class="text-xs">
+        <label class="font-bold">Sound Scheme:</label>
+        <select class="retro-select w-full mt-1 px-2 py-0.5 text-xs font-mono">
+          <option selected>Windows Default (16-Bit Polyphony)</option>
+        </select>
+      </div>
+
+      <div class="flex-1 flex flex-col space-y-1">
+        <label class="text-xs font-bold">Events:</label>
+        <div class="retro-inset bg-white p-2 flex-1 overflow-auto text-xs space-y-1" id="snd-events-list">
+          ${events.map((e, idx) => `
+            <div class="p-1 cursor-pointer flex items-center justify-between snd-item ${idx === 0 ? 'bg-[#000080] text-white font-bold' : 'hover:bg-gray-100'}" data-idx="${idx}">
+              <span>🔊 ${e.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Preview controls -->
+      <div class="flex items-center justify-between pt-1 border-t border-white">
+        <button id="snd-preview-btn" class="retro-btn !py-0.5 !px-4 font-bold text-xs">▶ Play Preview</button>
+        <button id="snd-close-btn" class="retro-btn !py-0.5 !px-3 text-xs">Close</button>
+      </div>
+    </div>
+  `;
+
+  container.querySelectorAll('.snd-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      container.querySelectorAll('.snd-item').forEach(i => i.classList.remove('bg-[#000080]', 'text-white', 'font-bold'));
+      item.classList.add('bg-[#000080]', 'text-white', 'font-bold');
+      selectedIdx = parseInt(item.getAttribute('data-idx') || '0', 10);
+      audio.playClick();
+    });
+  });
+
+  container.querySelector('#snd-preview-btn')?.addEventListener('click', () => {
+    events[selectedIdx].play();
+  });
+
+  container.querySelector('#snd-close-btn')?.addEventListener('click', () => {
+    renderControlPanel(container, win);
+  });
+}
+
+/**
+ * Add / Remove Programs Dialog
+ */
+function renderAddRemovePrograms(container: HTMLElement, win: Win95Window) {
+  win.setTitle('Add/Remove Programs Properties');
+
+  const installed = [
+    { name: 'Microsoft WordPad 95', size: '1.4 MB' },
+    { name: 'Microsoft Notepad 95', size: '320 KB' },
+    { name: 'Microsoft Paint 95', size: '1.8 MB' },
+    { name: 'Windows Minesweeper', size: '420 KB' },
+    { name: 'Windows Solitaire Suite', size: '890 KB' },
+    { name: '3D Pinball Space Cadet', size: '3.2 MB' },
+    { name: 'Windows Media Player', size: '2.1 MB' },
+    { name: '550 Developer Quiz Database', size: '4.8 MB' },
+  ];
+
+  container.innerHTML = `
+    <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none p-3 space-y-3">
+      <p class="text-xs">The following software can be removed automatically by Windows:</p>
+
+      <div class="retro-inset bg-white p-2 flex-1 overflow-auto text-xs space-y-1">
+        ${installed.map(p => `
+          <div class="flex items-center justify-between p-1.5 hover:bg-[#000080] hover:text-white cursor-pointer border-b border-gray-100">
+            <span class="font-bold">📦 ${p.name}</span>
+            <span class="text-[10px] text-gray-500">${p.size}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="flex justify-end gap-2 pt-1 border-t border-white">
+        <button id="prog-uninstall" class="retro-btn !py-0.5 !px-3 font-bold text-xs text-red-700">Add/Remove...</button>
+        <button id="prog-close" class="retro-btn !py-0.5 !px-3 text-xs">Close</button>
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#prog-uninstall')?.addEventListener('click', () => {
+    audio.playDing();
+    alert('This system component is integral to Piush 95 OS and cannot be uninstalled.');
+  });
+
+  container.querySelector('#prog-close')?.addEventListener('click', () => {
     renderControlPanel(container, win);
   });
 }
@@ -626,11 +879,11 @@ export function renderScanDisk(container: HTMLElement, win: Win95Window) {
       <div class="space-y-1">
         <label class="text-xs font-bold">Select the drive you want to check for errors:</label>
         <div class="retro-inset p-2 bg-white text-xs">
-          <div class="flex items-center gap-2 p-1 bg-[#000080] text-white">
-            <span>🖴</span> <span>3.5 Inch Floppy (A:)</span>
-          </div>
-          <div class="flex items-center gap-2 p-1 bg-[#000080] text-white mt-1">
+          <div class="flex items-center gap-2 p-1 bg-[#000080] text-white cursor-pointer">
             <span>🖴</span> <span>PIUSH_OS (C:)</span>
+          </div>
+          <div class="flex items-center gap-2 p-1 hover:bg-gray-100 cursor-pointer mt-1">
+            <span>💾</span> <span>3.5 Inch Floppy (A:)</span>
           </div>
         </div>
       </div>
@@ -638,11 +891,11 @@ export function renderScanDisk(container: HTMLElement, win: Win95Window) {
       <div class="space-y-1">
         <label class="text-xs font-bold">Type of test:</label>
         <div class="p-2 border border-black/40 space-y-1 text-xs">
-          <label class="flex items-center gap-2">
+          <label class="flex items-center gap-2 cursor-pointer">
             <input type="radio" name="sd-type" checked />
             <span>Standard (checks files and folders for errors)</span>
           </label>
-          <label class="flex items-center gap-2">
+          <label class="flex items-center gap-2 cursor-pointer">
             <input type="radio" name="sd-type" />
             <span>Thorough (performs surface scan for bad sectors)</span>
           </label>
@@ -652,7 +905,7 @@ export function renderScanDisk(container: HTMLElement, win: Win95Window) {
       <!-- Progress bar -->
       <div class="space-y-1">
         <div class="flex justify-between text-xs">
-          <span>Scanning surface...</span>
+          <span id="sd-status-label">Ready to scan...</span>
           <span id="sd-pct">0%</span>
         </div>
         <div class="retro-inset h-4 bg-white relative overflow-hidden">
@@ -671,6 +924,7 @@ export function renderScanDisk(container: HTMLElement, win: Win95Window) {
   const closeBtn = container.querySelector('#sd-close-btn');
   const prog = container.querySelector('#sd-prog') as HTMLElement;
   const pct = container.querySelector('#sd-pct') as HTMLElement;
+  const statusLabel = container.querySelector('#sd-status-label') as HTMLElement;
 
   let scanning = false;
   let val = 0;
@@ -680,6 +934,7 @@ export function renderScanDisk(container: HTMLElement, win: Win95Window) {
     scanning = true;
     val = 0;
     audio.playClick();
+    if (statusLabel) statusLabel.textContent = 'Scanning cluster allocation table...';
 
     const iv = setInterval(() => {
       val += 5;
@@ -690,9 +945,11 @@ export function renderScanDisk(container: HTMLElement, win: Win95Window) {
         clearInterval(iv);
         scanning = false;
         audio.playTada();
+        vfs.writeFile('C:\\SCANDISK.LOG', `ScanDisk verified 1,024 clusters on drive C: at ${new Date().toISOString()}.\n0 bad sectors detected. All files healthy.`);
         alert('ScanDisk did not find any errors on drive C:.\n1,024 cluster sectors verified OK.');
+        if (statusLabel) statusLabel.textContent = 'Scan complete. No errors found.';
       }
-    }, 120);
+    }, 100);
   });
 
   closeBtn?.addEventListener('click', () => {
@@ -738,6 +995,7 @@ export function renderDefrag(container: HTMLElement, win: Win95Window) {
 
   const blocks = container.querySelectorAll('.df-block');
   const startBtn = container.querySelector('#df-start-btn');
+  const pauseBtn = container.querySelector('#df-pause-btn');
   const pctEl = container.querySelector('#df-pct') as HTMLElement;
 
   // Initialize random fragmented map
@@ -751,29 +1009,44 @@ export function renderDefrag(container: HTMLElement, win: Win95Window) {
 
   let running = false;
   let cur = 0;
+  let intervalId: number | null = null;
 
   startBtn?.addEventListener('click', () => {
     if (running) return;
     running = true;
     audio.playClick();
 
-    const iv = setInterval(() => {
+    intervalId = window.setInterval(() => {
       if (cur < 90) {
         const b = blocks[cur] as HTMLElement;
         b.style.backgroundColor = '#00ff00';
+        audio.playTick();
         setTimeout(() => {
           b.style.backgroundColor = '#000080';
-        }, 80);
+        }, 70);
         cur++;
         const pct = Math.floor((cur / 90) * 100);
         if (pctEl) pctEl.textContent = `${pct}% Complete`;
       } else {
-        clearInterval(iv);
+        if (intervalId) clearInterval(intervalId);
         running = false;
         audio.playTada();
         alert('Defragmentation complete! All files optimized.');
       }
     }, 60);
+  });
+
+  pauseBtn?.addEventListener('click', () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+      running = false;
+      audio.playClick();
+    }
+  });
+
+  win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
+    if (intervalId) clearInterval(intervalId);
   });
 }
 
@@ -818,7 +1091,7 @@ export function renderTaskManager(container: HTMLElement, win: Win95Window) {
           <span>${w.icon}</span>
           <span class="truncate">${w.title}</span>
         </div>
-        <span class="text-[10px] text-green-600">[Running]</span>
+        <span class="text-[10px] text-green-600 font-bold">[Running]</span>
       `;
       item.onclick = () => {
         selectedId = w.id;
@@ -917,5 +1190,3 @@ export function renderSystemInfo(container: HTMLElement, win: Win95Window) {
     win.close();
   });
 }
-
-

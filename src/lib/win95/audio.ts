@@ -254,6 +254,115 @@ class Win95AudioEngine {
     } catch (_) {}
   }
 
+  public playTone(freq: number, duration = 0.2, type: OscillatorType = 'sine', vol = 0.15) {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(vol * this.masterVolume, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + duration);
+    } catch (_) {}
+  }
+
+  public playAlarmBuzzer() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      for (let i = 0; i < 4; i++) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(880, now + i * 0.15);
+        gain.gain.setValueAtTime(0.25 * this.masterVolume, now + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.15 + 0.09);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.15);
+        osc.stop(now + i * 0.15 + 0.09);
+      }
+    } catch (_) {}
+  }
+
+  public playAsterisk() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      [800, 1200].forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now + i * 0.08);
+        gain.gain.setValueAtTime(0.18 * this.masterVolume, now + i * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.08);
+        osc.stop(now + i * 0.08 + 0.2);
+      });
+    } catch (_) {}
+  }
+
+  public playExclamation() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      [450, 650].forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, now + i * 0.06);
+        gain.gain.setValueAtTime(0.2 * this.masterVolume, now + i * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.06);
+        osc.stop(now + i * 0.06 + 0.25);
+      });
+    } catch (_) {}
+  }
+
+  public playStart() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+    try {
+      const notes = [
+        { f: 392.00, d: 0.15 }, // G4
+        { f: 523.25, d: 0.15 }, // C5
+        { f: 659.25, d: 0.15 }, // E5
+        { f: 783.99, d: 0.35 }, // G5
+      ];
+      let t = ctx.currentTime;
+      notes.forEach((n) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(n.f, t);
+        gain.gain.setValueAtTime(0.15 * this.masterVolume, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + n.d);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + n.d);
+        t += n.d * 0.7;
+      });
+    } catch (_) {}
+  }
+
   public playDTMF(digit: string) {
     if (!this.soundEffectsEnabled) return;
     const ctx = this.getContext();

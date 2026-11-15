@@ -70,7 +70,7 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
 
   const canvas = container.querySelector('#pinball-canvas') as HTMLCanvasElement;
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d')!;
   if (!ctx) return;
 
   let score = 0;
@@ -437,7 +437,8 @@ export function renderSnake(container: HTMLElement, win: Win95Window) {
   `;
 
   const canvas = container.querySelector('#snake-canvas') as HTMLCanvasElement;
-  const ctx = canvas?.getContext('2d');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d')!;
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#snake-score') as HTMLElement;
@@ -757,7 +758,8 @@ export function renderBrickBreaker(container: HTMLElement, win: Win95Window) {
   `;
 
   const canvas = container.querySelector('#bb-canvas') as HTMLCanvasElement;
-  const ctx = canvas?.getContext('2d');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d')!;
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#bb-score') as HTMLElement;
@@ -947,7 +949,8 @@ export function renderSpaceDefender(container: HTMLElement, win: Win95Window) {
   `;
 
   const canvas = container.querySelector('#sd-canvas') as HTMLCanvasElement;
-  const ctx = canvas?.getContext('2d');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d')!;
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#sd-score') as HTMLElement;
@@ -1610,7 +1613,8 @@ export function renderFallingBlocks(container: HTMLElement, win: Win95Window) {
   `;
 
   const canvas = container.querySelector('#fb-canvas') as HTMLCanvasElement;
-  const ctx = canvas?.getContext('2d');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d')!;
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#fb-score') as HTMLElement;
