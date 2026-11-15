@@ -624,3 +624,4 @@ export function renderMIDIPlayer(container: HTMLElement, win: Win95Window) {
     audio.playClick();
   });
 }
+

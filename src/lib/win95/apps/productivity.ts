@@ -486,3 +486,4 @@ export function renderRunDialog(container: HTMLElement, win: Win95Window) {
     if (e.key === 'Enter') execute();
   });
 }
+

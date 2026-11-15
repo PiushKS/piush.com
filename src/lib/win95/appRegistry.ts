@@ -203,3 +203,4 @@ export function launchApp(appId: string): Win95Window | null {
 if (typeof window !== 'undefined') {
   (window as unknown as { launchWin95App?: typeof launchApp }).launchWin95App = launchApp;
 }
+

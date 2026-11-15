@@ -222,3 +222,4 @@ export function toggleHighContrast() {
     document.body.style.filter = 'none';
   }
 }
+

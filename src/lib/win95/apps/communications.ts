@@ -314,3 +314,4 @@ export function renderGuestbook(container: HTMLElement, win: Win95Window) {
 
   renderEntries();
 }
+

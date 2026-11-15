@@ -394,3 +394,4 @@ export class Win95WindowManager {
 }
 
 export const windowManager = new Win95WindowManager();
+

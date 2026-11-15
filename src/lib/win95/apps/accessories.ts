@@ -986,3 +986,4 @@ export function renderPhoneDialer(container: HTMLElement, win: Win95Window) {
     alert(`Dialing ${currentNum}... Connected via virtual line!`);
   });
 }
+

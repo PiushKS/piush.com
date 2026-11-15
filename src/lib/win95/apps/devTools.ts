@@ -480,3 +480,4 @@ export function renderApiTester(container: HTMLElement, win: Win95Window) {
     }
   });
 }
+

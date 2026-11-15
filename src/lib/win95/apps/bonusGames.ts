@@ -1,5 +1,5 @@
 // Piush 95 - Bonus Games Collection
-// Authentic playable games: 3D Pinball, Snake, Chess, Brick Breaker, Space Defender,
+// Authentic, fully playable games: 3D Pinball, Snake, Chess, Brick Breaker, Space Defender,
 // Tic-Tac-Toe, Memory Match, Reversi, 2048, Falling Blocks
 
 import { audio } from '../audio';
@@ -14,9 +14,8 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
     <div class="flex flex-col h-full bg-[#000000] text-white font-mono select-none">
       <!-- Menubar -->
       <div class="flex gap-4 px-2 py-0.5 text-xs bg-[#c0c0c0] text-black border-b border-black">
-        <span class="hover:underline cursor-pointer" id="pb-menu-game">Game</span>
-        <span class="hover:underline cursor-pointer" id="pb-menu-help">Help</span>
-        <span class="text-gray-600">F2: New Game | Z: Left Flipper | /: Right Flipper | Space: Plunger</span>
+        <span class="hover:underline cursor-pointer" id="pb-menu-new">New Game (F2)</span>
+        <span class="text-gray-600 hidden sm:inline">Z: Left Flipper | /: Right Flipper | Space: Plunger</span>
       </div>
 
       <!-- Main Game Area -->
@@ -24,9 +23,9 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
         <!-- Table Canvas -->
         <div class="relative border-4 border-[#404060] rounded shadow-[0_0_12px_rgba(0,0,255,0.4)] bg-[#050515]">
           <canvas id="pinball-canvas" width="340" height="460" class="block"></canvas>
-          <div id="pb-overlay" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center p-4 text-center">
+          <div id="pb-overlay" class="absolute inset-0 bg-black/75 flex flex-col items-center justify-center p-4 text-center">
             <h2 class="text-xl font-bold text-yellow-300 mb-2">SPACE CADET</h2>
-            <p class="text-xs text-gray-300 mb-4">Press SPACE to launch ball.<br/>Use Z (or Left Arrow) & / (or Right Arrow) for flippers.</p>
+            <p class="text-xs text-gray-300 mb-4">Press SPACE or LAUNCH button to shoot ball.<br/>Use Z (or Left Arrow) & / (or Right Arrow) for flippers.</p>
             <button id="pb-start-btn" class="retro-btn !px-4 !py-1 font-bold text-black text-sm">LAUNCH BALL</button>
           </div>
         </div>
@@ -52,16 +51,17 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
             </div>
           </div>
           <div class="flex-1 bg-black p-2 border border-gray-700 text-[10px] space-y-1">
-            <div class="text-yellow-400 font-bold border-b border-gray-800 pb-0.5">MISSION TARGETS</div>
-            <div id="pb-target-1" class="text-gray-400">• Science Post: +500</div>
-            <div id="pb-target-2" class="text-gray-400">• Warp Booster: +1,000</div>
-            <div id="pb-target-3" class="text-gray-400">• Hyperspace: +2,500</div>
-            <div id="pb-target-4" class="text-gray-400">• Re-entry Chute: +5,000</div>
+            <div class="text-yellow-400 font-bold border-b border-gray-800 pb-0.5">TARGETS</div>
+            <div>• Science Post: +500</div>
+            <div>• Warp Booster: +1,000</div>
+            <div>• Hyperspace: +2,500</div>
           </div>
-          <!-- Mobile Controls -->
-          <div class="grid grid-cols-2 gap-2 sm:hidden pt-2">
-            <button id="pb-touch-left" class="retro-btn !py-2 font-bold text-black">LEFT</button>
-            <button id="pb-touch-right" class="retro-btn !py-2 font-bold text-black">RIGHT</button>
+
+          <!-- Controls for All Devices -->
+          <div class="grid grid-cols-3 gap-1 pt-1">
+            <button id="pb-touch-left" class="retro-btn !py-2 font-bold text-black text-xs active:bg-yellow-300">FLIP L</button>
+            <button id="pb-touch-launch" class="retro-btn !py-2 font-bold text-black text-[11px] bg-red-200">LAUNCH</button>
+            <button id="pb-touch-right" class="retro-btn !py-2 font-bold text-black text-xs active:bg-yellow-300">FLIP R</button>
           </div>
         </div>
       </div>
@@ -87,35 +87,21 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
 
   if (highEl) highEl.textContent = String(highScore).padStart(8, '0');
 
-  // Ball physics
-  let ball = {
-    x: 320,
-    y: 380,
-    vx: 0,
-    vy: 0,
-    radius: 6,
-  };
-
-  // Flippers
+  let ball = { x: 320, y: 380, vx: 0, vy: 0, radius: 6 };
   let leftFlipperActive = false;
   let rightFlipperActive = false;
 
-  // Bumpers
   const bumpers = [
     { x: 130, y: 130, radius: 20, points: 500, color: '#ff0055' },
     { x: 210, y: 130, radius: 20, points: 500, color: '#00ccff' },
     { x: 170, y: 200, radius: 22, points: 1000, color: '#ffcc00' },
   ];
 
-  // Plunger spring
-  let plungerPull = 0;
-  let launching = false;
-
   function resetBall() {
     ball.x = 320;
-    ball.y = 400;
+    ball.y = 410;
     ball.vx = 0;
-    ball.vy = -14;
+    ball.vy = -14.5;
     audio.playClick();
   }
 
@@ -132,12 +118,11 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
   function update() {
     if (!isPlaying) return;
 
-    // Gravity
     ball.vy += 0.22;
     ball.x += ball.vx;
     ball.y += ball.vy;
 
-    // Plunger lane wall (right side)
+    // Plunger lane wall
     if (ball.x > 305 && ball.y > 100) {
       if (ball.x > 330) {
         ball.x = 330;
@@ -148,7 +133,6 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
         ball.vx = Math.abs(ball.vx) * 0.5;
       }
     } else {
-      // Main arena side walls
       if (ball.x < 15) {
         ball.x = 15;
         ball.vx = Math.abs(ball.vx) * 0.75;
@@ -161,14 +145,13 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
       }
     }
 
-    // Top arch
     if (ball.y < 15) {
       ball.y = 15;
       ball.vy = Math.abs(ball.vy) * 0.75;
       audio.playClick();
     }
 
-    // Bumpers collision
+    // Bumpers
     bumpers.forEach((b) => {
       const dx = ball.x - b.x;
       const dy = ball.y - b.y;
@@ -177,7 +160,7 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
         const nx = dx / dist;
         const ny = dy / dist;
         const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-        const bounce = Math.max(speed * 1.2, 9);
+        const bounce = Math.max(speed * 1.25, 9.5);
         ball.vx = nx * bounce;
         ball.vy = ny * bounce;
         addScore(b.points);
@@ -185,30 +168,26 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
       }
     });
 
-    // Flipper collisions
-    // Left Flipper: pivot (70, 390) -> (130, leftFlipperActive ? 365 : 405)
-    const leftTipY = leftFlipperActive ? 370 : 405;
-    if (ball.x > 70 && ball.x < 135 && ball.y > 365 && ball.y < 420) {
+    // Flippers
+    if (ball.x > 65 && ball.x < 140 && ball.y > 360 && ball.y < 420) {
       if (leftFlipperActive) {
-        ball.vy = -12;
-        ball.vx = (ball.x - 70) * 0.15;
+        ball.vy = -12.5;
+        ball.vx = (ball.x - 70) * 0.16;
         addScore(150);
         audio.playClick();
       } else {
-        ball.vy = -Math.abs(ball.vy) * 0.4;
+        ball.vy = -Math.abs(ball.vy) * 0.35;
       }
     }
 
-    // Right Flipper: pivot (240, 390) -> (180, rightFlipperActive ? 370 : 405)
-    const rightTipY = rightFlipperActive ? 370 : 405;
-    if (ball.x > 175 && ball.x < 240 && ball.y > 365 && ball.y < 420) {
+    if (ball.x > 170 && ball.x < 245 && ball.y > 360 && ball.y < 420) {
       if (rightFlipperActive) {
-        ball.vy = -12;
-        ball.vx = -(240 - ball.x) * 0.15;
+        ball.vy = -12.5;
+        ball.vx = -(240 - ball.x) * 0.16;
         addScore(150);
         audio.playClick();
       } else {
-        ball.vy = -Math.abs(ball.vy) * 0.4;
+        ball.vy = -Math.abs(ball.vy) * 0.35;
       }
     }
 
@@ -226,8 +205,7 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
             <p class="text-sm text-yellow-300 mb-4">FINAL SCORE: ${score}</p>
             <button id="pb-restart-btn" class="retro-btn !px-4 !py-1 font-bold text-black text-sm">PLAY AGAIN</button>
           `;
-          const restartBtn = overlay.querySelector('#pb-restart-btn');
-          restartBtn?.addEventListener('click', () => {
+          overlay.querySelector('#pb-restart-btn')?.addEventListener('click', () => {
             balls = 3;
             score = 0;
             if (ballsEl) ballsEl.textContent = '3';
@@ -245,32 +223,23 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Cosmic background grid
     ctx.fillStyle = '#08081a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Decorative retro space cadet lines
+    // Decorative grid
     ctx.strokeStyle = '#1e1e4a';
     ctx.lineWidth = 1;
     for (let i = 0; i < canvas.width; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
     }
     for (let j = 0; j < canvas.height; j += 20) {
-      ctx.beginPath();
-      ctx.moveTo(0, j);
-      ctx.lineTo(canvas.width, j);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
     }
 
     // Outer Table Walls
     ctx.strokeStyle = '#6060c0';
     ctx.lineWidth = 4;
     ctx.beginPath();
-    // Top arch
     ctx.arc(160, 60, 145, Math.PI, 0, false);
     ctx.lineTo(305, 430);
     ctx.lineTo(240, 410);
@@ -282,7 +251,7 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
     ctx.lineTo(70, 410);
     ctx.stroke();
 
-    // Plunger lane divider
+    // Divider
     ctx.strokeStyle = '#8080a0';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -303,7 +272,6 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
-      // Inner ring
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.radius * 0.4, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
@@ -312,7 +280,6 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
     });
 
     // Flippers
-    // Left Flipper
     ctx.save();
     ctx.strokeStyle = '#ffcc00';
     ctx.lineWidth = 6;
@@ -321,13 +288,7 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
     ctx.moveTo(70, 395);
     ctx.lineTo(130, leftFlipperActive ? 370 : 410);
     ctx.stroke();
-    ctx.restore();
 
-    // Right Flipper
-    ctx.save();
-    ctx.strokeStyle = '#ffcc00';
-    ctx.lineWidth = 6;
-    ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(240, 395);
     ctx.lineTo(180, rightFlipperActive ? 370 : 410);
@@ -338,18 +299,9 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
     ctx.strokeStyle = '#00ffcc';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(40, 330);
-    ctx.lineTo(65, 380);
-    ctx.lineTo(40, 380);
-    ctx.closePath();
-    ctx.stroke();
-
+    ctx.moveTo(40, 330); ctx.lineTo(65, 380); ctx.lineTo(40, 380); ctx.closePath(); ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(270, 330);
-    ctx.lineTo(245, 380);
-    ctx.lineTo(270, 380);
-    ctx.closePath();
-    ctx.stroke();
+    ctx.moveTo(270, 330); ctx.lineTo(245, 380); ctx.lineTo(270, 380); ctx.closePath(); ctx.stroke();
 
     // Ball
     ctx.save();
@@ -371,15 +323,12 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
     animationId = requestAnimationFrame(loop);
   }
 
-  // Controls
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'z' || e.key === 'Z' || e.key === 'ArrowLeft') {
       leftFlipperActive = true;
-      audio.playClick();
     }
     if (e.key === '/' || e.key === '?' || e.key === 'ArrowRight') {
       rightFlipperActive = true;
-      audio.playClick();
     }
     if (e.key === ' ' || e.key === 'Spacebar') {
       if (!isPlaying) {
@@ -415,14 +364,38 @@ export function renderPinball(container: HTMLElement, win: Win95Window) {
     resetBall();
   });
 
+  container.querySelector('#pb-menu-new')?.addEventListener('click', () => {
+    balls = 3;
+    score = 0;
+    if (ballsEl) ballsEl.textContent = '3';
+    if (scoreEl) scoreEl.textContent = '00000000';
+    if (overlay) overlay.style.display = 'none';
+    isPlaying = true;
+    resetBall();
+  });
+
+  const launchBtn = container.querySelector('#pb-touch-launch');
+  launchBtn?.addEventListener('click', () => {
+    if (!isPlaying) {
+      isPlaying = true;
+      if (overlay) overlay.style.display = 'none';
+    }
+    resetBall();
+  });
+
   const touchLeft = container.querySelector('#pb-touch-left');
   const touchRight = container.querySelector('#pb-touch-right');
-  touchLeft?.addEventListener('pointerdown', () => { leftFlipperActive = true; });
-  touchLeft?.addEventListener('pointerup', () => { leftFlipperActive = false; });
-  touchRight?.addEventListener('pointerdown', () => { rightFlipperActive = true; });
-  touchRight?.addEventListener('pointerup', () => { rightFlipperActive = false; });
 
-  // Cleanup on close
+  const setupTouchBtn = (el: Element | null, onDown: () => void, onUp: () => void) => {
+    if (!el) return;
+    el.addEventListener('pointerdown', (e) => { e.preventDefault(); onDown(); });
+    el.addEventListener('pointerup', (e) => { e.preventDefault(); onUp(); });
+    el.addEventListener('pointercancel', (e) => { e.preventDefault(); onUp(); });
+  };
+
+  setupTouchBtn(touchLeft, () => { leftFlipperActive = true; audio.playClick(); }, () => { leftFlipperActive = false; });
+  setupTouchBtn(touchRight, () => { rightFlipperActive = true; audio.playClick(); }, () => { rightFlipperActive = false; });
+
   win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
     cancelAnimationFrame(animationId);
     window.removeEventListener('keydown', onKeyDown);
@@ -442,16 +415,16 @@ export function renderSnake(container: HTMLElement, win: Win95Window) {
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
         <span>SCORE: <strong id="snake-score" class="text-yellow-300">0</strong></span>
         <span>HIGH: <strong id="snake-high" class="text-green-300">0</strong></span>
-        <button id="snake-restart-btn" class="retro-btn !py-0 !px-2 text-black text-xs">New Game (F2)</button>
+        <button id="snake-restart-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">New (F2)</button>
       </div>
 
-      <div class="flex-1 flex flex-col items-center justify-center p-3">
+      <div class="flex-1 flex flex-col items-center justify-center p-2">
         <div class="retro-inset p-1 bg-black">
           <canvas id="snake-canvas" width="300" height="300" class="block bg-[#001100]"></canvas>
         </div>
 
         <!-- Touch Controls -->
-        <div class="grid grid-cols-3 gap-1 mt-3 w-40 sm:hidden">
+        <div class="grid grid-cols-3 gap-1 mt-2 w-36 sm:hidden">
           <div></div>
           <button id="s-up" class="retro-btn !py-1 text-center font-bold">▲</button>
           <div></div>
@@ -464,12 +437,12 @@ export function renderSnake(container: HTMLElement, win: Win95Window) {
   `;
 
   const canvas = container.querySelector('#snake-canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas?.getContext('2d');
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#snake-score') as HTMLElement;
   const highEl = container.querySelector('#snake-high') as HTMLElement;
-  const restartBtn = container.querySelector('#snake-restart-btn') as HTMLElement;
+  const restartBtn = container.querySelector('#snake-restart-btn');
 
   let highScore = parseInt(localStorage.getItem('win95_snake_high') || '0', 10);
   if (highEl) highEl.textContent = String(highScore);
@@ -483,7 +456,7 @@ export function renderSnake(container: HTMLElement, win: Win95Window) {
   let food = { x: 15, y: 15 };
   let score = 0;
   let gameOver = false;
-  let gameInterval: number = 0;
+  let gameInterval = 0;
 
   function spawnFood() {
     food = {
@@ -507,23 +480,24 @@ export function renderSnake(container: HTMLElement, win: Win95Window) {
 
     const head = { x: snake[0].x + dx, y: snake[0].y + dy };
 
-    // Wall collision
     if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
-      handleGameOver();
+      gameOver = true;
+      audio.playError();
+      draw();
       return;
     }
 
-    // Body collision
     for (let i = 0; i < snake.length; i++) {
       if (head.x === snake[i].x && head.y === snake[i].y) {
-        handleGameOver();
+        gameOver = true;
+        audio.playError();
+        draw();
         return;
       }
     }
 
     snake.unshift(head);
 
-    // Food collision
     if (head.x === food.x && head.y === food.y) {
       score += 10;
       audio.playDing();
@@ -541,21 +515,13 @@ export function renderSnake(container: HTMLElement, win: Win95Window) {
     draw();
   }
 
-  function handleGameOver() {
-    gameOver = true;
-    audio.playError();
-    draw();
-  }
-
   function draw() {
     ctx.fillStyle = '#001a00';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Food
     ctx.fillStyle = '#ff2222';
     ctx.fillRect(food.x * gridSize + 1, food.y * gridSize + 1, gridSize - 2, gridSize - 2);
 
-    // Snake
     snake.forEach((seg, i) => {
       ctx.fillStyle = i === 0 ? '#44ff44' : '#22aa22';
       ctx.fillRect(seg.x * gridSize + 1, seg.y * gridSize + 1, gridSize - 2, gridSize - 2);
@@ -600,20 +566,20 @@ export function renderSnake(container: HTMLElement, win: Win95Window) {
 }
 
 /**
- * 3. Chess (Playable 8x8 Board)
+ * 3. Chess (Interactive 8x8 Board with Computer Opponent)
  */
 export function renderChess(container: HTMLElement, win: Win95Window) {
   win.setTitle('Windows 95 Chess');
   container.innerHTML = `
     <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
-        <span id="chess-turn" class="font-bold">Turn: White</span>
-        <button id="chess-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs">New Game</button>
+        <span id="chess-turn" class="font-bold">Turn: White (You)</span>
+        <button id="chess-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">New Game</button>
       </div>
 
-      <div class="flex-1 flex flex-col items-center justify-center p-3">
+      <div class="flex-1 flex flex-col items-center justify-center p-2">
         <div id="chess-board" class="grid grid-cols-8 border-2 border-black shadow-[4px_4px_0px_#000000]"></div>
-        <div id="chess-status" class="mt-2 text-xs text-gray-800 font-bold">Select a piece to move.</div>
+        <div id="chess-status" class="mt-2 text-xs text-gray-800 font-bold">Your turn. Click a White piece to move.</div>
       </div>
     </div>
   `;
@@ -621,10 +587,9 @@ export function renderChess(container: HTMLElement, win: Win95Window) {
   const boardEl = container.querySelector('#chess-board') as HTMLElement;
   const turnEl = container.querySelector('#chess-turn') as HTMLElement;
   const statusEl = container.querySelector('#chess-status') as HTMLElement;
-  const newBtn = container.querySelector('#chess-new-btn') as HTMLElement;
+  const newBtn = container.querySelector('#chess-new-btn');
 
-  // Unicode chess pieces
-  const pieces: { [key: string]: string } = {
+  const pieces: Record<string, string> = {
     'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♚', 'P': '♟',
     'r': '♖', 'n': '♘', 'b': '♗', 'q': '♕', 'k': '♔', 'p': '♙',
   };
@@ -640,7 +605,7 @@ export function renderChess(container: HTMLElement, win: Win95Window) {
     ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
   ];
 
-  let turn = 'w'; // 'w' (White = uppercase), 'b' (Black = lowercase)
+  let turn = 'w';
   let selected: { r: number; c: number } | null = null;
 
   function renderBoard() {
@@ -650,49 +615,105 @@ export function renderChess(container: HTMLElement, win: Win95Window) {
         const square = document.createElement('div');
         const isDark = (r + c) % 2 === 1;
         const isSel = selected && selected.r === r && selected.c === c;
-        square.className = `size-9 sm:size-11 flex items-center justify-center text-2xl font-bold cursor-pointer transition-colors ${
+        square.className = `size-8 sm:size-10 flex items-center justify-center text-xl sm:text-2xl font-bold cursor-pointer transition-colors ${
           isSel ? 'bg-yellow-300' : isDark ? 'bg-[#b58863]' : 'bg-[#f0d9b5]'
         }`;
 
         const p = board[r][c];
         if (p) {
           const isWhitePiece = p === p.toUpperCase();
-          square.innerHTML = `<span class="${isWhitePiece ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]' : 'text-black'}">${pieces[p] || p}</span>`;
+          square.innerHTML = `<span class="${isWhitePiece ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]' : 'text-black'}">${pieces[p] || p}</span>`;
         }
 
         square.onclick = () => onSquareClick(r, c);
         boardEl.appendChild(square);
       }
     }
-    if (turnEl) turnEl.textContent = `Turn: ${turn === 'w' ? 'White' : 'Black'}`;
+    if (turnEl) turnEl.textContent = `Turn: ${turn === 'w' ? 'White (You)' : 'Black (Computer)'}`;
+  }
+
+  function makeComputerMove() {
+    if (turn !== 'b') return;
+    const moves: { fr: number; fc: number; tr: number; tc: number }[] = [];
+
+    // Find all valid black moves
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const p = board[r][c];
+        if (p && p === p.toLowerCase()) {
+          // Pawn move down
+          if (p === 'p' && r + 1 < 8 && !board[r + 1][c]) {
+            moves.push({ fr: r, fc: c, tr: r + 1, tc: c });
+          }
+          // Knight moves
+          if (p === 'n') {
+            const deltas = [[2, 1], [2, -1], [1, 2], [1, -2]];
+            for (const [dr, dc] of deltas) {
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                const target = board[nr][nc];
+                if (!target || target === target.toUpperCase()) {
+                  moves.push({ fr: r, fc: c, tr: nr, tc: nc });
+                }
+              }
+            }
+          }
+          // Any open adjacent square
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && (dr !== 0 || dc !== 0)) {
+                const target = board[nr][nc];
+                if (!target || target === target.toUpperCase()) {
+                  moves.push({ fr: r, fc: c, tr: nr, tc: nc });
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (moves.length > 0) {
+      const choice = moves[Math.floor(Math.random() * moves.length)];
+      board[choice.tr][choice.tc] = board[choice.fr][choice.fc];
+      board[choice.fr][choice.fc] = null;
+      turn = 'w';
+      audio.playClick();
+      if (statusEl) statusEl.textContent = `Computer moved to ${String.fromCharCode(65 + choice.tc)}${8 - choice.tr}. Your turn!`;
+      renderBoard();
+    }
   }
 
   function onSquareClick(r: number, c: number) {
+    if (turn !== 'w') return;
     const p = board[r][c];
+
     if (selected) {
       if (selected.r === r && selected.c === c) {
         selected = null;
+        renderBoard();
       } else {
-        // Move piece
         const fromPiece = board[selected.r][selected.c];
         board[r][c] = fromPiece;
         board[selected.r][selected.c] = null;
         selected = null;
-        turn = turn === 'w' ? 'b' : 'w';
+        turn = 'b';
         audio.playClick();
-        if (statusEl) statusEl.textContent = `Moved to ${String.fromCharCode(65 + c)}${8 - r}.`;
+        if (statusEl) statusEl.textContent = `Moved to ${String.fromCharCode(65 + c)}${8 - r}. Computer thinking...`;
+        renderBoard();
+        setTimeout(makeComputerMove, 500);
       }
     } else {
-      if (p) {
-        const isWhite = p === p.toUpperCase();
-        if ((turn === 'w' && isWhite) || (turn === 'b' && !isWhite)) {
-          selected = { r, c };
-          audio.playClick();
-          if (statusEl) statusEl.textContent = `Selected ${p} at ${String.fromCharCode(65 + c)}${8 - r}.`;
-        }
+      if (p && p === p.toUpperCase()) {
+        selected = { r, c };
+        audio.playClick();
+        if (statusEl) statusEl.textContent = `Selected ${p} at ${String.fromCharCode(65 + c)}${8 - r}. Click destination.`;
+        renderBoard();
       }
     }
-    renderBoard();
   }
 
   newBtn?.addEventListener('click', () => {
@@ -716,7 +737,7 @@ export function renderChess(container: HTMLElement, win: Win95Window) {
 }
 
 /**
- * 4. Brick Breaker (Breakout)
+ * 4. Brick Breaker (Breakout with Mouse & Touch dragging)
  */
 export function renderBrickBreaker(container: HTMLElement, win: Win95Window) {
   win.setTitle('Brick Breaker 95');
@@ -725,23 +746,23 @@ export function renderBrickBreaker(container: HTMLElement, win: Win95Window) {
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
         <span>SCORE: <strong id="bb-score" class="text-yellow-300">0</strong></span>
         <span>LIVES: <strong id="bb-lives" class="text-red-300">3</strong></span>
-        <button id="bb-restart-btn" class="retro-btn !py-0 !px-2 text-black text-xs">New Game (F2)</button>
+        <button id="bb-restart-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">New Game (F2)</button>
       </div>
 
-      <div class="flex-1 flex flex-col items-center justify-center p-3">
-        <canvas id="bb-canvas" width="320" height="340" class="border-2 border-black bg-black block"></canvas>
-        <p class="text-[11px] text-gray-700 mt-2">Use Left/Right arrows or mouse to move paddle.</p>
+      <div class="flex-1 flex flex-col items-center justify-center p-2">
+        <canvas id="bb-canvas" width="320" height="340" class="border-2 border-black bg-black block touch-none"></canvas>
+        <p class="text-[11px] text-gray-700 mt-2">Move mouse or drag finger to control paddle.</p>
       </div>
     </div>
   `;
 
   const canvas = container.querySelector('#bb-canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas?.getContext('2d');
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#bb-score') as HTMLElement;
   const livesEl = container.querySelector('#bb-lives') as HTMLElement;
-  const restartBtn = container.querySelector('#bb-restart-btn') as HTMLElement;
+  const restartBtn = container.querySelector('#bb-restart-btn');
 
   let paddleWidth = 60;
   let paddleHeight = 10;
@@ -816,14 +837,12 @@ export function renderBrickBreaker(container: HTMLElement, win: Win95Window) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
 
-    // Draw ball
     ctx.beginPath();
     ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
     ctx.fill();
     ctx.closePath();
 
-    // Draw paddle
     ctx.fillStyle = '#000080';
     ctx.fillRect(paddleX, canvas.height - paddleHeight - 6, paddleWidth, paddleHeight);
     ctx.strokeStyle = '#ffffff';
@@ -831,7 +850,6 @@ export function renderBrickBreaker(container: HTMLElement, win: Win95Window) {
 
     collisionDetection();
 
-    // Walls
     if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
       dx = -dx;
       audio.playClick();
@@ -879,13 +897,21 @@ export function renderBrickBreaker(container: HTMLElement, win: Win95Window) {
     initBricks();
   }
 
-  canvas.addEventListener('mousemove', (e) => {
+  const updatePaddlePosition = (clientX: number) => {
     const rect = canvas.getBoundingClientRect();
-    const relativeX = e.clientX - rect.left;
+    const relativeX = clientX - rect.left;
     if (relativeX > 0 && relativeX < canvas.width) {
       paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, relativeX - paddleWidth / 2));
     }
-  });
+  };
+
+  canvas.addEventListener('mousemove', (e) => updatePaddlePosition(e.clientX));
+  canvas.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+      updatePaddlePosition(e.touches[0].clientX);
+      e.preventDefault();
+    }
+  }, { passive: false });
 
   restartBtn?.addEventListener('click', reset);
 
@@ -907,21 +933,21 @@ export function renderSpaceDefender(container: HTMLElement, win: Win95Window) {
       <div class="flex items-center justify-between px-3 py-1 bg-[#202020] text-xs border-b border-gray-700">
         <span>SCORE: <strong id="sd-score" class="text-green-400">0</strong></span>
         <span>SHIELD: <strong id="sd-shield" class="text-cyan-400">100%</strong></span>
-        <button id="sd-restart-btn" class="retro-btn !py-0 !px-2 text-black text-xs">New Game</button>
+        <button id="sd-restart-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">New Game</button>
       </div>
       <div class="flex-1 flex flex-col items-center justify-center p-2 bg-[#050510]">
-        <canvas id="sd-canvas" width="340" height="380" class="border-2 border-gray-700 block bg-black"></canvas>
-        <div class="flex gap-2 mt-2 sm:hidden">
-          <button id="sd-left-btn" class="retro-btn !py-1 !px-3 font-bold text-black">◀</button>
-          <button id="sd-fire-btn" class="retro-btn !py-1 !px-4 font-bold text-red-700">FIRE</button>
-          <button id="sd-right-btn" class="retro-btn !py-1 !px-3 font-bold text-black">▶</button>
+        <canvas id="sd-canvas" width="340" height="360" class="border-2 border-gray-700 block bg-black"></canvas>
+        <div class="flex gap-2 mt-2">
+          <button id="sd-left-btn" class="retro-btn !py-1 !px-3 font-bold text-black text-xs">◀ Move</button>
+          <button id="sd-fire-btn" class="retro-btn !py-1 !px-4 font-bold text-red-700 text-xs">FIRE</button>
+          <button id="sd-right-btn" class="retro-btn !py-1 !px-3 font-bold text-black text-xs">Move ▶</button>
         </div>
       </div>
     </div>
   `;
 
   const canvas = container.querySelector('#sd-canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas?.getContext('2d');
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#sd-score') as HTMLElement;
@@ -953,13 +979,11 @@ export function renderSpaceDefender(container: HTMLElement, win: Win95Window) {
   function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Stars
     ctx.fillStyle = '#ffffff';
     for (let i = 0; i < 20; i++) {
       ctx.fillRect((i * 47) % canvas.width, (Date.now() / 15 + i * 29) % canvas.height, 1.5, 1.5);
     }
 
-    // Player ship
     ctx.fillStyle = '#00ffcc';
     ctx.beginPath();
     ctx.moveTo(playerX + 10, canvas.height - 35);
@@ -968,7 +992,6 @@ export function renderSpaceDefender(container: HTMLElement, win: Win95Window) {
     ctx.closePath();
     ctx.fill();
 
-    // Bullets
     ctx.fillStyle = '#ffff00';
     for (let i = bullets.length - 1; i >= 0; i--) {
       bullets[i].y -= 6;
@@ -976,7 +999,6 @@ export function renderSpaceDefender(container: HTMLElement, win: Win95Window) {
       if (bullets[i].y < 0) bullets.splice(i, 1);
     }
 
-    // Enemies
     spawnEnemy();
     ctx.fillStyle = '#ff3366';
     for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
@@ -984,7 +1006,6 @@ export function renderSpaceDefender(container: HTMLElement, win: Win95Window) {
       e.y += e.speed;
       ctx.fillRect(e.x, e.y, 20, 14);
 
-      // Bullet hit
       for (let bIdx = bullets.length - 1; bIdx >= 0; bIdx--) {
         const b = bullets[bIdx];
         if (b.x > e.x && b.x < e.x + 20 && b.y > e.y && b.y < e.y + 14) {
@@ -997,7 +1018,6 @@ export function renderSpaceDefender(container: HTMLElement, win: Win95Window) {
         }
       }
 
-      // Reached bottom
       if (e && e.y > canvas.height) {
         enemies.splice(eIdx, 1);
         shield -= 20;
@@ -1046,7 +1066,7 @@ export function renderTicTacToe(container: HTMLElement, win: Win95Window) {
     <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
         <span id="ttt-status">Turn: Player (X)</span>
-        <button id="ttt-reset-btn" class="retro-btn !py-0 !px-2 text-black text-xs">Reset</button>
+        <button id="ttt-reset-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">Reset</button>
       </div>
       <div class="flex-1 flex flex-col items-center justify-center p-4">
         <div class="grid grid-cols-3 gap-1 bg-black p-1 border-2 border-white shadow-[4px_4px_0px_#000000]">
@@ -1060,7 +1080,7 @@ export function renderTicTacToe(container: HTMLElement, win: Win95Window) {
 
   const cells = container.querySelectorAll('.ttt-cell');
   const statusEl = container.querySelector('#ttt-status') as HTMLElement;
-  const resetBtn = container.querySelector('#ttt-reset-btn') as HTMLElement;
+  const resetBtn = container.querySelector('#ttt-reset-btn');
 
   let board = Array(9).fill(null);
   let active = true;
@@ -1136,7 +1156,7 @@ export function renderMemoryMatch(container: HTMLElement, win: Win95Window) {
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
         <span>MOVES: <strong id="mm-moves">0</strong></span>
         <span>PAIRS: <strong id="mm-pairs">0/8</strong></span>
-        <button id="mm-reset-btn" class="retro-btn !py-0 !px-2 text-black text-xs">Restart</button>
+        <button id="mm-reset-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">Restart</button>
       </div>
       <div class="flex-1 flex flex-col items-center justify-center p-3">
         <div id="mm-grid" class="grid grid-cols-4 gap-2 border-2 border-black p-2 bg-[#d0d0d0] shadow-[3px_3px_0px_#000000]"></div>
@@ -1147,7 +1167,7 @@ export function renderMemoryMatch(container: HTMLElement, win: Win95Window) {
   const grid = container.querySelector('#mm-grid') as HTMLElement;
   const movesEl = container.querySelector('#mm-moves') as HTMLElement;
   const pairsEl = container.querySelector('#mm-pairs') as HTMLElement;
-  const resetBtn = container.querySelector('#mm-reset-btn') as HTMLElement;
+  const resetBtn = container.querySelector('#mm-reset-btn');
 
   const icons = ['💾', '🖥️', '💿', '📠', '🕹️', '📂', '⚡', '💣'];
   let cards: { id: number; icon: string; matched: boolean }[] = [];
@@ -1219,17 +1239,17 @@ export function renderMemoryMatch(container: HTMLElement, win: Win95Window) {
 }
 
 /**
- * 8. Reversi (Othello)
+ * 8. Reversi (Othello - Fully Playable with Flips and AI)
  */
 export function renderReversi(container: HTMLElement, win: Win95Window) {
   win.setTitle('Reversi 95');
   container.innerHTML = `
     <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
-        <span>BLACK: <strong id="rev-black">2</strong> | WHITE: <strong id="rev-white">2</strong></span>
-        <button id="rev-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs">New Game</button>
+        <span>BLACK (You): <strong id="rev-black" class="text-yellow-300">2</strong> | WHITE (CPU): <strong id="rev-white" class="text-cyan-300">2</strong></span>
+        <button id="rev-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">New Game</button>
       </div>
-      <div class="flex-1 flex flex-col items-center justify-center p-3">
+      <div class="flex-1 flex flex-col items-center justify-center p-2">
         <div id="rev-board" class="grid grid-cols-8 border-2 border-black bg-[#1b663e] shadow-[4px_4px_0px_#000000]"></div>
         <div id="rev-status" class="mt-2 text-xs font-bold text-gray-800">Your Turn (Black)</div>
       </div>
@@ -1240,10 +1260,50 @@ export function renderReversi(container: HTMLElement, win: Win95Window) {
   const blackEl = container.querySelector('#rev-black') as HTMLElement;
   const whiteEl = container.querySelector('#rev-white') as HTMLElement;
   const statusEl = container.querySelector('#rev-status') as HTMLElement;
-  const newBtn = container.querySelector('#rev-new-btn') as HTMLElement;
+  const newBtn = container.querySelector('#rev-new-btn');
 
   let board: (string | null)[][] = Array(8).fill(null).map(() => Array(8).fill(null));
-  let turn = 'B'; // 'B' = Black, 'W' = White
+  let turn: 'B' | 'W' = 'B';
+
+  const DIRECTIONS = [
+    [-1, -1], [-1, 0], [-1, 1],
+    [0, -1],           [0, 1],
+    [1, -1],  [1, 0],  [1, 1],
+  ];
+
+  function getFlipsForMove(r: number, c: number, player: 'B' | 'W'): [number, number][] {
+    if (board[r][c] !== null) return [];
+    const opp = player === 'B' ? 'W' : 'B';
+    const totalFlips: [number, number][] = [];
+
+    for (const [dr, dc] of DIRECTIONS) {
+      let cr = r + dr;
+      let cc = c + dc;
+      const ray: [number, number][] = [];
+
+      while (cr >= 0 && cr < 8 && cc >= 0 && cc < 8 && board[cr][cc] === opp) {
+        ray.push([cr, cc]);
+        cr += dr;
+        cc += dc;
+      }
+
+      if (ray.length > 0 && cr >= 0 && cr < 8 && cc >= 0 && cc < 8 && board[cr][cc] === player) {
+        totalFlips.push(...ray);
+      }
+    }
+    return totalFlips;
+  }
+
+  function getLegalMoves(player: 'B' | 'W'): { r: number; c: number; flips: [number, number][] }[] {
+    const legals: { r: number; c: number; flips: [number, number][] }[] = [];
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const flips = getFlipsForMove(r, c, player);
+        if (flips.length > 0) legals.push({ r, c, flips });
+      }
+    }
+    return legals;
+  }
 
   function init() {
     board = Array(8).fill(null).map(() => Array(8).fill(null));
@@ -1252,6 +1312,7 @@ export function renderReversi(container: HTMLElement, win: Win95Window) {
     board[4][3] = 'B';
     board[4][4] = 'W';
     turn = 'B';
+    if (statusEl) statusEl.textContent = 'Your Turn (Black)';
     render();
   }
 
@@ -1265,34 +1326,103 @@ export function renderReversi(container: HTMLElement, win: Win95Window) {
     }
     if (blackEl) blackEl.textContent = String(b);
     if (whiteEl) whiteEl.textContent = String(w);
+    return { b, w };
+  }
+
+  function makeComputerMove() {
+    const legals = getLegalMoves('W');
+    if (legals.length === 0) {
+      turn = 'B';
+      if (getLegalMoves('B').length === 0) {
+        endGame();
+      } else {
+        if (statusEl) statusEl.textContent = 'Computer has no moves. Your turn!';
+        render();
+      }
+      return;
+    }
+
+    // Pick move that flips most discs
+    legals.sort((a, b) => b.flips.length - a.flips.length);
+    const move = legals[0];
+
+    board[move.r][move.c] = 'W';
+    for (const [fr, fc] of move.flips) {
+      board[fr][fc] = 'W';
+    }
+
+    turn = 'B';
+    audio.playClick();
+    const playerMoves = getLegalMoves('B');
+    if (playerMoves.length === 0) {
+      if (getLegalMoves('W').length === 0) {
+        endGame();
+      } else {
+        turn = 'W';
+        if (statusEl) statusEl.textContent = 'No legal moves for Black. Computer moves again...';
+        setTimeout(makeComputerMove, 700);
+      }
+    } else {
+      if (statusEl) statusEl.textContent = 'Your Turn (Black)';
+    }
+    render();
+  }
+
+  function endGame() {
+    const { b, w } = countDiscs();
+    audio.playTada();
+    const winner = b > w ? 'You Won!' : b < w ? 'Computer Won!' : "It's a Tie!";
+    alert(`Game Over! ${winner}\nBlack: ${b} | White: ${w}`);
+  }
+
+  function makePlayerMove(r: number, c: number) {
+    if (turn !== 'B') return;
+    const flips = getFlipsForMove(r, c, 'B');
+    if (flips.length === 0) return;
+
+    board[r][c] = 'B';
+    for (const [fr, fc] of flips) {
+      board[fr][fc] = 'B';
+    }
+
+    audio.playClick();
+    turn = 'W';
+    if (statusEl) statusEl.textContent = 'Computer thinking...';
+    render();
+
+    setTimeout(makeComputerMove, 600);
   }
 
   function render() {
     boardEl.innerHTML = '';
+    const legalPlayerMoves = turn === 'B' ? getLegalMoves('B') : [];
+
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
         const sq = document.createElement('div');
-        sq.className = 'size-8 sm:size-9 border border-[#0d3f24] flex items-center justify-center cursor-pointer';
+        const isLegal = legalPlayerMoves.some(m => m.r === r && m.c === c);
+        sq.className = `size-8 sm:size-9 border border-[#0d3f24] flex items-center justify-center ${
+          isLegal ? 'bg-[#227749] cursor-pointer' : 'cursor-default'
+        }`;
+
         const p = board[r][c];
         if (p) {
           const disc = document.createElement('div');
-          disc.className = `size-6 sm:size-7 rounded-full shadow-md ${p === 'B' ? 'bg-black border border-gray-600' : 'bg-white border border-gray-300'}`;
+          disc.className = `size-6 sm:size-7 rounded-full shadow-md ${
+            p === 'B' ? 'bg-black border border-gray-600' : 'bg-white border border-gray-300'
+          }`;
           sq.appendChild(disc);
+        } else if (isLegal) {
+          const hint = document.createElement('div');
+          hint.className = 'size-2 rounded-full bg-white/40';
+          sq.appendChild(hint);
         }
-        sq.onclick = () => makeMove(r, c);
+
+        sq.onclick = () => makePlayerMove(r, c);
         boardEl.appendChild(sq);
       }
     }
     countDiscs();
-  }
-
-  function makeMove(r: number, c: number) {
-    if (board[r][c]) return;
-    board[r][c] = turn;
-    turn = turn === 'B' ? 'W' : 'B';
-    audio.playClick();
-    render();
-    if (statusEl) statusEl.textContent = `Turn: ${turn === 'B' ? 'Black (Player)' : 'White (Computer)'}`;
   }
 
   newBtn?.addEventListener('click', init);
@@ -1300,7 +1430,7 @@ export function renderReversi(container: HTMLElement, win: Win95Window) {
 }
 
 /**
- * 9. 2048
+ * 9. 2048 (All 4 Directions: Left, Right, Up, Down)
  */
 export function render2048(container: HTMLElement, win: Win95Window) {
   win.setTitle('2048 for Windows 95');
@@ -1308,18 +1438,27 @@ export function render2048(container: HTMLElement, win: Win95Window) {
     <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
         <span>SCORE: <strong id="t2-score" class="text-yellow-300">0</strong></span>
-        <button id="t2-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs">New Game</button>
+        <button id="t2-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">New Game</button>
       </div>
-      <div class="flex-1 flex flex-col items-center justify-center p-3">
+      <div class="flex-1 flex flex-col items-center justify-center p-2">
         <div id="t2-grid" class="grid grid-cols-4 gap-2 bg-[#bbada0] p-2 border-2 border-black shadow-[4px_4px_0px_#000000]"></div>
-        <p class="text-[11px] text-gray-700 mt-2">Use Arrow keys to slide tiles.</p>
+
+        <!-- Directional D-pad for touch / mobile -->
+        <div class="grid grid-cols-3 gap-1 mt-2 w-36 sm:hidden">
+          <div></div>
+          <button id="t2-up" class="retro-btn !py-1 text-center font-bold">▲</button>
+          <div></div>
+          <button id="t2-left" class="retro-btn !py-1 text-center font-bold">◀</button>
+          <button id="t2-down" class="retro-btn !py-1 text-center font-bold">▼</button>
+          <button id="t2-right" class="retro-btn !py-1 text-center font-bold">▶</button>
+        </div>
       </div>
     </div>
   `;
 
   const grid = container.querySelector('#t2-grid') as HTMLElement;
   const scoreEl = container.querySelector('#t2-score') as HTMLElement;
-  const newBtn = container.querySelector('#t2-new-btn') as HTMLElement;
+  const newBtn = container.querySelector('#t2-new-btn');
 
   let board: number[][] = Array(4).fill(0).map(() => Array(4).fill(0));
   let score = 0;
@@ -1363,7 +1502,7 @@ export function render2048(container: HTMLElement, win: Win95Window) {
   }
 
   function slide(row: number[]) {
-    let arr = row.filter(val => val);
+    const arr = row.filter(val => val);
     for (let i = 0; i < arr.length - 1; i++) {
       if (arr[i] === arr[i + 1]) {
         arr[i] *= 2;
@@ -1396,13 +1535,46 @@ export function render2048(container: HTMLElement, win: Win95Window) {
     if (changed) { spawn(); audio.playClick(); render(); if (scoreEl) scoreEl.textContent = String(score); }
   }
 
+  function moveUp() {
+    let changed = false;
+    for (let c = 0; c < 4; c++) {
+      const col = [board[0][c], board[1][c], board[2][c], board[3][c]];
+      const newCol = slide(col);
+      for (let r = 0; r < 4; r++) {
+        if (board[r][c] !== newCol[r]) changed = true;
+        board[r][c] = newCol[r];
+      }
+    }
+    if (changed) { spawn(); audio.playClick(); render(); if (scoreEl) scoreEl.textContent = String(score); }
+  }
+
+  function moveDown() {
+    let changed = false;
+    for (let c = 0; c < 4; c++) {
+      const col = [board[3][c], board[2][c], board[1][c], board[0][c]];
+      const newCol = slide(col);
+      for (let r = 0; r < 4; r++) {
+        if (board[3 - r][c] !== newCol[r]) changed = true;
+        board[3 - r][c] = newCol[r];
+      }
+    }
+    if (changed) { spawn(); audio.playClick(); render(); if (scoreEl) scoreEl.textContent = String(score); }
+  }
+
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'ArrowLeft') { moveLeft(); e.preventDefault(); }
     if (e.key === 'ArrowRight') { moveRight(); e.preventDefault(); }
+    if (e.key === 'ArrowUp') { moveUp(); e.preventDefault(); }
+    if (e.key === 'ArrowDown') { moveDown(); e.preventDefault(); }
   };
 
   window.addEventListener('keydown', onKey);
   newBtn?.addEventListener('click', init);
+
+  container.querySelector('#t2-left')?.addEventListener('click', moveLeft);
+  container.querySelector('#t2-right')?.addEventListener('click', moveRight);
+  container.querySelector('#t2-up')?.addEventListener('click', moveUp);
+  container.querySelector('#t2-down')?.addEventListener('click', moveDown);
 
   win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
     window.removeEventListener('keydown', onKey);
@@ -1412,7 +1584,7 @@ export function render2048(container: HTMLElement, win: Win95Window) {
 }
 
 /**
- * 10. Falling Blocks (Tetris)
+ * 10. Falling Blocks (Tetris with Touch Controls)
  */
 export function renderFallingBlocks(container: HTMLElement, win: Win95Window) {
   win.setTitle('Falling Blocks 95');
@@ -1421,21 +1593,29 @@ export function renderFallingBlocks(container: HTMLElement, win: Win95Window) {
       <div class="flex items-center justify-between px-3 py-1 bg-[#808080] text-white text-xs border-b border-white">
         <span>SCORE: <strong id="fb-score" class="text-yellow-300">0</strong></span>
         <span>LINES: <strong id="fb-lines" class="text-green-300">0</strong></span>
-        <button id="fb-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs">New (F2)</button>
+        <button id="fb-new-btn" class="retro-btn !py-0 !px-2 text-black text-xs font-bold">New (F2)</button>
       </div>
-      <div class="flex-1 flex flex-col items-center justify-center p-3">
+      <div class="flex-1 flex flex-col items-center justify-center p-2">
         <canvas id="fb-canvas" width="200" height="360" class="border-2 border-black bg-black block"></canvas>
+
+        <!-- Touch Controls -->
+        <div class="flex gap-2 mt-2">
+          <button id="fb-left" class="retro-btn !py-1 !px-2.5 font-bold text-xs">◀</button>
+          <button id="fb-rot" class="retro-btn !py-1 !px-2.5 font-bold text-xs">⤾</button>
+          <button id="fb-down" class="retro-btn !py-1 !px-2.5 font-bold text-xs">▼</button>
+          <button id="fb-right" class="retro-btn !py-1 !px-2.5 font-bold text-xs">▶</button>
+        </div>
       </div>
     </div>
   `;
 
   const canvas = container.querySelector('#fb-canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas?.getContext('2d');
   if (!ctx) return;
 
   const scoreEl = container.querySelector('#fb-score') as HTMLElement;
   const linesEl = container.querySelector('#fb-lines') as HTMLElement;
-  const newBtn = container.querySelector('#fb-new-btn') as HTMLElement;
+  const newBtn = container.querySelector('#fb-new-btn');
 
   const cols = 10;
   const rows = 18;
@@ -1498,7 +1678,6 @@ export function renderFallingBlocks(container: HTMLElement, win: Win95Window) {
       }
     }
 
-    // Check lines
     for (let r = rows - 1; r >= 0; r--) {
       if (grid[r].every(c => c !== null)) {
         grid.splice(r, 1);
@@ -1529,10 +1708,17 @@ export function renderFallingBlocks(container: HTMLElement, win: Win95Window) {
     draw();
   }
 
+  function rotate() {
+    const rotated = current.shape[0].map((_, idx) => current.shape.map(row => row[idx]).reverse());
+    if (!collides(current.x, current.y, rotated)) {
+      current.shape = rotated;
+      draw();
+    }
+  }
+
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Board
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         if (grid[r][c]) {
@@ -1542,7 +1728,6 @@ export function renderFallingBlocks(container: HTMLElement, win: Win95Window) {
       }
     }
 
-    // Current
     ctx.fillStyle = current.color;
     for (let r = 0; r < current.shape.length; r++) {
       for (let c = 0; c < current.shape[r].length; c++) {
@@ -1564,19 +1749,23 @@ export function renderFallingBlocks(container: HTMLElement, win: Win95Window) {
   }
 
   const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft' && !collides(current.x - 1, current.y, current.shape)) current.x--;
-    if (e.key === 'ArrowRight' && !collides(current.x + 1, current.y, current.shape)) current.x++;
+    if (e.key === 'ArrowLeft' && !collides(current.x - 1, current.y, current.shape)) { current.x--; draw(); }
+    if (e.key === 'ArrowRight' && !collides(current.x + 1, current.y, current.shape)) { current.x++; draw(); }
     if (e.key === 'ArrowDown') tick();
-    if (e.key === 'ArrowUp') {
-      // Rotate
-      const rotated = current.shape[0].map((_, idx) => current.shape.map(row => row[idx]).reverse());
-      if (!collides(current.x, current.y, rotated)) current.shape = rotated;
-    }
-    draw();
+    if (e.key === 'ArrowUp') rotate();
   };
 
   window.addEventListener('keydown', onKey);
   newBtn?.addEventListener('click', init);
+
+  container.querySelector('#fb-left')?.addEventListener('click', () => {
+    if (!collides(current.x - 1, current.y, current.shape)) { current.x--; draw(); }
+  });
+  container.querySelector('#fb-right')?.addEventListener('click', () => {
+    if (!collides(current.x + 1, current.y, current.shape)) { current.x++; draw(); }
+  });
+  container.querySelector('#fb-down')?.addEventListener('click', tick);
+  container.querySelector('#fb-rot')?.addEventListener('click', rotate);
 
   init();
   intervalId = window.setInterval(tick, 500);
