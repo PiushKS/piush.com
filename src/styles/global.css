@@ -304,6 +304,9 @@ body {
 	left: 0;
 	z-index: 100;
 	min-width: 250px;
+	max-height: min(440px, calc(100vh - 60px));
+	overflow-y: auto;
+	overflow-x: hidden;
 	background: #c0c0c0;
 	color: #000000;
 	border-top: 2px solid #ffffff;
@@ -315,6 +318,8 @@ body {
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 	font-size: 12px;
 	user-select: none;
+	scrollbar-width: thin;
+	scrollbar-color: #c0c0c0 #e0e0e0;
 }
 
 .retro-menu-item {
@@ -824,8 +829,9 @@ body.is-desktop-minimized #win95-desktop-screen {
 	left: 100%;
 	top: -4px;
 	min-width: 210px;
-	max-height: calc(100vh - 60px);
+	max-height: min(290px, calc(100vh - 60px));
 	overflow-y: auto;
+	overflow-x: hidden;
 	background: #c0c0c0;
 	border-top: 2px solid #ffffff;
 	border-left: 2px solid #ffffff;
@@ -834,6 +840,9 @@ body.is-desktop-minimized #win95-desktop-screen {
 	box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.45);
 	z-index: 10005;
 	padding: 2px;
+	scrollbar-width: thin;
+	scrollbar-color: #c0c0c0 #e0e0e0;
+	-webkit-overflow-scrolling: touch;
 }
 
 /* Ensure nested flyouts layer above their parent */
@@ -842,14 +851,64 @@ body.is-desktop-minimized #win95-desktop-screen {
 	z-index: 10010;
 }
 
+/* Authentic Windows 95 Scrollbars for Submenus & Menus */
+.win95-submenu::-webkit-scrollbar,
+.win95-start-menu::-webkit-scrollbar,
+.retro-menu-dropdown::-webkit-scrollbar {
+	width: 14px;
+	height: 14px;
+}
+
+.win95-submenu::-webkit-scrollbar-track,
+.win95-start-menu::-webkit-scrollbar-track,
+.retro-menu-dropdown::-webkit-scrollbar-track {
+	background: #e0e0e0;
+	border: 1px solid #808080;
+}
+
+.win95-submenu::-webkit-scrollbar-thumb,
+.win95-start-menu::-webkit-scrollbar-thumb,
+.retro-menu-dropdown::-webkit-scrollbar-thumb {
+	background: #c0c0c0;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	border-radius: 0;
+}
+
+.win95-submenu::-webkit-scrollbar-thumb:hover,
+.win95-start-menu::-webkit-scrollbar-thumb:hover,
+.retro-menu-dropdown::-webkit-scrollbar-thumb:hover {
+	background: #d4d4d4;
+}
+
+.win95-submenu::-webkit-scrollbar-thumb:active,
+.win95-start-menu::-webkit-scrollbar-thumb:active,
+.retro-menu-dropdown::-webkit-scrollbar-thumb:active {
+	background: #a0a0a0;
+	border-top: 2px solid #000000;
+	border-left: 2px solid #000000;
+	border-right: 2px solid #ffffff;
+	border-bottom: 2px solid #ffffff;
+}
+
 @media (max-width: 640px) {
+	.win95-start-menu {
+		max-height: calc(100vh - 44px);
+		overflow-y: auto;
+		overflow-x: hidden;
+		-webkit-overflow-scrolling: touch;
+	}
 	.win95-menu-parent > .win95-submenu {
 		left: 16px;
 		top: 100%;
 		max-width: 88vw;
+		max-height: 250px;
 		position: static;
 		box-shadow: none;
 		border-left: 3px solid #000080;
+		-webkit-overflow-scrolling: touch;
 	}
 }
 

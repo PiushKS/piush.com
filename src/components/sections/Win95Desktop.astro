@@ -1688,10 +1688,69 @@ Double-click "My Portfolio" or click the taskbar button below.
       });
     });
 
+    // Submenu dynamic positioning & scroll fitting
+    function positionSubmenu(parentEl: HTMLElement) {
+      if (window.innerWidth <= 640) return;
+      const submenu = parentEl.querySelector(':scope > .win95-submenu') as HTMLElement | null;
+      if (!submenu) return;
+
+      // Reset to natural metrics
+      submenu.style.top = '-4px';
+      submenu.style.bottom = 'auto';
+      submenu.style.left = '100%';
+      submenu.style.right = 'auto';
+
+      const triggerBtn = parentEl.querySelector('button');
+      const parentRect = triggerBtn ? triggerBtn.getBoundingClientRect() : parentEl.getBoundingClientRect();
+      const submenuRect = submenu.getBoundingClientRect();
+      const viewportH = window.innerHeight;
+      const viewportW = window.innerWidth;
+      const taskbarH = 38;
+
+      // 1. Vertical alignment: flip up if overflowing bottom
+      const wouldOverflowBottom = parentRect.top - 4 + submenuRect.height > viewportH - taskbarH;
+      if (wouldOverflowBottom) {
+        const spaceBelow = viewportH - taskbarH - parentRect.bottom;
+        const spaceAbove = parentRect.top;
+
+        if (spaceAbove > spaceBelow) {
+          submenu.style.top = 'auto';
+          submenu.style.bottom = '-4px';
+        }
+
+        // Clamp to top if it now overflows viewport top
+        const updatedRect = submenu.getBoundingClientRect();
+        if (updatedRect.top < 4) {
+          submenu.style.top = '4px';
+          submenu.style.bottom = 'auto';
+          submenu.style.maxHeight = `${Math.max(180, viewportH - taskbarH - 12)}px`;
+        }
+      }
+
+      // 2. Horizontal alignment: flip to left if overflowing right edge
+      if (parentRect.right + submenuRect.width > viewportW - 8) {
+        submenu.style.left = 'auto';
+        submenu.style.right = '100%';
+        submenu.style.boxShadow = '-4px 4px 0px rgba(0, 0, 0, 0.45)';
+      } else {
+        submenu.style.boxShadow = '4px 4px 0px rgba(0, 0, 0, 0.45)';
+      }
+    }
+
+    document.querySelectorAll('.win95-menu-parent').forEach((parent) => {
+      const parentEl = parent as HTMLElement;
+      parentEl.addEventListener('mouseenter', () => {
+        positionSubmenu(parentEl);
+      });
+      parentEl.addEventListener('focusin', () => {
+        positionSubmenu(parentEl);
+      });
+    });
+
     // Mobile touch handling for flyout submenus
     document.querySelectorAll('.win95-menu-parent > button').forEach((parentBtn) => {
       parentBtn.addEventListener('click', (e) => {
-        if (window.innerWidth < 640) {
+        if (window.innerWidth <= 640) {
           e.stopPropagation();
           const parent = parentBtn.parentElement;
           if (parent) {
