@@ -2,9 +2,13 @@
 import { SITE_TITLE } from '../../consts';
 import HeaderLink from './HeaderLink.astro';
 import Win95BootLoader from './Win95BootLoader.astro';
+import Win95Desktop from './Win95Desktop.astro';
 ---
 
 <header class="w-full select-none z-50 sticky top-0">
+  <!-- Windows 95 Desktop Screen (Revealed when window is closed / minimized) -->
+  <Win95Desktop />
+
   <!-- Windows 95 Boot Animation & Website Loader -->
   <Win95BootLoader />
 
@@ -33,6 +37,13 @@ import Win95BootLoader from './Win95BootLoader.astro';
 
       <!-- System Window Menu Dropdown (Top-Left) -->
       <div id="retro-system-menu-dropdown" class="retro-menu-dropdown hidden" role="menu" style="left: 0; top: calc(100% + 4px);">
+        <button type="button" class="retro-menu-item" data-action="minimize-desktop" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span class="text-sm">🗕</span>
+            <span>Minimize to Desktop</span>
+          </span>
+          <span class="retro-menu-shortcut">Win+M</span>
+        </button>
         <button type="button" class="retro-menu-item" data-action="toggle-fullscreen" role="menuitem">
           <span class="flex items-center gap-1.5">
             <span class="text-sm">⛶</span>
@@ -130,9 +141,10 @@ import Win95BootLoader from './Win95BootLoader.astro';
       <button
         type="button"
         class="retro-titlebar-btn"
-        aria-label="Minimize Window"
+        id="retro-minimize-btn"
+        aria-label="Minimize Window to Windows 95 Desktop"
         title="Minimize"
-        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        onclick="if (typeof window !== 'undefined' && window.minimizeToDesktop) { window.minimizeToDesktop(); }"
       >
         _
       </button>
@@ -148,9 +160,10 @@ import Win95BootLoader from './Win95BootLoader.astro';
       <button
         type="button"
         class="retro-titlebar-btn hover:bg-[#cc0000] hover:text-white"
-        aria-label="Close Window"
+        id="retro-close-btn"
+        aria-label="Close Window (Minimize to Windows 95 Desktop)"
         title="Close"
-        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        onclick="if (typeof window !== 'undefined' && window.minimizeToDesktop) { window.minimizeToDesktop(); }"
       >
         &#10005;
       </button>
@@ -191,6 +204,13 @@ import Win95BootLoader from './Win95BootLoader.astro';
 
         <!-- Dropdown Popup for Menubar Options Button -->
         <div id="retro-menubar-window-dropdown" class="retro-menu-dropdown hidden" role="menu" style="left: 0; top: calc(100% + 4px);">
+          <button type="button" class="retro-menu-item" data-action="minimize-desktop" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span class="text-sm">🗕</span>
+              <span>Minimize to Desktop</span>
+            </span>
+            <span class="retro-menu-shortcut">Win+M</span>
+          </button>
           <button type="button" class="retro-menu-item" data-action="toggle-fullscreen" role="menuitem">
             <span class="flex items-center gap-1.5">
               <span class="text-sm">⛶</span>
@@ -372,6 +392,9 @@ import Win95BootLoader from './Win95BootLoader.astro';
       <div class="text-[11px] font-bold text-gray-700 uppercase tracking-wider px-2 py-0.5">
         Website Options
       </div>
+      <button type="button" class="retro-menu-item !text-xs" data-action="minimize-desktop">
+        <span>🗕 Minimize to Desktop</span>
+      </button>
       <button type="button" class="retro-menu-item !text-xs" data-action="toggle-fullscreen">
         <span>⛶ Maximize / Fullscreen</span>
       </button>
@@ -645,6 +668,15 @@ import Win95BootLoader from './Win95BootLoader.astro';
     const mbBtn = document.getElementById('retro-menubar-window-btn');
     const mbDropdown = document.getElementById('retro-menubar-window-dropdown');
     const maxBtn = document.getElementById('retro-maximize-btn');
+    const minBtn = document.getElementById('retro-minimize-btn');
+    const closeBtn = document.getElementById('retro-close-btn');
+
+    minBtn?.addEventListener('click', () => {
+      (window as unknown as { minimizeToDesktop?: () => void }).minimizeToDesktop?.();
+    });
+    closeBtn?.addEventListener('click', () => {
+      (window as unknown as { minimizeToDesktop?: () => void }).minimizeToDesktop?.();
+    });
 
     function closeAllMenus() {
       if (sysDropdown && !sysDropdown.classList.contains('hidden')) {
@@ -733,6 +765,10 @@ import Win95BootLoader from './Win95BootLoader.astro';
         }
 
         switch (action) {
+          case 'minimize-desktop':
+            playRetroClick();
+            (window as unknown as { minimizeToDesktop?: () => void }).minimizeToDesktop?.();
+            break;
           case 'toggle-fullscreen':
             toggleFullscreen();
             break;
@@ -797,6 +833,10 @@ import Win95BootLoader from './Win95BootLoader.astro';
 
     // 6. About Dialog Controller
     const aboutDialog = document.getElementById('retro-about-dialog');
+    // Ensure aboutDialog is attached to body so it displays properly whether window is minimized or not
+    if (aboutDialog && aboutDialog.parentElement !== document.body) {
+      document.body.appendChild(aboutDialog);
+    }
     const aboutCloseBtn = document.getElementById('retro-about-close-btn');
     const aboutOkBtn = document.getElementById('retro-about-ok-btn');
 

@@ -1,0 +1,16 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' shape-rendering='crispEdges'>
+  <!-- Document Page with folded corner -->
+  <polygon points='6,3 21,3 26,8 26,29 6,29' fill='#ffffff' stroke='#000000' stroke-width='1'/>
+  <polygon points='21,3 21,8 26,8' fill='#c0c0c0' stroke='#000000' stroke-width='1'/>
+  
+  <!-- Text lines inside doc -->
+  <line x1='9' y1='10' x2='20' y2='10' stroke='#000080' stroke-width='1.5'/>
+  <line x1='9' y1='14' x2='23' y2='14' stroke='#808080' stroke-width='1'/>
+  <line x1='9' y1='17' x2='23' y2='17' stroke='#808080' stroke-width='1'/>
+  <line x1='9' y1='20' x2='21' y2='20' stroke='#808080' stroke-width='1'/>
+  <line x1='9' y1='23' x2='18' y2='23' stroke='#808080' stroke-width='1'/>
+  
+  <!-- Little blue pencil on bottom corner -->
+  <polygon points='19,25 28,16 29,17 20,26' fill='#ffff00' stroke='#000000' stroke-width='1'/>
+  <polygon points='18,27 20,26 19,25' fill='#ff0000'/>
+</svg>
