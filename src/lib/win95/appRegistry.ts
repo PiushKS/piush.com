@@ -45,6 +45,7 @@ import {
   renderScanDisk,
   renderDefrag,
   renderTaskManager,
+  renderSystemInfo,
 } from './apps/systemTools';
 import {
   renderRegexTester,
@@ -56,12 +57,14 @@ import {
   renderDiffChecker,
   renderMarkdownEditor,
   renderApiTester,
+  renderJsonToolkit,
 } from './apps/devTools';
 import {
   renderHyperTerminal,
   renderDialUpNetworking,
   renderNetworkNeighborhood,
   renderGuestbook,
+  renderInternetExplorer,
 } from './apps/communications';
 import {
   renderCalendar,
@@ -133,12 +136,14 @@ export const APPS: Record<string, AppDefinition> = {
   scandisk: { id: 'scandisk', title: 'ScanDisk', icon: '🖴', width: 460, height: 380, category: 'System Tools', render: renderScanDisk },
   defrag: { id: 'defrag', title: 'Disk Defragmenter', icon: '📊', width: 500, height: 380, category: 'System Tools', render: renderDefrag },
   taskmanager: { id: 'taskmanager', title: 'Task Manager', icon: '📋', width: 420, height: 360, category: 'System Tools', render: renderTaskManager },
+  sysinfo: { id: 'sysinfo', title: 'System Information', icon: 'ℹ️', width: 560, height: 420, category: 'System Tools', render: renderSystemInfo },
 
-  // Communications
+  // Communications & Internet
   hyperterminal: { id: 'hyperterminal', title: 'HyperTerminal', icon: '💻', width: 580, height: 400, category: 'Communications', render: renderHyperTerminal },
   dialup: { id: 'dialup', title: 'Dial-Up Networking', icon: '📠', width: 420, height: 340, category: 'Communications', render: renderDialUpNetworking },
   network: { id: 'network', title: 'Network Neighborhood', icon: '🌐', width: 520, height: 360, category: 'Communications', render: renderNetworkNeighborhood },
   guestbook: { id: 'guestbook', title: 'Guestbook', icon: '📖', width: 480, height: 400, category: 'Communications', render: renderGuestbook },
+  ie: { id: 'ie', title: 'The Microsoft Internet Explorer', icon: '🌐', width: 660, height: 480, category: 'Internet', render: renderInternetExplorer },
 
   // Productivity
   calendar: { id: 'calendar', title: 'Calendar', icon: '📅', width: 440, height: 420, category: 'Productivity', render: renderCalendar },
@@ -159,6 +164,7 @@ export const APPS: Record<string, AppDefinition> = {
   diff: { id: 'diff', title: 'Diff Checker', icon: '⚖️', width: 560, height: 440, category: 'Developer Tools', render: renderDiffChecker },
   markdown: { id: 'markdown', title: 'Markdown Editor', icon: '📝', width: 620, height: 460, category: 'Developer Tools', render: renderMarkdownEditor },
   apitester: { id: 'apitester', title: 'API Tester', icon: '📡', width: 540, height: 440, category: 'Developer Tools', render: renderApiTester },
+  jsontoolkit: { id: 'jsontoolkit', title: 'JSON Toolkit', icon: '✨', width: 540, height: 420, category: 'Developer Tools', render: renderJsonToolkit },
 
   // Accessibility
   accessibility: { id: 'accessibility', title: 'Accessibility Options', icon: '♿', width: 440, height: 380, category: 'Accessibility', render: renderAccessibilityOptions },
@@ -166,23 +172,50 @@ export const APPS: Record<string, AppDefinition> = {
   osk: { id: 'osk', title: 'On-Screen Keyboard', icon: '⌨️', width: 520, height: 260, category: 'Accessibility', render: renderOnScreenKeyboard },
 };
 
+const APP_ALIASES: Record<string, string> = {
+  calculator: 'calc',
+  dialer: 'phonedialer',
+  clipboard: 'clipbrd',
+  game2048: 't2048',
+  '2048': 't2048',
+  volumecontrol: 'volume',
+  resourcemonitor: 'taskmanager',
+  regextester: 'regex',
+  base64tool: 'base64',
+  urlcodec: 'url',
+  hashgen: 'hash',
+  uuidgen: 'uuid',
+  diffchecker: 'diff',
+  a11yoptions: 'accessibility',
+  diskproperties: 'explorer',
+  backup: 'explorer',
+  restore: 'explorer',
+  playground: 'markdown',
+  svgstudio: 'paint',
+  uidesignlab: 'calc',
+  colorstudio: 'paint',
+  appiconcreator: 'paint',
+};
+
 /**
  * Launch an application by its registered ID
  */
 export function launchApp(appId: string): Win95Window | null {
-  if (appId === 'highcontrast') {
+  const normId = appId.toLowerCase().trim();
+  if (normId === 'highcontrast') {
     toggleHighContrast();
     return null;
   }
 
-  const app = APPS[appId];
+  const resolvedId = APP_ALIASES[normId] || normId;
+  const app = APPS[resolvedId];
   if (!app) {
     console.warn(`Application "${appId}" not found in registry.`);
     return null;
   }
 
   // If already open and minimized, restore it
-  const existing = windowManager.getWindowByAppId(appId);
+  const existing = windowManager.getWindowByAppId(resolvedId);
   if (existing) {
     if (existing.isMinimized) existing.restore();
     existing.focus();

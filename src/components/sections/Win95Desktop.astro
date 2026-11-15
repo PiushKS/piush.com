@@ -4,9 +4,13 @@
 
 <div id="win95-desktop-screen" class="win95-desktop-screen" aria-hidden="true" role="region" aria-label="Windows 95 Desktop">
   <!-- Desktop Surface Area -->
-  <div class="flex-1 w-full p-3 sm:p-4 overflow-auto relative">
-    <!-- Desktop Icons Grid (Left column) -->
-    <div class="flex flex-col flex-wrap content-start gap-1 max-h-[calc(100vh-50px)]">
+  <div id="win95-desktop-surface" class="flex-1 w-full p-2 sm:p-4 overflow-auto relative select-none">
+    <!-- Drag Selection Marquee -->
+    <div id="win95-marquee" class="win95-marquee hidden"></div>
+
+    <!-- Desktop Icons Grid (Vertical columns flow from left) -->
+    <div id="win95-desktop-grid" class="flex flex-col flex-wrap content-start gap-1.5 max-h-[calc(100vh-50px)] max-w-full">
+      <!-- Column 1: System & Core Shell -->
       <!-- 1. My Computer -->
       <button
         type="button"
@@ -14,6 +18,8 @@
         id="d-icon-computer"
         title="My Computer (System Properties)"
         tabindex="0"
+        data-app="sysinfo"
+        data-name="My Computer"
       >
         <img
           src="/images/windows-95-computer.svg"
@@ -25,51 +31,15 @@
         <span class="win95-desktop-icon-label">My Computer</span>
       </button>
 
-      <!-- 2. My Portfolio (Piush KS) -->
-      <button
-        type="button"
-        class="win95-desktop-icon"
-        id="d-icon-portfolio"
-        title="Restore Portfolio Website"
-        tabindex="0"
-      >
-        <img
-          src="/images/windows-95-rocket.svg"
-          alt="My Portfolio"
-          width="36"
-          height="36"
-          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
-        />
-        <span class="win95-desktop-icon-label">My Portfolio</span>
-      </button>
-
-      <!-- 3. README.TXT (Notepad) -->
-      <button
-        type="button"
-        class="win95-desktop-icon"
-        id="d-icon-notepad"
-        title="Open README.TXT in Notepad"
-        tabindex="0"
-        data-app="notepad"
-      >
-        <img
-          src="/images/windows-95-notepad.svg"
-          alt="README.TXT"
-          width="36"
-          height="36"
-          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
-        />
-        <span class="win95-desktop-icon-label">README.TXT</span>
-      </button>
-
-      <!-- 4. Network Neighborhood -->
+      <!-- 2. Network Neighborhood -->
       <button
         type="button"
         class="win95-desktop-icon"
         id="d-icon-network"
-        title="Network Neighborhood (Socials & GitHub)"
+        title="Network Neighborhood (Remote Links & Socials)"
         tabindex="0"
         data-app="network"
+        data-name="Network Neighborhood"
       >
         <img
           src="/images/windows-95-network.svg"
@@ -81,13 +51,34 @@
         <span class="win95-desktop-icon-label">Network Neighborhood</span>
       </button>
 
-      <!-- 5. Recycle Bin -->
+      <!-- 3. The Internet (Internet Explorer) -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-ie"
+        title="The Internet (Internet Explorer)"
+        tabindex="0"
+        data-app="ie"
+        data-name="The Internet"
+      >
+        <img
+          src="/images/windows-95-ie.svg"
+          alt="The Internet"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">The Internet</span>
+      </button>
+
+      <!-- 4. Recycle Bin -->
       <button
         type="button"
         class="win95-desktop-icon"
         id="d-icon-recycle"
         title="Recycle Bin"
         tabindex="0"
+        data-name="Recycle Bin"
       >
         <img
           src="/images/windows-95-recycle-bin.svg"
@@ -99,12 +90,173 @@
         <span class="win95-desktop-icon-label">Recycle Bin</span>
       </button>
 
-      <!-- 6. Developer Quiz -->
+      <!-- 5. My Documents -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-documents"
+        title="My Documents"
+        tabindex="0"
+        data-app="explorer"
+        data-name="My Documents"
+      >
+        <img
+          src="/images/windows-95-folder.svg"
+          alt="My Documents"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">My Documents</span>
+      </button>
+
+      <!-- 6. The Microsoft Network (MSN) -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-msn"
+        title="The Microsoft Network"
+        tabindex="0"
+        data-app="ie"
+        data-name="The Microsoft Network"
+      >
+        <img
+          src="/images/windows-95-msn.svg"
+          alt="MSN"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">The Microsoft Network</span>
+      </button>
+
+      <!-- 7. Briefcase -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-briefcase"
+        title="My Briefcase"
+        tabindex="0"
+        data-app="explorer"
+        data-name="My Briefcase"
+      >
+        <img
+          src="/images/windows-95-briefcase.svg"
+          alt="My Briefcase"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">My Briefcase</span>
+      </button>
+
+      <!-- Column 2: Portfolio & Personal Documents -->
+      <!-- 8. My Portfolio (Piush KS) -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-portfolio"
+        title="Restore Portfolio Website"
+        tabindex="0"
+        data-name="My Portfolio"
+      >
+        <img
+          src="/images/windows-95-rocket.svg"
+          alt="My Portfolio"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">My Portfolio</span>
+      </button>
+
+      <!-- 9. README.TXT -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-notepad"
+        title="Open README.TXT"
+        tabindex="0"
+        data-app="notepad"
+        data-name="README.TXT"
+      >
+        <img
+          src="/images/windows-95-notepad.svg"
+          alt="README.TXT"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">README.TXT</span>
+      </button>
+
+      <!-- 10. ABOUT.TXT -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-about-txt"
+        title="Open ABOUT.TXT in Notepad"
+        tabindex="0"
+        data-app="notepad"
+        data-name="ABOUT.TXT"
+      >
+        <img
+          src="/images/windows-95-notepad.svg"
+          alt="ABOUT.TXT"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">ABOUT.TXT</span>
+      </button>
+
+      <!-- 11. Projects Shortcut -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-projects-lnk"
+        title="Projects Folder Shortcut"
+        tabindex="0"
+        data-app="explorer"
+        data-name="Projects.lnk"
+      >
+        <img
+          src="/images/windows-95-folder.svg"
+          alt="Projects.lnk"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Projects.lnk</span>
+      </button>
+
+      <!-- 12. Skills Document -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-skills-lnk"
+        title="Skills Resume in WordPad"
+        tabindex="0"
+        data-app="wordpad"
+        data-name="Skills.doc"
+      >
+        <img
+          src="/images/windows-95-wordpad.svg"
+          alt="Skills.doc"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Skills.doc</span>
+      </button>
+
+      <!-- 13. Developer Quiz -->
       <a
         href="/quiz/"
         class="win95-desktop-icon no-underline"
         id="d-icon-quiz"
         title="Open Developer Quiz (550 Questions)"
+        data-name="Quiz.exe"
       >
         <div class="size-9 bg-[#000080] border border-black flex items-center justify-center text-white text-lg font-bold drop-shadow-[1px_1px_0px_#000000]">
           ⚡
@@ -112,12 +264,13 @@
         <span class="win95-desktop-icon-label">Quiz.exe</span>
       </a>
 
-      <!-- 7. Dev Tools -->
+      <!-- 14. Dev Tools -->
       <a
         href="/tools/"
         class="win95-desktop-icon no-underline"
         id="d-icon-tools"
         title="Open Developer Tools"
+        data-name="Tools.exe"
       >
         <div class="size-9 bg-[#800080] border border-black flex items-center justify-center text-white text-lg font-bold drop-shadow-[1px_1px_0px_#000000]">
           🛠️
@@ -125,7 +278,8 @@
         <span class="win95-desktop-icon-label">Tools.exe</span>
       </a>
 
-      <!-- 8. MS-DOS Prompt -->
+      <!-- Column 3: Productivity, Utilities & Accessories -->
+      <!-- 15. MS-DOS Prompt -->
       <button
         type="button"
         class="win95-desktop-icon"
@@ -133,59 +287,119 @@
         title="MS-DOS Prompt"
         tabindex="0"
         data-app="dos"
+        data-name="MS-DOS Prompt"
       >
-        <div class="size-9 bg-black border border-white flex items-center justify-center text-[#00ff00] text-sm font-bold font-mono drop-shadow-[1px_1px_0px_#000000]">
-          C:\&gt;
-        </div>
+        <img
+          src="/images/windows-95-dos.svg"
+          alt="MS-DOS Prompt"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
         <span class="win95-desktop-icon-label">MS-DOS Prompt</span>
       </button>
 
-      <!-- 9. 3D Pinball -->
+      <!-- 16. Notepad -->
       <button
         type="button"
         class="win95-desktop-icon"
-        id="d-icon-pinball"
-        title="3D Pinball - Space Cadet"
+        id="d-icon-app-notepad"
+        title="Notepad Text Editor"
         tabindex="0"
-        data-app="pinball"
+        data-app="notepad"
+        data-name="Notepad"
       >
-        <div class="size-9 bg-[#111133] border border-blue-400 flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
-          🚀
-        </div>
-        <span class="win95-desktop-icon-label">Pinball.exe</span>
+        <img
+          src="/images/windows-95-notepad.svg"
+          alt="Notepad"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Notepad</span>
       </button>
 
-      <!-- 10. Minesweeper -->
+      <!-- 17. WordPad -->
       <button
         type="button"
         class="win95-desktop-icon"
-        id="d-icon-minesweeper"
-        title="Minesweeper"
+        id="d-icon-wordpad"
+        title="WordPad Rich Text Editor"
         tabindex="0"
-        data-app="minesweeper"
+        data-app="wordpad"
+        data-name="WordPad"
       >
-        <div class="size-9 bg-[#c0c0c0] border border-black flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
-          💣
-        </div>
-        <span class="win95-desktop-icon-label">Minesweeper</span>
+        <img
+          src="/images/windows-95-wordpad.svg"
+          alt="WordPad"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">WordPad</span>
       </button>
 
-      <!-- 11. Paint -->
+      <!-- 18. Paint -->
       <button
         type="button"
         class="win95-desktop-icon"
         id="d-icon-paint"
-        title="Paint"
+        title="Paint Graphics Editor"
         tabindex="0"
         data-app="paint"
+        data-name="Paint"
       >
-        <div class="size-9 bg-[#fff0f5] border border-black flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
-          🎨
-        </div>
-        <span class="win95-desktop-icon-label">Paint.exe</span>
+        <img
+          src="/images/windows-95-paint.svg"
+          alt="Paint"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Paint</span>
       </button>
 
-      <!-- 12. Media Player -->
+      <!-- 19. Calculator -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-calc"
+        title="Calculator"
+        tabindex="0"
+        data-app="calculator"
+        data-name="Calculator"
+      >
+        <img
+          src="/images/windows-95-calc.svg"
+          alt="Calculator"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Calculator</span>
+      </button>
+
+      <!-- 20. Control Panel -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-control"
+        title="Control Panel"
+        tabindex="0"
+        data-app="controlpanel"
+        data-name="Control Panel"
+      >
+        <img
+          src="/images/windows-95-control-panel.svg"
+          alt="Control Panel"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Control Panel</span>
+      </button>
+
+      <!-- 21. Media Player -->
       <button
         type="button"
         class="win95-desktop-icon"
@@ -193,16 +407,122 @@
         title="Media Player"
         tabindex="0"
         data-app="mediaplayer"
+        data-name="Media Player"
       >
-        <div class="size-9 bg-[#222222] border border-gray-400 flex items-center justify-center text-xl drop-shadow-[1px_1px_0px_#000000]">
-          📼
-        </div>
+        <img
+          src="/images/windows-95-media-player.svg"
+          alt="Media Player"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
         <span class="win95-desktop-icon-label">Media Player</span>
+      </button>
+
+      <!-- Column 4: Classic Games -->
+      <!-- 22. 3D Pinball -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-pinball"
+        title="3D Pinball - Space Cadet"
+        tabindex="0"
+        data-app="pinball"
+        data-name="3D Pinball"
+      >
+        <img
+          src="/images/windows-95-pinball.svg"
+          alt="3D Pinball"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">3D Pinball</span>
+      </button>
+
+      <!-- 23. Minesweeper -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-minesweeper"
+        title="Minesweeper"
+        tabindex="0"
+        data-app="minesweeper"
+        data-name="Minesweeper"
+      >
+        <img
+          src="/images/windows-95-mine.svg"
+          alt="Minesweeper"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Minesweeper</span>
+      </button>
+
+      <!-- 24. Solitaire -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-solitaire"
+        title="Solitaire"
+        tabindex="0"
+        data-app="solitaire"
+        data-name="Solitaire"
+      >
+        <img
+          src="/images/windows-95-solitaire.svg"
+          alt="Solitaire"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Solitaire</span>
+      </button>
+
+      <!-- 25. FreeCell -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-freecell"
+        title="FreeCell"
+        tabindex="0"
+        data-app="freecell"
+        data-name="FreeCell"
+      >
+        <img
+          src="/images/windows-95-freecell.svg"
+          alt="FreeCell"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">FreeCell</span>
+      </button>
+
+      <!-- 26. Hearts -->
+      <button
+        type="button"
+        class="win95-desktop-icon"
+        id="d-icon-hearts"
+        title="Hearts"
+        tabindex="0"
+        data-app="hearts"
+        data-name="Hearts"
+      >
+        <img
+          src="/images/windows-95-hearts.svg"
+          alt="Hearts"
+          width="36"
+          height="36"
+          class="size-9 shrink-0 [image-rendering:pixelated] drop-shadow-[1px_1px_0px_#000000]"
+        />
+        <span class="win95-desktop-icon-label">Hearts</span>
       </button>
     </div>
 
     <!-- Desktop Floating Helper Bubble -->
-    <div class="absolute top-4 right-4 max-w-xs bg-[#ffffcc] border-2 border-black p-2.5 shadow-[4px_4px_0px_#000000] text-black font-mono text-xs hidden sm:block">
+    <div class="absolute top-4 right-4 max-w-xs bg-[#ffffcc] border-2 border-black p-2.5 shadow-[4px_4px_0px_#000000] text-black font-mono text-xs hidden sm:block pointer-events-auto z-20">
       <div class="font-bold flex items-center gap-1.5 pb-1 border-b border-black/40">
         <span>💡 Windows 95 Desktop</span>
       </div>
@@ -325,7 +645,7 @@ Double-click "My Portfolio" or click the taskbar button below.
   </div>
 
   <!-- Windows 95 Classic Taskbar -->
-  <footer class="win95-taskbar relative">
+  <footer id="win95-taskbar" class="win95-taskbar relative select-none">
     <!-- Left: Start Button -->
     <div class="flex items-center gap-1.5 shrink-0">
       <button
@@ -364,9 +684,30 @@ Double-click "My Portfolio" or click the taskbar button below.
     <!-- Right: System Tray (Volume & Clock) -->
     <div class="flex items-center gap-1 shrink-0 ml-auto">
       <div class="retro-inset px-2 py-0.5 bg-[#c0c0c0] text-[11px] font-mono font-bold text-black flex items-center gap-1.5">
-        <span title="Audio On" class="cursor-pointer" id="win95-tray-audio">🔊</span>
+        <span title="Adjust Volume" class="cursor-pointer hover:bg-black/10 px-0.5" id="win95-tray-audio">🔊</span>
         <span id="win95-taskbar-clock">--:--:--</span>
       </div>
+    </div>
+
+    <!-- Volume Popup Slider -->
+    <div id="win95-volume-popup" class="win95-volume-popup hidden">
+      <div class="text-[10px] font-bold text-gray-800 pb-1 border-b border-gray-400 mb-2">Volume</div>
+      <div class="h-28 flex items-center justify-center">
+        <input
+          type="range"
+          id="win95-volume-slider"
+          min="0"
+          max="100"
+          value="80"
+          class="h-24 [writing-mode:bt-lr] [-webkit-appearance:slider-vertical] cursor-pointer"
+          title="Master Volume"
+        />
+      </div>
+      <div id="win95-volume-label" class="text-[10px] font-bold my-1">80%</div>
+      <label class="flex items-center justify-center gap-1 text-[10px] cursor-pointer mt-1">
+        <input type="checkbox" id="win95-volume-mute" />
+        <span>Mute</span>
+      </label>
     </div>
 
     <!-- Windows 95 Start Menu Dropup Popup (Hierarchical Flyout) -->
@@ -382,7 +723,7 @@ Double-click "My Portfolio" or click the taskbar button below.
             <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between" role="menuitem">
               <span class="flex items-center gap-2">
                 <span>📁</span>
-                <span class="font-bold">Programs</span>
+                <span>Programs</span>
               </span>
               <span class="text-[10px]">▶</span>
             </button>
@@ -397,132 +738,133 @@ Double-click "My Portfolio" or click the taskbar button below.
                   <button type="button" class="retro-menu-item !py-1" data-app="notepad"><span>📝 Notepad</span></button>
                   <button type="button" class="retro-menu-item !py-1" data-app="wordpad"><span>📄 WordPad</span></button>
                   <button type="button" class="retro-menu-item !py-1" data-app="paint"><span>🎨 Paint</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="calc"><span>🧮 Calculator</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="charmap"><span>🔤 Character Map</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="clipbrd"><span>📋 Clipboard Viewer</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="calculator"><span>🔢 Calculator</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="charmap"><span>🔡 Character Map</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="clipboard"><span>📋 Clipboard Viewer</span></button>
                   <button type="button" class="retro-menu-item !py-1" data-app="addressbook"><span>📇 Address Book</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="phonedialer"><span>☎️ Phone Dialer</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="dialer"><span>☎️ Phone Dialer</span></button>
+                </div>
+              </div>
 
+              <!-- Games ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>🎮</span><span>Games</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" data-app="minesweeper"><span>💣 Minesweeper</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="solitaire"><span>🃏 Solitaire</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="freecell"><span>♠️ FreeCell</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="hearts"><span>♥️ Hearts</span></button>
                   <div class="retro-menu-separator"></div>
-
-                  <!-- Games ▶ -->
+                  <!-- Bonus Games ▶ -->
                   <div class="win95-menu-parent">
                     <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
-                      <span class="flex items-center gap-2"><span>🕹️</span><span>Games</span></span>
+                      <span class="flex items-center gap-2"><span>🕹️</span><span>Bonus Games</span></span>
                       <span class="text-[10px]">▶</span>
                     </button>
                     <div class="win95-submenu" role="menu">
-                      <button type="button" class="retro-menu-item !py-1" data-app="minesweeper"><span>💣 Minesweeper</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="solitaire"><span>🃏 Solitaire</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="freecell"><span>🎴 FreeCell</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="hearts"><span>♥️ Hearts</span></button>
-                      <div class="retro-menu-separator"></div>
-                      <!-- Bonus Games ▶ -->
-                      <div class="win95-menu-parent">
-                        <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
-                          <span class="flex items-center gap-2"><span>⭐</span><span>Bonus Games</span></span>
-                          <span class="text-[10px]">▶</span>
-                        </button>
-                        <div class="win95-submenu" role="menu">
-                          <button type="button" class="retro-menu-item !py-1" data-app="pinball"><span>🚀 3D Pinball</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="snake"><span>🐍 Snake</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="chess"><span>♟️ Chess</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="brickbreaker"><span>🧱 Brick Breaker</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="spacedefender"><span>👾 Space Defender</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="tictactoe"><span>❌ Tic-Tac-Toe</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="memorymatch"><span>🧠 Memory Match</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="reversi"><span>⚪ Reversi</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="t2048"><span>🔢 2048</span></button>
-                          <button type="button" class="retro-menu-item !py-1" data-app="fallingblocks"><span>🧊 Falling Blocks</span></button>
-                        </div>
-                      </div>
+                      <button type="button" class="retro-menu-item !py-1" data-app="pinball"><span>🚀 3D Pinball</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="snake"><span>🐍 Snake</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="chess"><span>♟️ Chess</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="brickbreaker"><span>🧱 Brick Breaker</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="spacedefender"><span>👾 Space Defender</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="tictactoe"><span>❌ Tic-Tac-Toe</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="memorymatch"><span>🎴 Memory Match</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="reversi"><span>⚪ Reversi</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="game2048"><span>🔢 2048</span></button>
+                      <button type="button" class="retro-menu-item !py-1" data-app="fallingblocks"><span>🧩 Falling Blocks</span></button>
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  <!-- Multimedia ▶ -->
-                  <div class="win95-menu-parent">
-                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
-                      <span class="flex items-center gap-2"><span>📼</span><span>Multimedia</span></span>
-                      <span class="text-[10px]">▶</span>
-                    </button>
-                    <div class="win95-submenu" role="menu">
-                      <button type="button" class="retro-menu-item !py-1" data-app="mediaplayer"><span>📼 Media Player</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="cdplayer"><span>💿 CD Player</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="soundrecorder"><span>🎙️ Sound Recorder</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="volume"><span>🔊 Volume Control</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="imageviewer"><span>🖼️ Image Viewer</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="midiplayer"><span>🎵 MIDI Player</span></button>
-                    </div>
-                  </div>
+              <!-- Multimedia ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>📼</span><span>Multimedia</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" data-app="mediaplayer"><span>📼 Media Player</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="cdplayer"><span>💿 CD Player</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="soundrecorder"><span>🎙️ Sound Recorder</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="volumecontrol"><span>🔊 Volume Control</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="imageviewer"><span>🖼️ Image Viewer</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="midiplayer"><span>🎹 MIDI Player</span></button>
+                </div>
+              </div>
 
-                  <!-- System Tools ▶ -->
-                  <div class="win95-menu-parent">
-                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
-                      <span class="flex items-center gap-2"><span>🛠️</span><span>System Tools</span></span>
-                      <span class="text-[10px]">▶</span>
-                    </button>
-                    <div class="win95-submenu" role="menu">
-                      <button type="button" class="retro-menu-item !py-1" data-app="controlpanel"><span>⚙️ Control Panel</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="scandisk"><span>🔍 ScanDisk</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="defrag"><span>📊 Disk Defragmenter</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="taskmanager"><span>📋 Task Manager</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="explorer"><span>🗂️ File Manager</span></button>
-                    </div>
-                  </div>
+              <!-- System Tools ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>🔧</span><span>System Tools</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" data-app="sysinfo"><span>ℹ️ System Information</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="diskproperties"><span>💾 Disk Properties</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="scandisk"><span>🩺 ScanDisk</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="defrag"><span>🗂️ Disk Defragmenter</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="backup"><span>📦 Backup</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="restore"><span>📥 Restore</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="resourcemonitor"><span>📊 Resource Monitor</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="explorer"><span>🗂️ File Manager</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="taskmanager"><span>⚡ Task Manager</span></button>
+                </div>
+              </div>
 
-                  <!-- Communications ▶ -->
-                  <div class="win95-menu-parent">
-                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
-                      <span class="flex items-center gap-2"><span>📠</span><span>Communications</span></span>
-                      <span class="text-[10px]">▶</span>
-                    </button>
-                    <div class="win95-submenu" role="menu">
-                      <button type="button" class="retro-menu-item !py-1" data-app="hyperterminal"><span>💻 HyperTerminal</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="dialup"><span>📠 Dial-Up Networking</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="network"><span>🌐 Network Neighborhood</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="phonedialer"><span>☎️ Phone Dialer</span></button>
-                    </div>
-                  </div>
+              <!-- Communications ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>📡</span><span>Communications</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" data-app="hyperterminal"><span>📟 HyperTerminal</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="dialup"><span>📞 Dial-Up Networking</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="network"><span>🌐 Network Neighborhood</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="dialer"><span>☎️ Phone Dialer</span></button>
+                </div>
+              </div>
 
-                  <!-- Accessibility ▶ -->
-                  <div class="win95-menu-parent">
-                    <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
-                      <span class="flex items-center gap-2"><span>♿</span><span>Accessibility</span></span>
-                      <span class="text-[10px]">▶</span>
-                    </button>
-                    <div class="win95-submenu" role="menu">
-                      <button type="button" class="retro-menu-item !py-1" data-app="accessibility"><span>♿ Accessibility Options</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="magnifier"><span>🔎 Magnifier</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="osk"><span>⌨️ On-Screen Keyboard</span></button>
-                      <button type="button" class="retro-menu-item !py-1" data-app="highcontrast"><span>🌓 High Contrast</span></button>
-                    </div>
-                  </div>
+              <!-- Accessibility ▶ -->
+              <div class="win95-menu-parent">
+                <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
+                  <span class="flex items-center gap-2"><span>♿</span><span>Accessibility</span></span>
+                  <span class="text-[10px]">▶</span>
+                </button>
+                <div class="win95-submenu" role="menu">
+                  <button type="button" class="retro-menu-item !py-1" data-app="a11yoptions"><span>⚙️ Accessibility Options</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="magnifier"><span>🔍 Magnifier</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="osk"><span>⌨️ On-Screen Keyboard</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="highcontrast"><span>👁️ High Contrast</span></button>
                 </div>
               </div>
 
               <!-- Developer Tools ▶ -->
               <div class="win95-menu-parent">
                 <button type="button" class="retro-menu-item !py-1 w-full flex items-center justify-between">
-                  <span class="flex items-center gap-2"><span>⚡</span><span>Developer Tools</span></span>
+                  <span class="flex items-center gap-2"><span>🛠️</span><span>Developer Tools</span></span>
                   <span class="text-[10px]">▶</span>
                 </button>
                 <div class="win95-submenu" role="menu">
-                  <a href="/tools/" class="retro-menu-item !py-1 text-black no-underline"><span>🛠️ All Developer Tools</span></a>
-                  <a href="/tools/json/" class="retro-menu-item !py-1 text-black no-underline"><span>📋 JSON Toolkit</span></a>
-                  <a href="/tools/playground/" class="retro-menu-item !py-1 text-black no-underline"><span>▶️ Code Playground</span></a>
-                  <a href="/tools/svg/" class="retro-menu-item !py-1 text-black no-underline"><span>🎨 SVG Studio</span></a>
-                  <a href="/tools/ui/" class="retro-menu-item !py-1 text-black no-underline"><span>🧪 UI Design Lab</span></a>
-                  <a href="/tools/colors/" class="retro-menu-item !py-1 text-black no-underline"><span>🌈 Color Studio</span></a>
-                  <div class="retro-menu-separator"></div>
-                  <button type="button" class="retro-menu-item !py-1" data-app="regex"><span>🔣 Regex Tester</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="base64"><span>🔐 Base64 Tool</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="url"><span>🔗 URL Encoder/Decoder</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="hash"><span>🔑 Hash Generator</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="uuid"><span>🏷️ UUID Generator</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="jsontoolkit"><span>{ } JSON Toolkit</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="playground"><span>💻 Code Playground</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="svgstudio"><span>📐 SVG Studio</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="uidesignlab"><span>🧪 UI Design Lab</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="colorstudio"><span>🎨 Color Studio</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="appiconcreator"><span>🖼️ App Icon Creator</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="regextester"><span>.* Regex Tester</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="base64"><span>🔤 Base64 Encoder/Decoder</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="urlcodec"><span>🔗 URL Encoder/Decoder</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="hashgen"><span>🔑 Hash Generator</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="uuidgen"><span>🆔 UUID Generator</span></button>
                   <button type="button" class="retro-menu-item !py-1" data-app="timestamp"><span>⏱️ Timestamp Converter</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="diff"><span>⚖️ Diff Checker</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="markdown"><span>📝 Markdown Editor</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="apitester"><span>📡 API Tester</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="diffchecker"><span>⚖️ Diff Checker</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="markdown"><span>📑 Markdown Editor</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="apitester"><span>🌐 API Tester</span></button>
                 </div>
               </div>
 
@@ -533,9 +875,11 @@ Double-click "My Portfolio" or click the taskbar button below.
                   <span class="text-[10px]">▶</span>
                 </button>
                 <div class="win95-submenu" role="menu">
-                  <button type="button" class="retro-menu-item !py-1" id="sm-internet-restore"><span>🌐 Internet Explorer</span></button>
-                  <button type="button" class="retro-menu-item !py-1" data-app="guestbook"><span>📖 Web Guestbook</span></button>
-                  <a href="https://github.com/piushks" target="_blank" rel="noopener noreferrer" class="retro-menu-item !py-1 text-black no-underline"><span>⭐ GitHub Profile</span></a>
+                  <button type="button" class="retro-menu-item !py-1" data-app="ie"><span>🌐 Internet Explorer</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="network"><span>⭐ Favorites</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="network"><span>⚙️ Internet Options</span></button>
+                  <button type="button" class="retro-menu-item !py-1" data-app="guestbook"><span>📖 Guestbook</span></button>
+                  <button type="button" class="retro-menu-item !py-1" id="sm-internet-restore"><span>🗖 Restore Piush KS Portfolio</span></button>
                 </div>
               </div>
 
@@ -609,6 +953,7 @@ Double-click "My Portfolio" or click the taskbar button below.
             </button>
             <div class="win95-submenu" role="menu">
               <button type="button" class="retro-menu-item !py-1" data-app="controlpanel"><span>⚙️ Control Panel</span></button>
+              <button type="button" class="retro-menu-item !py-1" id="sm-settings-display"><span>🖥️ Display Properties</span></button>
               <button type="button" class="retro-menu-item !py-1" id="sm-settings-sysinfo"><span>ℹ️ System Properties</span></button>
             </div>
           </div>
@@ -645,167 +990,657 @@ Double-click "My Portfolio" or click the taskbar button below.
           </button>
         </div>
 
-        <div class="pt-1 border-t border-black/40">
+        <div class="pt-1 border-t border-black/40 space-y-0.5">
+          <button type="button" class="retro-menu-item !py-1 text-blue-900 font-bold" id="sm-quick-restore" role="menuitem">
+            <span class="flex items-center gap-2">
+              <span>🗖</span>
+              <span>Restore Website</span>
+            </span>
+          </button>
           <button type="button" class="retro-menu-item !py-1 text-red-900 font-bold" id="sm-shutdown" role="menuitem">
             <span class="flex items-center gap-2">
               <span>🛑</span>
-              <span>Restore Website</span>
+              <span>Shut Down...</span>
             </span>
           </button>
         </div>
       </div>
     </div>
   </footer>
+
+  <!-- Context Menu: Desktop Background -->
+  <div id="win95-desktop-ctx-menu" class="win95-context-menu hidden">
+    <button type="button" class="win95-context-menu-item" id="ctx-d-arrange">
+      <span>Arrange Icons</span>
+      <span class="text-[9px]">▶</span>
+    </button>
+    <button type="button" class="win95-context-menu-item" id="ctx-d-lineup">Line up Icons</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item" id="ctx-d-refresh">Refresh</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item is-disabled" disabled>Paste</button>
+    <button type="button" class="win95-context-menu-item is-disabled" disabled>Paste Shortcut</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item" id="ctx-d-new-folder">New Folder</button>
+    <button type="button" class="win95-context-menu-item" id="ctx-d-new-txt">New Text Document</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item font-bold" id="ctx-d-properties">Properties</button>
+  </div>
+
+  <!-- Context Menu: Desktop Icon -->
+  <div id="win95-icon-ctx-menu" class="win95-context-menu hidden">
+    <button type="button" class="win95-context-menu-item font-bold" id="ctx-i-open">Open</button>
+    <button type="button" class="win95-context-menu-item" id="ctx-i-explore">Explore</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item" id="ctx-i-shortcut">Create Shortcut</button>
+    <button type="button" class="win95-context-menu-item" id="ctx-i-delete">Delete</button>
+    <button type="button" class="win95-context-menu-item" id="ctx-i-rename">Rename</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item" id="ctx-i-properties">Properties</button>
+  </div>
+
+  <!-- Context Menu: Taskbar -->
+  <div id="win95-taskbar-ctx-menu" class="win95-context-menu hidden">
+    <button type="button" class="win95-context-menu-item" id="ctx-t-cascade">Cascade Windows</button>
+    <button type="button" class="win95-context-menu-item" id="ctx-t-tile-h">Tile Windows Horizontally</button>
+    <button type="button" class="win95-context-menu-item" id="ctx-t-tile-v">Tile Windows Vertically</button>
+    <button type="button" class="win95-context-menu-item" id="ctx-t-minimize-all">Minimize All Windows</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item font-bold" id="ctx-t-taskmgr">Task Manager</button>
+    <div class="win95-context-menu-separator"></div>
+    <button type="button" class="win95-context-menu-item" id="ctx-t-properties">Properties</button>
+  </div>
+
+  <!-- Modal Dialog: Display Properties -->
+  <div id="win95-display-props-dialog" class="retro-dialog-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="retro-dialog-window !w-[92vw] !max-w-[420px]">
+      <div class="retro-titlebar !h-7 !min-h-[28px] !px-2 flex items-center justify-between">
+        <span class="font-mono font-bold text-xs text-white">Display Properties</span>
+        <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="display-props-close">&#10005;</button>
+      </div>
+
+      <div class="p-3 bg-[#c0c0c0] text-black font-mono text-xs">
+        <!-- Tabs Header -->
+        <div class="flex gap-1 border-b border-white pb-0 mb-3">
+          <button type="button" class="display-tab-btn retro-dialog-tab is-active" data-tab="background">Background</button>
+          <button type="button" class="display-tab-btn retro-dialog-tab" data-tab="screensaver">Screen Saver</button>
+          <button type="button" class="display-tab-btn retro-dialog-tab" data-tab="appearance">Appearance</button>
+        </div>
+
+        <!-- Tab 1: Background -->
+        <div id="tab-content-background" class="space-y-3">
+          <!-- CRT Monitor Preview Box -->
+          <div class="flex justify-center">
+            <div class="relative w-44 h-36 bg-[#808080] border-4 border-[#c0c0c0] shadow-[inset_2px_2px_0px_#000000] p-2 flex flex-col items-center justify-center rounded-sm">
+              <div id="display-preview-screen" class="w-36 h-24 border-2 border-black overflow-hidden relative shadow-[inset_1px_1px_0px_#000000] bg-[#008080] flex items-center justify-center">
+                <div class="absolute top-1 left-1 flex flex-col gap-1 scale-75 origin-top-left opacity-90">
+                  <div class="w-3 h-3 bg-[#ffd700] border border-black"></div>
+                  <div class="w-3 h-3 bg-[#3498db] border border-black"></div>
+                </div>
+                <span id="display-preview-label" class="text-[9px] text-white/80 font-bold drop-shadow-[1px_1px_0px_#000000]">Piush 95</span>
+              </div>
+              <div class="w-10 h-2 bg-[#a0a0a0] mt-1 border-t border-black/40"></div>
+              <div class="w-20 h-1.5 bg-[#808080] border-t border-white"></div>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="font-bold text-[11px] block">Wallpaper Selection:</label>
+            <div class="retro-inset p-1 bg-white h-24 overflow-y-auto space-y-0.5" id="display-wallpaper-list">
+              <button type="button" class="wallpaper-opt-btn w-full text-left px-2 py-0.5 hover:bg-[#000080] hover:text-white" data-wp="teal">Teal Classic (Default)</button>
+              <button type="button" class="wallpaper-opt-btn w-full text-left px-2 py-0.5 hover:bg-[#000080] hover:text-white" data-wp="clouds">Windows 95 Clouds</button>
+              <button type="button" class="wallpaper-opt-btn w-full text-left px-2 py-0.5 hover:bg-[#000080] hover:text-white" data-wp="matrix">Matrix Cyber Grid</button>
+              <button type="button" class="wallpaper-opt-btn w-full text-left px-2 py-0.5 hover:bg-[#000080] hover:text-white" data-wp="stars">Retro Starfield</button>
+              <button type="button" class="wallpaper-opt-btn w-full text-left px-2 py-0.5 hover:bg-[#000080] hover:text-white" data-wp="grid">Retro Cyan Blueprint</button>
+              <button type="button" class="wallpaper-opt-btn w-full text-left px-2 py-0.5 hover:bg-[#000080] hover:text-white" data-wp="custom">Paint Custom Canvas</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Screen Saver -->
+        <div id="tab-content-screensaver" class="space-y-3 hidden">
+          <div class="flex justify-center">
+            <div class="relative w-44 h-36 bg-[#808080] border-4 border-[#c0c0c0] shadow-[inset_2px_2px_0px_#000000] p-2 flex flex-col items-center justify-center rounded-sm">
+              <div class="w-36 h-24 border-2 border-black bg-black flex items-center justify-center text-white text-xs">
+                <span>✨ Starfield</span>
+              </div>
+              <div class="w-10 h-2 bg-[#a0a0a0] mt-1 border-t border-black/40"></div>
+              <div class="w-20 h-1.5 bg-[#808080] border-t border-white"></div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="font-bold text-[11px] block">Screen Saver:</label>
+            <select id="display-saver-select" class="w-full retro-inset p-1 bg-white text-black text-xs font-mono">
+              <option value="starfield">3D Starfield Simulation</option>
+              <option value="flyingwin">Flying Windows 95</option>
+              <option value="matrix">Matrix Code Stream</option>
+              <option value="blank">Blank Screen</option>
+            </select>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px]">Wait: 5 minutes</span>
+              <button type="button" class="retro-btn !py-0.5 !px-3 !text-xs font-bold" id="display-saver-preview-btn">
+                Preview
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Appearance -->
+        <div id="tab-content-appearance" class="space-y-3 hidden">
+          <div class="retro-inset p-2 bg-[#000080] text-white text-xs font-bold flex justify-between items-center">
+            <span>Active Window Title</span>
+            <span class="text-[10px]">&#10005;</span>
+          </div>
+          <div class="retro-inset p-2.5 bg-white text-black text-xs">
+            Window Text & Content Area
+          </div>
+          <div class="space-y-1">
+            <label class="font-bold text-[11px] block">Color Scheme:</label>
+            <select id="display-scheme-select" class="w-full retro-inset p-1 bg-white text-black text-xs font-mono">
+              <option value="standard">Windows Standard (Classic Gray)</option>
+              <option value="highcontrast">High Contrast #1</option>
+              <option value="slate">Slate Gray</option>
+              <option value="teal">Teal Classic</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dialog Buttons -->
+        <div class="flex justify-end gap-2 pt-3 border-t border-white/60 mt-3">
+          <button type="button" class="retro-btn !py-0.5 !px-4 !text-xs font-bold" id="display-props-ok">OK</button>
+          <button type="button" class="retro-btn !py-0.5 !px-3 !text-xs" id="display-props-cancel">Cancel</button>
+          <button type="button" class="retro-btn !py-0.5 !px-3 !text-xs" id="display-props-apply">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dialog: Shut Down Windows -->
+  <div id="win95-shutdown-dialog" class="retro-dialog-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="retro-dialog-window !w-[92vw] !max-w-[360px]">
+      <div class="retro-titlebar !h-7 !min-h-[28px] !px-2 flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-xs text-white">
+          <span>🛑</span>
+          <span>Shut Down Windows</span>
+        </div>
+        <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="shutdown-dialog-close">&#10005;</button>
+      </div>
+
+      <div class="p-3 sm:p-4 bg-[#c0c0c0] text-black font-mono text-xs space-y-3">
+        <div class="flex items-start gap-3">
+          <img src="/images/windows-95-computer.svg" alt="Computer" width="36" height="36" class="shrink-0 size-9 [image-rendering:pixelated]" />
+          <div>
+            <p class="font-bold text-gray-900">What do you want the computer to do?</p>
+            <div class="mt-2 space-y-1.5 text-[11px]">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="win95-shutdown-action" value="shutdown" checked />
+                <span>Shut down the computer?</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="win95-shutdown-action" value="restart" />
+                <span>Restart the computer?</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="win95-shutdown-action" value="dos" />
+                <span>Restart in MS-DOS mode?</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="win95-shutdown-action" value="restore" />
+                <span>Return to Piush KS Portfolio Website</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-white">
+          <button type="button" class="retro-btn !py-0.5 !px-5 !text-xs font-bold" id="shutdown-btn-yes">Yes</button>
+          <button type="button" class="retro-btn !py-0.5 !px-4 !text-xs" id="shutdown-btn-no">No</button>
+          <button type="button" class="retro-btn !py-0.5 !px-3 !text-xs" id="shutdown-btn-help">Help</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen Saver Fullscreen Canvas Overlay -->
+  <div id="win95-screensaver-screen" class="win95-screensaver hidden">
+    <canvas id="win95-screensaver-canvas" class="w-full h-full"></canvas>
+  </div>
+
+  <!-- Authentic Windows 95 Safe to Turn Off Screen -->
+  <div id="win95-safe-off-screen" class="fixed inset-0 bg-black z-[999999] hidden flex-col items-center justify-center text-center p-4 font-mono select-none">
+    <div id="win95-shutting-down-msg" class="text-gray-300 text-lg sm:text-2xl font-bold tracking-wide animate-pulse">
+      Please wait while your computer shuts down...
+    </div>
+    <div id="win95-safe-to-turn-off" class="hidden space-y-6">
+      <div class="text-[#ff6600] text-xl sm:text-3xl font-extrabold tracking-wider leading-relaxed drop-shadow-[2px_2px_4px_#330000]">
+        It's now safe to turn off<br/>your computer.
+      </div>
+      <div class="pt-4">
+        <button
+          type="button"
+          id="win95-turn-on-btn"
+          class="retro-btn !py-2 !px-6 !text-sm font-bold text-black border-2 border-white shadow-[3px_3px_0px_#ffffff]"
+        >
+          ⚡ Turn Computer On (Restart)
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
   import { launchApp } from '../../lib/win95/appRegistry';
   import { windowManager } from '../../lib/win95/windowManager';
+  import { audio } from '../../lib/win95/audio';
 
-  // Windows 95 Desktop Screen & Taskbar Controller
   function setupWin95Desktop() {
     const desktopScreen = document.getElementById('win95-desktop-screen');
-    // Ensure desktop screen lives at document.body level so it's a sibling of .retro-window
     if (desktopScreen && desktopScreen.parentElement !== document.body) {
       document.body.appendChild(desktopScreen);
     }
 
+    const surface = document.getElementById('win95-desktop-surface');
     const startBtn = document.getElementById('win95-start-btn');
     const startMenu = document.getElementById('win95-start-menu');
     const taskbarAppBtn = document.getElementById('win95-taskbar-app-btn');
     const quickRestoreBtn = document.getElementById('d-quick-restore-btn');
+    const smQuickRestore = document.getElementById('sm-quick-restore');
+    const smShutdown = document.getElementById('sm-shutdown');
+    const smDocReadme = document.getElementById('sm-doc-readme');
+    const smFavPortfolio = document.getElementById('sm-fav-portfolio');
+    const smInternetRestore = document.getElementById('sm-internet-restore');
+    const smSettingsSysinfo = document.getElementById('sm-settings-sysinfo');
+    const smSettingsDisplay = document.getElementById('sm-settings-display');
 
-    // Desktop icons
-    const iconComputer = document.getElementById('d-icon-computer');
-    const iconPortfolio = document.getElementById('d-icon-portfolio');
-    const iconNotepad = document.getElementById('d-icon-notepad');
-    const iconNetwork = document.getElementById('d-icon-network');
-    const iconRecycle = document.getElementById('d-icon-recycle');
+    // Context menus
+    const desktopCtx = document.getElementById('win95-desktop-ctx-menu');
+    const iconCtx = document.getElementById('win95-icon-ctx-menu');
+    const taskbarCtx = document.getElementById('win95-taskbar-ctx-menu');
+    let targetIconEl: HTMLElement | null = null;
 
     // Sub-windows
     const notepadWindow = document.getElementById('d-notepad-window');
     const notepadClose = document.getElementById('d-notepad-close');
     const notepadOkBtn = document.getElementById('d-notepad-ok-btn');
     const notepadRestoreBtn = document.getElementById('d-notepad-restore-btn');
-
     const networkWindow = document.getElementById('d-network-window');
     const networkClose = document.getElementById('d-network-close');
-
     const recycleWindow = document.getElementById('d-recycle-window');
     const recycleClose = document.getElementById('d-recycle-close');
     const recycleOkBtn = document.getElementById('d-recycle-ok-btn');
 
-    // Start menu items
-    const smShutdown = document.getElementById('sm-shutdown');
-    const smDocReadme = document.getElementById('sm-doc-readme');
-    const smFavPortfolio = document.getElementById('sm-fav-portfolio');
-    const smInternetRestore = document.getElementById('sm-internet-restore');
-    const smSettingsSysinfo = document.getElementById('sm-settings-sysinfo');
+    // Dialogs
+    const displayDialog = document.getElementById('win95-display-props-dialog');
+    const shutdownDialog = document.getElementById('win95-shutdown-dialog');
+    const safeOffScreen = document.getElementById('win95-safe-off-screen');
+    const screensaverScreen = document.getElementById('win95-screensaver-screen');
 
-    function playSound(type = 'click') {
-      if (localStorage.getItem('retro_sound_enabled') === 'false') return;
-      try {
-        const AudioClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-        if (!AudioClass) return;
-        const ctx = new AudioClass();
-        if (ctx.state === 'suspended') ctx.resume();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+    // Volume popup & controls
+    const trayAudio = document.getElementById('win95-tray-audio');
+    const volumePopup = document.getElementById('win95-volume-popup');
+    const volumeSlider = document.getElementById('win95-volume-slider') as HTMLInputElement | null;
+    const volumeLabel = document.getElementById('win95-volume-label');
+    const volumeMute = document.getElementById('win95-volume-mute') as HTMLInputElement | null;
 
-        if (type === 'minimize') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(600, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.08);
-          gain.gain.setValueAtTime(0.12, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime);
-          osc.stop(ctx.currentTime + 0.08);
-        } else if (type === 'restore') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(200, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(750, ctx.currentTime + 0.08);
-          gain.gain.setValueAtTime(0.12, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime);
-          osc.stop(ctx.currentTime + 0.08);
-        } else {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(800, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(250, ctx.currentTime + 0.04);
-          gain.gain.setValueAtTime(0.1, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.04);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime);
-          osc.stop(ctx.currentTime + 0.04);
-        }
-      } catch (_) {}
+    // Apply saved master volume
+    const currentVol = Math.round(audio.getMasterVolume() * 100);
+    if (volumeSlider) volumeSlider.value = String(currentVol);
+    if (volumeLabel) volumeLabel.textContent = currentVol + '%';
+    if (volumeMute) volumeMute.checked = !audio.isSoundEnabled();
+
+    // Sound wrapper
+    function playClick() {
+      audio.playClick();
     }
 
     // Expose global minimize / restore functions
     (window as unknown as { minimizeToDesktop?: () => void }).minimizeToDesktop = function () {
-      playSound('minimize');
+      audio.playMinimize();
       document.body.classList.add('is-desktop-minimized');
       if (desktopScreen) {
         desktopScreen.style.display = 'flex';
         desktopScreen.setAttribute('aria-hidden', 'false');
       }
+      applyDesktopWallpaper();
       window.scrollTo({ top: 0 });
       windowManager.updateTaskbar();
     };
 
     (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop = function () {
-      playSound('restore');
+      audio.playRestore();
       document.body.classList.remove('is-desktop-minimized');
       if (desktopScreen) {
         desktopScreen.style.display = 'none';
         desktopScreen.setAttribute('aria-hidden', 'true');
       }
+      closeAllContextMenus();
       if (startMenu) startMenu.classList.add('hidden');
     };
 
-    // Close / restore triggers
-    taskbarAppBtn?.addEventListener('click', () => {
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-    });
-    quickRestoreBtn?.addEventListener('click', () => {
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-    });
-    iconPortfolio?.addEventListener('click', () => {
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-    });
-    iconPortfolio?.addEventListener('dblclick', () => {
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-    });
-    smFavPortfolio?.addEventListener('click', () => {
-      startMenu?.classList.add('hidden');
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-    });
-    smInternetRestore?.addEventListener('click', () => {
-      startMenu?.classList.add('hidden');
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-    });
-    smShutdown?.addEventListener('click', () => {
-      startMenu?.classList.add('hidden');
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-    });
-    notepadRestoreBtn?.addEventListener('click', () => {
-      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+    function closeAllContextMenus() {
+      desktopCtx?.classList.add('hidden');
+      iconCtx?.classList.add('hidden');
+      taskbarCtx?.classList.add('hidden');
+      volumePopup?.classList.add('hidden');
+    }
+
+    // Wallpaper Engine
+    function applyDesktopWallpaper(themeName?: string) {
+      if (!desktopScreen) return;
+      const theme = themeName || localStorage.getItem('win95_desktop_wallpaper') || 'teal';
+      desktopScreen.style.backgroundRepeat = 'repeat';
+      desktopScreen.style.backgroundSize = 'auto';
+
+      if (theme === 'clouds') {
+        desktopScreen.style.backgroundColor = '#008080';
+        desktopScreen.style.backgroundImage = 'radial-gradient(circle at 50% 30%, #5dade2 0%, #2e86c1 50%, #1b4f72 100%)';
+      } else if (theme === 'matrix') {
+        desktopScreen.style.backgroundColor = '#000000';
+        desktopScreen.style.backgroundImage = 'radial-gradient(#003300 15%, transparent 16%), radial-gradient(#004400 15%, transparent 16%)';
+        desktopScreen.style.backgroundSize = '16px 16px';
+        desktopScreen.style.backgroundPosition = '0 0, 8px 8px';
+      } else if (theme === 'stars') {
+        desktopScreen.style.backgroundColor = '#05051a';
+        desktopScreen.style.backgroundImage = 'radial-gradient(white 1px, transparent 1px), radial-gradient(white 1px, transparent 1px)';
+        desktopScreen.style.backgroundSize = '32px 32px';
+        desktopScreen.style.backgroundPosition = '0 0, 16px 16px';
+      } else if (theme === 'grid') {
+        desktopScreen.style.backgroundColor = '#004040';
+        desktopScreen.style.backgroundImage = 'linear-gradient(to right, rgba(0,255,255,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,255,255,0.15) 1px, transparent 1px)';
+        desktopScreen.style.backgroundSize = '24px 24px';
+      } else if (theme === 'custom') {
+        const customImg = localStorage.getItem('win95_desktop_wallpaper_custom');
+        if (customImg) {
+          desktopScreen.style.backgroundImage = `url("${customImg}")`;
+          desktopScreen.style.backgroundSize = 'cover';
+          desktopScreen.style.backgroundRepeat = 'no-repeat';
+        } else {
+          desktopScreen.style.backgroundColor = '#008080';
+          desktopScreen.style.backgroundImage = 'none';
+        }
+      } else {
+        desktopScreen.style.backgroundColor = '#008080';
+        desktopScreen.style.backgroundImage = 'none';
+      }
+    }
+
+    applyDesktopWallpaper();
+
+    // Rubberband Drag Selection Marquee
+    const marquee = document.getElementById('win95-marquee');
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    surface?.addEventListener('mousedown', (e) => {
+      const target = e.target as HTMLElement;
+      // Close context menus
+      closeAllContextMenus();
+
+      if (e.button !== 0) return; // only left click
+      if (target.closest('.win95-desktop-icon') || target.closest('.retro-dialog-window') || target.closest('#d-notepad-window') || target.closest('#d-network-window') || target.closest('#d-recycle-window')) {
+        return;
+      }
+
+      // Clear selections if not holding Ctrl
+      if (!e.ctrlKey && !e.metaKey) {
+        document.querySelectorAll('.win95-desktop-icon.is-selected').forEach((el) => {
+          el.classList.remove('is-selected');
+        });
+      }
+
+      isDragging = true;
+      const rect = surface.getBoundingClientRect();
+      dragStartX = e.clientX - rect.left;
+      dragStartY = e.clientY - rect.top;
+
+      if (marquee) {
+        marquee.style.left = `${dragStartX}px`;
+        marquee.style.top = `${dragStartY}px`;
+        marquee.style.width = '0px';
+        marquee.style.height = '0px';
+        marquee.classList.remove('hidden');
+      }
     });
 
-    // Toggle Start Menu
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging || !surface || !marquee) return;
+      const rect = surface.getBoundingClientRect();
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+
+      const left = Math.min(dragStartX, currentX);
+      const top = Math.min(dragStartY, currentY);
+      const width = Math.abs(currentX - dragStartX);
+      const height = Math.abs(currentY - dragStartY);
+
+      marquee.style.left = `${left}px`;
+      marquee.style.top = `${top}px`;
+      marquee.style.width = `${width}px`;
+      marquee.style.height = `${height}px`;
+
+      const mRect = { left, top, right: left + width, bottom: top + height };
+
+      // Collision test with icons
+      document.querySelectorAll('.win95-desktop-icon').forEach((icon) => {
+        const iRect = (icon as HTMLElement).getBoundingClientRect();
+        const relativeIRect = {
+          left: iRect.left - rect.left,
+          top: iRect.top - rect.top,
+          right: iRect.right - rect.left,
+          bottom: iRect.bottom - rect.top,
+        };
+
+        const overlaps = !(
+          mRect.right < relativeIRect.left ||
+          mRect.left > relativeIRect.right ||
+          mRect.bottom < relativeIRect.top ||
+          mRect.top > relativeIRect.bottom
+        );
+
+        if (overlaps) {
+          icon.classList.add('is-selected');
+        } else if (!e.ctrlKey && !e.metaKey) {
+          icon.classList.remove('is-selected');
+        }
+      });
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        marquee?.classList.add('hidden');
+      }
+    });
+
+    // Icon click & double-click interactions
+    document.querySelectorAll('.win95-desktop-icon').forEach((icon) => {
+      const el = icon as HTMLElement;
+
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllContextMenus();
+        if (!e.ctrlKey && !e.metaKey) {
+          document.querySelectorAll('.win95-desktop-icon.is-selected').forEach((item) => {
+            if (item !== el) item.classList.remove('is-selected');
+          });
+        }
+        el.classList.toggle('is-selected');
+        playClick();
+      });
+
+      el.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        playClick();
+        const appId = el.getAttribute('data-app');
+        const iconId = el.id;
+
+        if (iconId === 'd-icon-portfolio') {
+          (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+        } else if (iconId === 'd-icon-recycle') {
+          recycleWindow?.classList.remove('hidden');
+        } else if (iconId === 'd-icon-notepad') {
+          launchApp('notepad');
+        } else if (iconId === 'd-icon-about-txt') {
+          launchApp('notepad');
+        } else if (iconId === 'd-icon-computer') {
+          const aboutDlg = document.getElementById('retro-about-dialog');
+          if (aboutDlg) {
+            aboutDlg.style.display = 'flex';
+            aboutDlg.classList.remove('hidden');
+            aboutDlg.classList.add('is-open');
+          }
+        } else if (appId) {
+          launchApp(appId);
+        }
+      });
+
+      // Context menu for icons
+      el.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeAllContextMenus();
+
+        targetIconEl = el;
+        document.querySelectorAll('.win95-desktop-icon.is-selected').forEach((item) => item.classList.remove('is-selected'));
+        el.classList.add('is-selected');
+
+        if (iconCtx) {
+          iconCtx.style.left = `${Math.min(e.clientX, window.innerWidth - 170)}px`;
+          iconCtx.style.top = `${Math.min(e.clientY, window.innerHeight - 200)}px`;
+          iconCtx.classList.remove('hidden');
+        }
+      });
+    });
+
+    // Desktop surface context menu
+    surface?.addEventListener('contextmenu', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.win95-desktop-icon') || target.closest('.retro-dialog-window')) return;
+      e.preventDefault();
+      closeAllContextMenus();
+
+      if (desktopCtx) {
+        desktopCtx.style.left = `${Math.min(e.clientX, window.innerWidth - 170)}px`;
+        desktopCtx.style.top = `${Math.min(e.clientY, window.innerHeight - 240)}px`;
+        desktopCtx.classList.remove('hidden');
+      }
+    });
+
+    // Taskbar context menu
+    const taskbar = document.getElementById('win95-taskbar');
+    taskbar?.addEventListener('contextmenu', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('#win95-start-btn') || target.closest('#win95-start-menu')) return;
+      e.preventDefault();
+      closeAllContextMenus();
+
+      if (taskbarCtx) {
+        taskbarCtx.style.left = `${Math.min(e.clientX, window.innerWidth - 170)}px`;
+        taskbarCtx.style.top = `${Math.max(10, window.innerHeight - 200)}px`;
+        taskbarCtx.classList.remove('hidden');
+      }
+    });
+
+    // Desktop Context Menu actions
+    document.getElementById('ctx-d-refresh')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      playClick();
+      applyDesktopWallpaper();
+    });
+    document.getElementById('ctx-d-lineup')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      playClick();
+    });
+    document.getElementById('ctx-d-new-txt')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      launchApp('notepad');
+    });
+    document.getElementById('ctx-d-new-folder')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      launchApp('explorer');
+    });
+    document.getElementById('ctx-d-properties')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      playClick();
+      displayDialog?.classList.remove('hidden');
+    });
+
+    // Icon Context Menu actions
+    document.getElementById('ctx-i-open')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      if (targetIconEl) {
+        targetIconEl.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      }
+    });
+    document.getElementById('ctx-i-explore')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      launchApp('explorer');
+    });
+    document.getElementById('ctx-i-delete')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      audio.playChord();
+      alert('This object is a protected system item and cannot be removed.');
+    });
+    document.getElementById('ctx-i-rename')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      if (!targetIconEl) return;
+      const label = targetIconEl.querySelector('.win95-desktop-icon-label') as HTMLElement;
+      if (label) {
+        const orig = label.textContent || '';
+        const input = prompt('Rename icon:', orig);
+        if (input && input.trim()) {
+          label.textContent = input.trim();
+        }
+      }
+    });
+    document.getElementById('ctx-i-properties')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      const name = targetIconEl?.getAttribute('data-name') || 'System Item';
+      alert(`Properties for ${name}:\nType: System Application / Document\nLocation: C:\\PIUSH95\\DESKTOP\nAttributes: Read-Only`);
+    });
+
+    // Taskbar Context Menu actions
+    document.getElementById('ctx-t-cascade')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      playClick();
+      windowManager.cascadeWindows();
+    });
+    document.getElementById('ctx-t-tile-h')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      playClick();
+      windowManager.tileWindows(true);
+    });
+    document.getElementById('ctx-t-tile-v')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      playClick();
+      windowManager.tileWindows(false);
+    });
+    document.getElementById('ctx-t-minimize-all')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      playClick();
+      windowManager.minimizeAll();
+    });
+    document.getElementById('ctx-t-taskmgr')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      launchApp('taskmanager');
+    });
+    document.getElementById('ctx-t-properties')?.addEventListener('click', () => {
+      closeAllContextMenus();
+      displayDialog?.classList.remove('hidden');
+    });
+
+    // Start Button & Start Menu
     startBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
-      playSound('click');
+      playClick();
       startMenu?.classList.toggle('hidden');
       startBtn.classList.toggle('is-active');
+      closeAllContextMenus();
     });
 
-    // Handle all data-app launcher buttons inside Start Menu & Desktop
+    // Launch all data-app launcher buttons inside Start Menu & Desktop
     document.querySelectorAll('[data-app]').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -832,52 +1667,288 @@ Double-click "My Portfolio" or click the taskbar button below.
       });
     });
 
-    // Sub-window handlers
-    iconNotepad?.addEventListener('dblclick', () => {
-      launchApp('notepad');
-    });
-    smDocReadme?.addEventListener('click', () => {
+    // Start menu direct shortcuts
+    smQuickRestore?.addEventListener('click', () => {
       startMenu?.classList.add('hidden');
-      notepadWindow?.classList.remove('hidden');
+      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
     });
+    taskbarAppBtn?.addEventListener('click', () => {
+      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+    });
+    quickRestoreBtn?.addEventListener('click', () => {
+      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+    });
+    smFavPortfolio?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
+      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+    });
+    smInternetRestore?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
+      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+    });
+
+    // Display Properties dialog controls
+    smSettingsDisplay?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
+      displayDialog?.classList.remove('hidden');
+      playClick();
+    });
+    document.getElementById('display-props-close')?.addEventListener('click', () => {
+      displayDialog?.classList.add('hidden');
+      playClick();
+    });
+    document.getElementById('display-props-cancel')?.addEventListener('click', () => {
+      displayDialog?.classList.add('hidden');
+      playClick();
+    });
+
+    let selectedWallpaperTheme = localStorage.getItem('win95_desktop_wallpaper') || 'teal';
+    const previewScreen = document.getElementById('display-preview-screen');
+
+    function updatePreviewScreen(theme: string) {
+      if (!previewScreen) return;
+      if (theme === 'clouds') {
+        previewScreen.style.backgroundColor = '#008080';
+        previewScreen.style.backgroundImage = 'radial-gradient(circle at 50% 30%, #5dade2 0%, #2e86c1 50%, #1b4f72 100%)';
+      } else if (theme === 'matrix') {
+        previewScreen.style.backgroundColor = '#000000';
+        previewScreen.style.backgroundImage = 'radial-gradient(#003300 15%, transparent 16%)';
+        previewScreen.style.backgroundSize = '6px 6px';
+      } else if (theme === 'stars') {
+        previewScreen.style.backgroundColor = '#05051a';
+        previewScreen.style.backgroundImage = 'radial-gradient(white 1px, transparent 1px)';
+        previewScreen.style.backgroundSize = '8px 8px';
+      } else if (theme === 'grid') {
+        previewScreen.style.backgroundColor = '#004040';
+        previewScreen.style.backgroundImage = 'linear-gradient(to right, cyan 1px, transparent 1px), linear-gradient(to bottom, cyan 1px, transparent 1px)';
+        previewScreen.style.backgroundSize = '8px 8px';
+      } else {
+        previewScreen.style.backgroundColor = '#008080';
+        previewScreen.style.backgroundImage = 'none';
+      }
+    }
+    updatePreviewScreen(selectedWallpaperTheme);
+
+    document.querySelectorAll('.wallpaper-opt-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playClick();
+        document.querySelectorAll('.wallpaper-opt-btn').forEach(b => b.classList.remove('bg-[#000080]', 'text-white'));
+        btn.classList.add('bg-[#000080]', 'text-white');
+        const wp = btn.getAttribute('data-wp') || 'teal';
+        selectedWallpaperTheme = wp;
+        updatePreviewScreen(wp);
+      });
+    });
+
+    document.getElementById('display-props-apply')?.addEventListener('click', () => {
+      playClick();
+      localStorage.setItem('win95_desktop_wallpaper', selectedWallpaperTheme);
+      applyDesktopWallpaper(selectedWallpaperTheme);
+    });
+
+    document.getElementById('display-props-ok')?.addEventListener('click', () => {
+      playClick();
+      localStorage.setItem('win95_desktop_wallpaper', selectedWallpaperTheme);
+      applyDesktopWallpaper(selectedWallpaperTheme);
+      displayDialog?.classList.add('hidden');
+    });
+
+    // Display dialog tabs
+    document.querySelectorAll('.display-tab-btn').forEach((tabBtn) => {
+      tabBtn.addEventListener('click', () => {
+        playClick();
+        document.querySelectorAll('.display-tab-btn').forEach(t => t.classList.remove('is-active'));
+        tabBtn.classList.add('is-active');
+        const tab = tabBtn.getAttribute('data-tab');
+
+        const tabBg = document.getElementById('tab-content-background');
+        const tabSs = document.getElementById('tab-content-screensaver');
+        const tabAp = document.getElementById('tab-content-appearance');
+
+        tabBg?.classList.toggle('hidden', tab !== 'background');
+        tabSs?.classList.toggle('hidden', tab !== 'screensaver');
+        tabAp?.classList.toggle('hidden', tab !== 'appearance');
+      });
+    });
+
+    // Screen Saver Engine (Starfield)
+    let screensaverAnimId: number | null = null;
+    function runScreensaver() {
+      if (!screensaverScreen) return;
+      screensaverScreen.classList.remove('hidden');
+      const canvas = document.getElementById('win95-screensaver-canvas') as HTMLCanvasElement | null;
+      if (!canvas) return;
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const numStars = 300;
+      const stars: { x: number; y: number; z: number }[] = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: (Math.random() - 0.5) * canvas.width * 2,
+          y: (Math.random() - 0.5) * canvas.height * 2,
+          z: Math.random() * canvas.width,
+        });
+      }
+
+      function step() {
+        if (!ctx || !canvas) return;
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        for (const star of stars) {
+          star.z -= 4;
+          if (star.z <= 0) {
+            star.z = canvas.width;
+            star.x = (Math.random() - 0.5) * canvas.width * 2;
+            star.y = (Math.random() - 0.5) * canvas.height * 2;
+          }
+
+          const k = 128.0 / star.z;
+          const px = star.x * k + cx;
+          const py = star.y * k + cy;
+
+          if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
+            const size = Math.max(1, Math.min(3, (1 - star.z / canvas.width) * 3));
+            const shade = Math.floor((1 - star.z / canvas.width) * 255);
+            ctx.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
+            ctx.fillRect(px, py, size, size);
+          }
+        }
+        screensaverAnimId = requestAnimationFrame(step);
+      }
+      step();
+
+      function closeScreensaver() {
+        if (screensaverAnimId) cancelAnimationFrame(screensaverAnimId);
+        screensaverScreen?.classList.add('hidden');
+        window.removeEventListener('keydown', closeScreensaver);
+        window.removeEventListener('mousemove', closeScreensaver);
+        window.removeEventListener('click', closeScreensaver);
+      }
+      setTimeout(() => {
+        window.addEventListener('keydown', closeScreensaver, { once: true });
+        window.addEventListener('mousemove', closeScreensaver, { once: true });
+        window.addEventListener('click', closeScreensaver, { once: true });
+      }, 300);
+    }
+
+    document.getElementById('display-saver-preview-btn')?.addEventListener('click', runScreensaver);
+
+    // Shut Down Dialog
+    smShutdown?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
+      startBtn?.classList.remove('is-active');
+      shutdownDialog?.classList.remove('hidden');
+      playClick();
+    });
+
+    document.getElementById('shutdown-dialog-close')?.addEventListener('click', () => {
+      shutdownDialog?.classList.add('hidden');
+      playClick();
+    });
+    document.getElementById('shutdown-btn-no')?.addEventListener('click', () => {
+      shutdownDialog?.classList.add('hidden');
+      playClick();
+    });
+    document.getElementById('shutdown-btn-help')?.addEventListener('click', () => {
+      playClick();
+      alert('Windows 95 Shutdown Help:\nSelect "Shut down the computer" to power down safely.\nSelect "Restart" to reboot.\nSelect "Restart in MS-DOS" for command-line.');
+    });
+
+    document.getElementById('shutdown-btn-yes')?.addEventListener('click', () => {
+      shutdownDialog?.classList.add('hidden');
+      const actionEl = document.querySelector('input[name="win95-shutdown-action"]:checked') as HTMLInputElement | null;
+      const action = actionEl ? actionEl.value : 'shutdown';
+
+      if (action === 'restore') {
+        (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+      } else if (action === 'dos') {
+        launchApp('dos');
+      } else if (action === 'restart') {
+        window.location.reload();
+      } else {
+        // Authentic Windows 95 Power Down sequence
+        audio.playShutdown();
+        if (safeOffScreen) {
+          safeOffScreen.classList.remove('hidden');
+          safeOffScreen.style.display = 'flex';
+          const shutMsg = document.getElementById('win95-shutting-down-msg');
+          const safeMsg = document.getElementById('win95-safe-to-turn-off');
+
+          if (shutMsg) shutMsg.classList.remove('hidden');
+          if (safeMsg) safeMsg.classList.add('hidden');
+
+          setTimeout(() => {
+            if (shutMsg) shutMsg.classList.add('hidden');
+            if (safeMsg) safeMsg.classList.remove('hidden');
+          }, 1800);
+        }
+      }
+    });
+
+    document.getElementById('win95-turn-on-btn')?.addEventListener('click', () => {
+      if (safeOffScreen) safeOffScreen.style.display = 'none';
+      window.location.reload();
+    });
+
+    // Volume Popup
+    trayAudio?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playClick();
+      volumePopup?.classList.toggle('hidden');
+    });
+
+    volumeSlider?.addEventListener('input', () => {
+      const val = parseInt(volumeSlider.value, 10);
+      if (volumeLabel) volumeLabel.textContent = val + '%';
+      audio.setMasterVolume(val / 100);
+    });
+
+    volumeMute?.addEventListener('change', () => {
+      audio.setSoundEnabled(!volumeMute.checked);
+      if (trayAudio) {
+        trayAudio.textContent = volumeMute.checked ? '🔇' : '🔊';
+      }
+    });
+
+    // Sub-window controls
     notepadClose?.addEventListener('click', () => {
-      playSound('click');
+      playClick();
       notepadWindow?.classList.add('hidden');
     });
     notepadOkBtn?.addEventListener('click', () => {
-      playSound('click');
+      playClick();
       notepadWindow?.classList.add('hidden');
     });
-
-    iconNetwork?.addEventListener('dblclick', () => {
-      launchApp('network');
+    notepadRestoreBtn?.addEventListener('click', () => {
+      notepadWindow?.classList.add('hidden');
+      (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
     });
+
     networkClose?.addEventListener('click', () => {
-      playSound('click');
+      playClick();
       networkWindow?.classList.add('hidden');
     });
 
-    iconRecycle?.addEventListener('click', () => {
-      playSound('click');
-      recycleWindow?.classList.remove('hidden');
-    });
     recycleClose?.addEventListener('click', () => {
-      playSound('click');
+      playClick();
       recycleWindow?.classList.add('hidden');
     });
     recycleOkBtn?.addEventListener('click', () => {
-      playSound('click');
+      playClick();
       recycleWindow?.classList.add('hidden');
     });
 
-    iconComputer?.addEventListener('click', () => {
-      playSound('click');
-      const aboutDlg = document.getElementById('retro-about-dialog');
-      if (aboutDlg) {
-        aboutDlg.style.display = 'flex';
-        aboutDlg.classList.remove('hidden');
-        aboutDlg.classList.add('is-open');
-      }
+    smDocReadme?.addEventListener('click', () => {
+      startMenu?.classList.add('hidden');
+      notepadWindow?.classList.remove('hidden');
     });
 
     smSettingsSysinfo?.addEventListener('click', () => {
@@ -890,7 +1961,7 @@ Double-click "My Portfolio" or click the taskbar button below.
       }
     });
 
-    // Close start menu on outside click
+    // Dismiss start menu & context menus on outside click
     document.addEventListener('click', (e) => {
       const target = e.target as Node;
       if (!startBtn?.contains(target) && !startMenu?.contains(target)) {
@@ -898,6 +1969,10 @@ Double-click "My Portfolio" or click the taskbar button below.
         startBtn?.classList.remove('is-active');
         document.querySelectorAll('.win95-menu-parent').forEach(p => p.classList.remove('is-open'));
       }
+      if (!trayAudio?.contains(target) && !volumePopup?.contains(target)) {
+        volumePopup?.classList.add('hidden');
+      }
+      closeAllContextMenus();
     });
 
     // Taskbar clock

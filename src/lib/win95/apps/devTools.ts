@@ -481,3 +481,133 @@ export function renderApiTester(container: HTMLElement, win: Win95Window) {
   });
 }
 
+/**
+ * JSON Toolkit – Format, Validate, Minify & Inspect JSON
+ */
+export function renderJsonToolkit(container: HTMLElement, win: Win95Window) {
+  win.setTitle('JSON Toolkit');
+  container.innerHTML = `
+    <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none p-3 space-y-2">
+      <!-- Toolbar -->
+      <div class="flex items-center gap-1.5 pb-1 border-b border-white text-xs">
+        <button id="json-format-btn" class="retro-btn !py-0.5 !px-3 font-bold">✨ Format</button>
+        <button id="json-minify-btn" class="retro-btn !py-0.5 !px-3">📦 Minify</button>
+        <button id="json-validate-btn" class="retro-btn !py-0.5 !px-3">🩺 Validate</button>
+        <button id="json-sample-btn" class="retro-btn !py-0.5 !px-3">📋 Sample</button>
+        <button id="json-copy-btn" class="retro-btn !py-0.5 !px-3">📄 Copy</button>
+        <button id="json-clear-btn" class="retro-btn !py-0.5 !px-3 ml-auto">Clear</button>
+      </div>
+
+      <!-- Editor Textarea -->
+      <div class="flex-1 flex flex-col space-y-1">
+        <div class="flex justify-between items-center text-xs">
+          <label class="font-bold">JSON Document Editor:</label>
+          <span id="json-status" class="font-bold text-gray-700">Ready</span>
+        </div>
+        <textarea id="json-input" class="retro-inset flex-1 p-2 bg-white text-black font-mono text-xs whitespace-pre resize-none" spellcheck="false" placeholder="Paste or type JSON data here..."></textarea>
+      </div>
+    </div>
+  `;
+
+  const inputEl = container.querySelector('#json-input') as HTMLTextAreaElement;
+  const statusEl = container.querySelector('#json-status') as HTMLElement;
+
+  const sampleObj = {
+    name: 'Piush KS',
+    role: 'Senior Mobile & Cloud Engineer',
+    system: 'Windows 95 Web Desktop',
+    verifiedPages: 73,
+    quizQuestions: 550,
+    skills: ['Kotlin', 'Swift', 'Flutter', 'React', 'TypeScript', 'Astro', 'AWS'],
+    stats: {
+      experienceYears: 8,
+      globalUsers: 10000000,
+      craftPercentage: 100
+    }
+  };
+
+  inputEl.value = JSON.stringify(sampleObj, null, 2);
+
+  container.querySelector('#json-format-btn')?.addEventListener('click', () => {
+    audio.playClick();
+    try {
+      const parsed = JSON.parse(inputEl.value);
+      inputEl.value = JSON.stringify(parsed, null, 2);
+      if (statusEl) {
+        statusEl.textContent = 'Valid JSON (Formatted)';
+        statusEl.className = 'font-bold text-emerald-700';
+      }
+    } catch (e) {
+      audio.playError();
+      if (statusEl) {
+        statusEl.textContent = `Invalid: ${(e as Error).message}`;
+        statusEl.className = 'font-bold text-red-700';
+      }
+    }
+  });
+
+  container.querySelector('#json-minify-btn')?.addEventListener('click', () => {
+    audio.playClick();
+    try {
+      const parsed = JSON.parse(inputEl.value);
+      inputEl.value = JSON.stringify(parsed);
+      if (statusEl) {
+        statusEl.textContent = 'Valid JSON (Minified)';
+        statusEl.className = 'font-bold text-emerald-700';
+      }
+    } catch (e) {
+      audio.playError();
+      if (statusEl) {
+        statusEl.textContent = `Invalid: ${(e as Error).message}`;
+        statusEl.className = 'font-bold text-red-700';
+      }
+    }
+  });
+
+  container.querySelector('#json-validate-btn')?.addEventListener('click', () => {
+    audio.playClick();
+    try {
+      JSON.parse(inputEl.value);
+      audio.playDing();
+      if (statusEl) {
+        statusEl.textContent = 'Valid JSON Schema & Syntax!';
+        statusEl.className = 'font-bold text-emerald-700';
+      }
+    } catch (e) {
+      audio.playError();
+      if (statusEl) {
+        statusEl.textContent = `Error: ${(e as Error).message}`;
+        statusEl.className = 'font-bold text-red-700';
+      }
+    }
+  });
+
+  container.querySelector('#json-sample-btn')?.addEventListener('click', () => {
+    audio.playClick();
+    inputEl.value = JSON.stringify(sampleObj, null, 2);
+    if (statusEl) {
+      statusEl.textContent = 'Sample Loaded';
+      statusEl.className = 'font-bold text-gray-700';
+    }
+  });
+
+  container.querySelector('#json-copy-btn')?.addEventListener('click', () => {
+    audio.playClick();
+    navigator.clipboard?.writeText(inputEl.value);
+    if (statusEl) {
+      statusEl.textContent = 'Copied to Clipboard!';
+      statusEl.className = 'font-bold text-blue-800';
+    }
+  });
+
+  container.querySelector('#json-clear-btn')?.addEventListener('click', () => {
+    audio.playClick();
+    inputEl.value = '';
+    if (statusEl) {
+      statusEl.textContent = 'Cleared';
+      statusEl.className = 'font-bold text-gray-700';
+    }
+  });
+}
+
+

@@ -315,3 +315,202 @@ export function renderGuestbook(container: HTMLElement, win: Win95Window) {
   renderEntries();
 }
 
+/**
+ * Authentic Internet Explorer Browser Simulator
+ */
+export function renderInternetExplorer(container: HTMLElement, win: Win95Window) {
+  win.setTitle('The Microsoft Internet Explorer – piush.com');
+
+  const pages: Record<string, string> = {
+    'http://piush.com/': `
+      <div class="space-y-4">
+        <div class="border-b-2 border-[#000080] pb-2">
+          <h1 class="text-xl font-bold text-[#000080]">Welcome to Piush KS Cyber-Home</h1>
+          <p class="text-xs text-gray-600 font-mono">Senior Mobile & Cloud Engineer | Production Web & Native Systems</p>
+        </div>
+        <p class="text-xs leading-relaxed">
+          Welcome to the world wide web headquarters of Piush KS. Building resilient native Android, iOS, and distributed cloud backends for over 8 years.
+        </p>
+        <div class="retro-inset p-3 bg-gray-100 text-xs space-y-1.5">
+          <div class="font-bold text-[#000080]">Featured Sites & Destinations:</div>
+          <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="http://piush.com/work/">Browse Production Projects Portfolio</a></div>
+          <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="http://piush.com/blog/">Read Technical Deep Dives & Articles</a></div>
+          <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="http://piush.com/quiz/">Take the 550-Question Developer Quiz</a></div>
+          <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="http://piush.com/about/">About the Engineer & Specs</a></div>
+        </div>
+      </div>
+    `,
+    'http://piush.com/work/': `
+      <div class="space-y-3">
+        <h2 class="text-lg font-bold text-[#000080]">Engineering Projects Portfolio</h2>
+        <p class="text-xs text-gray-700">Selected production applications, SDKs, and mobile ecosystems.</p>
+        <ul class="text-xs list-disc pl-5 space-y-1 text-gray-800">
+          <li><strong>Production Mobile Apps:</strong> 10M+ Global active users across Android & iOS.</li>
+          <li><strong>Real-time Offline Sync:</strong> Conflict-free replication engine for edge devices.</li>
+          <li><strong>Custom Design Token Engine:</strong> Micro-animations maintaining constant 60 FPS.</li>
+          <li><strong>Enterprise Microservices:</strong> High-throughput Go and Node.js distributed backends.</li>
+        </ul>
+      </div>
+    `,
+    'http://piush.com/blog/': `
+      <div class="space-y-3">
+        <h2 class="text-lg font-bold text-[#000080]">Engineering Articles & Dispatches</h2>
+        <ul class="text-xs list-disc pl-5 space-y-1 text-gray-800">
+          <li>React Native vs. Flutter in 2025: Architectural Trade-offs</li>
+          <li>Deep Dive into the Flutter Rendering Pipeline</li>
+          <li>Mastering OKLCH CSS Color Spaces</li>
+          <li>Micro-Animations That Don't Ruin 60 FPS</li>
+          <li>Offline-First Mobile Sync and Conflict Resolution</li>
+        </ul>
+      </div>
+    `,
+    'http://piush.com/about/': `
+      <div class="space-y-3">
+        <h2 class="text-lg font-bold text-[#000080]">About Piush KS</h2>
+        <p class="text-xs leading-relaxed">
+          Senior Engineer & Solopreneur crafting fast, resilient mobile applications and distributed architectures.
+        </p>
+        <div class="retro-inset p-2.5 bg-gray-50 text-[11px] font-mono space-y-1">
+          <div>Experience: 8+ Years Production</div>
+          <div>Stack: Kotlin, Swift, Flutter, React, TypeScript, Astro, Node.js, AWS</div>
+          <div>Global Reach: 10M+ User Impact</div>
+        </div>
+      </div>
+    `,
+    'http://piush.com/quiz/': `
+      <div class="space-y-3">
+        <h2 class="text-lg font-bold text-[#000080]">550-Question Developer Quiz Engine</h2>
+        <p class="text-xs">Comprehensive full-stack engineering challenge across 23 technical categories.</p>
+        <p class="text-xs font-bold text-emerald-800">100% verified question database with detailed rationales.</p>
+      </div>
+    `
+  };
+
+  let currentUrl = 'http://piush.com/';
+  const history: string[] = ['http://piush.com/'];
+  let historyIdx = 0;
+
+  container.innerHTML = `
+    <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
+      <!-- Menubar -->
+      <div class="flex gap-3 px-2 py-0.5 text-xs bg-[#c0c0c0] border-b border-black/40">
+        <span>File</span>
+        <span>Edit</span>
+        <span>View</span>
+        <span>Go</span>
+        <span>Favorites</span>
+        <span>Help</span>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="flex items-center gap-1 p-1 bg-[#c0c0c0] border-b border-white border-b-black/40 text-xs">
+        <button id="ie-back" class="retro-btn !py-0.5 !px-2 flex items-center gap-1 font-bold">⬅️ Back</button>
+        <button id="ie-forward" class="retro-btn !py-0.5 !px-2 flex items-center gap-1">➡️ Fwd</button>
+        <button id="ie-stop" class="retro-btn !py-0.5 !px-2 flex items-center gap-1">🛑 Stop</button>
+        <button id="ie-refresh" class="retro-btn !py-0.5 !px-2 flex items-center gap-1">🔄 Refresh</button>
+        <button id="ie-home" class="retro-btn !py-0.5 !px-2 flex items-center gap-1">🏠 Home</button>
+        <div class="ml-auto w-6 h-6 bg-[#000080] border border-black flex items-center justify-center text-white text-xs font-bold animate-spin" id="ie-spinner">
+          e
+        </div>
+      </div>
+
+      <!-- Address Bar -->
+      <div class="flex items-center gap-2 px-2 py-1 bg-[#c0c0c0] border-b border-black/40 text-xs">
+        <span class="font-bold text-gray-700">Address:</span>
+        <input type="text" id="ie-address-input" value="${currentUrl}" class="retro-inset flex-1 px-2 py-0.5 bg-white text-black text-xs font-mono" />
+        <button id="ie-go-btn" class="retro-btn !py-0.5 !px-3 font-bold text-xs">Go</button>
+      </div>
+
+      <!-- Web Content Viewport -->
+      <div id="ie-viewport" class="retro-inset flex-1 p-4 bg-white text-black overflow-auto select-text font-serif">
+        ${pages[currentUrl] || '<p>Page not found</p>'}
+      </div>
+
+      <!-- Status Bar -->
+      <div class="flex items-center justify-between px-2 py-0.5 text-[11px] bg-[#c0c0c0] border-t border-white border-t-black/40">
+        <span id="ie-status">Done</span>
+        <span class="text-gray-600 font-bold">Internet Zone</span>
+      </div>
+    </div>
+  `;
+
+  const addressInput = container.querySelector('#ie-address-input') as HTMLInputElement;
+  const viewport = container.querySelector('#ie-viewport') as HTMLElement;
+  const statusEl = container.querySelector('#ie-status') as HTMLElement;
+  const spinner = container.querySelector('#ie-spinner') as HTMLElement;
+  const backBtn = container.querySelector('#ie-back') as HTMLButtonElement;
+  const forwardBtn = container.querySelector('#ie-forward') as HTMLButtonElement;
+
+  function loadPage(url: string, pushHist = true) {
+    audio.playClick();
+    if (spinner) spinner.style.display = 'flex';
+    if (statusEl) statusEl.textContent = `Connecting to ${url}...`;
+
+    setTimeout(() => {
+      currentUrl = url;
+      if (addressInput) addressInput.value = url;
+      if (viewport) {
+        viewport.innerHTML = pages[url] || `
+          <div class="space-y-3">
+            <h2 class="text-lg font-bold text-red-700">HTTP 404 – Not Found</h2>
+            <p class="text-xs">The requested URL <code>${url}</code> was not found on this simulated server.</p>
+          </div>
+        `;
+        wireLinks();
+      }
+      if (spinner) spinner.style.display = 'flex';
+      if (statusEl) statusEl.textContent = 'Done';
+
+      if (pushHist) {
+        history.splice(historyIdx + 1);
+        history.push(url);
+        historyIdx = history.length - 1;
+      }
+      win.setTitle(`The Microsoft Internet Explorer – ${url.replace('http://', '')}`);
+    }, 200);
+  }
+
+  function wireLinks() {
+    viewport.querySelectorAll('.ie-link').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const dest = (link as HTMLElement).getAttribute('data-url');
+        if (dest) loadPage(dest);
+      });
+    });
+  }
+
+  wireLinks();
+
+  container.querySelector('#ie-go-btn')?.addEventListener('click', () => {
+    loadPage(addressInput.value.trim());
+  });
+
+  addressInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') loadPage(addressInput.value.trim());
+  });
+
+  backBtn?.addEventListener('click', () => {
+    if (historyIdx > 0) {
+      historyIdx--;
+      loadPage(history[historyIdx], false);
+    }
+  });
+
+  forwardBtn?.addEventListener('click', () => {
+    if (historyIdx < history.length - 1) {
+      historyIdx++;
+      loadPage(history[historyIdx], false);
+    }
+  });
+
+  container.querySelector('#ie-refresh')?.addEventListener('click', () => {
+    loadPage(currentUrl, false);
+  });
+
+  container.querySelector('#ie-home')?.addEventListener('click', () => {
+    loadPage('http://piush.com/');
+  });
+}
+
+

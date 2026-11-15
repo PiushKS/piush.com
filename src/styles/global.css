@@ -589,10 +589,102 @@ body.is-desktop-minimized #win95-desktop-screen {
 }
 
 .win95-desktop-icon:hover,
-.win95-desktop-icon:focus {
+.win95-desktop-icon:focus,
+.win95-desktop-icon.is-selected {
 	background-color: rgba(0, 0, 128, 0.75);
 	border: 1px dotted #ffff00;
 	outline: none;
+}
+
+.win95-desktop-icon.is-selected .win95-desktop-icon-label {
+	background-color: #000080;
+	color: #ffffff;
+}
+
+.win95-marquee {
+	position: absolute;
+	border: 1px dotted #ffffff;
+	background-color: rgba(0, 0, 128, 0.25);
+	pointer-events: none;
+	z-index: 45;
+}
+
+.win95-context-menu {
+	position: fixed;
+	background-color: #c0c0c0;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	box-shadow: 2px 2px 0px #000000;
+	z-index: 10005;
+	font-family: ui-monospace, SFMono-Regular, monospace;
+	font-size: 11px;
+	min-width: 160px;
+	padding: 2px 0;
+	user-select: none;
+}
+
+.win95-context-menu-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	padding: 3px 12px;
+	text-align: left;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	color: #000000;
+	font-size: 11px;
+	line-height: 1.3;
+	text-decoration: none;
+}
+
+.win95-context-menu-item:hover:not(.is-disabled) {
+	background-color: #000080;
+	color: #ffffff;
+}
+
+.win95-context-menu-item.is-disabled {
+	color: #808080;
+	text-shadow: 1px 1px 0px #ffffff;
+	cursor: default;
+}
+
+.win95-context-menu-separator {
+	height: 0;
+	margin: 3px 2px;
+	border-top: 1px solid #808080;
+	border-bottom: 1px solid #ffffff;
+}
+
+.win95-volume-popup {
+	position: fixed;
+	bottom: 38px;
+	right: 12px;
+	width: 80px;
+	background-color: #c0c0c0;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	box-shadow: 3px 3px 0px #000000;
+	z-index: 10006;
+	padding: 8px 6px;
+	font-family: ui-monospace, SFMono-Regular, monospace;
+	font-size: 11px;
+	text-align: center;
+}
+
+.win95-screensaver {
+	position: fixed;
+	inset: 0;
+	background-color: #000000;
+	z-index: 999999;
+	cursor: none;
+	overflow: hidden;
 }
 
 .win95-desktop-icon-label {

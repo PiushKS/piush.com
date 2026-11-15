@@ -391,6 +391,54 @@ export class Win95WindowManager {
       win.close();
     }
   }
+
+  public minimizeAll() {
+    for (const win of this.windows.values()) {
+      if (!win.isMinimized) win.minimize();
+    }
+  }
+
+  public cascadeWindows() {
+    let offset = 24;
+    const wins = Array.from(this.windows.values()).filter(w => !w.isMinimized);
+    wins.forEach((w) => {
+      w.restore();
+      const el = w.element;
+      el.style.left = `${offset}px`;
+      el.style.top = `${offset}px`;
+      w.focus();
+      offset += 26;
+      if (offset > 240) offset = 24;
+    });
+  }
+
+  public tileWindows(horizontal = true) {
+    const wins = Array.from(this.windows.values()).filter(w => !w.isMinimized);
+    if (wins.length === 0) return;
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight - 40;
+    if (horizontal) {
+      const tileH = Math.max(180, Math.floor(screenH / wins.length));
+      wins.forEach((w, i) => {
+        w.restore();
+        const el = w.element;
+        el.style.left = '4px';
+        el.style.top = `${i * tileH + 4}px`;
+        el.style.width = `${screenW - 8}px`;
+        el.style.height = `${tileH - 8}px`;
+      });
+    } else {
+      const tileW = Math.max(240, Math.floor(screenW / wins.length));
+      wins.forEach((w, i) => {
+        w.restore();
+        const el = w.element;
+        el.style.left = `${i * tileW + 4}px`;
+        el.style.top = '4px';
+        el.style.width = `${tileW - 8}px`;
+        el.style.height = `${screenH - 8}px`;
+      });
+    }
+  }
 }
 
 export const windowManager = new Win95WindowManager();

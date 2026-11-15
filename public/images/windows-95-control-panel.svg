@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Classic Folder with gears/controls -->
+  <path d="M2 8 L10 8 L13 11 L28 11 L28 26 L2 26 Z" fill="#ffd700" stroke="#000" stroke-width="1"/>
+  <rect x="5" y="13" width="23" height="13" fill="#ffeb3b" stroke="#000" stroke-width="1"/>
+  <!-- Gear / slider symbol -->
+  <circle cx="16" cy="19" r="4" fill="#808080" stroke="#000" stroke-width="1"/>
+  <circle cx="16" cy="19" r="1.5" fill="#fff"/>
+  <rect x="15" y="13" width="2" height="12" fill="#808080"/>
+  <rect x="10" y="18" width="12" height="2" fill="#808080"/>
+</svg>

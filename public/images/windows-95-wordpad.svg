@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <rect x="5" y="3" width="20" height="26" fill="#fff" stroke="#000" stroke-width="1"/>
+  <line x1="8" y1="8" x2="21" y2="8" stroke="#000080" stroke-width="1.5"/>
+  <line x1="8" y1="12" x2="21" y2="12" stroke="#808080" stroke-width="1"/>
+  <line x1="8" y1="15" x2="18" y2="15" stroke="#808080" stroke-width="1"/>
+  <line x1="8" y1="18" x2="21" y2="18" stroke="#808080" stroke-width="1"/>
+  <line x1="8" y1="21" x2="16" y2="21" stroke="#808080" stroke-width="1"/>
+  <!-- Fountain pen -->
+  <line x1="26" y1="12" x2="16" y2="24" stroke="#ff8c00" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="16,24 14,27 18,26" fill="#c0c0c0"/>
+</svg>

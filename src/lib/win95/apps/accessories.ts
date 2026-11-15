@@ -11,16 +11,80 @@ export function renderNotepad(container: HTMLElement, win: Win95Window, initialF
 
   container.innerHTML = `
     <div class="flex flex-col h-full bg-[#c0c0c0]">
-      <!-- Menubar -->
-      <div class="flex items-center gap-3 px-2 py-0.5 text-xs bg-[#c0c0c0] border-b border-black/60 select-none">
-        <button type="button" class="hover:bg-[#000080] hover:text-white px-1.5 py-0.5" id="np-file-btn"><u>F</u>ile</button>
-        <button type="button" class="hover:bg-[#000080] hover:text-white px-1.5 py-0.5" id="np-edit-btn"><u>E</u>dit</button>
-        <button type="button" class="hover:bg-[#000080] hover:text-white px-1.5 py-0.5" id="np-search-btn"><u>S</u>earch</button>
-        <button type="button" class="hover:bg-[#000080] hover:text-white px-1.5 py-0.5" id="np-help-btn"><u>H</u>elp</button>
+      <!-- Authentic Menubar with Dropdowns -->
+      <div class="flex items-center gap-1 px-1 py-0.5 text-xs bg-[#c0c0c0] border-b border-black/60 select-none relative font-mono text-black">
+        <!-- File Menu -->
+        <div class="relative">
+          <button type="button" class="hover:bg-[#000080] hover:text-white px-2 py-0.5" id="np-file-btn"><u>F</u>ile</button>
+          <div id="np-file-menu" class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[170px] z-50 text-black text-xs">
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-new">
+              <span>New</span><span class="text-gray-600 text-[10px]">Ctrl+N</span>
+            </button>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-open">
+              <span>Open...</span><span class="text-gray-600 text-[10px]">Ctrl+O</span>
+            </button>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-save">
+              <span>Save</span><span class="text-gray-600 text-[10px]">Ctrl+S</span>
+            </button>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="npm-saveas">Save As...</button>
+            <div class="border-b border-[#808080] border-t border-white my-1"></div>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="npm-print">Print...</button>
+            <div class="border-b border-[#808080] border-t border-white my-1"></div>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="npm-exit">Exit</button>
+          </div>
+        </div>
+
+        <!-- Edit Menu -->
+        <div class="relative">
+          <button type="button" class="hover:bg-[#000080] hover:text-white px-2 py-0.5" id="np-edit-btn"><u>E</u>dit</button>
+          <div id="np-edit-menu" class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[170px] z-50 text-black text-xs">
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-undo">
+              <span>Undo</span><span class="text-gray-600 text-[10px]">Ctrl+Z</span>
+            </button>
+            <div class="border-b border-[#808080] border-t border-white my-1"></div>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-cut">
+              <span>Cut</span><span class="text-gray-600 text-[10px]">Ctrl+X</span>
+            </button>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-copy">
+              <span>Copy</span><span class="text-gray-600 text-[10px]">Ctrl+C</span>
+            </button>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-paste">
+              <span>Paste</span><span class="text-gray-600 text-[10px]">Ctrl+V</span>
+            </button>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-del">
+              <span>Delete</span><span class="text-gray-600 text-[10px]">Del</span>
+            </button>
+            <div class="border-b border-[#808080] border-t border-white my-1"></div>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-selall">
+              <span>Select All</span><span class="text-gray-600 text-[10px]">Ctrl+A</span>
+            </button>
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-timedate">
+              <span>Time/Date</span><span class="text-gray-600 text-[10px]">F5</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Menu -->
+        <div class="relative">
+          <button type="button" class="hover:bg-[#000080] hover:text-white px-2 py-0.5" id="np-search-btn"><u>S</u>earch</button>
+          <div id="np-search-menu" class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[150px] z-50 text-black text-xs">
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="npm-find">
+              <span>Find...</span><span class="text-gray-600 text-[10px]">Ctrl+F</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Help Menu -->
+        <div class="relative">
+          <button type="button" class="hover:bg-[#000080] hover:text-white px-2 py-0.5" id="np-help-btn"><u>H</u>elp</button>
+          <div id="np-help-menu" class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[150px] z-50 text-black text-xs">
+            <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="npm-about">About Notepad</button>
+          </div>
+        </div>
       </div>
 
       <!-- Quick Action Bar -->
-      <div class="flex items-center gap-1.5 px-2 py-1 bg-[#d4d0c8] border-b border-[#808080] text-[11px]">
+      <div class="flex items-center gap-1.5 px-2 py-1 bg-[#d4d0c8] border-b border-[#808080] text-[11px] font-mono text-black">
         <button type="button" class="retro-btn !py-0.5 !px-2 text-xs" id="np-new">New</button>
         <button type="button" class="retro-btn !py-0.5 !px-2 text-xs" id="np-open">Open</button>
         <button type="button" class="retro-btn !py-0.5 !px-2 text-xs font-bold text-[#000080]" id="np-save">Save</button>
@@ -53,6 +117,49 @@ export function renderNotepad(container: HTMLElement, win: Win95Window, initialF
   const pathStatus = container.querySelector('#np-path-status') as HTMLElement;
   const posStatus = container.querySelector('#np-pos-status') as HTMLElement;
   const wrapCheck = container.querySelector('#np-wrap') as HTMLInputElement;
+
+  // Dropdown menus
+  const fileBtn = container.querySelector('#np-file-btn');
+  const fileMenu = container.querySelector('#np-file-menu');
+  const editBtn = container.querySelector('#np-edit-btn');
+  const editMenu = container.querySelector('#np-edit-menu');
+  const searchBtn = container.querySelector('#np-search-btn');
+  const searchMenu = container.querySelector('#np-search-menu');
+  const helpBtn = container.querySelector('#np-help-btn');
+  const helpMenu = container.querySelector('#np-help-menu');
+
+  const closeAllMenus = () => {
+    fileMenu?.classList.add('hidden');
+    editMenu?.classList.add('hidden');
+    searchMenu?.classList.add('hidden');
+    helpMenu?.classList.add('hidden');
+  };
+
+  fileBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeAllMenus();
+    fileMenu?.classList.toggle('hidden');
+  });
+
+  editBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeAllMenus();
+    editMenu?.classList.toggle('hidden');
+  });
+
+  searchBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeAllMenus();
+    searchMenu?.classList.toggle('hidden');
+  });
+
+  helpBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeAllMenus();
+    helpMenu?.classList.toggle('hidden');
+  });
+
+  container.addEventListener('click', closeAllMenus);
 
   // Load initial content if path exists
   if (initialFile) {
@@ -93,10 +200,16 @@ export function renderNotepad(container: HTMLElement, win: Win95Window, initialF
     audio.playChord();
   };
 
-  container.querySelector('#np-save')?.addEventListener('click', save);
+  const saveAs = () => {
+    audio.playClick();
+    const newPath = prompt('Save file as (virtual path):', currentPath);
+    if (newPath) {
+      currentPath = newPath;
+      save();
+    }
+  };
 
-  // New file
-  container.querySelector('#np-new')?.addEventListener('click', () => {
+  const newDoc = () => {
     audio.playClick();
     if (isDirty && !confirm('Discard unsaved changes?')) return;
     textarea.value = '';
@@ -104,10 +217,9 @@ export function renderNotepad(container: HTMLElement, win: Win95Window, initialF
     pathStatus.textContent = currentPath;
     win.setTitle('Notepad – Untitled.txt');
     isDirty = false;
-  });
+  };
 
-  // Open file prompt
-  container.querySelector('#np-open')?.addEventListener('click', () => {
+  const openDoc = () => {
     audio.playClick();
     const target = prompt('Enter virtual path to open:', currentPath);
     if (target) {
@@ -122,6 +234,96 @@ export function renderNotepad(container: HTMLElement, win: Win95Window, initialF
         alert(`File not found: ${target}`);
       }
     }
+  };
+
+  const insertTimeDate = () => {
+    audio.playClick();
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: '2-digit' }) + ' ' + now.toLocaleDateString('en-US');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    textarea.value = textarea.value.substring(0, start) + timeStr + textarea.value.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + timeStr.length;
+    textarea.focus();
+    isDirty = true;
+    updatePos();
+  };
+
+  // Wire buttons & menu actions
+  container.querySelector('#np-save')?.addEventListener('click', save);
+  container.querySelector('#npm-save')?.addEventListener('click', save);
+  container.querySelector('#npm-saveas')?.addEventListener('click', saveAs);
+  container.querySelector('#np-new')?.addEventListener('click', newDoc);
+  container.querySelector('#npm-new')?.addEventListener('click', newDoc);
+  container.querySelector('#np-open')?.addEventListener('click', openDoc);
+  container.querySelector('#npm-open')?.addEventListener('click', openDoc);
+
+  container.querySelector('#npm-print')?.addEventListener('click', () => {
+    audio.playClick();
+    window.print();
+  });
+  container.querySelector('#npm-exit')?.addEventListener('click', () => {
+    audio.playClick();
+    win.close();
+  });
+
+  container.querySelector('#npm-timedate')?.addEventListener('click', insertTimeDate);
+  container.querySelector('#npm-selall')?.addEventListener('click', () => {
+    audio.playClick();
+    textarea.select();
+  });
+  container.querySelector('#npm-undo')?.addEventListener('click', () => {
+    audio.playClick();
+    document.execCommand('undo');
+  });
+  container.querySelector('#npm-cut')?.addEventListener('click', () => {
+    audio.playClick();
+    document.execCommand('cut');
+  });
+  container.querySelector('#npm-copy')?.addEventListener('click', () => {
+    audio.playClick();
+    document.execCommand('copy');
+  });
+  container.querySelector('#npm-paste')?.addEventListener('click', () => {
+    audio.playClick();
+    navigator.clipboard?.readText().then(t => {
+      if (t) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        textarea.value = textarea.value.substring(0, start) + t + textarea.value.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + t.length;
+        updatePos();
+      }
+    }).catch(() => document.execCommand('paste'));
+  });
+  container.querySelector('#npm-del')?.addEventListener('click', () => {
+    audio.playClick();
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    if (start !== end) {
+      textarea.value = textarea.value.substring(0, start) + textarea.value.substring(end);
+      textarea.selectionStart = textarea.selectionEnd = start;
+      updatePos();
+    }
+  });
+
+  container.querySelector('#npm-find')?.addEventListener('click', () => {
+    audio.playClick();
+    const q = prompt('Find what:');
+    if (q) {
+      const idx = textarea.value.indexOf(q, textarea.selectionStart);
+      if (idx !== -1) {
+        textarea.setSelectionRange(idx, idx + q.length);
+        textarea.focus();
+      } else {
+        alert(`Cannot find "${q}"`);
+      }
+    }
+  });
+
+  container.querySelector('#npm-about')?.addEventListener('click', () => {
+    audio.playClick();
+    alert('Notepad for Windows 95\nRelease 2026.11\n(C) 1995-2026 Piush KS.');
   });
 
   // Export to browser download
@@ -268,6 +470,7 @@ export function renderPaint(container: HTMLElement, win: Win95Window) {
         <button type="button" class="retro-btn !py-0.5 !px-2 font-bold" id="paint-clear">Clear</button>
         <button type="button" class="retro-btn !py-0.5 !px-2 font-bold text-[#000080]" id="paint-save">Save VFS</button>
         <button type="button" class="retro-btn !py-0.5 !px-2 font-bold" id="paint-export">Export PNG</button>
+        <button type="button" class="retro-btn !py-0.5 !px-2 font-bold text-emerald-800" id="paint-wallpaper" title="Set as desktop wallpaper">Set Wallpaper 🖼️</button>
         <span class="w-[1px] h-4 bg-gray-600 mx-1"></span>
         <span class="text-[11px] font-bold">Brush:</span>
         <select id="paint-size" class="retro-select !py-0.5 !px-1 text-xs">
@@ -452,6 +655,23 @@ export function renderPaint(container: HTMLElement, win: Win95Window) {
     a.href = canvas.toDataURL('image/png');
     a.download = 'Drawing.png';
     a.click();
+  });
+
+  // Set as Wallpaper
+  container.querySelector('#paint-wallpaper')?.addEventListener('click', () => {
+    audio.playChord();
+    const dataUrl = canvas.toDataURL('image/png');
+    const desktop = document.getElementById('win95-desktop-screen');
+    if (desktop) {
+      desktop.style.backgroundImage = `url("${dataUrl}")`;
+      desktop.style.backgroundRepeat = 'repeat';
+      desktop.style.backgroundPosition = 'center';
+      try {
+        localStorage.setItem('win95_desktop_wallpaper', 'custom');
+        localStorage.setItem('win95_custom_wallpaper_data', dataUrl);
+      } catch (_) {}
+    }
+    alert('Your painting has been set as the Windows 95 Desktop Wallpaper!');
   });
 
   // Basic flood fill

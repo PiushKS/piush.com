@@ -11,6 +11,9 @@ import type { Win95Window } from '../windowManager';
 export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
   win.setTitle('Minesweeper');
 
+  type Difficulty = 'beginner' | 'intermediate' | 'expert' | 'custom';
+  let difficulty: Difficulty = 'beginner';
+
   let rows = 9;
   let cols = 9;
   let totalMines = 10;
@@ -18,8 +21,10 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
   let seconds = 0;
   let timerId: number | null = null;
   let isGameOver = false;
+  let isGameWon = false;
   let isFirstClick = true;
-  let touchFlagMode = false; // For mobile devices
+  let touchFlagMode = false;
+  let marksEnabled = true;
 
   type Cell = {
     r: number;
@@ -32,14 +37,91 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
   };
 
   let grid: Cell[][] = [];
+  let cellButtons: HTMLButtonElement[][] = [];
+
+  const NUMBER_COLORS: Record<number, string> = {
+    1: '#0000ff', // Blue
+    2: '#008000', // Green
+    3: '#ff0000', // Red
+    4: '#000080', // Dark Blue
+    5: '#800000', // Maroon / Dark Red
+    6: '#008080', // Teal
+    7: '#000000', // Black
+    8: '#808080', // Gray
+  };
+
+  type BestScores = Record<'beginner' | 'intermediate' | 'expert', { time: number; name: string }>;
+  const DEFAULT_SCORES: BestScores = {
+    beginner: { time: 99, name: 'Anonymous' },
+    intermediate: { time: 999, name: 'Anonymous' },
+    expert: { time: 999, name: 'Anonymous' },
+  };
+
+  const getBestScores = (): BestScores => {
+    try {
+      const saved = localStorage.getItem('win95_minesweeper_scores');
+      if (saved) return JSON.parse(saved);
+    } catch (_) {}
+    return { ...DEFAULT_SCORES };
+  };
+
+  const saveBestScores = (scores: BestScores) => {
+    try {
+      localStorage.setItem('win95_minesweeper_scores', JSON.stringify(scores));
+    } catch (_) {}
+  };
+
+  const formatLCD = (val: number): string => {
+    if (val < 0) {
+      return '-' + String(Math.abs(val)).padStart(2, '0');
+    }
+    return String(Math.min(999, Math.max(0, val))).padStart(3, '0');
+  };
+
+  const updateMineCountLCD = () => {
+    const countEl = container.querySelector('#mine-count');
+    if (countEl) countEl.textContent = formatLCD(minesRemaining);
+  };
+
+  const updateTimerLCD = () => {
+    const timerEl = container.querySelector('#mine-timer');
+    if (timerEl) timerEl.textContent = formatLCD(seconds);
+  };
+
+  const setSmiley = (face: 'normal' | 'worried' | 'lost' | 'won') => {
+    const sm = container.querySelector('#mine-smiley');
+    if (!sm) return;
+    const map = {
+      normal: '🙂',
+      worried: '😮',
+      lost: '😵',
+      won: '😎',
+    };
+    sm.textContent = map[face];
+  };
+
+  const adjustWindowSize = (c: number, r: number) => {
+    if (typeof window === 'undefined') return;
+    const isMobile = window.innerWidth < 640;
+    if (isMobile) return;
+
+    const targetW = Math.max(270, c * 24 + 48);
+    const targetH = Math.max(380, r * 24 + 180);
+
+    if (win.element) {
+      win.element.style.width = `${Math.min(window.innerWidth - 40, targetW)}px`;
+      win.element.style.height = `${Math.min(window.innerHeight - 80, targetH)}px`;
+    }
+  };
 
   const startTimer = () => {
     if (timerId !== null) clearInterval(timerId);
     seconds = 0;
+    updateTimerLCD();
     timerId = window.setInterval(() => {
       seconds = Math.min(999, seconds + 1);
-      const timerEl = container.querySelector('#mine-timer');
-      if (timerEl) timerEl.textContent = String(seconds).padStart(3, '0');
+      updateTimerLCD();
+      audio.playTick();
     }, 1000);
   };
 
@@ -50,9 +132,44 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
     }
   };
 
+  const updateCellDOM = (r: number, c: number, pressed = false) => {
+    const cell = grid[r][c];
+    const btn = cellButtons[r]?.[c];
+    if (!btn) return;
+
+    if (cell.isRevealed) {
+      btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#bdbdbd] border border-[#808080] p-0';
+      if (cell.isMine) {
+        btn.textContent = '💣';
+      } else if (cell.neighborMines > 0) {
+        btn.textContent = String(cell.neighborMines);
+        btn.style.color = NUMBER_COLORS[cell.neighborMines] || '#000';
+      } else {
+        btn.textContent = '';
+      }
+    } else {
+      if (pressed) {
+        btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#bdbdbd] border border-[#808080] p-0';
+      } else {
+        btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#7b7b7b] active:border-[#808080] p-0';
+      }
+
+      if (cell.isFlagged) {
+        btn.textContent = '🚩';
+        btn.style.color = '#ff0000';
+      } else if (cell.isQuestion) {
+        btn.textContent = '?';
+        btn.style.color = '#000080';
+      } else {
+        btn.textContent = '';
+      }
+    }
+  };
+
   const initGame = () => {
     stopTimer();
     isGameOver = false;
+    isGameWon = false;
     isFirstClick = true;
     minesRemaining = totalMines;
     seconds = 0;
@@ -73,7 +190,12 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
       }
       grid.push(row);
     }
-    renderUI();
+
+    setSmiley('normal');
+    updateMineCountLCD();
+    updateTimerLCD();
+    buildBoardDOM();
+    adjustWindowSize(cols, rows);
   };
 
   const placeMines = (safeR: number, safeC: number) => {
@@ -81,13 +203,13 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
     while (placed < totalMines) {
       const r = Math.floor(Math.random() * rows);
       const c = Math.floor(Math.random() * cols);
-      // Safe first click zone (safeR, safeC)
+      // Guarantee safe cell AND 3x3 surrounding zone has 0 mines on first click
       if ((Math.abs(r - safeR) <= 1 && Math.abs(c - safeC) <= 1) || grid[r][c].isMine) continue;
       grid[r][c].isMine = true;
       placed++;
     }
 
-    // Compute neighbors
+    // Compute neighbor counts
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         if (grid[r][c].isMine) continue;
@@ -107,7 +229,7 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
   };
 
   const revealCell = (r: number, c: number) => {
-    if (r < 0 || r >= rows || c < 0 || c >= cols || isGameOver) return;
+    if (r < 0 || r >= rows || c < 0 || c >= cols || isGameOver || isGameWon) return;
     const cell = grid[r][c];
     if (cell.isRevealed || cell.isFlagged) return;
 
@@ -122,14 +244,36 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
     if (cell.isMine) {
       isGameOver = true;
       stopTimer();
-      audio.playError();
-      revealAllMines();
-      setSmiley('😵');
-      renderBoard();
+      audio.playExplosion();
+      setSmiley('lost');
+
+      // Reveal all mines and mark false flags
+      for (let rr = 0; rr < rows; rr++) {
+        for (let cc = 0; cc < cols; cc++) {
+          const item = grid[rr][cc];
+          const btn = cellButtons[rr]?.[cc];
+          if (!btn) continue;
+
+          if (rr === r && cc === c) {
+            // Detonated mine: bright red background
+            btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-red-600 text-black border border-[#808080] p-0';
+            btn.textContent = '💣';
+          } else if (item.isMine && !item.isFlagged) {
+            // Unflagged mine: show on gray
+            btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#bdbdbd] border border-[#808080] p-0';
+            btn.textContent = '💣';
+          } else if (!item.isMine && item.isFlagged) {
+            // False flag: crossed out
+            btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#bdbdbd] border border-[#808080] p-0 text-red-600 font-bold';
+            btn.textContent = '❌';
+          }
+        }
+      }
       return;
     }
 
     audio.playClick();
+    updateCellDOM(r, c);
 
     if (cell.neighborMines === 0) {
       for (let dr = -1; dr <= 1; dr++) {
@@ -142,20 +286,12 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
     }
 
     checkWin();
-    renderBoard();
-  };
-
-  const revealAllMines = () => {
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        if (grid[r][c].isMine) grid[r][c].isRevealed = true;
-      }
-    }
   };
 
   const toggleFlag = (r: number, c: number) => {
+    if (isGameOver || isGameWon) return;
     const cell = grid[r][c];
-    if (cell.isRevealed || isGameOver) return;
+    if (cell.isRevealed) return;
 
     audio.playClick();
     if (!cell.isFlagged && !cell.isQuestion) {
@@ -163,20 +299,21 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
       minesRemaining--;
     } else if (cell.isFlagged) {
       cell.isFlagged = false;
-      cell.isQuestion = true;
+      if (marksEnabled) {
+        cell.isQuestion = true;
+      }
       minesRemaining++;
     } else {
       cell.isQuestion = false;
     }
 
-    const countEl = container.querySelector('#mine-count');
-    if (countEl) countEl.textContent = String(minesRemaining).padStart(3, '0');
-    renderBoard();
+    updateMineCountLCD();
+    updateCellDOM(r, c);
   };
 
   const chordCell = (r: number, c: number) => {
     const cell = grid[r][c];
-    if (!cell.isRevealed || cell.neighborMines === 0 || isGameOver) return;
+    if (!cell.isRevealed || cell.neighborMines === 0 || isGameOver || isGameWon) return;
 
     let flagCount = 0;
     for (let dr = -1; dr <= 1; dr++) {
@@ -212,155 +349,588 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
       }
     }
 
-    if (unrevealedNonMines === 0 && !isGameOver) {
+    if (unrevealedNonMines === 0 && !isGameOver && !isGameWon) {
       isGameOver = true;
+      isGameWon = true;
       stopTimer();
-      setSmiley('😎');
+      setSmiley('won');
       audio.playTada();
-      alert(`🎉 Victory! Minesweeper cleared in ${seconds} seconds!`);
+
+      // Flag all remaining mines
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (grid[r][c].isMine && !grid[r][c].isFlagged) {
+            grid[r][c].isFlagged = true;
+            updateCellDOM(r, c);
+          }
+        }
+      }
+      minesRemaining = 0;
+      updateMineCountLCD();
+
+      if (difficulty !== 'custom') {
+        const scores = getBestScores();
+        const currentBest = scores[difficulty].time;
+        if (seconds < currentBest) {
+          showHighScorePrompt(difficulty, seconds);
+        }
+      }
     }
   };
 
-  const setSmiley = (face: string) => {
-    const sm = container.querySelector('#mine-smiley');
-    if (sm) sm.textContent = face;
+  const showHighScorePrompt = (diff: 'beginner' | 'intermediate' | 'expert', time: number) => {
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-72 bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>Fastest Mine Sweepers</span>
+        </div>
+        <div class="p-3 text-xs font-mono space-y-2 text-black">
+          <p class="font-bold text-[#002266]">You have the fastest time for ${diff} level!</p>
+          <p>Please enter your name:</p>
+          <input type="text" id="ms-player-name" class="w-full retro-inset px-2 py-1 bg-white text-black text-xs font-bold outline-none border border-[#808080]" value="Anonymous" maxlength="20" />
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" id="ms-save-score-btn" class="retro-btn !px-4 !py-1 font-bold">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(modal);
+
+    const input = modal.querySelector('#ms-player-name') as HTMLInputElement;
+    input?.select();
+
+    const saveAndClose = () => {
+      const name = input?.value.trim() || 'Anonymous';
+      const scores = getBestScores();
+      scores[diff] = { time, name };
+      saveBestScores(scores);
+      modal.remove();
+      showBestScoresDialog();
+    };
+
+    modal.querySelector('#ms-save-score-btn')?.addEventListener('click', saveAndClose);
+    input?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') saveAndClose();
+    });
   };
 
-  const NUMBER_COLORS: Record<number, string> = {
-    1: '#0000ff',
-    2: '#008000',
-    3: '#ff0000',
-    4: '#000080',
-    5: '#800000',
-    6: '#008080',
-    7: '#000000',
-    8: '#808080',
+  const showBestScoresDialog = () => {
+    const scores = getBestScores();
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-80 bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>Fastest Mine Sweepers</span>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="ms-scores-close">✕</button>
+        </div>
+        <div class="p-3 text-xs font-mono space-y-3 text-black">
+          <div class="space-y-1.5 border border-[#808080] p-2 bg-[#d4d0c8]">
+            <div class="flex justify-between items-center">
+              <span class="font-bold">Beginner:</span>
+              <span>${scores.beginner.time} seconds</span>
+              <span class="font-bold truncate max-w-[90px]">${scores.beginner.name}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">Intermediate:</span>
+              <span>${scores.intermediate.time} seconds</span>
+              <span class="font-bold truncate max-w-[90px]">${scores.intermediate.name}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">Expert:</span>
+              <span>${scores.expert.time} seconds</span>
+              <span class="font-bold truncate max-w-[90px]">${scores.expert.name}</span>
+            </div>
+          </div>
+          <div class="flex justify-between items-center pt-1">
+            <button type="button" id="ms-reset-scores-btn" class="retro-btn !px-3 !py-1 text-[11px]">Reset Scores</button>
+            <button type="button" id="ms-ok-scores-btn" class="retro-btn !px-5 !py-1 font-bold">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(modal);
+
+    modal.querySelector('#ms-scores-close')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#ms-ok-scores-btn')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#ms-reset-scores-btn')?.addEventListener('click', () => {
+      saveBestScores(DEFAULT_SCORES);
+      modal.remove();
+      showBestScoresDialog();
+    });
   };
 
-  const renderBoard = () => {
+  const showCustomDialog = () => {
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-72 bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>Custom Field</span>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="ms-custom-close">✕</button>
+        </div>
+        <div class="p-3 text-xs font-mono space-y-2.5 text-black">
+          <div class="flex justify-between items-center">
+            <label for="ms-cust-h">Height (9-24):</label>
+            <input type="number" id="ms-cust-h" class="w-16 retro-inset px-1 py-0.5 text-center font-bold bg-white text-black" value="${rows}" min="9" max="24" />
+          </div>
+          <div class="flex justify-between items-center">
+            <label for="ms-cust-w">Width (9-30):</label>
+            <input type="number" id="ms-cust-w" class="w-16 retro-inset px-1 py-0.5 text-center font-bold bg-white text-black" value="${cols}" min="9" max="30" />
+          </div>
+          <div class="flex justify-between items-center">
+            <label for="ms-cust-m">Mines (10-668):</label>
+            <input type="number" id="ms-cust-m" class="w-16 retro-inset px-1 py-0.5 text-center font-bold bg-white text-black" value="${totalMines}" min="10" max="668" />
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" id="ms-cust-ok" class="retro-btn !px-4 !py-1 font-bold">OK</button>
+            <button type="button" id="ms-cust-cancel" class="retro-btn !px-3 !py-1">Cancel</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(modal);
+
+    modal.querySelector('#ms-custom-close')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#ms-cust-cancel')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#ms-cust-ok')?.addEventListener('click', () => {
+      const hInput = modal.querySelector('#ms-cust-h') as HTMLInputElement;
+      const wInput = modal.querySelector('#ms-cust-w') as HTMLInputElement;
+      const mInput = modal.querySelector('#ms-cust-m') as HTMLInputElement;
+
+      const newH = Math.max(9, Math.min(24, parseInt(hInput.value) || 9));
+      const newW = Math.max(9, Math.min(30, parseInt(wInput.value) || 9));
+      const maxMines = Math.floor((newH - 1) * (newW - 1));
+      const newM = Math.max(10, Math.min(maxMines, parseInt(mInput.value) || 10));
+
+      rows = newH;
+      cols = newW;
+      totalMines = newM;
+      difficulty = 'custom';
+      modal.remove();
+      renderUI();
+      initGame();
+    });
+  };
+
+  const showHelpDialog = () => {
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-80 bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>How to Play Minesweeper</span>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="ms-help-close">✕</button>
+        </div>
+        <div class="p-3 text-xs font-mono space-y-2 text-black leading-relaxed">
+          <p class="font-bold text-[#002266]">Game Rules:</p>
+          <ul class="list-disc pl-4 space-y-1 text-[11px]">
+            <li><strong>Dig:</strong> Left-click to reveal a covered square.</li>
+            <li><strong>Flag:</strong> Right-click (or use Flag Mode / Long-press on mobile) to mark suspected mines.</li>
+            <li><strong>Numbers:</strong> Tell how many mines are adjacent in the 8 neighboring squares.</li>
+            <li><strong>Chording:</strong> Click an uncovered number when surrounding flags equal its value to uncover the rest!</li>
+            <li><strong>Smiley:</strong> Click the smiley button anytime to restart.</li>
+          </ul>
+          <div class="flex justify-end pt-2">
+            <button type="button" id="ms-help-ok" class="retro-btn !px-5 !py-1 font-bold">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(modal);
+
+    modal.querySelector('#ms-help-close')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#ms-help-ok')?.addEventListener('click', () => modal.remove());
+  };
+
+  const buildBoardDOM = () => {
     const boardEl = container.querySelector('#mine-grid-container');
     if (!boardEl) return;
 
     boardEl.innerHTML = '';
+    cellButtons = [];
+
     const table = document.createElement('div');
-    table.className = 'grid border-2 border-[#808080] border-t-black border-l-black inline-block select-none';
-    table.style.gridTemplateColumns = `repeat(${cols}, 22px)`;
+    table.className = 'grid border-t-[3px] border-l-[3px] border-[#808080] border-b-[3px] border-r-[3px] border-white inline-block select-none bg-[#c0c0c0]';
+    table.style.gridTemplateColumns = `repeat(${cols}, 24px)`;
 
     for (let r = 0; r < rows; r++) {
+      const rowBtns: HTMLButtonElement[] = [];
       for (let c = 0; c < cols; c++) {
-        const cell = grid[r][c];
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `size-[22px] text-xs font-black flex items-center justify-center select-none ${
-          cell.isRevealed
-            ? 'bg-[#c0c0c0] border border-[#808080]'
-            : 'bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black active:border-[#808080]'
-        }`;
+        btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#7b7b7b] active:border-[#808080] p-0';
+        btn.dataset.r = String(r);
+        btn.dataset.c = String(c);
 
-        if (cell.isRevealed) {
-          if (cell.isMine) {
-            btn.textContent = '💣';
-            btn.classList.add('bg-red-400');
-          } else if (cell.neighborMines > 0) {
-            btn.textContent = String(cell.neighborMines);
-            btn.style.color = NUMBER_COLORS[cell.neighborMines];
+        let touchTimeout: number | null = null;
+        let didLongPress = false;
+
+        // Mouse Down: change smiley to worried face and show pressed cell
+        btn.addEventListener('mousedown', (e) => {
+          if (isGameOver || isGameWon) return;
+          if (e.button === 0) {
+            setSmiley('worried');
+            const cell = grid[r][c];
+            if (!cell.isRevealed && !cell.isFlagged) {
+              btn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#bdbdbd] border border-[#808080] p-0';
+            } else if (cell.isRevealed && cell.neighborMines > 0) {
+              // Highlight neighbors for chording
+              for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                  const nr = r + dr;
+                  const nc = c + dc;
+                  if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                    const nCell = grid[nr][nc];
+                    if (!nCell.isRevealed && !nCell.isFlagged) {
+                      const nBtn = cellButtons[nr]?.[nc];
+                      if (nBtn) nBtn.className = 'size-6 text-xs font-black flex items-center justify-center select-none bg-[#bdbdbd] border border-[#808080] p-0';
+                    }
+                  }
+                }
+              }
+            }
           }
-        } else if (cell.isFlagged) {
-          btn.textContent = '🚩';
-        } else if (cell.isQuestion) {
-          btn.textContent = '?';
-        }
+        });
 
-        btn.onclick = () => {
+        // Mouse Up / Leave: restore normal smiley and revert unpressed cells
+        const revertPressed = () => {
+          if (!isGameOver && !isGameWon) setSmiley('normal');
+          const cell = grid[r][c];
+          if (!cell.isRevealed) updateCellDOM(r, c);
+          if (cell.isRevealed && cell.neighborMines > 0) {
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                  const nCell = grid[nr][nc];
+                  if (!nCell.isRevealed) updateCellDOM(nr, nc);
+                }
+              }
+            }
+          }
+        };
+
+        btn.addEventListener('mouseup', revertPressed);
+        btn.addEventListener('mouseleave', revertPressed);
+
+        // Click handler
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (didLongPress) {
+            didLongPress = false;
+            return;
+          }
+
           if (touchFlagMode) {
             toggleFlag(r, c);
-          } else if (cell.isRevealed) {
+            return;
+          }
+
+          const cell = grid[r][c];
+          if (cell.isRevealed) {
             chordCell(r, c);
           } else {
             revealCell(r, c);
           }
-        };
+        });
 
-        btn.oncontextmenu = (e) => {
+        // Context Menu (Right Click)
+        btn.addEventListener('contextmenu', (e) => {
           e.preventDefault();
           toggleFlag(r, c);
-        };
+        });
 
+        // Mobile Touch Events (Long Press for Flag)
+        btn.addEventListener('touchstart', () => {
+          didLongPress = false;
+          touchTimeout = window.setTimeout(() => {
+            didLongPress = true;
+            toggleFlag(r, c);
+            if (navigator.vibrate) navigator.vibrate(30);
+          }, 260);
+        }, { passive: true });
+
+        btn.addEventListener('touchend', () => {
+          if (touchTimeout) clearTimeout(touchTimeout);
+        });
+
+        btn.addEventListener('touchcancel', () => {
+          if (touchTimeout) clearTimeout(touchTimeout);
+        });
+
+        rowBtns.push(btn);
         table.appendChild(btn);
       }
+      cellButtons.push(rowBtns);
     }
     boardEl.appendChild(table);
   };
 
   const renderUI = () => {
     container.innerHTML = `
-      <div class="flex flex-col items-center bg-[#c0c0c0] p-2 select-none font-mono">
-        <!-- Difficulty Selector -->
-        <div class="flex items-center justify-between w-full max-w-sm mb-2 text-xs">
-          <div class="flex gap-1">
-            <button type="button" class="retro-btn !py-0.5 !px-2 ${cols === 9 ? 'font-bold is-active' : ''}" id="m-diff-easy">Beginner</button>
-            <button type="button" class="retro-btn !py-0.5 !px-2 ${cols === 16 ? 'font-bold is-active' : ''}" id="m-diff-med">Intermediate</button>
-            <button type="button" class="retro-btn !py-0.5 !px-2 ${cols === 30 ? 'font-bold is-active' : ''}" id="m-diff-hard">Expert</button>
+      <div class="flex flex-col h-full bg-[#c0c0c0] select-none font-mono text-black">
+        <!-- Windows 95 Menu Bar -->
+        <div class="flex items-center gap-1 px-1.5 py-0.5 border-b border-[#808080] bg-[#c0c0c0] text-xs relative">
+          <!-- Game Menu -->
+          <div class="relative group" id="ms-menu-game-parent">
+            <button type="button" class="px-2 py-0.5 hover:bg-[#000080] hover:text-white rounded-none cursor-default font-normal" id="ms-menu-game-btn">
+              <span class="underline">G</span>ame
+            </button>
+            <div class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[170px] z-50 text-black text-xs" id="ms-game-dropdown">
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="ms-menu-new">
+                <span>New</span>
+                <span class="text-gray-600 group-hover:text-gray-300 text-[10px]">F2</span>
+              </button>
+              <div class="border-b border-[#808080] border-t border-white my-1"></div>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="ms-menu-beginner">
+                <span>Beginner</span>
+                <span>${difficulty === 'beginner' ? '✓' : ''}</span>
+              </button>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="ms-menu-intermediate">
+                <span>Intermediate</span>
+                <span>${difficulty === 'intermediate' ? '✓' : ''}</span>
+              </button>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="ms-menu-expert">
+                <span>Expert</span>
+                <span>${difficulty === 'expert' ? '✓' : ''}</span>
+              </button>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="ms-menu-custom">
+                <span>Custom...</span>
+                <span>${difficulty === 'custom' ? '✓' : ''}</span>
+              </button>
+              <div class="border-b border-[#808080] border-t border-white my-1"></div>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="ms-menu-marks">
+                <span>Marks (?)</span>
+                <span>${marksEnabled ? '✓' : ''}</span>
+              </button>
+              <div class="border-b border-[#808080] border-t border-white my-1"></div>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="ms-menu-best">
+                <span>Best Times...</span>
+              </button>
+              <div class="border-b border-[#808080] border-t border-white my-1"></div>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="ms-menu-exit">
+                <span>Exit</span>
+              </button>
+            </div>
           </div>
-          <!-- Mobile flag mode toggle -->
-          <button type="button" class="retro-btn !py-0.5 !px-2 font-bold text-xs" id="m-toggle-mode">
-            Mode: ${touchFlagMode ? '🚩 Flag' : '⛏️ Dig'}
-          </button>
+
+          <!-- Help Menu -->
+          <div class="relative group" id="ms-menu-help-parent">
+            <button type="button" class="px-2 py-0.5 hover:bg-[#000080] hover:text-white rounded-none cursor-default font-normal" id="ms-menu-help-btn">
+              <span class="underline">H</span>elp
+            </button>
+            <div class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[150px] z-50 text-black text-xs" id="ms-help-dropdown">
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="ms-menu-how">
+                <span>How to Play</span>
+              </button>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="ms-menu-about">
+                <span>About Minesweeper</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Flag Mode Pill -->
+          <div class="ml-auto sm:hidden">
+            <button type="button" class="retro-btn !py-0 !px-2 font-bold text-[11px]" id="m-toggle-mode">
+              Mode: ${touchFlagMode ? '🚩 Flag' : '⛏️ Dig'}
+            </button>
+          </div>
         </div>
 
-        <!-- LCD Status Header -->
-        <div class="flex items-center justify-between w-full max-w-sm bg-[#c0c0c0] border-t-2 border-l-2 border-[#808080] border-b-2 border-r-2 border-white p-2 mb-2">
-          <!-- Mine Counter -->
-          <div class="bg-black text-red-600 font-black text-xl px-2 py-0.5 border border-gray-600 tracking-wider font-mono" id="mine-count">
-            ${String(minesRemaining).padStart(3, '0')}
+        <!-- Main Content Area with 3D Border -->
+        <div class="flex-1 flex flex-col items-center justify-start p-3 overflow-auto">
+          <!-- Sunken Outer Frame Container -->
+          <div class="border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] p-1.5 bg-[#c0c0c0] inline-block">
+            <!-- Header Tray (Mine Count, Smiley, Timer) -->
+            <div class="flex items-center justify-between bg-[#c0c0c0] border-t-2 border-l-2 border-[#808080] border-b-2 border-r-2 border-white px-2 py-1 mb-2">
+              <!-- Mine Counter LCD -->
+              <div class="bg-black text-[#ff0000] font-black text-xl px-1.5 py-0.5 border border-[#808080] tracking-widest font-mono leading-none" id="mine-count">
+                ${formatLCD(minesRemaining)}
+              </div>
+
+              <!-- Smiley Button -->
+              <button
+                type="button"
+                id="mine-smiley"
+                class="size-8 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#7b7b7b] active:border-t-2 active:border-l-2 active:border-[#7b7b7b] active:border-b-2 active:border-r-2 active:border-white text-lg flex items-center justify-center select-none cursor-pointer"
+                title="Reset Game"
+              >
+                🙂
+              </button>
+
+              <!-- Timer LCD -->
+              <div class="bg-black text-[#ff0000] font-black text-xl px-1.5 py-0.5 border border-[#808080] tracking-widest font-mono leading-none" id="mine-timer">
+                ${formatLCD(seconds)}
+              </div>
+            </div>
+
+            <!-- Board Grid Frame -->
+            <div id="mine-grid-container" class="overflow-auto max-w-full"></div>
           </div>
 
-          <!-- Smiley Reset Button -->
-          <button type="button" class="retro-btn size-8 text-lg font-bold flex items-center justify-center" id="mine-smiley">
-            🙂
-          </button>
-
-          <!-- Timer -->
-          <div class="bg-black text-red-600 font-black text-xl px-2 py-0.5 border border-gray-600 tracking-wider font-mono" id="mine-timer">
-            ${String(seconds).padStart(3, '0')}
+          <!-- Difficulty Quick Switcher (Desktop) -->
+          <div class="hidden sm:flex items-center gap-1 mt-2 text-xs">
+            <button type="button" class="retro-btn !py-0.5 !px-2 ${difficulty === 'beginner' ? 'font-bold is-active' : ''}" id="m-diff-easy">Beginner</button>
+            <button type="button" class="retro-btn !py-0.5 !px-2 ${difficulty === 'intermediate' ? 'font-bold is-active' : ''}" id="m-diff-med">Intermediate</button>
+            <button type="button" class="retro-btn !py-0.5 !px-2 ${difficulty === 'expert' ? 'font-bold is-active' : ''}" id="m-diff-hard">Expert</button>
+            <button type="button" class="retro-btn !py-0.5 !px-2 font-bold" id="m-desk-toggle-mode">
+              Mode: ${touchFlagMode ? '🚩 Flag' : '⛏️ Dig'}
+            </button>
           </div>
-        </div>
-
-        <!-- Board Grid -->
-        <div id="mine-grid-container" class="overflow-auto max-w-full max-h-[380px]"></div>
-
-        <div class="text-[10px] text-gray-700 mt-2 text-center">
-          Left-click: Reveal • Right-click (or Mode): Flag • Click number: Chord
         </div>
       </div>
     `;
 
-    container.querySelector('#mine-smiley')?.addEventListener('click', initGame);
+    // Dropdown toggles
+    const gameBtn = container.querySelector('#ms-menu-game-btn');
+    const gameDropdown = container.querySelector('#ms-game-dropdown');
+    const helpBtn = container.querySelector('#ms-menu-help-btn');
+    const helpDropdown = container.querySelector('#ms-help-dropdown');
 
+    const closeMenus = () => {
+      gameDropdown?.classList.add('hidden');
+      helpDropdown?.classList.add('hidden');
+    };
+
+    gameBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      helpDropdown?.classList.add('hidden');
+      gameDropdown?.classList.toggle('hidden');
+    });
+
+    helpBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      gameDropdown?.classList.add('hidden');
+      helpDropdown?.classList.toggle('hidden');
+    });
+
+    container.addEventListener('click', closeMenus);
+
+    // Menu Actions
+    container.querySelector('#ms-menu-new')?.addEventListener('click', () => {
+      closeMenus();
+      initGame();
+    });
+
+    container.querySelector('#ms-menu-beginner')?.addEventListener('click', () => {
+      closeMenus();
+      difficulty = 'beginner';
+      rows = 9; cols = 9; totalMines = 10;
+      renderUI();
+      initGame();
+    });
+
+    container.querySelector('#ms-menu-intermediate')?.addEventListener('click', () => {
+      closeMenus();
+      difficulty = 'intermediate';
+      rows = 16; cols = 16; totalMines = 40;
+      renderUI();
+      initGame();
+    });
+
+    container.querySelector('#ms-menu-expert')?.addEventListener('click', () => {
+      closeMenus();
+      difficulty = 'expert';
+      rows = 16; cols = 30; totalMines = 99;
+      renderUI();
+      initGame();
+    });
+
+    container.querySelector('#ms-menu-custom')?.addEventListener('click', () => {
+      closeMenus();
+      showCustomDialog();
+    });
+
+    container.querySelector('#ms-menu-marks')?.addEventListener('click', () => {
+      closeMenus();
+      marksEnabled = !marksEnabled;
+      renderUI();
+      buildBoardDOM();
+    });
+
+    container.querySelector('#ms-menu-best')?.addEventListener('click', () => {
+      closeMenus();
+      showBestScoresDialog();
+    });
+
+    container.querySelector('#ms-menu-exit')?.addEventListener('click', () => {
+      closeMenus();
+      win.close();
+    });
+
+    container.querySelector('#ms-menu-how')?.addEventListener('click', () => {
+      closeMenus();
+      showHelpDialog();
+    });
+
+    container.querySelector('#ms-menu-about')?.addEventListener('click', () => {
+      closeMenus();
+      showHelpDialog();
+    });
+
+    // Quick Buttons
     container.querySelector('#m-diff-easy')?.addEventListener('click', () => {
-      rows = 9; cols = 9; totalMines = 10; initGame();
+      difficulty = 'beginner';
+      rows = 9; cols = 9; totalMines = 10;
+      renderUI();
+      initGame();
     });
+
     container.querySelector('#m-diff-med')?.addEventListener('click', () => {
-      rows = 16; cols = 16; totalMines = 40; initGame();
+      difficulty = 'intermediate';
+      rows = 16; cols = 16; totalMines = 40;
+      renderUI();
+      initGame();
     });
+
     container.querySelector('#m-diff-hard')?.addEventListener('click', () => {
-      rows = 16; cols = 30; totalMines = 99; initGame();
+      difficulty = 'expert';
+      rows = 16; cols = 30; totalMines = 99;
+      renderUI();
+      initGame();
     });
 
-    container.querySelector('#m-toggle-mode')?.addEventListener('click', () => {
+    const toggleModeHandler = () => {
       touchFlagMode = !touchFlagMode;
-      const btn = container.querySelector('#m-toggle-mode');
-      if (btn) btn.textContent = `Mode: ${touchFlagMode ? '🚩 Flag' : '⛏️ Dig'}`;
+      const b1 = container.querySelector('#m-toggle-mode');
+      const b2 = container.querySelector('#m-desk-toggle-mode');
+      const label = `Mode: ${touchFlagMode ? '🚩 Flag' : '⛏️ Dig'}`;
+      if (b1) b1.textContent = label;
+      if (b2) b2.textContent = label;
       audio.playClick();
+    };
+
+    container.querySelector('#m-toggle-mode')?.addEventListener('click', toggleModeHandler);
+    container.querySelector('#m-desk-toggle-mode')?.addEventListener('click', toggleModeHandler);
+
+    // Smiley Click
+    container.querySelector('#mine-smiley')?.addEventListener('click', () => {
+      audio.playClick();
+      initGame();
     });
 
-    renderBoard();
+    buildBoardDOM();
   };
 
+  // Keyboard F2 Shortcut for New Game
+  const keyHandler = (e: KeyboardEvent) => {
+    if (e.key === 'F2') {
+      e.preventDefault();
+      initGame();
+    }
+  };
+  window.addEventListener('keydown', keyHandler);
+
+  renderUI();
   initGame();
 
   win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
     stopTimer();
+    window.removeEventListener('keydown', keyHandler);
   });
 }
 

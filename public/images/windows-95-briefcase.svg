@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Windows 95 Briefcase Icon -->
+  <!-- Handle -->
+  <path d="M12 7h8v3h-2V9h-4v1h-2V7z" fill="#704020" stroke="#000000" stroke-width="1" />
+  <!-- Briefcase Body -->
+  <rect x="5" y="10" width="22" height="17" rx="1" fill="#8b5a2b" stroke="#000000" stroke-width="1" />
+  <!-- Leather Straps & Corners -->
+  <rect x="8" y="10" width="3" height="17" fill="#663300" />
+  <rect x="21" y="10" width="3" height="17" fill="#663300" />
+  <!-- Gold Latches -->
+  <rect x="8" y="17" width="3" height="3" fill="#ffd700" stroke="#000000" stroke-width="1" />
+  <rect x="21" y="17" width="3" height="3" fill="#ffd700" stroke="#000000" stroke-width="1" />
+  <!-- Center lock -->
+  <rect x="15" y="12" width="2" height="3" fill="#ffd700" />
+  <!-- Seam line -->
+  <line x1="5" y1="18" x2="27" y2="18" stroke="#4a2810" stroke-width="1" />
+</svg>

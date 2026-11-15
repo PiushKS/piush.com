@@ -854,3 +854,68 @@ export function renderTaskManager(container: HTMLElement, win: Win95Window) {
   renderList();
 }
 
+/**
+ * Authentic Microsoft System Information Utility
+ */
+export function renderSystemInfo(container: HTMLElement, win: Win95Window) {
+  win.setTitle('System Information');
+  container.innerHTML = `
+    <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none p-3 space-y-3">
+      <!-- Menubar -->
+      <div class="flex gap-3 px-2 py-0.5 text-xs bg-[#c0c0c0] border-b border-black/40 -mt-1 -mx-1">
+        <span>File</span>
+        <span>Edit</span>
+        <span>View</span>
+        <span>Help</span>
+      </div>
+
+      <!-- Main Split Pane -->
+      <div class="flex-1 flex gap-2 overflow-hidden">
+        <!-- Tree View -->
+        <div class="w-44 retro-inset p-2 bg-white text-xs overflow-auto space-y-1">
+          <div class="font-bold text-[#000080] cursor-pointer">📁 System Information</div>
+          <div class="pl-3 text-black cursor-pointer hover:bg-[#000080] hover:text-white">├─ ℹ️ System Summary</div>
+          <div class="pl-3 text-black cursor-pointer hover:bg-[#000080] hover:text-white">├─ 🖴 Hardware Resources</div>
+          <div class="pl-3 text-black cursor-pointer hover:bg-[#000080] hover:text-white">├─ 🧩 Components</div>
+          <div class="pl-3 text-black cursor-pointer hover:bg-[#000080] hover:text-white">└─ ⚙️ Software Env</div>
+        </div>
+
+        <!-- Details Table -->
+        <div class="flex-1 retro-inset p-2 bg-white text-xs overflow-auto font-mono">
+          <table class="w-full text-left text-[11px] border-collapse">
+            <thead>
+              <tr class="border-b border-black/30 font-bold text-gray-700">
+                <th class="py-1 pr-3">Item</th>
+                <th class="py-1">Value</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr><td class="py-1 font-bold">Operating System</td><td>Piush 95 (Desktop Edition)</td></tr>
+              <tr><td class="py-1 font-bold">Version</td><td>4.00.950 B (Release 2026.11)</td></tr>
+              <tr><td class="py-1 font-bold">System Manufacturer</td><td>Piush KS Engineering Labs</td></tr>
+              <tr><td class="py-1 font-bold">Processor Architecture</td><td>Apple Silicon / x86_64 Unified</td></tr>
+              <tr><td class="py-1 font-bold">Static Engine Core</td><td>Astro 5.18.2 Static Edge</td></tr>
+              <tr><td class="py-1 font-bold">Total Physical Memory</td><td>65,536 KB RAM Available</td></tr>
+              <tr><td class="py-1 font-bold">Available System Resources</td><td class="text-emerald-700 font-bold">98% Free (Optimal)</td></tr>
+              <tr><td class="py-1 font-bold">Pre-rendered Pages</td><td>73 Verified Routes</td></tr>
+              <tr><td class="py-1 font-bold">Quiz Challenges</td><td>550 Question Master DB</td></tr>
+              <tr><td class="py-1 font-bold">Audio Synthesizer</td><td>Web Audio Pure Oscillator Synth</td></tr>
+              <tr><td class="py-1 font-bold">File System</td><td>VFS In-Memory & LocalStorage</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end gap-2 pt-1 border-t border-white">
+        <button type="button" class="retro-btn !py-0.5 !px-5 !text-xs font-bold" id="sysinfo-close-btn">Close</button>
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#sysinfo-close-btn')?.addEventListener('click', () => {
+    win.close();
+  });
+}
+
+
