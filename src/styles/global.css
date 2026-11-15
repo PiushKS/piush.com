@@ -38,7 +38,7 @@ body {
 	margin: 0;
 	padding: 0;
 	text-align: left;
-	background: #cacaca;
+	background: #ffffff;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	color: #000000;
@@ -49,47 +49,32 @@ body {
 	flex-direction: column;
 }
 
-/* Retro Desktop OS Window Wrapper */
+/* Retro Desktop OS Window Wrapper - Full Screen Edge-to-Edge */
 .retro-desktop-viewport {
 	min-height: 100vh;
 	width: 100%;
-	background-color: #cacaca;
+	background-color: #ffffff;
+	margin: 0;
 	padding: 0;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: stretch;
 	justify-content: flex-start;
-}
-
-@media (min-width: 640px) {
-	.retro-desktop-viewport {
-		padding: 1.5rem 1rem;
-	}
-}
-
-@media (min-width: 1024px) {
-	.retro-desktop-viewport {
-		padding: 2rem 1.5rem;
-	}
 }
 
 .retro-window {
 	width: 100%;
-	max-width: 1280px;
+	max-width: 100%;
+	min-height: 100vh;
 	background: #ffffff;
-	border: 0 solid #000000;
+	margin: 0;
+	padding: 0;
+	border: 0;
 	box-shadow: none;
 	display: flex;
 	flex-direction: column;
 	flex: 1 1 auto;
 	position: relative;
-}
-
-@media (min-width: 640px) {
-	.retro-window {
-		border: 2px solid #000000;
-		box-shadow: 6px 6px 0px #000000;
-	}
 }
 
 /* Retro Window Titlebar */

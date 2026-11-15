@@ -30,9 +30,10 @@ import HeaderLink from './HeaderLink.astro';
       <button
         type="button"
         class="retro-titlebar-btn"
-        aria-label="Maximize Window"
-        title="Maximize"
-        onclick="document.documentElement.requestFullscreen ? (!document.fullscreenElement ? document.documentElement.requestFullscreen() : document.exitFullscreen()) : null"
+        id="retro-maximize-btn"
+        aria-label="Maximize / Toggle Fullscreen"
+        title="Toggle Fullscreen"
+        onclick="if (!document.fullscreenElement && !document.webkitFullscreenElement) { (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } else { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }"
       >
         &#9633;
       </button>
