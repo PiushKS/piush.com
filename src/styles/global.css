@@ -825,13 +825,11 @@ body.is-desktop-minimized #win95-desktop-screen {
 
 .win95-menu-parent > .win95-submenu {
 	display: none;
+	flex-direction: column;
 	position: absolute;
 	left: 100%;
 	top: -4px;
 	min-width: 210px;
-	max-height: min(290px, calc(100vh - 60px));
-	overflow-y: auto;
-	overflow-x: hidden;
 	background: #c0c0c0;
 	border-top: 2px solid #ffffff;
 	border-left: 2px solid #ffffff;
@@ -840,6 +838,22 @@ body.is-desktop-minimized #win95-desktop-screen {
 	box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.45);
 	z-index: 10005;
 	padding: 2px;
+	overflow: visible;
+}
+
+/* Intermediate branch submenus that contain child flyout menus (MUST be visible to let flyouts escape) */
+.win95-submenu.win95-submenu-branch,
+.win95-submenu:has(.win95-menu-parent) {
+	overflow: visible !important;
+	max-height: none !important;
+}
+
+/* Leaf submenus with long item lists that scroll */
+.win95-submenu.win95-submenu-scrollable,
+.win95-submenu:not(:has(.win95-menu-parent)) {
+	max-height: min(290px, calc(100vh - 60px)) !important;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 	scrollbar-width: thin;
 	scrollbar-color: #c0c0c0 #e0e0e0;
 	-webkit-overflow-scrolling: touch;
@@ -849,6 +863,26 @@ body.is-desktop-minimized #win95-desktop-screen {
 .win95-submenu .win95-menu-parent > .win95-submenu {
 	top: -4px;
 	z-index: 10010;
+}
+.win95-submenu .win95-submenu .win95-menu-parent > .win95-submenu {
+	top: -4px;
+	z-index: 10015;
+}
+
+/* Mouse hover bridge between parent menu item and submenu */
+.win95-menu-parent > .win95-submenu::before {
+	content: '';
+	position: absolute;
+	top: -6px;
+	bottom: -6px;
+	left: -8px;
+	width: 10px;
+	background: transparent;
+	pointer-events: auto;
+}
+.win95-submenu.is-flipped-left::before {
+	left: auto;
+	right: -8px;
 }
 
 /* Authentic Windows 95 Scrollbars for Submenus & Menus */
