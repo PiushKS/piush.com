@@ -95,7 +95,7 @@ export interface AppDefinition {
 export const APPS: Record<string, AppDefinition> = {
   // Accessories
   notepad: { id: 'notepad', title: 'Notepad', icon: '📝', width: 560, height: 420, category: 'Accessories', render: renderNotepad },
-  wordpad: { id: 'wordpad', title: 'WordPad', icon: '📄', width: 620, height: 460, category: 'Accessories', render: renderWordPad },
+  wordpad: { id: 'wordpad', title: 'WordPad', icon: '📄', width: 720, height: 540, category: 'Accessories', render: renderWordPad },
   paint: { id: 'paint', title: 'Paint', icon: '🎨', width: 640, height: 480, category: 'Accessories', render: renderPaint },
   calc: { id: 'calc', title: 'Calculator', icon: '🧮', width: 340, height: 380, category: 'Accessories', render: renderCalculator },
   charmap: { id: 'charmap', title: 'Character Map', icon: '🔤', width: 420, height: 360, category: 'Accessories', render: renderCharacterMap },
