@@ -297,6 +297,153 @@ body {
 	cursor: pointer;
 }
 
+/* Retro Window Menu Dropdown */
+.retro-menu-dropdown {
+	position: absolute;
+	top: calc(100% + 2px);
+	left: 0;
+	z-index: 100;
+	min-width: 250px;
+	background: #c0c0c0;
+	color: #000000;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	box-shadow: 3px 3px 0px #000000;
+	padding: 3px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 12px;
+	user-select: none;
+}
+
+.retro-menu-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	padding: 5px 8px;
+	background: transparent;
+	color: #000000;
+	border: none;
+	text-align: left;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	text-decoration: none;
+	user-select: none;
+	box-sizing: border-box;
+}
+
+.retro-menu-item:hover,
+.retro-menu-item:focus {
+	background: #000080;
+	color: #ffffff !important;
+	outline: none;
+}
+
+.retro-menu-item:hover .retro-menu-shortcut,
+.retro-menu-item:focus .retro-menu-shortcut {
+	color: #ffffff;
+	opacity: 0.9;
+}
+
+.retro-menu-shortcut {
+	font-size: 10px;
+	color: #555555;
+	font-weight: normal;
+}
+
+.retro-menu-separator {
+	height: 2px;
+	margin: 3px 1px;
+	border-top: 1px solid #808080;
+	border-bottom: 1px solid #ffffff;
+}
+
+/* Retro CRT Monitor Filter */
+body.retro-crt-active::after {
+	content: " ";
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+	z-index: 99999;
+	background-size: 100% 3px, 6px 100%;
+	pointer-events: none;
+	opacity: 0.8;
+}
+
+/* Retro Monospace Mode */
+body.retro-mono-active,
+body.retro-mono-active h1,
+body.retro-mono-active h2,
+body.retro-mono-active h3,
+body.retro-mono-active h4,
+body.retro-mono-active p,
+body.retro-mono-active span,
+body.retro-mono-active div,
+body.retro-mono-active a {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace !important;
+}
+
+/* Retro Modal Dialog */
+.retro-dialog-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10000;
+	padding: 1rem;
+}
+
+.retro-dialog-window {
+	width: 100%;
+	max-width: 460px;
+	background: #c0c0c0;
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	box-shadow: 6px 6px 0px #000000;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Retro Toast Notification */
+.retro-toast {
+	position: fixed;
+	bottom: 50px;
+	right: 20px;
+	background: #ffffcc;
+	color: #000000;
+	border: 2px solid #000000;
+	box-shadow: 3px 3px 0px #000000;
+	padding: 8px 14px;
+	font-family: ui-monospace, SFMono-Regular, monospace;
+	font-size: 12px;
+	font-weight: 700;
+	z-index: 10001;
+	animation: retroToastFadeIn 150ms ease-out;
+}
+
+@keyframes retroToastFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 main:not(.use-utility-layout) {
     width: 100%;
     max-width: 100%;

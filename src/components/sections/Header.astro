@@ -6,14 +6,112 @@ import HeaderLink from './HeaderLink.astro';
 <header class="w-full select-none z-50 sticky top-0">
   <!-- Retro Window Titlebar (Matching Reference Mockups) -->
   <div class="retro-titlebar">
-    <div class="flex items-center gap-2 overflow-hidden min-w-0 flex-1">
-      <!-- Retro Computer Icon -->
-      <svg class="size-4 shrink-0 text-white fill-current" viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h11A1.5 1.5 0 0 1 15 2.5v8a1.5 1.5 0 0 1-1.5 1.5h-3.75l.75 2h1.5a.5.5 0 0 1 0 1h-8a.5.5 0 0 1 0-1h1.5l.75-2H2.5A1.5 1.5 0 0 1 1 10.5v-8ZM2.5 2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-11Z"/>
-      </svg>
-      <span class="truncate font-mono font-bold text-xs sm:text-sm tracking-wide text-white">
-        Piush KS – Mobile & Cloud Engineer
-      </span>
+    <div class="flex items-center gap-2 overflow-visible min-w-0 flex-1 relative">
+      <!-- Titlebar Window Menu Trigger Button -->
+      <button
+        type="button"
+        id="retro-system-menu-btn"
+        class="flex items-center gap-1.5 px-1 py-0.5 rounded-none text-white hover:bg-[#003d8f] focus:outline-none focus:ring-1 focus:ring-white cursor-pointer select-none max-w-full"
+        aria-label="Window Menu and Website Options"
+        aria-haspopup="true"
+        aria-expanded="false"
+        title="Window Menu (Website Options)"
+      >
+        <!-- Retro Computer Icon -->
+        <svg class="size-4 shrink-0 text-white fill-current" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h11A1.5 1.5 0 0 1 15 2.5v8a1.5 1.5 0 0 1-1.5 1.5h-3.75l.75 2h1.5a.5.5 0 0 1 0 1h-8a.5.5 0 0 1 0-1h1.5l.75-2H2.5A1.5 1.5 0 0 1 1 10.5v-8ZM2.5 2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-11Z"/>
+        </svg>
+        <span class="truncate font-mono font-bold text-xs sm:text-sm tracking-wide text-white">
+          Piush KS – Mobile & Cloud Engineer
+        </span>
+        <span class="text-[9px] text-white/80 shrink-0">▼</span>
+      </button>
+
+      <!-- System Window Menu Dropdown (Top-Left) -->
+      <div id="retro-system-menu-dropdown" class="retro-menu-dropdown hidden" role="menu" style="left: 0; top: calc(100% + 4px);">
+        <button type="button" class="retro-menu-item" data-action="toggle-fullscreen" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span class="text-sm">⛶</span>
+            <span id="sys-fs-label">Maximize / Fullscreen</span>
+          </span>
+          <span class="retro-menu-shortcut">F11</span>
+        </button>
+        <button type="button" class="retro-menu-item" data-action="scroll-top" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>⬆</span>
+            <span>Scroll to Top</span>
+          </span>
+          <span class="retro-menu-shortcut">Home</span>
+        </button>
+        <button type="button" class="retro-menu-item" data-action="scroll-bottom" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>⬇</span>
+            <span>Scroll to Bottom</span>
+          </span>
+          <span class="retro-menu-shortcut">End</span>
+        </button>
+        <button type="button" class="retro-menu-item" data-action="reload-page" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>🔄</span>
+            <span>Reload Window</span>
+          </span>
+          <span class="retro-menu-shortcut">Ctrl+R</span>
+        </button>
+
+        <div class="retro-menu-separator"></div>
+
+        <button type="button" class="retro-menu-item" data-action="toggle-sound" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>🔊</span>
+            <span id="sys-sound-label">[✓] Retro Sound FX</span>
+          </span>
+        </button>
+        <button type="button" class="retro-menu-item" data-action="toggle-crt" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>📺</span>
+            <span id="sys-crt-label">[ ] CRT Scanlines</span>
+          </span>
+        </button>
+        <button type="button" class="retro-menu-item" data-action="toggle-mono" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>🔤</span>
+            <span id="sys-mono-label">[ ] Monospace Mode</span>
+          </span>
+        </button>
+
+        <div class="retro-menu-separator"></div>
+
+        <button type="button" class="retro-menu-item" data-action="copy-url" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>📋</span>
+            <span>Copy Page URL</span>
+          </span>
+          <span class="retro-menu-shortcut">Ctrl+C</span>
+        </button>
+        <button type="button" class="retro-menu-item" data-action="print-page" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>🖨️</span>
+            <span>Print / Save PDF</span>
+          </span>
+          <span class="retro-menu-shortcut">Ctrl+P</span>
+        </button>
+        <a href="https://github.com/piushks/piush.com" target="_blank" rel="noopener noreferrer" class="retro-menu-item" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>⭐</span>
+            <span>View Source on GitHub</span>
+          </span>
+          <span class="retro-menu-shortcut">↗</span>
+        </a>
+
+        <div class="retro-menu-separator"></div>
+
+        <button type="button" class="retro-menu-item" data-action="open-about" role="menuitem">
+          <span class="flex items-center gap-1.5">
+            <span>ℹ️</span>
+            <span>About Piush.com...</span>
+          </span>
+        </button>
+      </div>
     </div>
 
     <!-- Retro Window Controls: Minimize, Maximize, Close -->
@@ -33,7 +131,6 @@ import HeaderLink from './HeaderLink.astro';
         id="retro-maximize-btn"
         aria-label="Maximize / Toggle Fullscreen"
         title="Toggle Fullscreen"
-        onclick="if (!document.fullscreenElement && !document.webkitFullscreenElement) { (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } else { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }"
       >
         &#9633;
       </button>
@@ -50,9 +147,9 @@ import HeaderLink from './HeaderLink.astro';
   </div>
 
   <!-- Retro Window Menubar -->
-  <nav class="retro-menubar">
+  <nav class="retro-menubar relative">
     <!-- Desktop Nav Links -->
-    <div class="hidden md:flex items-center gap-2 lg:gap-4 overflow-x-auto py-0.5">
+    <div class="hidden md:flex items-center gap-1.5 lg:gap-3 overflow-visible py-0.5">
       <HeaderLink href="/">Home</HeaderLink>
       <HeaderLink href="/portfolio/">Portfolio</HeaderLink>
       <HeaderLink href="/blog/">Blog</HeaderLink>
@@ -66,6 +163,107 @@ import HeaderLink from './HeaderLink.astro';
       >
         Contact
       </a>
+
+      <!-- Dedicated Window Menu & Options Dropdown in Menubar -->
+      <div class="relative inline-block text-left ml-1">
+        <button
+          type="button"
+          id="retro-menubar-window-btn"
+          class="retro-btn !py-1 !px-2.5 !text-xs flex items-center gap-1.5"
+          aria-haspopup="true"
+          aria-expanded="false"
+          title="Window Menu (Website Options)"
+        >
+          <span class="font-bold">Options</span>
+          <span class="text-[9px]">▼</span>
+        </button>
+
+        <!-- Dropdown Popup for Menubar Options Button -->
+        <div id="retro-menubar-window-dropdown" class="retro-menu-dropdown hidden" role="menu" style="left: 0; top: calc(100% + 4px);">
+          <button type="button" class="retro-menu-item" data-action="toggle-fullscreen" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span class="text-sm">⛶</span>
+              <span id="mb-fs-label">Maximize / Fullscreen</span>
+            </span>
+            <span class="retro-menu-shortcut">F11</span>
+          </button>
+          <button type="button" class="retro-menu-item" data-action="scroll-top" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>⬆</span>
+              <span>Scroll to Top</span>
+            </span>
+            <span class="retro-menu-shortcut">Home</span>
+          </button>
+          <button type="button" class="retro-menu-item" data-action="scroll-bottom" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>⬇</span>
+              <span>Scroll to Bottom</span>
+            </span>
+            <span class="retro-menu-shortcut">End</span>
+          </button>
+          <button type="button" class="retro-menu-item" data-action="reload-page" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>🔄</span>
+              <span>Reload Window</span>
+            </span>
+            <span class="retro-menu-shortcut">Ctrl+R</span>
+          </button>
+
+          <div class="retro-menu-separator"></div>
+
+          <button type="button" class="retro-menu-item" data-action="toggle-sound" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>🔊</span>
+              <span id="mb-sound-label">[✓] Retro Sound FX</span>
+            </span>
+          </button>
+          <button type="button" class="retro-menu-item" data-action="toggle-crt" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>📺</span>
+              <span id="mb-crt-label">[ ] CRT Scanlines</span>
+            </span>
+          </button>
+          <button type="button" class="retro-menu-item" data-action="toggle-mono" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>🔤</span>
+              <span id="mb-mono-label">[ ] Monospace Mode</span>
+            </span>
+          </button>
+
+          <div class="retro-menu-separator"></div>
+
+          <button type="button" class="retro-menu-item" data-action="copy-url" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>📋</span>
+              <span>Copy Page URL</span>
+            </span>
+            <span class="retro-menu-shortcut">Ctrl+C</span>
+          </button>
+          <button type="button" class="retro-menu-item" data-action="print-page" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>🖨️</span>
+              <span>Print / Save PDF</span>
+            </span>
+            <span class="retro-menu-shortcut">Ctrl+P</span>
+          </button>
+          <a href="https://github.com/piushks/piush.com" target="_blank" rel="noopener noreferrer" class="retro-menu-item" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>⭐</span>
+              <span>View Source on GitHub</span>
+            </span>
+            <span class="retro-menu-shortcut">↗</span>
+          </a>
+
+          <div class="retro-menu-separator"></div>
+
+          <button type="button" class="retro-menu-item" data-action="open-about" role="menuitem">
+            <span class="flex items-center gap-1.5">
+              <span>ℹ️</span>
+              <span>About Piush.com...</span>
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Mobile Menu Button & Brand -->
@@ -138,9 +336,9 @@ import HeaderLink from './HeaderLink.astro';
   <!-- Mobile Dropdown Menu: Retro Dialog -->
   <div
     id="mobile-menu"
-    class="md:hidden hidden bg-[#d4d4d4] border-b-2 border-black p-3 space-y-1 shadow-[4px_4px_0px_#000000] font-mono text-sm"
+    class="md:hidden hidden bg-[#d4d4d4] border-b-2 border-black p-3 space-y-2 shadow-[4px_4px_0px_#000000] font-mono text-sm"
   >
-    <div class="flex flex-col gap-1 pb-2">
+    <div class="flex flex-col gap-1 pb-1">
       <HeaderLink href="/" class="py-1 px-2 block">Home</HeaderLink>
       <HeaderLink href="/portfolio/" class="py-1 px-2 block">Portfolio</HeaderLink>
       <HeaderLink href="/blog/" class="py-1 px-2 block">Blog</HeaderLink>
@@ -149,6 +347,31 @@ import HeaderLink from './HeaderLink.astro';
       <HeaderLink href="/about/" class="py-1 px-2 block">About</HeaderLink>
       <HeaderLink href="/tags/" class="py-1 px-2 block">Tags</HeaderLink>
       <a href="#contact" class="py-1 px-2 block text-black hover:underline no-underline">Contact</a>
+    </div>
+
+    <!-- Mobile Website Options Subpanel -->
+    <div class="pt-2 border-t border-black space-y-1">
+      <div class="text-[11px] font-bold text-gray-700 uppercase tracking-wider px-2 py-0.5">
+        Website Options
+      </div>
+      <button type="button" class="retro-menu-item !text-xs" data-action="toggle-fullscreen">
+        <span>⛶ Maximize / Fullscreen</span>
+      </button>
+      <button type="button" class="retro-menu-item !text-xs" data-action="toggle-sound">
+        <span id="mob-sound-label">[✓] Retro Sound FX</span>
+      </button>
+      <button type="button" class="retro-menu-item !text-xs" data-action="toggle-crt">
+        <span id="mob-crt-label">[ ] CRT Scanlines</span>
+      </button>
+      <button type="button" class="retro-menu-item !text-xs" data-action="toggle-mono">
+        <span id="mob-mono-label">[ ] Monospace Mode</span>
+      </button>
+      <button type="button" class="retro-menu-item !text-xs" data-action="copy-url">
+        <span>📋 Copy Page URL</span>
+      </button>
+      <button type="button" class="retro-menu-item !text-xs" data-action="open-about">
+        <span>ℹ️ About Piush.com...</span>
+      </button>
     </div>
 
     <div class="flex items-center gap-2 pt-2 border-t border-black">
@@ -169,15 +392,168 @@ import HeaderLink from './HeaderLink.astro';
       </a>
     </div>
   </div>
+
+  <!-- Retro "About Piush.com" Modal Dialog -->
+  <div id="retro-about-dialog" class="retro-dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="retro-about-title">
+    <div class="retro-dialog-window">
+      <!-- Dialog Titlebar -->
+      <div class="retro-titlebar !h-8 !min-h-[32px] !px-2">
+        <div class="flex items-center gap-1.5">
+          <svg class="size-3.5 text-white fill-current" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h11A1.5 1.5 0 0 1 15 2.5v8a1.5 1.5 0 0 1-1.5 1.5h-3.75l.75 2h1.5a.5.5 0 0 1 0 1h-8a.5.5 0 0 1 0-1h1.5l.75-2H2.5A1.5 1.5 0 0 1 1 10.5v-8ZM2.5 2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-11Z"/>
+          </svg>
+          <span id="retro-about-title" class="font-mono font-bold text-xs text-white">About Piush.com Portfolio OS</span>
+        </div>
+        <button
+          type="button"
+          class="retro-titlebar-btn !size-4 !text-[9px]"
+          id="retro-about-close-btn"
+          aria-label="Close dialog"
+          title="Close"
+        >
+          &#10005;
+        </button>
+      </div>
+
+      <!-- Dialog Body -->
+      <div class="p-4 space-y-3 bg-[#c0c0c0] text-black">
+        <div class="flex items-start gap-3">
+          <div class="shrink-0 size-10 bg-white border border-black flex items-center justify-center shadow-[inset_1px_1px_0px_#000000]">
+            <span class="text-2xl select-none" aria-hidden="true">🖥️</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm tracking-wide text-black">Piush KS – Portfolio OS</h3>
+            <p class="text-xs text-gray-800">Version 2026.11 (Desktop Edition)</p>
+            <p class="text-xs text-gray-700 mt-0.5">Mobile Architect & Full-Stack Engineer</p>
+          </div>
+        </div>
+
+        <div class="retro-inset p-2.5 text-xs space-y-1 font-mono bg-white">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Core Engine:</span>
+            <span class="font-bold">Astro 5.18 (Static Edge)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Design System:</span>
+            <span class="font-bold">Windows 95 Neobrutalism</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Total Static Pages:</span>
+            <span class="font-bold">73 Published Routes</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Developer Quiz Bank:</span>
+            <span class="font-bold">550 Validated Questions</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Simulated RAM:</span>
+            <span class="font-bold">65,536 KB Available</span>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-gray-700 text-center font-mono">
+          Engineered for extreme performance, accessibility, and offline speed.
+        </p>
+
+        <div class="flex justify-center pt-1">
+          <button
+            type="button"
+            id="retro-about-ok-btn"
+            class="retro-btn !px-6 !py-1 !text-xs font-bold"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Retro Toast Notification -->
+  <div id="retro-toast" class="retro-toast hidden" role="status" aria-live="polite"></div>
 </header>
 
 <script>
+  // Web Audio API Retro Sound FX Generator
+  let audioCtx: AudioContext | null = null;
+
+  function isSoundEnabled(): boolean {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('retro_sound_enabled') !== 'false';
+  }
+
+  function getAudioCtx(): AudioContext | null {
+    if (typeof window === 'undefined') return null;
+    if (!audioCtx) {
+      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtxClass) {
+        audioCtx = new AudioCtxClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playRetroClick() {
+    if (!isSoundEnabled()) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.035);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.035);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.035);
+    } catch (_) {}
+  }
+
+  function playRetroChime() {
+    if (!isSoundEnabled()) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      [523.25, 659.25, 783.99].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+        gain.gain.setValueAtTime(0.1, now + idx * 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.04);
+        osc.stop(now + idx * 0.04 + 0.22);
+      });
+    } catch (_) {}
+  }
+
+  function showRetroToast(message: string) {
+    const toast = document.getElementById('retro-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.remove('hidden');
+    playRetroChime();
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 2800);
+  }
+
   function setupHeader() {
+    // 1. Mobile navigation menu
     const btn = document.querySelector('[data-menu-btn]');
     const panel = document.getElementById('mobile-menu');
     
-    function toggleMenu() {
+    function toggleMobileMenu() {
       if (!panel || !btn) return;
+      playRetroClick();
       const isOpen = !panel.classList.contains('hidden');
       if (isOpen) {
         panel.classList.add('hidden');
@@ -187,24 +563,213 @@ import HeaderLink from './HeaderLink.astro';
         btn.setAttribute('aria-expanded', 'true');
       }
     }
+    btn?.addEventListener('click', toggleMobileMenu);
 
-    btn?.addEventListener('click', toggleMenu);
-    
+    // 2. System and Menubar Window Menus
+    const sysBtn = document.getElementById('retro-system-menu-btn');
+    const sysDropdown = document.getElementById('retro-system-menu-dropdown');
+    const mbBtn = document.getElementById('retro-menubar-window-btn');
+    const mbDropdown = document.getElementById('retro-menubar-window-dropdown');
+    const maxBtn = document.getElementById('retro-maximize-btn');
+
+    function closeAllMenus() {
+      if (sysDropdown && !sysDropdown.classList.contains('hidden')) {
+        sysDropdown.classList.add('hidden');
+        sysBtn?.setAttribute('aria-expanded', 'false');
+      }
+      if (mbDropdown && !mbDropdown.classList.contains('hidden')) {
+        mbDropdown.classList.add('hidden');
+        mbBtn?.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    function toggleSysMenu(e: Event) {
+      e.stopPropagation();
+      playRetroClick();
+      const isOpen = !sysDropdown?.classList.contains('hidden');
+      closeAllMenus();
+      if (!isOpen && sysDropdown) {
+        sysDropdown.classList.remove('hidden');
+        sysBtn?.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function toggleMbMenu(e: Event) {
+      e.stopPropagation();
+      playRetroClick();
+      const isOpen = !mbDropdown?.classList.contains('hidden');
+      closeAllMenus();
+      if (!isOpen && mbDropdown) {
+        mbDropdown.classList.remove('hidden');
+        mbBtn?.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    sysBtn?.addEventListener('click', toggleSysMenu);
+    mbBtn?.addEventListener('click', toggleMbMenu);
+
+    // 3. Maximize / Fullscreen
+    function toggleFullscreen() {
+      playRetroClick();
+      const doc = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => Promise<void> };
+      const docEl = document.documentElement as HTMLElement & { webkitRequestFullscreen?: () => Promise<void> };
+      if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+        const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen;
+        if (req) req.call(docEl);
+      } else {
+        const exit = doc.exitFullscreen || doc.webkitExitFullscreen;
+        if (exit) exit.call(doc);
+      }
+    }
+    maxBtn?.addEventListener('click', toggleFullscreen);
+
+    // 4. Update UI labels for preferences (Sound, CRT, Monospace)
+    function syncPreferenceLabels() {
+      const soundOn = isSoundEnabled();
+      const crtOn = localStorage.getItem('retro_crt_enabled') === 'true';
+      const monoOn = localStorage.getItem('retro_mono_enabled') === 'true';
+
+      const soundText = soundOn ? '[✓] Retro Sound FX' : '[ ] Retro Sound FX';
+      const crtText = crtOn ? '[✓] CRT Scanlines' : '[ ] CRT Scanlines';
+      const monoText = monoOn ? '[✓] Monospace Mode' : '[ ] Monospace Mode';
+
+      ['sys', 'mb', 'mob'].forEach((prefix) => {
+        const soundEl = document.getElementById(`${prefix}-sound-label`);
+        const crtEl = document.getElementById(`${prefix}-crt-label`);
+        const monoEl = document.getElementById(`${prefix}-mono-label`);
+        if (soundEl) soundEl.textContent = soundText;
+        if (crtEl) crtEl.textContent = crtText;
+        if (monoEl) monoEl.textContent = monoText;
+      });
+
+      // Apply body classes
+      document.body.classList.toggle('retro-crt-active', crtOn);
+      document.body.classList.toggle('retro-mono-active', monoOn);
+    }
+    syncPreferenceLabels();
+
+    // 5. Action Handlers for Window Menu Options
+    document.querySelectorAll('[data-action]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        const action = (e.currentTarget as HTMLElement).getAttribute('data-action');
+        closeAllMenus();
+        if (panel && !panel.classList.contains('hidden')) {
+          panel.classList.add('hidden');
+          btn?.setAttribute('aria-expanded', 'false');
+        }
+
+        switch (action) {
+          case 'toggle-fullscreen':
+            toggleFullscreen();
+            break;
+          case 'scroll-top':
+            playRetroClick();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            break;
+          case 'scroll-bottom':
+            playRetroClick();
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            break;
+          case 'reload-page':
+            playRetroClick();
+            window.location.reload();
+            break;
+          case 'toggle-sound': {
+            const next = !isSoundEnabled();
+            localStorage.setItem('retro_sound_enabled', String(next));
+            if (next) playRetroChime();
+            syncPreferenceLabels();
+            showRetroToast(next ? 'Sound FX: Enabled' : 'Sound FX: Muted');
+            break;
+          }
+          case 'toggle-crt': {
+            playRetroClick();
+            const current = localStorage.getItem('retro_crt_enabled') === 'true';
+            localStorage.setItem('retro_crt_enabled', String(!current));
+            syncPreferenceLabels();
+            showRetroToast(!current ? 'CRT Scanlines: ON' : 'CRT Scanlines: OFF');
+            break;
+          }
+          case 'toggle-mono': {
+            playRetroClick();
+            const current = localStorage.getItem('retro_mono_enabled') === 'true';
+            localStorage.setItem('retro_mono_enabled', String(!current));
+            syncPreferenceLabels();
+            showRetroToast(!current ? 'Monospace Mode: ON' : 'Monospace Mode: OFF');
+            break;
+          }
+          case 'copy-url':
+            playRetroClick();
+            navigator.clipboard.writeText(window.location.href).then(() => {
+              showRetroToast('Page URL Copied to Clipboard!');
+            }).catch(() => {
+              showRetroToast(window.location.href);
+            });
+            break;
+          case 'print-page':
+            playRetroClick();
+            window.print();
+            break;
+          case 'open-about':
+            openAboutDialog();
+            break;
+        }
+      });
+    });
+
+    // 6. About Dialog Controller
+    const aboutDialog = document.getElementById('retro-about-dialog');
+    const aboutCloseBtn = document.getElementById('retro-about-close-btn');
+    const aboutOkBtn = document.getElementById('retro-about-ok-btn');
+
+    function openAboutDialog() {
+      if (!aboutDialog) return;
+      playRetroChime();
+      aboutDialog.classList.remove('hidden');
+      aboutOkBtn?.focus();
+    }
+
+    function closeAboutDialog() {
+      if (!aboutDialog) return;
+      playRetroClick();
+      aboutDialog.classList.add('hidden');
+    }
+
+    aboutCloseBtn?.addEventListener('click', closeAboutDialog);
+    aboutOkBtn?.addEventListener('click', closeAboutDialog);
+    aboutDialog?.addEventListener('click', (e) => {
+      if (e.target === aboutDialog) {
+        closeAboutDialog();
+      }
+    });
+
+    // 7. Global dismiss with Click Outside & Escape key
     document.addEventListener('click', (e) => {
-      if (!panel || !btn) return;
-      const target = e.target;
-      const clickedInside = panel.contains(target as Node) || btn.contains(target as Node);
-      if (!clickedInside && !panel.classList.contains('hidden')) {
-        toggleMenu();
+      const target = e.target as Node;
+      if (!panel?.contains(target) && !btn?.contains(target) && !panel?.classList.contains('hidden')) {
+        panel?.classList.add('hidden');
+        btn?.setAttribute('aria-expanded', 'false');
+      }
+      if (!sysDropdown?.contains(target) && !sysBtn?.contains(target) &&
+          !mbDropdown?.contains(target) && !mbBtn?.contains(target)) {
+        closeAllMenus();
       }
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !panel?.classList.contains('hidden')) {
-        toggleMenu();
+      if (e.key === 'Escape') {
+        closeAllMenus();
+        if (!aboutDialog?.classList.contains('hidden')) {
+          closeAboutDialog();
+        }
+        if (!panel?.classList.contains('hidden')) {
+          panel?.classList.add('hidden');
+          btn?.setAttribute('aria-expanded', 'false');
+        }
       }
     });
 
+    // 8. Live Retro Clock in Menubar Right Tray
     function updateLiveClock() {
       const clockEl = document.getElementById('retro-live-clock');
       if (clockEl) {
