@@ -143,22 +143,64 @@ const techPills = [
 
       <!-- Right Column: Interactive Portrait inside Retro OS Application Window -->
       <div class="lg:col-span-5 flex flex-col items-center justify-center w-full">
-        <div class="w-full max-w-[380px] retro-card overflow-hidden">
+        <!-- Minimized / Closed Restore Bar -->
+        <div
+          id="hero-avatar-closed-bar"
+          class="hidden w-full max-w-[380px] p-2 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] text-black font-mono text-xs flex items-center justify-between"
+        >
+          <div class="flex items-center gap-1.5 truncate">
+            <span class="text-sm">🖼️</span>
+            <span class="truncate font-bold">piush_avatar.bmp [Closed]</span>
+          </div>
+          <button
+            type="button"
+            id="hero-avatar-reopen-btn"
+            class="retro-btn !py-0.5 !px-3 !text-xs font-bold"
+          >
+            Restore
+          </button>
+        </div>
+
+        <div id="hero-avatar-card" class="w-full max-w-[380px] retro-card overflow-hidden">
           <!-- Mini Application Titlebar -->
           <div class="bg-[#0057cc] text-white px-3 py-1.5 flex items-center justify-between font-mono text-xs font-bold border-b-2 border-black">
             <span class="truncate">piush_avatar.bmp</span>
             <div class="flex items-center gap-1">
-              <span class="size-3.5 bg-[#c0c0c0] text-black text-[9px] flex items-center justify-center border border-black font-bold">_</span>
-              <span class="size-3.5 bg-[#c0c0c0] text-black text-[9px] flex items-center justify-center border border-black font-bold">&#9633;</span>
-              <span class="size-3.5 bg-[#c0c0c0] text-black text-[9px] flex items-center justify-center border border-black font-bold">&#10005;</span>
+              <button
+                type="button"
+                id="hero-avatar-min-btn"
+                class="size-3.5 bg-[#c0c0c0] hover:bg-[#dfdfdf] active:bg-[#a0a0a0] text-black text-[9px] flex items-center justify-center border border-black font-bold cursor-pointer"
+                title="Minimize piush_avatar.bmp"
+                aria-label="Minimize piush_avatar.bmp"
+              >
+                _
+              </button>
+              <button
+                type="button"
+                id="hero-avatar-max-btn"
+                class="size-3.5 bg-[#c0c0c0] hover:bg-[#dfdfdf] active:bg-[#a0a0a0] text-black text-[9px] flex items-center justify-center border border-black font-bold cursor-pointer"
+                title="Open in Image Viewer"
+                aria-label="Open in Image Viewer"
+              >
+                &#9633;
+              </button>
+              <button
+                type="button"
+                id="hero-avatar-close-btn"
+                class="size-3.5 bg-[#c0c0c0] hover:bg-[#cc0000] hover:text-white active:bg-[#990000] text-black text-[9px] flex items-center justify-center border border-black font-bold cursor-pointer"
+                title="Close piush_avatar.bmp"
+                aria-label="Close piush_avatar.bmp"
+              >
+                &#10005;
+              </button>
             </div>
           </div>
           <!-- Inset Content Area -->
-          <div class="p-4 bg-[#f4f4f4] flex flex-col items-center justify-center">
+          <div id="hero-avatar-body" class="p-4 bg-[#f4f4f4] flex flex-col items-center justify-center">
             <InteractivePortrait />
           </div>
           <!-- Mini Status Footer -->
-          <div class="bg-[#c0c0c0] text-black px-3 py-1 font-mono text-[10px] border-t-2 border-black flex justify-between">
+          <div id="hero-avatar-footer" class="bg-[#c0c0c0] text-black px-3 py-1 font-mono text-[10px] border-t-2 border-black flex justify-between">
             <span>READY • 420x420</span>
             <span>RGB 24-BIT</span>
           </div>
@@ -169,6 +211,54 @@ const techPills = [
   </div>
 </section>
 
-    </div>
-  </div>
-</section>
+<script>
+  import { launchApp } from '../../lib/win95/appRegistry';
+  import { audio } from '../../lib/win95/audio';
+
+  function setupAvatarWindowControls() {
+    const card = document.getElementById('hero-avatar-card');
+    const closedBar = document.getElementById('hero-avatar-closed-bar');
+    const body = document.getElementById('hero-avatar-body');
+    const footer = document.getElementById('hero-avatar-footer');
+    const minBtn = document.getElementById('hero-avatar-min-btn');
+    const maxBtn = document.getElementById('hero-avatar-max-btn');
+    const closeBtn = document.getElementById('hero-avatar-close-btn');
+    const reopenBtn = document.getElementById('hero-avatar-reopen-btn');
+
+    let isMinimized = false;
+
+    minBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      try { audio.playClick(); } catch (_) {}
+      isMinimized = !isMinimized;
+      if (body) body.style.display = isMinimized ? 'none' : 'flex';
+      if (footer) footer.style.display = isMinimized ? 'none' : 'flex';
+    });
+
+    maxBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      try { audio.playOpen(); } catch (_) {}
+      launchApp('imageviewer');
+    });
+
+    closeBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      try { audio.playClose(); } catch (_) {}
+      if (card) card.classList.add('hidden');
+      if (closedBar) closedBar.classList.remove('hidden');
+    });
+
+    reopenBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      try { audio.playOpen(); } catch (_) {}
+      if (card) card.classList.remove('hidden');
+      if (closedBar) closedBar.classList.add('hidden');
+      if (body) body.style.display = 'flex';
+      if (footer) footer.style.display = 'flex';
+      isMinimized = false;
+    });
+  }
+
+  setupAvatarWindowControls();
+  document.addEventListener('astro:after-swap', setupAvatarWindowControls);
+</script>

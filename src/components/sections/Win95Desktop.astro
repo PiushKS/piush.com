@@ -1296,7 +1296,19 @@ Double-click "My Portfolio" or click the taskbar button below.
 
     // Expose global minimize / restore functions
     (window as unknown as { minimizeToDesktop?: () => void }).minimizeToDesktop = function () {
-      audio.playMinimize();
+      try { audio.playMinimize(); } catch (_) {}
+
+      // Cleanly dismiss any open modal dialogs
+      const aboutDlg = document.getElementById('retro-about-dialog');
+      if (aboutDlg) {
+        aboutDlg.style.display = 'none';
+        aboutDlg.classList.add('hidden');
+        aboutDlg.classList.remove('is-open');
+      }
+      displayDialog?.classList.add('hidden');
+      shutdownDialog?.classList.add('hidden');
+      closeAllContextMenus();
+
       document.body.classList.add('is-desktop-minimized');
       if (desktopScreen) {
         desktopScreen.style.display = 'flex';
@@ -1454,45 +1466,67 @@ Double-click "My Portfolio" or click the taskbar button below.
       }
     });
 
-    // Icon click & double-click interactions
+    function activateIcon(el: HTMLElement) {
+      playClick();
+      const appId = el.getAttribute('data-app');
+      const iconId = el.id;
+
+      if (iconId === 'd-icon-portfolio') {
+        (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
+      } else if (iconId === 'd-icon-recycle') {
+        recycleWindow?.classList.remove('hidden');
+      } else if (iconId === 'd-icon-notepad' || iconId === 'd-icon-about-txt') {
+        launchApp('notepad');
+      } else if (iconId === 'd-icon-computer') {
+        const aboutDlg = document.getElementById('retro-about-dialog');
+        if (aboutDlg) {
+          aboutDlg.style.display = 'flex';
+          aboutDlg.classList.remove('hidden');
+          aboutDlg.classList.add('is-open');
+        }
+      } else if (appId) {
+        launchApp(appId);
+      }
+    }
+
+    // Icon click, double-click, touch & keyboard interactions
     document.querySelectorAll('.win95-desktop-icon').forEach((icon) => {
       const el = icon as HTMLElement;
+      let lastTapTime = 0;
 
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         closeAllContextMenus();
+        const now = Date.now();
+        const isQuickTap = now - lastTapTime < 450;
+        const wasSelected = el.classList.contains('is-selected');
+
         if (!e.ctrlKey && !e.metaKey) {
           document.querySelectorAll('.win95-desktop-icon.is-selected').forEach((item) => {
             if (item !== el) item.classList.remove('is-selected');
           });
         }
-        el.classList.toggle('is-selected');
+
+        if (isQuickTap || wasSelected) {
+          activateIcon(el);
+          lastTapTime = 0;
+          return;
+        }
+
+        lastTapTime = now;
+        el.classList.add('is-selected');
         playClick();
       });
 
       el.addEventListener('dblclick', (e) => {
         e.stopPropagation();
-        playClick();
-        const appId = el.getAttribute('data-app');
-        const iconId = el.id;
+        activateIcon(el);
+      });
 
-        if (iconId === 'd-icon-portfolio') {
-          (window as unknown as { restoreFromDesktop?: () => void }).restoreFromDesktop?.();
-        } else if (iconId === 'd-icon-recycle') {
-          recycleWindow?.classList.remove('hidden');
-        } else if (iconId === 'd-icon-notepad') {
-          launchApp('notepad');
-        } else if (iconId === 'd-icon-about-txt') {
-          launchApp('notepad');
-        } else if (iconId === 'd-icon-computer') {
-          const aboutDlg = document.getElementById('retro-about-dialog');
-          if (aboutDlg) {
-            aboutDlg.style.display = 'flex';
-            aboutDlg.classList.remove('hidden');
-            aboutDlg.classList.add('is-open');
-          }
-        } else if (appId) {
-          launchApp(appId);
+      el.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          activateIcon(el);
         }
       });
 
