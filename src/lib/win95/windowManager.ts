@@ -18,6 +18,15 @@ export interface WindowOptions {
   render: (container: HTMLElement, win: Win95Window) => void;
 }
 
+function formatWindowIcon(icon: string): string {
+  if (!icon) return '';
+  if (icon.startsWith('<img') || icon.startsWith('<svg')) return icon;
+  if (icon.startsWith('/') || icon.endsWith('.png') || icon.endsWith('.svg')) {
+    return `<img src="${icon}" class="size-4 shrink-0 [image-rendering:pixelated]" alt="" />`;
+  }
+  return icon;
+}
+
 export class Win95Window {
   public id: string;
   public appId: string;
@@ -71,8 +80,8 @@ export class Win95Window {
     titlebar.className = 'retro-titlebar !h-7 !min-h-[28px] !px-2 flex items-center justify-between cursor-move select-none';
 
     const titleLeft = document.createElement('div');
-    titleLeft.className = 'flex items-center gap-1.5 text-xs text-white truncate pointer-events-none font-bold';
-    titleLeft.innerHTML = `<span class="text-sm shrink-0 leading-none">${this.icon}</span><span class="truncate">${this.title}</span>`;
+    titleLeft.className = 'win95-title-left flex items-center gap-1.5 text-xs text-white overflow-hidden pointer-events-none font-bold';
+    titleLeft.innerHTML = `<span class="win95-title-icon size-4 shrink-0 flex items-center justify-center">${formatWindowIcon(this.icon)}</span><span class="win95-title-text truncate">${this.title}</span>`;
 
     const controls = document.createElement('div');
     controls.className = 'flex items-center gap-1 shrink-0 ml-2';
@@ -303,8 +312,13 @@ export class Win95Window {
 
   public setTitle(newTitle: string) {
     this.title = newTitle;
-    const titleSpan = this.element.querySelector('.retro-titlebar .truncate');
-    if (titleSpan) titleSpan.textContent = newTitle;
+    const titleSpan = this.element.querySelector('.retro-titlebar .win95-title-text');
+    if (titleSpan) {
+      titleSpan.textContent = newTitle;
+    } else {
+      const fallback = this.element.querySelector('.retro-titlebar span.truncate');
+      if (fallback) fallback.textContent = newTitle;
+    }
     this.manager.updateTaskbar();
   }
 }
@@ -410,7 +424,7 @@ export class Win95WindowManager {
       const isActive = this.activeWindowId === win.id && !win.isMinimized;
       btn.className = `win95-taskbar-item ${isActive ? 'is-active bg-[#d0d0d0] shadow-[inset_1px_1px_0px_#000000]' : ''}`;
       btn.title = win.title;
-      btn.innerHTML = `<span class="text-xs shrink-0">${win.icon}</span><span class="truncate">${win.title}</span>`;
+      btn.innerHTML = `<span class="size-4 shrink-0 flex items-center justify-center">${formatWindowIcon(win.icon)}</span><span class="truncate">${win.title}</span>`;
 
       btn.onclick = () => {
         if (win.isMinimized) {
