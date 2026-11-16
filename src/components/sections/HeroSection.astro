@@ -146,10 +146,10 @@ const techPills = [
         <!-- Minimized / Closed Restore Bar -->
         <div
           id="hero-avatar-closed-bar"
-          class="hidden w-full max-w-[380px] p-2 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] text-black font-mono text-xs flex items-center justify-between"
+          class="hidden w-full max-w-[390px] p-2 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] text-black font-mono text-xs flex items-center justify-between"
         >
           <div class="flex items-center gap-1.5 truncate">
-            <span class="text-sm">🖼️</span>
+            <span class="text-sm">🎨</span>
             <span class="truncate font-bold">piush_avatar.bmp [Closed]</span>
           </div>
           <button
@@ -161,15 +161,18 @@ const techPills = [
           </button>
         </div>
 
-        <div id="hero-avatar-card" class="w-full max-w-[380px] retro-card overflow-hidden">
-          <!-- Mini Application Titlebar -->
-          <div class="bg-[#0057cc] text-white px-3 py-1.5 flex items-center justify-between font-mono text-xs font-bold border-b-2 border-black">
-            <span class="truncate">piush_avatar.bmp</span>
+        <div id="hero-avatar-card" class="w-full max-w-[390px] retro-card overflow-hidden">
+          <!-- Windows 95 Application Titlebar -->
+          <div class="bg-[#0057cc] text-white px-2.5 py-1.5 flex items-center justify-between font-mono text-xs font-bold border-b-2 border-black select-none">
+            <div class="flex items-center gap-1.5 truncate">
+              <span class="text-sm">🎨</span>
+              <span class="truncate">piush_avatar.bmp - Paint</span>
+            </div>
             <div class="flex items-center gap-1">
               <button
                 type="button"
                 id="hero-avatar-min-btn"
-                class="size-3.5 bg-[#c0c0c0] hover:bg-[#dfdfdf] active:bg-[#a0a0a0] text-black text-[9px] flex items-center justify-center border border-black font-bold cursor-pointer"
+                class="size-4 bg-[#c0c0c0] hover:bg-[#dfdfdf] active:bg-[#a0a0a0] text-black text-[9px] flex items-center justify-center border-t border-l border-white border-b-2 border-r-2 border-black font-bold cursor-pointer leading-none"
                 title="Minimize piush_avatar.bmp"
                 aria-label="Minimize piush_avatar.bmp"
               >
@@ -178,7 +181,7 @@ const techPills = [
               <button
                 type="button"
                 id="hero-avatar-max-btn"
-                class="size-3.5 bg-[#c0c0c0] hover:bg-[#dfdfdf] active:bg-[#a0a0a0] text-black text-[9px] flex items-center justify-center border border-black font-bold cursor-pointer"
+                class="size-4 bg-[#c0c0c0] hover:bg-[#dfdfdf] active:bg-[#a0a0a0] text-black text-[9px] flex items-center justify-center border-t border-l border-white border-b-2 border-r-2 border-black font-bold cursor-pointer leading-none"
                 title="Open in Image Viewer"
                 aria-label="Open in Image Viewer"
               >
@@ -187,7 +190,7 @@ const techPills = [
               <button
                 type="button"
                 id="hero-avatar-close-btn"
-                class="size-3.5 bg-[#c0c0c0] hover:bg-[#cc0000] hover:text-white active:bg-[#990000] text-black text-[9px] flex items-center justify-center border border-black font-bold cursor-pointer"
+                class="size-4 bg-[#c0c0c0] hover:bg-[#cc0000] hover:text-white active:bg-[#990000] text-black text-[9px] flex items-center justify-center border-t border-l border-white border-b-2 border-r-2 border-black font-bold cursor-pointer leading-none"
                 title="Close piush_avatar.bmp"
                 aria-label="Close piush_avatar.bmp"
               >
@@ -195,14 +198,74 @@ const techPills = [
               </button>
             </div>
           </div>
-          <!-- Inset Content Area -->
-          <div id="hero-avatar-body" class="p-4 bg-[#f4f4f4] flex flex-col items-center justify-center">
-            <InteractivePortrait />
-          </div>
-          <!-- Mini Status Footer -->
-          <div id="hero-avatar-footer" class="bg-[#c0c0c0] text-black px-3 py-1 font-mono text-[10px] border-t-2 border-black flex justify-between">
-            <span>READY • 420x420</span>
-            <span>RGB 24-BIT</span>
+
+          <!-- Collapsible Window Content -->
+          <div id="hero-avatar-content" class="w-full flex flex-col">
+            <!-- Classic Menu Strip -->
+            <div class="bg-[#c0c0c0] text-black px-2 py-0.5 text-xs font-mono border-b-2 border-black flex items-center gap-2.5 sm:gap-3 select-none">
+              <span class="hover:bg-[#0057cc] hover:text-white px-1 py-0.5 cursor-pointer"><u>F</u>ile</span>
+              <span class="hover:bg-[#0057cc] hover:text-white px-1 py-0.5 cursor-pointer"><u>E</u>dit</span>
+              <span class="hover:bg-[#0057cc] hover:text-white px-1 py-0.5 cursor-pointer"><u>V</u>iew</span>
+              <span class="hover:bg-[#0057cc] hover:text-white px-1 py-0.5 cursor-pointer"><u>I</u>mage</span>
+              <span class="hover:bg-[#0057cc] hover:text-white px-1 py-0.5 cursor-pointer"><u>O</u>ptions</span>
+              <span class="hover:bg-[#0057cc] hover:text-white px-1 py-0.5 cursor-pointer"><u>H</u>elp</span>
+            </div>
+
+            <!-- Mini Paint Toolbar Strip -->
+            <div class="bg-[#c0c0c0] px-2 py-1 border-b-2 border-black flex items-center justify-between text-xs font-mono select-none">
+              <div class="flex items-center gap-1">
+                <span class="px-1.5 py-0.5 bg-[#e0e0e0] border border-black text-[11px] font-bold shadow-[inset_1px_1px_0px_#000000]" title="Selection Tool">⬚</span>
+                <span class="px-1.5 py-0.5 bg-[#c0c0c0] border border-black text-[11px] hover:bg-[#d8d8d8] cursor-pointer" title="Brush Tool">🖌️</span>
+                <span class="px-1.5 py-0.5 bg-[#c0c0c0] border border-black text-[11px] hover:bg-[#d8d8d8] cursor-pointer" title="Pencil Tool">✏️</span>
+                <span class="px-1.5 py-0.5 bg-[#c0c0c0] border border-black text-[11px] hover:bg-[#d8d8d8] cursor-pointer" title="Zoom Tool">🔍</span>
+                <span class="text-[10px] text-[#555555] font-bold ml-1 hidden sm:inline">100%</span>
+              </div>
+              <a
+                href="https://x.com/piushks"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="retro-btn !py-0.5 !px-2 !text-[11px] font-bold flex items-center gap-1 shadow-none hover:bg-white"
+                title="Follow Piush on X (@piushks)"
+              >
+                <span class="font-bold">𝕏</span>
+                <span>@piushks</span>
+                <span class="text-[9px]">↗</span>
+              </a>
+            </div>
+
+            <!-- Inset Canvas Workspace -->
+            <div id="hero-avatar-body" class="p-2.5 sm:p-3.5 bg-[#808080] flex flex-col items-center justify-center relative select-none">
+              <!-- Retro Paint Canvas Frame with 8 White Resize Handles -->
+              <div class="relative w-full max-w-[340px] p-0.5 bg-white border-2 border-black shadow-[2px_2px_0px_#000000]">
+                <!-- 8 Classic Paint Resize Handles -->
+                <span class="absolute -top-1 -left-1 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+                <span class="absolute -top-1 left-1/2 -translate-x-1/2 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+                <span class="absolute -top-1 -right-1 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+                <span class="absolute top-1/2 -left-1 -translate-y-1/2 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+                <span class="absolute top-1/2 -right-1 -translate-y-1/2 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+                <span class="absolute -bottom-1 -left-1 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+                <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+                <span class="absolute -bottom-1 -right-1 size-2 bg-white border border-black z-20 pointer-events-none" aria-hidden="true"></span>
+
+                <!-- Inner Canvas Viewport -->
+                <div id="hero-avatar-canvas-container" class="relative w-full aspect-square overflow-hidden bg-[#008080] border border-black">
+                  <InteractivePortrait />
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini Status Footer: 3 Classic Sunken Inset Panes -->
+            <div id="hero-avatar-footer" class="bg-[#c0c0c0] text-black p-1 font-mono text-[10px] sm:text-[11px] border-t-2 border-black grid grid-cols-12 gap-1 select-none">
+              <div id="hero-avatar-status-msg" class="col-span-6 px-1.5 py-0.5 bg-[#c0c0c0] border-t border-l border-[#808080] border-b border-r border-white truncate font-medium">
+                💡 Drag face to stretch
+              </div>
+              <div id="hero-avatar-status-coords" class="col-span-3 px-1 py-0.5 bg-[#c0c0c0] border-t border-l border-[#808080] border-b border-r border-white text-center truncate">
+                420×420
+              </div>
+              <div class="col-span-3 px-1 py-0.5 bg-[#c0c0c0] border-t border-l border-[#808080] border-b border-r border-white text-center truncate">
+                24bpp RGB
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -218,12 +281,15 @@ const techPills = [
   function setupAvatarWindowControls() {
     const card = document.getElementById('hero-avatar-card');
     const closedBar = document.getElementById('hero-avatar-closed-bar');
-    const body = document.getElementById('hero-avatar-body');
-    const footer = document.getElementById('hero-avatar-footer');
+    const content = document.getElementById('hero-avatar-content');
     const minBtn = document.getElementById('hero-avatar-min-btn');
     const maxBtn = document.getElementById('hero-avatar-max-btn');
     const closeBtn = document.getElementById('hero-avatar-close-btn');
     const reopenBtn = document.getElementById('hero-avatar-reopen-btn');
+
+    const container = document.getElementById('hero-avatar-canvas-container');
+    const coordsEl = document.getElementById('hero-avatar-status-coords');
+    const msgEl = document.getElementById('hero-avatar-status-msg');
 
     let isMinimized = false;
 
@@ -231,8 +297,7 @@ const techPills = [
       e.stopPropagation();
       try { audio.playClick(); } catch (_) {}
       isMinimized = !isMinimized;
-      if (body) body.style.display = isMinimized ? 'none' : 'flex';
-      if (footer) footer.style.display = isMinimized ? 'none' : 'flex';
+      if (content) content.style.display = isMinimized ? 'none' : 'flex';
     });
 
     maxBtn?.addEventListener('click', (e) => {
@@ -253,10 +318,30 @@ const techPills = [
       try { audio.playOpen(); } catch (_) {}
       if (card) card.classList.remove('hidden');
       if (closedBar) closedBar.classList.add('hidden');
-      if (body) body.style.display = 'flex';
-      if (footer) footer.style.display = 'flex';
+      if (content) content.style.display = 'flex';
       isMinimized = false;
     });
+
+    if (container && coordsEl) {
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = Math.max(0, Math.min(420, Math.round(((e.clientX - rect.left) / rect.width) * 420)));
+        const y = Math.max(0, Math.min(420, Math.round(((e.clientY - rect.top) / rect.height) * 420)));
+        coordsEl.textContent = `${x}, ${y}px`;
+      });
+
+      container.addEventListener('mouseleave', () => {
+        coordsEl.textContent = '420×420';
+      });
+
+      container.addEventListener('mousedown', () => {
+        if (msgEl) msgEl.textContent = '✨ Squeak!';
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (msgEl) msgEl.textContent = '💡 Drag face to stretch';
+      });
+    }
   }
 
   setupAvatarWindowControls();

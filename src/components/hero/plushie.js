@@ -175,7 +175,7 @@ float frameMask(vec2 uv) {
     // Symmetrical, true perfect circle
     return 1.0 - smoothstep(uFrame.z - aa, uFrame.z + aa, length(d));
   }
-  return 1.0 - smoothstep(uFrame.z - aa, uFrame.z + aa, abs(d.x));
+  return 1.0 - smoothstep(uFrame.z - aa, uFrame.z + aa, max(abs(d.x), abs(d.y)));
 }
 
 // One eye's patch from a cell of the sheet (side 0 = left, 1 = right), or
