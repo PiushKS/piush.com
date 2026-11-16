@@ -940,23 +940,119 @@ export function renderMinesweeper(container: HTMLElement, win: Win95Window) {
 export function renderSolitaire(container: HTMLElement, win: Win95Window) {
   win.setTitle('Solitaire');
 
+  type Suit = '♠' | '♥' | '♦' | '♣';
   type Card = {
-    suit: '♠' | '♥' | '♦' | '♣';
+    id: string;
+    suit: Suit;
     value: number; // 1 (Ace) to 13 (King)
     isRed: boolean;
     faceUp: boolean;
   };
 
-  const SUITS: ('♠' | '♥' | '♦' | '♣')[] = ['♠', '♥', '♦', '♣'];
+  type CardBackId =
+    | 'lattice_blue'
+    | 'beach'
+    | 'castle'
+    | 'robot'
+    | 'seashell'
+    | 'dealer'
+    | 'roses'
+    | 'fish'
+    | 'lattice_black'
+    | 'win95'
+    | 'mountain'
+    | 'sun';
 
-  let deck: Card[] = [];
+  const CARD_BACK_LABELS: Record<CardBackId, string> = {
+    lattice_blue: 'Lattice Blue',
+    beach: 'Beach Palms',
+    castle: 'Haunted Castle',
+    robot: 'Retro Robot',
+    seashell: 'Emerald Shell',
+    dealer: 'Card Dealer',
+    roses: 'Vintage Roses',
+    fish: 'Tropical Fish',
+    lattice_black: 'Lattice Black',
+    win95: 'Windows 95',
+    mountain: 'Purple Mountain',
+    sun: 'Sunburst',
+  };
+
+  type SolitaireOptions = {
+    drawMode: 1 | 3;
+    scoring: 'standard' | 'vegas' | 'none';
+    timed: boolean;
+    statusBar: boolean;
+  };
+
+  const DEFAULT_OPTIONS: SolitaireOptions = {
+    drawMode: 3,
+    scoring: 'standard',
+    timed: true,
+    statusBar: true,
+  };
+
+  const getSavedOptions = (): SolitaireOptions => {
+    try {
+      const saved = localStorage.getItem('win95_solitaire_options');
+      if (saved) return { ...DEFAULT_OPTIONS, ...JSON.parse(saved) };
+    } catch (_) {}
+    return { ...DEFAULT_OPTIONS };
+  };
+
+  const saveOptions = (opts: SolitaireOptions) => {
+    try {
+      localStorage.setItem('win95_solitaire_options', JSON.stringify(opts));
+    } catch (_) {}
+  };
+
+  const getSavedDeck = (): CardBackId => {
+    try {
+      const saved = localStorage.getItem('win95_solitaire_deck') as CardBackId;
+      if (saved && CARD_BACK_LABELS[saved]) return saved;
+    } catch (_) {}
+    return 'lattice_blue';
+  };
+
+  const saveDeck = (deckId: CardBackId) => {
+    try {
+      localStorage.setItem('win95_solitaire_deck', deckId);
+    } catch (_) {}
+  };
+
+  const SUITS: Suit[] = ['♠', '♥', '♦', '♣'];
+
+  let options: SolitaireOptions = getSavedOptions();
+  let currentCardBack: CardBackId = getSavedDeck();
+
   let stock: Card[] = [];
   let waste: Card[] = [];
   let foundations: Card[][] = [[], [], [], []];
   let tableau: Card[][] = [[], [], [], [], [], [], []];
-  let score = 0;
 
-  // Selection state for moving cards between waste/tableau/foundations
+  let score = options.scoring === 'vegas' ? -52 : 0;
+  let seconds = 0;
+  let moves = 0;
+  let timerId: number | null = null;
+  let isGameStarted = false;
+  let isGameOver = false;
+  let isWon = false;
+  let winCascadeActive = false;
+  let cascadeAnimId: number | null = null;
+
+  type UndoSnapshot = {
+    stock: Card[];
+    waste: Card[];
+    foundations: Card[][];
+    tableau: Card[][];
+    score: number;
+    seconds: number;
+    moves: number;
+  };
+
+  const undoStack: UndoSnapshot[] = [];
+
+  // Selection state for click-to-move
   let selection: {
     source: 'waste' | 'tableau' | 'foundation';
     col?: number;
@@ -964,14 +1060,78 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
     cards: Card[];
   } | null = null;
 
+  // Active hint highlight coordinates
+  let activeHint: {
+    sourceCardId?: string;
+    targetCol?: number;
+    targetFidx?: number;
+  } | null = null;
+
+  const pushUndo = () => {
+    undoStack.push({
+      stock: stock.map((c) => ({ ...c })),
+      waste: waste.map((c) => ({ ...c })),
+      foundations: foundations.map((p) => p.map((c) => ({ ...c }))),
+      tableau: tableau.map((col) => col.map((c) => ({ ...c }))),
+      score,
+      seconds,
+      moves,
+    });
+    if (undoStack.length > 60) undoStack.shift();
+  };
+
+  const performUndo = () => {
+    if (undoStack.length === 0 || isGameOver) {
+      audio.playError();
+      return;
+    }
+    const prev = undoStack.pop()!;
+    stock = prev.stock;
+    waste = prev.waste;
+    foundations = prev.foundations;
+    tableau = prev.tableau;
+    score = prev.score;
+    seconds = prev.seconds;
+    moves = prev.moves;
+    selection = null;
+    activeHint = null;
+    audio.playClick();
+    renderUI();
+  };
+
+  const startTimer = () => {
+    if (timerId !== null) clearInterval(timerId);
+    timerId = window.setInterval(() => {
+      seconds++;
+      if (options.scoring === 'standard' && seconds % 10 === 0 && score > 2) {
+        score -= 2;
+      }
+      updateStatusTime();
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (timerId !== null) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  };
+
   const createDeck = (): Card[] => {
     const cards: Card[] = [];
     for (const suit of SUITS) {
       const isRed = suit === '♥' || suit === '♦';
       for (let value = 1; value <= 13; value++) {
-        cards.push({ suit, value, isRed, faceUp: false });
+        cards.push({
+          id: `${suit}${value}`,
+          suit,
+          value,
+          isRed,
+          faceUp: false,
+        });
       }
     }
+    // Fisher-Yates Shuffle
     for (let i = cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [cards[i], cards[j]] = [cards[j], cards[i]];
@@ -980,14 +1140,25 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
   };
 
   const initGame = () => {
-    deck = createDeck();
+    stopTimer();
+    stopWinCascade();
+
+    const deck = createDeck();
     stock = [];
     waste = [];
     foundations = [[], [], [], []];
     tableau = [[], [], [], [], [], [], []];
     selection = null;
-    score = 0;
+    activeHint = null;
+    undoStack.length = 0;
+    isGameStarted = false;
+    isGameOver = false;
+    isWon = false;
+    seconds = 0;
+    moves = 0;
+    score = options.scoring === 'vegas' ? -52 : 0;
 
+    // Deal 28 cards to tableau (1 in col 0, 2 in col 1, ..., 7 in col 6)
     for (let col = 0; col < 7; col++) {
       for (let i = 0; i <= col; i++) {
         const card = deck.pop()!;
@@ -1008,42 +1179,240 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
     return String(value);
   };
 
+  const getCardBackSvg = (backId: CardBackId): string => {
+    switch (backId) {
+      case 'lattice_black':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#181818" rx="3"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#c0c0c0" stroke-width="1.5" rx="2"/>
+          <defs>
+            <pattern id="pat_blk_${backId}" width="8" height="8" patternUnits="userSpaceOnUse">
+              <path d="M4 0 L8 4 L4 8 L0 4 Z" fill="none" stroke="#484848" stroke-width="0.8"/>
+              <circle cx="4" cy="4" r="0.8" fill="#c0c0c0"/>
+            </pattern>
+          </defs>
+          <rect x="5" y="5" width="62" height="86" fill="url(#pat_blk_${backId})" rx="2"/>
+        </svg>`;
+      case 'beach':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#004080" rx="3"/>
+          <rect x="3" y="3" width="66" height="90" fill="#f87820" rx="2"/>
+          <circle cx="36" cy="40" r="14" fill="#ffee44"/>
+          <rect x="3" y="56" width="66" height="37" fill="#0077aa"/>
+          <path d="M3 64 Q20 60 36 64 T70 64 L70 93 L3 93 Z" fill="#005588"/>
+          <path d="M46 68 Q40 50 34 36 Q38 48 48 68 Z" fill="#442200"/>
+          <path d="M34 36 Q22 30 14 36 Q24 35 34 38 Z" fill="#008822"/>
+          <path d="M34 36 Q26 24 20 22 Q26 29 34 36 Z" fill="#00aa33"/>
+          <path d="M34 36 Q42 22 52 24 Q44 29 34 37 Z" fill="#008822"/>
+          <path d="M34 36 Q48 30 56 36 Q46 36 34 38 Z" fill="#00aa33"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'castle':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#180838" rx="3"/>
+          <circle cx="50" cy="24" r="10" fill="#ffee66"/>
+          <path d="M12 90 L12 52 L20 52 L20 46 L24 46 L24 52 L32 52 L32 38 L40 38 L40 52 L48 52 L48 46 L52 46 L52 52 L60 52 L60 90 Z" fill="#000000"/>
+          <polygon points="36,26 31,38 41,38" fill="#000000"/>
+          <path d="M22 28 Q26 24 28 27 Q30 24 34 28 Q30 29 28 28 Q26 29 22 28 Z" fill="#000000"/>
+          <path d="M38 18 Q41 15 43 17 Q45 15 48 18 Q45 19 43 18 Q41 19 38 18 Z" fill="#000000"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'win95':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#d4d0c8" rx="3"/>
+          <rect x="3" y="3" width="66" height="90" fill="#000080" rx="2"/>
+          <g transform="translate(18, 28) scale(0.65)">
+            <path d="M0 0 L20 -4 L20 16 L0 20 Z" fill="#ff0000"/>
+            <path d="M24 -5 L46 -8 L46 12 L24 15 Z" fill="#00aa00"/>
+            <path d="M0 24 L20 20 L20 40 L0 44 Z" fill="#0066ff"/>
+            <path d="M24 19 L46 16 L46 36 L24 39 Z" fill="#ffcc00"/>
+          </g>
+          <text x="36" y="74" fill="#ffffff" font-family="monospace" font-size="7" font-weight="bold" text-anchor="middle">WINDOWS 95</text>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'robot':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#202028" rx="3"/>
+          <rect x="18" y="24" width="36" height="42" fill="#808090" stroke="#c0c0d0" stroke-width="1.5" rx="4"/>
+          <rect x="24" y="32" width="24" height="8" fill="#00ff66" rx="2"/>
+          <circle cx="28" cy="48" r="3" fill="#ff0044"/>
+          <circle cx="44" cy="48" r="3" fill="#ff0044"/>
+          <rect x="28" y="56" width="16" height="4" fill="#202028"/>
+          <line x1="36" y1="24" x2="36" y2="14" stroke="#c0c0d0" stroke-width="2"/>
+          <circle cx="36" cy="12" r="3" fill="#00ffcc"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'seashell':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#004d40" rx="3"/>
+          <circle cx="36" cy="48" r="24" fill="#00695c"/>
+          <path d="M36 28 C48 28 56 38 56 50 C56 60 48 68 36 68 C26 68 20 60 20 50 C20 42 26 36 34 36 C40 36 44 40 44 46 C44 50 40 54 36 54 C33 54 30 51 30 48" fill="none" stroke="#ffe082" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'dealer':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#660000" rx="3"/>
+          <rect x="14" y="54" width="44" height="28" fill="#111111" rx="2"/>
+          <rect x="18" y="50" width="36" height="6" fill="#ffffff" rx="1"/>
+          <g transform="translate(24, 20) rotate(-15)">
+            <rect width="18" height="26" fill="#ffffff" stroke="#000000" stroke-width="0.8" rx="1"/>
+            <text x="3" y="9" font-size="7" font-weight="bold" fill="#ff0000">A♥</text>
+          </g>
+          <g transform="translate(34, 18) rotate(10)">
+            <rect width="18" height="26" fill="#ffffff" stroke="#000000" stroke-width="0.8" rx="1"/>
+            <text x="3" y="9" font-size="7" font-weight="bold" fill="#000000">A♠</text>
+          </g>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'roses':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#1b381b" rx="3"/>
+          <circle cx="36" cy="40" r="14" fill="#cc1133"/>
+          <circle cx="36" cy="40" r="9" fill="#ee3355"/>
+          <circle cx="36" cy="40" r="5" fill="#ff7799"/>
+          <path d="M22 52 Q36 68 36 82 Q36 68 50 52 Z" fill="#2e7d32"/>
+          <circle cx="24" cy="36" r="6" fill="#1e5822"/>
+          <circle cx="48" cy="36" r="6" fill="#1e5822"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'fish':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#005080" rx="3"/>
+          <path d="M20 48 Q36 32 50 48 Q36 64 20 48 Z" fill="#ff8800"/>
+          <polygon points="14,38 22,48 14,58" fill="#ff8800"/>
+          <circle cx="44" cy="45" r="2.5" fill="#000000"/>
+          <circle cx="45" cy="44" r="0.8" fill="#ffffff"/>
+          <path d="M32 37 L32 59" stroke="#ffffff" stroke-width="2"/>
+          <path d="M40 40 L40 56" stroke="#ffffff" stroke-width="2"/>
+          <circle cx="54" cy="36" r="2" fill="none" stroke="#ffffff" stroke-width="0.8"/>
+          <circle cx="58" cy="28" r="1.5" fill="none" stroke="#ffffff" stroke-width="0.8"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'mountain':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#3a1c54" rx="3"/>
+          <circle cx="36" cy="34" r="12" fill="#ffbb44"/>
+          <polygon points="10,88 32,44 54,88" fill="#1e1030"/>
+          <polygon points="30,88 48,52 66,88" fill="#2d1b44"/>
+          <polygon points="32,44 28,52 32,50 36,52" fill="#ffffff"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'sun':
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#0a1a3a" rx="3"/>
+          <g transform="translate(36, 48)">
+            <circle cx="0" cy="0" r="10" fill="#ffcc00"/>
+            <line x1="0" y1="-14" x2="0" y2="-22" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="-10" x2="16" y2="-16" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="14" y1="0" x2="22" y2="0" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="10" x2="16" y2="16" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="0" y1="14" x2="0" y2="22" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="-10" y1="10" x2="-16" y2="16" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="-14" y1="0" x2="-22" y2="0" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="-10" y1="-10" x2="-16" y2="-16" stroke="#ffcc00" stroke-width="2"/>
+          </g>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+        </svg>`;
+      case 'lattice_blue':
+      default:
+        return `<svg width="100%" height="100%" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+          <rect width="72" height="96" fill="#0000a8" rx="3"/>
+          <rect x="3" y="3" width="66" height="90" fill="none" stroke="#ffffff" stroke-width="1.5" rx="2"/>
+          <defs>
+            <pattern id="pat_blue_${backId}" width="8" height="8" patternUnits="userSpaceOnUse">
+              <path d="M4 0 L8 4 L4 8 L0 4 Z" fill="none" stroke="#2a66ff" stroke-width="0.8"/>
+              <circle cx="4" cy="4" r="0.8" fill="#ffffff"/>
+            </pattern>
+          </defs>
+          <rect x="5" y="5" width="62" height="86" fill="url(#pat_blue_${backId})" rx="2"/>
+        </svg>`;
+    }
+  };
+
   const drawCard = () => {
-    audio.playClick();
+    if (!isGameStarted && options.timed) {
+      isGameStarted = true;
+      startTimer();
+    }
+    pushUndo();
     selection = null;
+    activeHint = null;
+
     if (stock.length > 0) {
-      const card = stock.pop()!;
-      card.faceUp = true;
-      waste.push(card);
+      const drawCount = Math.min(options.drawMode, stock.length);
+      for (let i = 0; i < drawCount; i++) {
+        const card = stock.pop()!;
+        card.faceUp = true;
+        waste.push(card);
+      }
+      moves++;
+      audio.playClick();
     } else {
-      while (waste.length > 0) {
-        const c = waste.pop()!;
-        c.faceUp = false;
-        stock.push(c);
+      if (waste.length > 0) {
+        // Recycle waste back to stock
+        while (waste.length > 0) {
+          const c = waste.pop()!;
+          c.faceUp = false;
+          stock.push(c);
+        }
+        if (options.scoring === 'standard') {
+          if (options.drawMode === 1) {
+            score = Math.max(0, score - 100);
+          } else {
+            score = Math.max(0, score - 20);
+          }
+        }
+        moves++;
+        audio.playClick();
+      } else {
+        audio.playError();
       }
     }
     renderUI();
   };
 
-  // Double click auto-move to foundation
+  // Check if a single card can move to any foundation
   const tryAutoFoundation = (card: Card, colIndex?: number): boolean => {
     for (let fIdx = 0; fIdx < 4; fIdx++) {
       const fPile = foundations[fIdx];
+      let canMove = false;
       if (fPile.length === 0) {
-        if (card.value === 1) {
-          fPile.push(card);
-          score += 10;
-          audio.playClick();
-          return true;
-        }
+        if (card.value === 1) canMove = true;
       } else {
         const top = fPile[fPile.length - 1];
         if (top.suit === card.suit && top.value + 1 === card.value) {
-          fPile.push(card);
-          score += 10;
-          audio.playClick();
-          return true;
+          canMove = true;
         }
+      }
+
+      if (canMove) {
+        pushUndo();
+        if (!isGameStarted && options.timed) {
+          isGameStarted = true;
+          startTimer();
+        }
+
+        if (colIndex !== undefined) {
+          tableau[colIndex].pop();
+          if (tableau[colIndex].length > 0 && !tableau[colIndex][tableau[colIndex].length - 1].faceUp) {
+            tableau[colIndex][tableau[colIndex].length - 1].faceUp = true;
+            if (options.scoring === 'standard') score += 5;
+          }
+        } else {
+          waste.pop();
+        }
+
+        fPile.push(card);
+        if (options.scoring === 'standard') score += 10;
+        else if (options.scoring === 'vegas') score += 5;
+
+        moves++;
+        selection = null;
+        activeHint = null;
+        audio.playClick();
+        checkWin();
+        renderUI();
+        return true;
       }
     }
     return false;
@@ -1057,8 +1426,7 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
 
     let canMove = false;
     if (destCol.length === 0) {
-      // Empty column accepts King only
-      if (movingLead.value === 13) canMove = true;
+      if (movingLead.value === 13) canMove = true; // King only on empty column
     } else {
       const top = destCol[destCol.length - 1];
       if (top.faceUp && top.isRed !== movingLead.isRed && top.value === movingLead.value + 1) {
@@ -1068,31 +1436,39 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
 
     if (!canMove) return false;
 
-    // Execute move
+    pushUndo();
+    if (!isGameStarted && options.timed) {
+      isGameStarted = true;
+      startTimer();
+    }
+
     if (selection.source === 'waste') {
       waste.pop();
-      score += 5;
+      if (options.scoring === 'standard') score += 5;
     } else if (selection.source === 'tableau' && selection.col !== undefined) {
       const srcCol = tableau[selection.col];
       srcCol.splice(selection.cardIndex, selection.cards.length);
       if (srcCol.length > 0 && !srcCol[srcCol.length - 1].faceUp) {
         srcCol[srcCol.length - 1].faceUp = true;
-        score += 5;
+        if (options.scoring === 'standard') score += 5;
       }
     } else if (selection.source === 'foundation' && selection.col !== undefined) {
       foundations[selection.col].pop();
-      score = Math.max(0, score - 15);
+      if (options.scoring === 'standard') score = Math.max(0, score - 15);
+      else if (options.scoring === 'vegas') score -= 5;
     }
 
     destCol.push(...selection.cards);
+    moves++;
     selection = null;
+    activeHint = null;
     audio.playClick();
     checkWin();
     renderUI();
     return true;
   };
 
-  // Move selected card to foundation
+  // Move selected card to foundation pile
   const tryMoveToFoundation = (fIdx: number): boolean => {
     if (!selection || selection.cards.length !== 1) return false;
     const card = selection.cards[0];
@@ -1110,6 +1486,12 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
 
     if (!canMove) return false;
 
+    pushUndo();
+    if (!isGameStarted && options.timed) {
+      isGameStarted = true;
+      startTimer();
+    }
+
     if (selection.source === 'waste') {
       waste.pop();
     } else if (selection.source === 'tableau' && selection.col !== undefined) {
@@ -1117,135 +1499,837 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
       srcCol.pop();
       if (srcCol.length > 0 && !srcCol[srcCol.length - 1].faceUp) {
         srcCol[srcCol.length - 1].faceUp = true;
+        if (options.scoring === 'standard') score += 5;
       }
     }
 
     fPile.push(card);
-    score += 10;
+    if (options.scoring === 'standard') score += 10;
+    else if (options.scoring === 'vegas') score += 5;
+
+    moves++;
     selection = null;
+    activeHint = null;
     audio.playClick();
     checkWin();
     renderUI();
     return true;
   };
 
-  const checkWin = () => {
-    const totalFoundations = foundations.reduce((sum, p) => sum + p.length, 0);
-    if (totalFoundations === 52) {
-      audio.playTada();
-      alert(`🎉 Victory! Solitaire Solved! Final Score: ${score}`);
+  // Auto-finish solver: iteratively moves valid cards to foundations
+  const performAutoFinish = () => {
+    let movedAny = false;
+    // Try waste
+    if (waste.length > 0) {
+      const topWaste = waste[waste.length - 1];
+      if (tryAutoFoundation(topWaste)) {
+        movedAny = true;
+      }
+    }
+    // Try tableau
+    if (!movedAny) {
+      for (let c = 0; c < 7; c++) {
+        const col = tableau[c];
+        if (col.length > 0) {
+          const topCard = col[col.length - 1];
+          if (topCard.faceUp && tryAutoFoundation(topCard, c)) {
+            movedAny = true;
+            break;
+          }
+        }
+      }
+    }
+
+    if (movedAny) {
+      setTimeout(performAutoFinish, 90);
+    } else {
+      audio.playAsterisk();
     }
   };
 
-  const renderUI = () => {
-    container.innerHTML = `
-      <div class="flex flex-col h-full bg-[#008000] p-3 select-none font-mono text-xs overflow-auto">
-        <!-- Toolbar -->
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/40 text-white font-bold">
-          <div class="flex gap-2 items-center">
-            <button type="button" class="retro-btn !py-0.5 !px-3 font-bold text-black" id="sol-new">New Game</button>
-            <span class="text-sm">Score: ${score}</span>
-          </div>
-          <span class="text-[11px] text-white/90">Click to Select/Move • Double-Click to Foundation</span>
+  // Find a suggested move for Hint
+  const provideHint = () => {
+    // 1. Check waste to foundation
+    if (waste.length > 0) {
+      const wCard = waste[waste.length - 1];
+      for (let f = 0; f < 4; f++) {
+        const fPile = foundations[f];
+        if ((fPile.length === 0 && wCard.value === 1) || (fPile.length > 0 && fPile[fPile.length - 1].suit === wCard.suit && fPile[fPile.length - 1].value + 1 === wCard.value)) {
+          activeHint = { sourceCardId: wCard.id, targetFidx: f };
+          audio.playAsterisk();
+          renderUI();
+          return;
+        }
+      }
+    }
+
+    // 2. Check tableau to foundation
+    for (let c = 0; c < 7; c++) {
+      const col = tableau[c];
+      if (col.length > 0) {
+        const card = col[col.length - 1];
+        if (card.faceUp) {
+          for (let f = 0; f < 4; f++) {
+            const fPile = foundations[f];
+            if ((fPile.length === 0 && card.value === 1) || (fPile.length > 0 && fPile[fPile.length - 1].suit === card.suit && fPile[fPile.length - 1].value + 1 === card.value)) {
+              activeHint = { sourceCardId: card.id, targetFidx: f };
+              audio.playAsterisk();
+              renderUI();
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    // 3. Check waste to tableau
+    if (waste.length > 0) {
+      const wCard = waste[waste.length - 1];
+      for (let c = 0; c < 7; c++) {
+        const col = tableau[c];
+        if (col.length === 0 && wCard.value === 13) {
+          activeHint = { sourceCardId: wCard.id, targetCol: c };
+          audio.playAsterisk();
+          renderUI();
+          return;
+        } else if (col.length > 0) {
+          const top = col[col.length - 1];
+          if (top.faceUp && top.isRed !== wCard.isRed && top.value === wCard.value + 1) {
+            activeHint = { sourceCardId: wCard.id, targetCol: c };
+            audio.playAsterisk();
+            renderUI();
+            return;
+          }
+        }
+      }
+    }
+
+    // 4. Check tableau to tableau
+    for (let c1 = 0; c1 < 7; c1++) {
+      const col1 = tableau[c1];
+      for (let i = 0; i < col1.length; i++) {
+        const lead = col1[i];
+        if (!lead.faceUp) continue;
+        if (i === 0 && lead.value === 13) continue; // Moving King from empty bottom to empty space is pointless
+
+        for (let c2 = 0; c2 < 7; c2++) {
+          if (c1 === c2) continue;
+          const col2 = tableau[c2];
+          if (col2.length === 0 && lead.value === 13 && i > 0) {
+            activeHint = { sourceCardId: lead.id, targetCol: c2 };
+            audio.playAsterisk();
+            renderUI();
+            return;
+          } else if (col2.length > 0) {
+            const top2 = col2[col2.length - 1];
+            if (top2.faceUp && top2.isRed !== lead.isRed && top2.value === lead.value + 1) {
+              activeHint = { sourceCardId: lead.id, targetCol: c2 };
+              audio.playAsterisk();
+              renderUI();
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    // No moves found
+    audio.playDing();
+    const tipEl = container.querySelector('#sol-status-tip');
+    if (tipEl) {
+      tipEl.textContent = 'No obvious moves. Click the Stock pile to draw cards!';
+    }
+  };
+
+  const checkWin = () => {
+    const totalFoundations = foundations.reduce((sum, p) => sum + p.length, 0);
+    if (totalFoundations === 52 && !isWon) {
+      isWon = true;
+      isGameOver = true;
+      stopTimer();
+
+      if (options.scoring === 'standard') {
+        const timeBonus = Math.floor(Math.max(0, 20000 / Math.max(10, seconds)));
+        score += timeBonus;
+      }
+
+      audio.playTada();
+      startWinCascade();
+    }
+  };
+
+  // The iconic Windows 95 Solitaire bouncing cards waterfall cascade!
+  const startWinCascade = () => {
+    winCascadeActive = true;
+    const canvas = container.querySelector('#sol-victory-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+
+    canvas.style.display = 'block';
+    canvas.width = canvas.parentElement?.clientWidth || 640;
+    canvas.height = canvas.parentElement?.clientHeight || 440;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Fill initial felt
+    ctx.fillStyle = '#008000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    type BouncingCard = {
+      suit: Suit;
+      label: string;
+      color: string;
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      w: number;
+      h: number;
+    };
+
+    const cardsToBounce: BouncingCard[] = [];
+    const cardWidth = Math.min(72, Math.floor(canvas.width / 9));
+    const cardHeight = Math.floor(cardWidth * 1.35);
+
+    // Collect all 52 cards from foundations in reverse order (Kings down to Aces)
+    for (let val = 13; val >= 1; val--) {
+      for (let sIdx = 0; sIdx < 4; sIdx++) {
+        const suit = SUITS[sIdx];
+        const label = getCardLabel(val);
+        const color = suit === '♥' || suit === '♦' ? '#cc0000' : '#000000';
+        const startX = Math.floor(canvas.width * 0.45) + sIdx * (cardWidth + 10);
+        cardsToBounce.push({
+          suit,
+          label,
+          color,
+          x: startX,
+          y: 20,
+          vx: (Math.random() - 0.45) * 6,
+          vy: -Math.random() * 4,
+          w: cardWidth,
+          h: cardHeight,
+        });
+      }
+    }
+
+    let activeBouncer: BouncingCard | null = cardsToBounce.shift() || null;
+    const gravity = 0.55;
+    const floor = canvas.height - cardHeight;
+
+    const drawCardSprite = (c: BouncingCard) => {
+      // White body with border
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(c.x, c.y, c.w, c.h);
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(c.x, c.y, c.w, c.h);
+
+      // Shadow pixel bevel
+      ctx.fillStyle = '#808080';
+      ctx.fillRect(c.x + c.w, c.y + 1, 1, c.h);
+      ctx.fillRect(c.x + 1, c.y + c.h, c.w, 1);
+
+      // Indices
+      ctx.fillStyle = c.color;
+      ctx.font = 'bold 11px monospace';
+      ctx.fillText(c.label, c.x + 4, c.y + 14);
+      ctx.fillText(c.suit, c.x + 4, c.y + 26);
+      ctx.font = '16px serif';
+      ctx.fillText(c.suit, c.x + c.w / 2 - 5, c.y + c.h / 2 + 5);
+    };
+
+    const step = () => {
+      if (!winCascadeActive) return;
+
+      if (activeBouncer) {
+        activeBouncer.x += activeBouncer.vx;
+        activeBouncer.vy += gravity;
+        activeBouncer.y += activeBouncer.vy;
+
+        if (activeBouncer.y >= floor) {
+          activeBouncer.y = floor;
+          activeBouncer.vy = -activeBouncer.vy * 0.82;
+        }
+
+        drawCardSprite(activeBouncer);
+
+        // Next card if offscreen left/right
+        if (activeBouncer.x < -activeBouncer.w || activeBouncer.x > canvas.width + 20) {
+          activeBouncer = cardsToBounce.shift() || null;
+        }
+      }
+
+      cascadeAnimId = requestAnimationFrame(step);
+    };
+
+    cascadeAnimId = requestAnimationFrame(step);
+  };
+
+  const stopWinCascade = () => {
+    winCascadeActive = false;
+    if (cascadeAnimId !== null) {
+      cancelAnimationFrame(cascadeAnimId);
+      cascadeAnimId = null;
+    }
+    const canvas = container.querySelector('#sol-victory-canvas') as HTMLCanvasElement;
+    if (canvas) canvas.style.display = 'none';
+  };
+
+  const updateStatusTime = () => {
+    const timeEl = container.querySelector('#sol-status-time');
+    if (timeEl) timeEl.textContent = `Time: ${seconds}`;
+  };
+
+  // Dialog: Select Card Back (Deck...)
+  const showDeckDialog = () => {
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-2 select-none';
+    let chosenBack = currentCardBack;
+
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-[380px] max-w-[95vw] bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>Select Card Back</span>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="sol-deck-close">✕</button>
         </div>
-
-        <!-- Top Row: Stock, Waste, and 4 Foundations -->
-        <div class="flex justify-between mb-4">
-          <!-- Stock and Waste -->
-          <div class="flex gap-3">
-            <div
-              id="sol-stock"
-              class="w-12 sm:w-14 h-16 sm:h-20 rounded border-2 border-white bg-[#000080] flex items-center justify-center cursor-pointer shadow-[2px_2px_0px_#000000]"
-              title="Draw Card"
-            >
-              ${stock.length > 0 ? '<div class="w-10 h-14 bg-[#1084d0] border border-white"></div>' : '<span class="text-white text-xl">↺</span>'}
-            </div>
-
-            <div
-              id="sol-waste"
-              class="w-12 sm:w-14 h-16 sm:h-20 rounded border-2 border-dashed border-white/50 flex items-center justify-center"
-            >
-              ${waste.length > 0 ? renderCardHtml(waste[waste.length - 1], 'waste', waste.length - 1) : ''}
-            </div>
-          </div>
-
-          <!-- 4 Foundations -->
-          <div class="flex gap-2">
-            ${foundations.map((fPile, idx) => `
+        <div class="p-2 text-xs font-mono text-black space-y-3">
+          <p class="font-bold text-[11px]">Click a card design to choose your deck:</p>
+          <div class="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-[260px] overflow-y-auto p-1 border-t-2 border-l-2 border-[#808080] border-b-2 border-r-2 border-white bg-[#808080]/20">
+            ${(Object.keys(CARD_BACK_LABELS) as CardBackId[])
+              .map(
+                (id) => `
               <div
-                class="w-12 sm:w-14 h-16 sm:h-20 rounded border-2 border-white/80 bg-white/10 flex items-center justify-center sol-foundation cursor-pointer"
-                data-fidx="${idx}"
+                class="sol-deck-opt flex flex-col items-center p-1 cursor-pointer border-2 ${
+                  id === chosenBack ? 'border-[#000080] bg-[#000080]/20' : 'border-transparent hover:border-white'
+                }"
+                data-back="${id}"
+                title="${CARD_BACK_LABELS[id]}"
               >
-                ${
-                  fPile.length > 0
-                    ? renderCardHtml(fPile[fPile.length - 1], 'foundation', fPile.length - 1, idx)
-                    : `<span class="text-white/60 text-xl font-bold">${SUITS[idx]}</span>`
-                }
+                <div class="w-11 h-15 shadow-[2px_2px_0px_#000000]">
+                  ${getCardBackSvg(id)}
+                </div>
+                <span class="text-[9px] truncate max-w-[50px] mt-1 text-center font-bold">${CARD_BACK_LABELS[id]}</span>
               </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
-        </div>
-
-        <!-- Tableau (7 Cascades) -->
-        <div class="grid grid-cols-7 gap-1.5 sm:gap-2 flex-1 items-start">
-          ${tableau.map((col, colIdx) => `
-            <div class="sol-col flex flex-col items-center min-h-[200px] cursor-pointer" data-col="${colIdx}">
-              ${
-                col.length === 0
-                  ? '<div class="w-12 sm:w-14 h-16 sm:h-20 border-2 border-dashed border-white/40 rounded flex items-center justify-center text-white/40 font-bold text-sm">K</div>'
-                  : col.map((card, cIdx) => `
-                      <div class="${cIdx > 0 ? '-mt-11 sm:-mt-14' : ''} transition-all">
-                        ${renderCardHtml(card, 'tableau', cIdx, colIdx)}
-                      </div>
-                    `).join('')
-              }
-            </div>
-          `).join('')}
+          <div class="flex justify-end gap-2 pt-1">
+            <button type="button" id="sol-deck-ok" class="retro-btn !px-4 !py-1 font-bold">OK</button>
+            <button type="button" id="sol-deck-cancel" class="retro-btn !px-3 !py-1">Cancel</button>
+          </div>
         </div>
       </div>
     `;
+    container.appendChild(modal);
 
-    function renderCardHtml(card: Card, pile: string, cardIndex: number, colIndex?: number): string {
-      if (!card.faceUp) {
-        return `
-          <div class="w-12 sm:w-14 h-16 sm:h-20 rounded bg-[#000080] border-2 border-white shadow-[2px_2px_0px_#000000] flex items-center justify-center">
-            <div class="w-9 sm:w-10 h-13 sm:h-16 bg-[#1084d0] border border-white"></div>
+    modal.querySelectorAll('.sol-deck-opt').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        const id = opt.getAttribute('data-back') as CardBackId;
+        if (id) {
+          chosenBack = id;
+          modal.querySelectorAll('.sol-deck-opt').forEach((o) => {
+            o.classList.remove('border-[#000080]', 'bg-[#000080]/20');
+            o.classList.add('border-transparent');
+          });
+          opt.classList.add('border-[#000080]', 'bg-[#000080]/20');
+          opt.classList.remove('border-transparent');
+          audio.playClick();
+        }
+      });
+    });
+
+    const closeDeck = () => modal.remove();
+    modal.querySelector('#sol-deck-close')?.addEventListener('click', closeDeck);
+    modal.querySelector('#sol-deck-cancel')?.addEventListener('click', closeDeck);
+    modal.querySelector('#sol-deck-ok')?.addEventListener('click', () => {
+      currentCardBack = chosenBack;
+      saveDeck(currentCardBack);
+      audio.playClick();
+      closeDeck();
+      renderUI();
+    });
+  };
+
+  // Dialog: Options...
+  const showOptionsDialog = () => {
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-2 select-none';
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-[320px] max-w-[95vw] bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>Options</span>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="sol-opt-close">✕</button>
+        </div>
+        <div class="p-3 text-xs font-mono text-black space-y-3">
+          <!-- Draw Group -->
+          <fieldset class="border border-[#808080] p-2 space-y-1">
+            <legend class="px-1 font-bold">Draw</legend>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sol-draw" value="1" ${options.drawMode === 1 ? 'checked' : ''} />
+              <span>Draw One</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sol-draw" value="3" ${options.drawMode === 3 ? 'checked' : ''} />
+              <span>Draw Three</span>
+            </label>
+          </fieldset>
+
+          <!-- Scoring Group -->
+          <fieldset class="border border-[#808080] p-2 space-y-1">
+            <legend class="px-1 font-bold">Scoring</legend>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sol-scoring" value="standard" ${options.scoring === 'standard' ? 'checked' : ''} />
+              <span>Standard</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sol-scoring" value="vegas" ${options.scoring === 'vegas' ? 'checked' : ''} />
+              <span>Vegas</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sol-scoring" value="none" ${options.scoring === 'none' ? 'checked' : ''} />
+              <span>None</span>
+            </label>
+          </fieldset>
+
+          <!-- Checkboxes -->
+          <div class="space-y-1.5 pl-1">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="sol-opt-timed" ${options.timed ? 'checked' : ''} />
+              <span>Timed game</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="sol-opt-status" ${options.statusBar ? 'checked' : ''} />
+              <span>Status bar</span>
+            </label>
           </div>
-        `;
+
+          <div class="flex justify-end gap-2 pt-2 border-t border-[#808080]">
+            <button type="button" id="sol-opt-ok" class="retro-btn !px-4 !py-1 font-bold">OK</button>
+            <button type="button" id="sol-opt-cancel" class="retro-btn !px-3 !py-1">Cancel</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(modal);
+
+    const closeOpt = () => modal.remove();
+    modal.querySelector('#sol-opt-close')?.addEventListener('click', closeOpt);
+    modal.querySelector('#sol-opt-cancel')?.addEventListener('click', closeOpt);
+    modal.querySelector('#sol-opt-ok')?.addEventListener('click', () => {
+      const drawVal = parseInt((modal.querySelector('input[name="sol-draw"]:checked') as HTMLInputElement)?.value || '3', 10) as 1 | 3;
+      const scorVal = (modal.querySelector('input[name="sol-scoring"]:checked') as HTMLInputElement)?.value as 'standard' | 'vegas' | 'none';
+      const timedVal = (modal.querySelector('#sol-opt-timed') as HTMLInputElement)?.checked ?? true;
+      const statusVal = (modal.querySelector('#sol-opt-status') as HTMLInputElement)?.checked ?? true;
+
+      const needsRestart = drawVal !== options.drawMode || scorVal !== options.scoring;
+      options = {
+        drawMode: drawVal,
+        scoring: scorVal,
+        timed: timedVal,
+        statusBar: statusVal,
+      };
+      saveOptions(options);
+      audio.playClick();
+      closeOpt();
+
+      if (needsRestart) {
+        initGame();
+      } else {
+        renderUI();
       }
+    });
+  };
 
-      const isSelected =
-        selection &&
-        selection.source === pile &&
-        selection.col === colIndex &&
-        cardIndex >= selection.cardIndex;
+  // Dialog: Help Topics
+  const showHelpDialog = () => {
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-2 select-none';
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-[380px] max-w-[95vw] bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>Solitaire Help Topics</span>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="sol-help-close">✕</button>
+        </div>
+        <div class="p-3 text-xs font-mono text-black space-y-2.5 leading-relaxed max-h-[300px] overflow-y-auto">
+          <p class="font-bold text-[#000080]">How to Play Klondike Solitaire:</p>
+          <ul class="list-disc pl-4 space-y-1 text-[11px]">
+            <li><strong>Objective:</strong> Build 4 foundation piles from Ace up to King in each suit (♠, ♥, ♦, ♣).</li>
+            <li><strong>Tableau:</strong> Build columns down in alternating colors (e.g. Red Queen on Black King, Black 7 on Red 8).</li>
+            <li><strong>Empty Columns:</strong> Can only be filled with a King or a sequence beginning with a King.</li>
+            <li><strong>Stock:</strong> Click to draw 1 or 3 cards. When empty, click to recycle waste cards back into stock.</li>
+            <li><strong>Controls:</strong> Drag and drop cards, or click a card to select it and click its destination. Double-click or right-click to send directly to Foundation!</li>
+            <li><strong>Shortcuts:</strong> Press <strong>F2</strong> to deal a new game, <strong>Ctrl+Z</strong> to undo, <strong>Space</strong> to draw, and <strong>H</strong> for hints.</li>
+          </ul>
+          <div class="flex justify-end pt-2">
+            <button type="button" id="sol-help-ok" class="retro-btn !px-4 !py-1 font-bold">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(modal);
+    modal.querySelector('#sol-help-close')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#sol-help-ok')?.addEventListener('click', () => modal.remove());
+  };
 
-      const color = card.isRed ? 'text-red-600' : 'text-black';
+  // Dialog: About Solitaire
+  const showAboutDialog = () => {
+    const modal = document.createElement('div');
+    modal.className = 'absolute inset-0 bg-black/40 flex items-center justify-center z-50 p-2 select-none';
+    modal.innerHTML = `
+      <div class="retro-window p-1 w-[320px] max-w-[95vw] bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000]">
+        <div class="retro-titlebar px-2 py-0.5 text-xs text-white font-bold flex justify-between items-center mb-2">
+          <span>About Solitaire</span>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="sol-about-close">✕</button>
+        </div>
+        <div class="p-3 text-xs font-mono text-black space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🃏</span>
+            <div>
+              <p class="font-bold text-sm">Windows 95 Solitaire</p>
+              <p class="text-[11px] text-gray-700">Version 4.0 (Authentic Web Edition)</p>
+            </div>
+          </div>
+          <div class="border-t border-[#808080] pt-2 text-[11px] space-y-1 text-gray-800">
+            <p>Original program designed by <strong>Wes Cherry</strong>.</p>
+            <p>Original 16-color card deck by <strong>Susan Kare</strong>.</p>
+            <p>Crafted for the <strong>Piush 95</strong> interactive desktop.</p>
+          </div>
+          <div class="flex justify-end pt-1">
+            <button type="button" id="sol-about-ok" class="retro-btn !px-4 !py-1 font-bold">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(modal);
+    modal.querySelector('#sol-about-close')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#sol-about-ok')?.addEventListener('click', () => modal.remove());
+  };
+
+  const renderCardHtml = (card: Card, pile: string, cardIndex: number, colIndex?: number): string => {
+    if (!card.faceUp) {
       return `
         <div
-          class="w-12 sm:w-14 h-16 sm:h-20 rounded bg-white border-2 ${
-            isSelected ? 'border-yellow-400 ring-2 ring-yellow-400 -translate-y-1' : 'border-black'
-          } shadow-[2px_2px_0px_#000000] p-1 flex flex-col justify-between cursor-pointer sol-card select-none"
+          class="w-12 sm:w-16 h-17 sm:h-22 rounded-[3px] shadow-[2px_2px_0px_#000000] cursor-pointer sol-card-back select-none relative overflow-hidden"
           data-pile="${pile}"
           data-cidx="${cardIndex}"
           ${colIndex !== undefined ? `data-col="${colIndex}"` : ''}
         >
-          <div class="flex justify-between items-center text-xs font-black ${color} leading-none">
-            <span>${getCardLabel(card.value)}</span>
-            <span>${card.suit}</span>
-          </div>
-          <div class="text-center text-base sm:text-lg ${color} leading-none">${card.suit}</div>
-          <div class="text-right text-[10px] font-black ${color} leading-none">
-            ${getCardLabel(card.value)}
-          </div>
+          ${getCardBackSvg(currentCardBack)}
         </div>
       `;
     }
 
-    container.querySelector('#sol-new')?.addEventListener('click', initGame);
+    const isSelected =
+      selection &&
+      selection.source === pile &&
+      selection.col === colIndex &&
+      cardIndex >= selection.cardIndex;
+
+    const isHinted = activeHint && activeHint.sourceCardId === card.id;
+
+    const color = card.isRed ? 'text-[#d00000]' : 'text-black';
+    const label = getCardLabel(card.value);
+
+    // Center graphics for face cards vs numbers
+    let centerGraphic = `<span class="text-xl sm:text-2xl leading-none">${card.suit}</span>`;
+    if (card.value === 11) {
+      centerGraphic = `<div class="flex flex-col items-center leading-none"><span class="text-[10px] font-black">JACK</span><span class="text-base">${card.suit}</span></div>`;
+    } else if (card.value === 12) {
+      centerGraphic = `<div class="flex flex-col items-center leading-none"><span class="text-[10px] font-black">QUEEN</span><span class="text-base">${card.suit}</span></div>`;
+    } else if (card.value === 13) {
+      centerGraphic = `<div class="flex flex-col items-center leading-none"><span class="text-[10px] font-black">KING</span><span class="text-base">${card.suit}</span></div>`;
+    }
+
+    return `
+      <div
+        class="w-12 sm:w-16 h-17 sm:h-22 rounded-[3px] bg-white border ${
+          isSelected
+            ? 'border-yellow-400 ring-2 ring-yellow-400 -translate-y-1'
+            : isHinted
+            ? 'border-[#0000ff] ring-2 ring-[#0000ff] animate-pulse'
+            : 'border-black'
+        } shadow-[2px_2px_0px_#000000] p-1 flex flex-col justify-between cursor-pointer sol-card select-none relative transition-transform"
+        data-card-id="${card.id}"
+        data-pile="${pile}"
+        data-cidx="${cardIndex}"
+        ${colIndex !== undefined ? `data-col="${colIndex}"` : ''}
+        draggable="true"
+      >
+        <!-- Top-left corner index -->
+        <div class="flex flex-col items-center leading-none self-start ${color}">
+          <span class="font-black text-xs sm:text-sm leading-none">${label}</span>
+          <span class="text-[11px] sm:text-xs leading-none mt-0.5">${card.suit}</span>
+        </div>
+
+        <!-- Center symbol -->
+        <div class="self-center ${color} select-none">
+          ${centerGraphic}
+        </div>
+
+        <!-- Bottom-right corner index (inverted) -->
+        <div class="flex flex-col items-center leading-none self-end rotate-180 ${color}">
+          <span class="font-black text-xs sm:text-sm leading-none">${label}</span>
+          <span class="text-[11px] sm:text-xs leading-none mt-0.5">${card.suit}</span>
+        </div>
+      </div>
+    `;
+  };
+
+  const renderUI = () => {
+    // Check if auto-complete can be offered
+    const allTableauFaceUp = tableau.every((col) => col.every((c) => c.faceUp));
+    const canAutoComplete = allTableauFaceUp && stock.length === 0 && !isWon;
+
+    // Waste visible cards fanning:
+    // In Draw 3, show up to 3 cards fanned horizontally
+    const visibleWaste = options.drawMode === 3 ? waste.slice(-3) : waste.slice(-1);
+
+    container.innerHTML = `
+      <div class="flex flex-col h-full bg-[#008000] select-none font-mono text-black relative overflow-hidden">
+        <!-- Windows 95 Menu Bar -->
+        <div class="flex items-center gap-1 px-1.5 py-0.5 border-b border-[#808080] bg-[#c0c0c0] text-xs relative z-30">
+          <!-- Game Menu -->
+          <div class="relative group" id="sol-menu-game-parent">
+            <button type="button" class="px-2 py-0.5 hover:bg-[#000080] hover:text-white rounded-none cursor-default font-normal" id="sol-menu-game-btn">
+              <span class="underline">G</span>ame
+            </button>
+            <div class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[170px] z-50 text-black text-xs" id="sol-game-dropdown">
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="sol-menu-deal">
+                <span>Deal</span>
+                <span class="text-gray-600 group-hover:text-gray-300 text-[10px]">F2</span>
+              </button>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white flex justify-between items-center" id="sol-menu-undo">
+                <span>Undo</span>
+                <span class="text-gray-600 group-hover:text-gray-300 text-[10px]">Ctrl+Z</span>
+              </button>
+              <div class="border-b border-[#808080] border-t border-white my-1"></div>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="sol-menu-deck">
+                <span>Deck...</span>
+              </button>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="sol-menu-options">
+                <span>Options...</span>
+              </button>
+              <div class="border-b border-[#808080] border-t border-white my-1"></div>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="sol-menu-exit">
+                <span>Exit</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Help Menu -->
+          <div class="relative group" id="sol-menu-help-parent">
+            <button type="button" class="px-2 py-0.5 hover:bg-[#000080] hover:text-white rounded-none cursor-default font-normal" id="sol-menu-help-btn">
+              <span class="underline">H</span>elp
+            </button>
+            <div class="hidden absolute top-full left-0 bg-[#c0c0c0] border-2 border-white shadow-[2px_2px_0px_#000000] py-0.5 min-w-[150px] z-50 text-black text-xs" id="sol-help-dropdown">
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="sol-menu-how">
+                <span>Help Topics</span>
+              </button>
+              <div class="border-b border-[#808080] border-t border-white my-1"></div>
+              <button type="button" class="w-full text-left px-4 py-1 hover:bg-[#000080] hover:text-white" id="sol-menu-about">
+                <span>About Solitaire</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons in toolbar -->
+          <div class="ml-auto flex items-center gap-1.5">
+            <button type="button" class="retro-btn !py-0 !px-2 text-[11px] font-bold" id="sol-quick-undo" title="Undo (Ctrl+Z)">↶ Undo</button>
+            <button type="button" class="retro-btn !py-0 !px-2 text-[11px] font-bold hidden sm:inline-block" id="sol-quick-hint" title="Hint (H)">💡 Hint</button>
+            ${
+              canAutoComplete
+                ? `<button type="button" class="retro-btn !py-0 !px-2 text-[11px] font-bold bg-[#ffff99]" id="sol-quick-auto" title="Auto-complete remaining cards">⚡ Auto Finish</button>`
+                : ''
+            }
+          </div>
+        </div>
+
+        <!-- Main Felt Game Arena -->
+        <div class="flex-1 p-2 sm:p-3 overflow-y-auto overflow-x-hidden flex flex-col relative z-10">
+          <!-- Canvas Waterfall for Victory Animation -->
+          <canvas id="sol-victory-canvas" class="absolute inset-0 w-full h-full z-40 cursor-pointer pointer-events-auto" style="display: none;"></canvas>
+
+          <!-- Top Row: Stock, Waste, and 4 Foundations -->
+          <div class="flex justify-between items-start mb-4 max-w-[620px] w-full mx-auto">
+            <!-- Stock and Waste -->
+            <div class="flex gap-2 sm:gap-3 items-start">
+              <!-- Stock Pile -->
+              <div
+                id="sol-stock"
+                class="w-12 sm:w-16 h-17 sm:h-22 rounded-[3px] border-2 border-white/80 bg-white/5 flex items-center justify-center cursor-pointer shadow-[2px_2px_0px_#000000] relative"
+                title="Draw Cards"
+              >
+                ${
+                  stock.length > 0
+                    ? `<div class="w-full h-full">${getCardBackSvg(currentCardBack)}</div>`
+                    : `<span class="text-white/70 text-2xl font-black">↺</span>`
+                }
+              </div>
+
+              <!-- Waste Pile (Fanned in Draw 3) -->
+              <div id="sol-waste" class="relative w-24 sm:w-28 h-17 sm:h-22">
+                ${
+                  visibleWaste.length > 0
+                    ? visibleWaste
+                        .map((card, idx) => {
+                          const originalIndex = waste.length - visibleWaste.length + idx;
+                          const offsetPx = idx * (options.drawMode === 3 ? 14 : 0);
+                          return `
+                            <div class="absolute top-0" style="left: ${offsetPx}px;">
+                              ${renderCardHtml(card, 'waste', originalIndex)}
+                            </div>
+                          `;
+                        })
+                        .join('')
+                    : `<div class="w-12 sm:w-16 h-17 sm:h-22 rounded-[3px] border-2 border-dashed border-white/40 flex items-center justify-center text-white/30 text-xs">Waste</div>`
+                }
+              </div>
+            </div>
+
+            <!-- 4 Foundations -->
+            <div class="flex gap-1.5 sm:gap-2">
+              ${foundations
+                .map((fPile, idx) => {
+                  const isHintTarget = activeHint && activeHint.targetFidx === idx;
+                  return `
+                    <div
+                      class="w-12 sm:w-16 h-17 sm:h-22 rounded-[3px] border-2 ${
+                        isHintTarget ? 'border-[#0000ff] ring-2 ring-[#0000ff] animate-pulse' : 'border-white/80'
+                      } bg-white/10 flex items-center justify-center sol-foundation cursor-pointer relative"
+                      data-fidx="${idx}"
+                    >
+                      ${
+                        fPile.length > 0
+                          ? renderCardHtml(fPile[fPile.length - 1], 'foundation', fPile.length - 1, idx)
+                          : `<span class="text-white/50 text-xl font-bold select-none">${SUITS[idx]}</span>`
+                      }
+                    </div>
+                  `;
+                })
+                .join('')}
+            </div>
+          </div>
+
+          <!-- Tableau (7 Cascades) -->
+          <div class="grid grid-cols-7 gap-1 sm:gap-2 flex-1 items-start max-w-[620px] w-full mx-auto min-h-[260px]">
+            ${tableau
+              .map((col, colIdx) => {
+                const isHintCol = activeHint && activeHint.targetCol === colIdx;
+                return `
+                  <div
+                    class="sol-col flex flex-col items-center min-h-[220px] cursor-pointer relative rounded-[3px] ${
+                      isHintCol ? 'ring-2 ring-[#0000ff] bg-white/10' : ''
+                    }"
+                    data-col="${colIdx}"
+                  >
+                    ${
+                      col.length === 0
+                        ? `<div class="w-12 sm:w-16 h-17 sm:h-22 border-2 border-dashed border-white/40 rounded-[3px] flex items-center justify-center text-white/40 font-bold text-sm">K</div>`
+                        : col
+                            .map((card, cIdx) => {
+                              // Face-down cards overlap tighter (-mt-13), face-up cards show rank/suit (-mt-10)
+                              const overlapClass = cIdx === 0 ? '' : card.faceUp ? '-mt-12 sm:-mt-15' : '-mt-14 sm:-mt-17';
+                              return `
+                                <div class="${overlapClass} transition-all">
+                                  ${renderCardHtml(card, 'tableau', cIdx, colIdx)}
+                                </div>
+                              `;
+                            })
+                            .join('')
+                    }
+                  </div>
+                `;
+              })
+              .join('')}
+          </div>
+        </div>
+
+        <!-- Windows 95 Status Bar -->
+        ${
+          options.statusBar
+            ? `
+          <div class="flex items-center justify-between px-2 py-0.5 border-t border-white bg-[#c0c0c0] text-[11px] font-mono text-black relative z-30">
+            <div class="border-t border-l border-[#808080] border-b border-r border-white px-2 py-0.5 min-w-[95px]" id="sol-status-score">
+              Score: ${options.scoring === 'vegas' ? `$${score}` : score}
+            </div>
+            <div class="border-t border-l border-[#808080] border-b border-r border-white px-2 py-0.5 min-w-[80px]" id="sol-status-time">
+              Time: ${seconds}
+            </div>
+            <div class="border-t border-l border-[#808080] border-b border-r border-white px-2 py-0.5 flex-1 ml-1 text-gray-700 hidden sm:block truncate" id="sol-status-tip">
+              Klondike (${options.drawMode === 3 ? 'Draw 3' : 'Draw 1'}) • Press F2 for New Deal
+            </div>
+          </div>
+        `
+            : ''
+        }
+      </div>
+    `;
+
+    // Dropdown toggles
+    const gameBtn = container.querySelector('#sol-menu-game-btn');
+    const gameDrop = container.querySelector('#sol-game-dropdown');
+    const helpBtn = container.querySelector('#sol-menu-help-btn');
+    const helpDrop = container.querySelector('#sol-help-dropdown');
+
+    const closeAllDrops = () => {
+      gameDrop?.classList.add('hidden');
+      helpDrop?.classList.add('hidden');
+    };
+
+    gameBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = gameDrop?.classList.contains('hidden');
+      closeAllDrops();
+      if (isHidden) gameDrop?.classList.remove('hidden');
+    });
+
+    helpBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = helpDrop?.classList.contains('hidden');
+      closeAllDrops();
+      if (isHidden) helpDrop?.classList.remove('hidden');
+    });
+
+    container.addEventListener('click', closeAllDrops);
+
+    // Menu Item Actions
+    container.querySelector('#sol-menu-deal')?.addEventListener('click', () => {
+      closeAllDrops();
+      initGame();
+    });
+    container.querySelector('#sol-menu-undo')?.addEventListener('click', () => {
+      closeAllDrops();
+      performUndo();
+    });
+    container.querySelector('#sol-quick-undo')?.addEventListener('click', performUndo);
+    container.querySelector('#sol-quick-hint')?.addEventListener('click', provideHint);
+    container.querySelector('#sol-quick-auto')?.addEventListener('click', performAutoFinish);
+
+    container.querySelector('#sol-menu-deck')?.addEventListener('click', () => {
+      closeAllDrops();
+      showDeckDialog();
+    });
+    container.querySelector('#sol-menu-options')?.addEventListener('click', () => {
+      closeAllDrops();
+      showOptionsDialog();
+    });
+    container.querySelector('#sol-menu-how')?.addEventListener('click', () => {
+      closeAllDrops();
+      showHelpDialog();
+    });
+    container.querySelector('#sol-menu-about')?.addEventListener('click', () => {
+      closeAllDrops();
+      showAboutDialog();
+    });
+    container.querySelector('#sol-menu-exit')?.addEventListener('click', () => {
+      closeAllDrops();
+      win.close();
+    });
+
+    // Stock pile click
     container.querySelector('#sol-stock')?.addEventListener('click', drawCard);
 
-    // Foundation target click
+    // Foundation target clicks (move selected card to foundation)
     container.querySelectorAll('.sol-foundation').forEach((el) => {
       el.addEventListener('click', () => {
         const fIdx = parseInt(el.getAttribute('data-fidx') || '0', 10);
@@ -1255,22 +2339,22 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
       });
     });
 
-    // Tableau column target click (for empty columns or moving cards)
+    // Tableau column clicks (for placing cards in empty space or top of column)
     container.querySelectorAll('.sol-col').forEach((el) => {
       el.addEventListener('click', (e) => {
         const colIdx = parseInt(el.getAttribute('data-col') || '0', 10);
         const target = e.target as HTMLElement;
-        const cardEl = target.closest('.sol-card') as HTMLElement;
+        const cardEl = target.closest('.sol-card, .sol-card-back') as HTMLElement;
 
         if (!cardEl && selection) {
-          // Clicked empty space in column
           tryMoveToTableau(colIdx);
         }
       });
     });
 
-    // Card click (select or move to) & double click (auto foundation)
-    container.querySelectorAll('.sol-card').forEach((el) => {
+    // Cards click and double-click handling
+    container.querySelectorAll('.sol-card, .sol-card-back').forEach((el) => {
+      // Single click: select or move
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         const pile = el.getAttribute('data-pile') as 'waste' | 'tableau' | 'foundation';
@@ -1278,15 +2362,31 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
         const colAttr = el.getAttribute('data-col');
         const colIdx = colAttr !== null ? parseInt(colAttr, 10) : undefined;
 
+        // If clicking a face-down card at the top of a column, reveal it
+        if (pile === 'tableau' && colIdx !== undefined) {
+          const col = tableau[colIdx];
+          if (cidx === col.length - 1 && !col[cidx].faceUp) {
+            pushUndo();
+            col[cidx].faceUp = true;
+            if (options.scoring === 'standard') score += 5;
+            audio.playClick();
+            renderUI();
+            return;
+          }
+        }
+
         if (selection) {
           if (pile === 'tableau' && colIdx !== undefined) {
-            // Attempt to move selected card(s) onto this card/column
+            // Attempt to move selection onto this tableau column
             if (!tryMoveToTableau(colIdx)) {
-              // Switch selection if clicked another tableau card
+              // If failed, change selection to this card if faceUp
               const col = tableau[colIdx];
-              selection = { source: 'tableau', col: colIdx, cardIndex: cidx, cards: col.slice(cidx) };
-              audio.playClick();
-              renderUI();
+              if (col[cidx]?.faceUp) {
+                selection = { source: 'tableau', col: colIdx, cardIndex: cidx, cards: col.slice(cidx) };
+                activeHint = null;
+                audio.playClick();
+                renderUI();
+              }
             }
           } else if (pile === 'foundation' && colIdx !== undefined) {
             tryMoveToFoundation(colIdx);
@@ -1295,15 +2395,17 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
             renderUI();
           }
         } else {
-          // Select this card
+          // Select this card if faceUp
           if (pile === 'waste' && waste.length > 0) {
             selection = { source: 'waste', cardIndex: waste.length - 1, cards: [waste[waste.length - 1]] };
+            activeHint = null;
             audio.playClick();
             renderUI();
           } else if (pile === 'tableau' && colIdx !== undefined) {
             const col = tableau[colIdx];
-            if (col[cidx].faceUp) {
+            if (col[cidx]?.faceUp) {
               selection = { source: 'tableau', col: colIdx, cardIndex: cidx, cards: col.slice(cidx) };
+              activeHint = null;
               audio.playClick();
               renderUI();
             }
@@ -1311,6 +2413,7 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
             const fPile = foundations[colIdx];
             if (fPile.length > 0) {
               selection = { source: 'foundation', col: colIdx, cardIndex: fPile.length - 1, cards: [fPile[fPile.length - 1]] };
+              activeHint = null;
               audio.playClick();
               renderUI();
             }
@@ -1318,6 +2421,7 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
         }
       });
 
+      // Double-click / Auto-foundation
       el.addEventListener('dblclick', (e) => {
         e.stopPropagation();
         const pile = el.getAttribute('data-pile');
@@ -1325,27 +2429,146 @@ export function renderSolitaire(container: HTMLElement, win: Win95Window) {
         const colIdx = colAttr !== null ? parseInt(colAttr, 10) : undefined;
 
         if (pile === 'waste' && waste.length > 0) {
-          const card = waste[waste.length - 1];
-          if (tryAutoFoundation(card)) {
-            waste.pop();
-            selection = null;
-            checkWin();
-            renderUI();
-          }
+          tryAutoFoundation(waste[waste.length - 1]);
         } else if (pile === 'tableau' && colIdx !== undefined) {
           const col = tableau[colIdx];
-          const card = col[col.length - 1];
-          if (tryAutoFoundation(card, colIdx)) {
-            col.pop();
-            if (col.length > 0) col[col.length - 1].faceUp = true;
-            selection = null;
-            checkWin();
-            renderUI();
+          if (col.length > 0) {
+            const topCard = col[col.length - 1];
+            if (topCard.faceUp) {
+              tryAutoFoundation(topCard, colIdx);
+            }
           }
         }
       });
+
+      // Right-click also sends to foundation (Windows 95 power user feature)
+      el.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const pile = el.getAttribute('data-pile');
+        const colAttr = el.getAttribute('data-col');
+        const colIdx = colAttr !== null ? parseInt(colAttr, 10) : undefined;
+
+        if (pile === 'waste' && waste.length > 0) {
+          tryAutoFoundation(waste[waste.length - 1]);
+        } else if (pile === 'tableau' && colIdx !== undefined) {
+          const col = tableau[colIdx];
+          if (col.length > 0 && col[col.length - 1].faceUp) {
+            tryAutoFoundation(col[col.length - 1], colIdx);
+          }
+        }
+      });
+
+      // HTML5 Drag and Drop handlers
+      el.addEventListener('dragstart', (e) => {
+        const dragEvt = e as DragEvent;
+        const pile = el.getAttribute('data-pile') as 'waste' | 'tableau' | 'foundation';
+        const cidx = parseInt(el.getAttribute('data-cidx') || '0', 10);
+        const colAttr = el.getAttribute('data-col');
+        const colIdx = colAttr !== null ? parseInt(colAttr, 10) : undefined;
+
+        if (pile === 'waste' && waste.length > 0) {
+          selection = { source: 'waste', cardIndex: waste.length - 1, cards: [waste[waste.length - 1]] };
+        } else if (pile === 'tableau' && colIdx !== undefined) {
+          const col = tableau[colIdx];
+          if (col[cidx]?.faceUp) {
+            selection = { source: 'tableau', col: colIdx, cardIndex: cidx, cards: col.slice(cidx) };
+          } else {
+            dragEvt.preventDefault();
+            return;
+          }
+        } else if (pile === 'foundation' && colIdx !== undefined) {
+          const fPile = foundations[colIdx];
+          if (fPile.length > 0) {
+            selection = { source: 'foundation', col: colIdx, cardIndex: fPile.length - 1, cards: [fPile[fPile.length - 1]] };
+          } else {
+            dragEvt.preventDefault();
+            return;
+          }
+        }
+
+        if (selection && dragEvt.dataTransfer) {
+          dragEvt.dataTransfer.setData('text/plain', JSON.stringify({ source: selection.source, col: selection.col }));
+          dragEvt.dataTransfer.effectAllowed = 'move';
+        }
+      });
+    });
+
+    // Drag-over and drop on tableau columns and foundations
+    container.querySelectorAll('.sol-col').forEach((colEl) => {
+      colEl.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const dragEvt = e as DragEvent;
+        if (dragEvt.dataTransfer) dragEvt.dataTransfer.dropEffect = 'move';
+      });
+      colEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const colIdx = parseInt(colEl.getAttribute('data-col') || '0', 10);
+        if (selection) {
+          tryMoveToTableau(colIdx);
+        }
+      });
+    });
+
+    container.querySelectorAll('.sol-foundation').forEach((fEl) => {
+      fEl.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const dragEvt = e as DragEvent;
+        if (dragEvt.dataTransfer) dragEvt.dataTransfer.dropEffect = 'move';
+      });
+      fEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const fIdx = parseInt(fEl.getAttribute('data-fidx') || '0', 10);
+        if (selection) {
+          tryMoveToFoundation(fIdx);
+        }
+      });
+    });
+
+    // Victory canvas click to dismiss and deal
+    const victoryCanvas = container.querySelector('#sol-victory-canvas');
+    victoryCanvas?.addEventListener('click', () => {
+      stopWinCascade();
+      initGame();
     });
   };
+
+  // Keyboard shortcut handler
+  const keyHandler = (e: KeyboardEvent) => {
+    // Only handle if Solitaire window is active/focused
+    if (!win.element || !win.element.classList.contains('active-window')) {
+      const isWithin = win.element?.contains(document.activeElement);
+      if (!isWithin) return;
+    }
+
+    if (e.key === 'F2') {
+      e.preventDefault();
+      initGame();
+    } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      performUndo();
+    } else if (e.key.toLowerCase() === 'u') {
+      e.preventDefault();
+      performUndo();
+    } else if (e.key === ' ' || e.key.toLowerCase() === 'd') {
+      e.preventDefault();
+      drawCard();
+    } else if (e.key.toLowerCase() === 'h') {
+      e.preventDefault();
+      provideHint();
+    } else if (e.key.toLowerCase() === 'a') {
+      e.preventDefault();
+      performAutoFinish();
+    }
+  };
+
+  window.addEventListener('keydown', keyHandler);
+
+  win.element?.addEventListener('DOMNodeRemovedFromDocument', () => {
+    stopTimer();
+    stopWinCascade();
+    window.removeEventListener('keydown', keyHandler);
+  });
 
   initGame();
 }
