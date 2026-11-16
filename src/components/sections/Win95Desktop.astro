@@ -625,21 +625,114 @@ Double-click "My Portfolio" or click the taskbar button below.
     <!-- Desktop Sub-Window: Recycle Bin -->
     <div
       id="d-recycle-window"
-      class="hidden absolute top-28 left-4 sm:left-48 w-[90vw] sm:w-[380px] bg-[#c0c0c0] border-2 border-white shadow-[6px_6px_0px_#000000] z-50 text-black font-mono"
+      class="hidden absolute top-20 left-2 sm:left-36 w-[94vw] sm:w-[560px] max-w-[620px] bg-[#c0c0c0] border-2 border-white shadow-[6px_6px_0px_#000000] z-50 text-black font-mono select-none"
     >
-      <div class="retro-titlebar !h-7 !min-h-[28px] !px-2 flex items-center justify-between">
+      <!-- Titlebar -->
+      <div class="retro-titlebar !h-7 !min-h-[28px] !px-2 flex items-center justify-between cursor-move" id="d-recycle-titlebar">
         <div class="flex items-center gap-1.5 text-xs text-white truncate">
-          <img src="/images/windows-95-recycle-bin.svg" alt="Recycle Bin" width="14" height="14" class="size-3.5" />
-          <span>Recycle Bin</span>
+          <img id="d-recycle-win-icon" src="/images/windows-95-recycle-bin.svg" alt="Recycle Bin" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
+          <span class="font-bold">Recycle Bin</span>
         </div>
-        <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="d-recycle-close">&#10005;</button>
+        <div class="flex items-center gap-1">
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[9px]" id="d-recycle-min" title="Minimize">_</button>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[9px]" id="d-recycle-max" title="Maximize">&#9633;</button>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[9px]" id="d-recycle-close" title="Close">&#10005;</button>
+        </div>
       </div>
 
-      <div class="p-4 bg-[#c0c0c0] text-center space-y-3">
-        <img src="/images/windows-95-recycle-bin.svg" alt="Empty Bin" width="40" height="40" class="mx-auto size-10" />
-        <p class="text-xs font-bold text-black">The Recycle Bin is empty.</p>
-        <p class="text-[11px] text-gray-700">0 objects (0 KB used). No bugs found in production!</p>
-        <button type="button" class="retro-btn !py-0.5 !px-5 !text-xs font-bold" id="d-recycle-ok-btn">OK</button>
+      <!-- Menubar -->
+      <div class="bg-[#c0c0c0] px-2 py-0.5 text-xs border-b border-[#808080] flex items-center gap-3">
+        <span class="hover:bg-[#000080] hover:text-white px-1 py-0.5 cursor-pointer"><u>F</u>ile</span>
+        <span class="hover:bg-[#000080] hover:text-white px-1 py-0.5 cursor-pointer"><u>E</u>dit</span>
+        <span class="hover:bg-[#000080] hover:text-white px-1 py-0.5 cursor-pointer"><u>V</u>iew</span>
+        <span class="hover:bg-[#000080] hover:text-white px-1 py-0.5 cursor-pointer"><u>H</u>elp</span>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="bg-[#c0c0c0] p-1 border-b-2 border-black flex items-center justify-between gap-1 text-xs">
+        <div class="flex items-center gap-1">
+          <button type="button" id="d-recycle-empty-btn" class="retro-btn !py-0.5 !px-2 !text-xs font-bold flex items-center gap-1" title="Empty Recycle Bin">
+            <span>🗑️</span>
+            <span>Empty</span>
+          </button>
+          <button type="button" id="d-recycle-restore-btn" class="retro-btn !py-0.5 !px-2 !text-xs font-bold flex items-center gap-1" title="Restore Selected Item">
+            <span>↩️</span>
+            <span>Restore</span>
+          </button>
+          <button type="button" id="d-recycle-restore-all-btn" class="retro-btn !py-0.5 !px-2 !text-xs font-bold flex items-center gap-1" title="Restore All Items">
+            <span>🔄</span>
+            <span>Restore All</span>
+          </button>
+        </div>
+        <span class="text-[10px] text-gray-700 font-bold px-1 hidden sm:inline">C:\RECYCLED</span>
+      </div>
+
+      <!-- Main Inset View Area -->
+      <div class="p-1 bg-[#808080]">
+        <div class="retro-inset bg-white min-h-[220px] max-h-[300px] overflow-auto relative">
+          <!-- Empty View -->
+          <div id="d-recycle-empty-view" class="p-6 text-center space-y-2 flex flex-col items-center justify-center min-h-[200px]">
+            <img src="/images/windows-95-recycle-bin.svg" alt="Empty Bin" width="44" height="44" class="size-11 mx-auto drop-shadow-[1px_1px_0px_#000000]" />
+            <p class="text-xs font-bold text-black">The Recycle Bin is empty.</p>
+            <p class="text-[11px] text-gray-600 max-w-xs leading-normal">
+              Drag desktop icons here or drop them onto the Recycle Bin icon to discard them.
+            </p>
+          </div>
+
+          <!-- Populated Table View -->
+          <div id="d-recycle-list-view" class="hidden w-full">
+            <table class="w-full text-left text-xs font-mono border-collapse">
+              <thead class="bg-[#c0c0c0] sticky top-0 border-b border-[#808080] text-black">
+                <tr>
+                  <th class="p-1 px-2 border-r border-[#808080] font-bold">Name</th>
+                  <th class="p-1 px-2 border-r border-[#808080] font-bold hidden sm:table-cell">Original Location</th>
+                  <th class="p-1 px-2 border-r border-[#808080] font-bold">Date Deleted</th>
+                  <th class="p-1 px-2 border-r border-[#808080] font-bold hidden sm:table-cell">Type</th>
+                  <th class="p-1 px-2 font-bold text-right">Size</th>
+                </tr>
+              </thead>
+              <tbody id="d-recycle-table-body" class="divide-y divide-gray-100 text-black">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="bg-[#c0c0c0] text-black p-1 text-[11px] border-t-2 border-black grid grid-cols-12 gap-1">
+        <div id="d-recycle-status-items" class="col-span-6 px-1.5 py-0.5 border-t border-l border-[#808080] border-b border-r border-white truncate font-medium">
+          0 object(s)
+        </div>
+        <div id="d-recycle-status-size" class="col-span-3 px-1 py-0.5 border-t border-l border-[#808080] border-b border-r border-white text-center truncate">
+          0 KB
+        </div>
+        <div class="col-span-3 px-1 py-0.5 border-t border-l border-[#808080] border-b border-r border-white text-center truncate">
+          Recycle Bin
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Dialog: Empty Recycle Bin -->
+    <div id="d-recycle-confirm-dialog" class="retro-dialog-backdrop hidden">
+      <div class="retro-dialog-window max-w-sm">
+        <div class="retro-titlebar !h-7 !min-h-[28px] !px-2 flex items-center justify-between">
+          <div class="flex items-center gap-1.5 text-xs text-white truncate">
+            <span class="text-sm">⚠️</span>
+            <span>Confirm File Delete</span>
+          </div>
+          <button type="button" class="retro-titlebar-btn !w-4 !h-4 text-[10px]" id="d-recycle-confirm-close">&#10005;</button>
+        </div>
+        <div class="p-4 space-y-4 bg-[#c0c0c0] text-black">
+          <div class="flex items-center gap-3">
+            <img src="/images/windows-95-recycle-bin.svg" alt="Recycle Bin" class="size-9 shrink-0 drop-shadow-[1px_1px_0px_#000000]" />
+            <p id="d-recycle-confirm-text" class="text-xs font-mono font-medium">Are you sure you want to permanently delete these items?</p>
+          </div>
+          <div class="flex justify-end gap-2 pt-2 border-t border-[#808080]">
+            <button type="button" id="d-recycle-confirm-yes" class="retro-btn !py-1 !px-4 !text-xs font-bold">Yes</button>
+            <button type="button" id="d-recycle-confirm-no" class="retro-btn !py-1 !px-4 !text-xs font-bold">No</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1494,14 +1587,450 @@ Double-click "My Portfolio" or click the taskbar button below.
       }
     }
 
+    // --- Recycle Bin Data & State Management ---
+    const recycleBinEl = document.getElementById('d-icon-recycle');
+    const recycleBinImg = recycleBinEl?.querySelector('img') as HTMLImageElement | null;
+    const recycleWinIcon = document.getElementById('d-recycle-win-icon') as HTMLImageElement | null;
+
+    interface RecycledItemData {
+      id: string;
+      name: string;
+      iconSrc: string;
+      appId?: string;
+      dateDeleted: string;
+      size: string;
+      type: string;
+    }
+
+    let recycledItems: RecycledItemData[] = [];
+    try {
+      const stored = localStorage.getItem('win95_recycled_items');
+      if (stored) recycledItems = JSON.parse(stored);
+    } catch (_) {}
+
+    function updateRecycleBinUI() {
+      const count = recycledItems.length;
+      const isEmpty = count === 0;
+
+      const iconUrl = isEmpty
+        ? '/images/windows-95-recycle-bin.svg'
+        : '/images/windows-95-recycle-bin-full.svg';
+      if (recycleBinImg) recycleBinImg.src = iconUrl;
+      if (recycleWinIcon) recycleWinIcon.src = iconUrl;
+
+      // Hide recycled desktop icons
+      recycledItems.forEach((item) => {
+        const el = document.getElementById(item.id);
+        if (el) {
+          el.classList.add('is-recycled');
+          el.style.display = 'none';
+        }
+      });
+
+      const emptyView = document.getElementById('d-recycle-empty-view');
+      const listView = document.getElementById('d-recycle-list-view');
+      const tableBody = document.getElementById('d-recycle-table-body');
+      const statusItems = document.getElementById('d-recycle-status-items');
+      const statusSize = document.getElementById('d-recycle-status-size');
+
+      if (emptyView && listView) {
+        if (isEmpty) {
+          emptyView.classList.remove('hidden');
+          listView.classList.add('hidden');
+        } else {
+          emptyView.classList.add('hidden');
+          listView.classList.remove('hidden');
+        }
+      }
+
+      if (statusItems) statusItems.textContent = `${count} object(s)`;
+      if (statusSize) {
+        const totalKb = recycledItems.reduce((acc, it) => acc + (parseInt(it.size, 10) || 16), 0);
+        statusSize.textContent = `${totalKb} KB`;
+      }
+
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        recycledItems.forEach((item, index) => {
+          const tr = document.createElement('tr');
+          tr.className = 'win95-recycle-row border-b border-gray-100 hover:bg-[#e0e0e0] text-xs font-mono select-none cursor-pointer';
+          tr.dataset.index = String(index);
+          tr.dataset.id = item.id;
+          tr.innerHTML = `
+            <td class="p-1 px-2 border-r border-[#808080] flex items-center gap-1.5 truncate">
+              <img src="${item.iconSrc}" alt="" class="size-4 shrink-0 [image-rendering:pixelated]" />
+              <span class="truncate font-bold">${item.name}</span>
+            </td>
+            <td class="p-1 px-2 border-r border-[#808080] hidden sm:table-cell text-gray-700">Desktop</td>
+            <td class="p-1 px-2 border-r border-[#808080] text-gray-600">${item.dateDeleted}</td>
+            <td class="p-1 px-2 border-r border-[#808080] hidden sm:table-cell text-gray-600">${item.type}</td>
+            <td class="p-1 px-2 text-right font-mono">${item.size}</td>
+          `;
+
+          tr.addEventListener('click', (e) => {
+            e.stopPropagation();
+            tableBody.querySelectorAll('tr').forEach((r) => r.classList.remove('is-selected'));
+            tr.classList.add('is-selected');
+          });
+
+          tr.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            restoreItem(item.id);
+          });
+
+          tableBody.appendChild(tr);
+        });
+      }
+
+      try {
+        localStorage.setItem('win95_recycled_items', JSON.stringify(recycledItems));
+      } catch (_) {}
+    }
+
+    function recycleIcon(iconEl: HTMLElement) {
+      if (!iconEl || iconEl.id === 'd-icon-recycle') return;
+      const id = iconEl.id;
+      const name = iconEl.getAttribute('data-name') || iconEl.querySelector('.win95-desktop-icon-label')?.textContent?.trim() || 'Item';
+      const img = iconEl.querySelector('img') as HTMLImageElement | null;
+      const iconSrc = img ? img.src : '/images/windows-95-folder.svg';
+      const appId = iconEl.getAttribute('data-app') || undefined;
+
+      let type = 'Shortcut';
+      let size = '1 KB';
+      if (name.endsWith('.TXT') || name.endsWith('.txt')) {
+        type = 'Text Document';
+        size = '4 KB';
+      } else if (name.endsWith('.doc')) {
+        type = 'WordPad Document';
+        size = '28 KB';
+      } else if (name.endsWith('.exe')) {
+        type = 'Application';
+        size = '148 KB';
+      } else if (id.includes('computer') || id.includes('network') || id.includes('briefcase')) {
+        type = 'System Folder';
+        size = '0 KB';
+      }
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+      if (!recycledItems.some((it) => it.id === id)) {
+        recycledItems.push({
+          id,
+          name,
+          iconSrc,
+          appId,
+          dateDeleted: dateStr,
+          size,
+          type,
+        });
+      }
+
+      iconEl.classList.add('is-recycled');
+      iconEl.style.display = 'none';
+
+      try { audio.playRecycle(); } catch (_) {}
+      updateRecycleBinUI();
+    }
+
+    function restoreItem(id: string) {
+      const idx = recycledItems.findIndex((it) => it.id === id);
+      if (idx !== -1) {
+        recycledItems.splice(idx, 1);
+      }
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('is-recycled');
+        el.style.display = '';
+      }
+      try { audio.playRestore(); } catch (_) {}
+      updateRecycleBinUI();
+    }
+
+    function restoreAllItems() {
+      recycledItems.forEach((it) => {
+        const el = document.getElementById(it.id);
+        if (el) {
+          el.classList.remove('is-recycled');
+          el.style.display = '';
+        }
+      });
+      recycledItems = [];
+      try { audio.playRestore(); } catch (_) {}
+      updateRecycleBinUI();
+    }
+
+    function emptyRecycleBin() {
+      if (recycledItems.length === 0) return;
+      recycledItems = [];
+      try { audio.playRecycle(); } catch (_) {}
+      updateRecycleBinUI();
+    }
+
+    // Initialize UI on load
+    updateRecycleBinUI();
+
+    // Recycle Bin Window Controls
+    const recycleMin = document.getElementById('d-recycle-min');
+    const recycleCloseBtn = document.getElementById('d-recycle-close');
+    const recycleEmptyBtn = document.getElementById('d-recycle-empty-btn');
+    const recycleRestoreBtn = document.getElementById('d-recycle-restore-btn');
+    const recycleRestoreAllBtn = document.getElementById('d-recycle-restore-all-btn');
+    const recycleConfirmDlg = document.getElementById('d-recycle-confirm-dialog');
+    const recycleConfirmClose = document.getElementById('d-recycle-confirm-close');
+    const recycleConfirmYes = document.getElementById('d-recycle-confirm-yes');
+    const recycleConfirmNo = document.getElementById('d-recycle-confirm-no');
+    const recycleConfirmText = document.getElementById('d-recycle-confirm-text');
+
+    recycleMin?.addEventListener('click', () => {
+      playClick();
+      recycleWindow?.classList.add('hidden');
+    });
+
+    recycleCloseBtn?.addEventListener('click', () => {
+      playClick();
+      recycleWindow?.classList.add('hidden');
+    });
+
+    recycleRestoreBtn?.addEventListener('click', () => {
+      playClick();
+      const selected = document.querySelector('#d-recycle-table-body tr.is-selected') as HTMLElement | null;
+      if (selected && selected.dataset.id) {
+        restoreItem(selected.dataset.id);
+      } else if (recycledItems.length > 0) {
+        restoreItem(recycledItems[0].id);
+      }
+    });
+
+    recycleRestoreAllBtn?.addEventListener('click', () => {
+      playClick();
+      restoreAllItems();
+    });
+
+    recycleEmptyBtn?.addEventListener('click', () => {
+      if (recycledItems.length === 0) return;
+      try { audio.playChord(); } catch (_) {}
+      if (recycleConfirmText) {
+        recycleConfirmText.textContent = `Are you sure you want to permanently delete these ${recycledItems.length} item(s)?`;
+      }
+      recycleConfirmDlg?.classList.remove('hidden');
+    });
+
+    recycleConfirmYes?.addEventListener('click', () => {
+      recycleConfirmDlg?.classList.add('hidden');
+      emptyRecycleBin();
+    });
+
+    recycleConfirmNo?.addEventListener('click', () => {
+      playClick();
+      recycleConfirmDlg?.classList.add('hidden');
+    });
+
+    recycleConfirmClose?.addEventListener('click', () => {
+      playClick();
+      recycleConfirmDlg?.classList.add('hidden');
+    });
+
+    // Draggable Recycle Bin Window
+    const recycleTitlebar = document.getElementById('d-recycle-titlebar');
+    if (recycleTitlebar && recycleWindow) {
+      let isDraggingWin = false;
+      let winStartX = 0, winStartY = 0;
+      let initLeft = 0, initTop = 0;
+
+      recycleTitlebar.addEventListener('mousedown', (e) => {
+        if ((e.target as HTMLElement).closest('button')) return;
+        isDraggingWin = true;
+        winStartX = e.clientX;
+        winStartY = e.clientY;
+        const rect = recycleWindow.getBoundingClientRect();
+        initLeft = rect.left;
+        initTop = rect.top;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDraggingWin || !recycleWindow) return;
+        const dx = e.clientX - winStartX;
+        const dy = e.clientY - winStartY;
+        recycleWindow.style.left = `${Math.max(0, initLeft + dx)}px`;
+        recycleWindow.style.top = `${Math.max(0, initTop + dy)}px`;
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDraggingWin = false;
+      });
+    }
+
+    // --- Drag & Drop for Desktop Icons ---
+    let candidateIconEl: HTMLElement | null = null;
+    let dragGhostEl: HTMLElement | null = null;
+    let iconDragStartX = 0;
+    let iconDragStartY = 0;
+    let isIconDragActive = false;
+    let didMoveBeyondThreshold = false;
+    let didJustCompleteDrag = false;
+
+    function isHoveringDropTarget(targetEl: HTMLElement | null, clientX: number, clientY: number): boolean {
+      if (!targetEl || targetEl.id === 'd-icon-recycle') return false;
+
+      // Check Recycle Bin Desktop Icon
+      if (recycleBinEl) {
+        const r = recycleBinEl.getBoundingClientRect();
+        if (clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom) {
+          return true;
+        }
+      }
+
+      // Check Recycle Bin Window if open
+      if (recycleWindow && !recycleWindow.classList.contains('hidden')) {
+        const r = recycleWindow.getBoundingClientRect();
+        if (clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function handleIconPointerMove(clientX: number, clientY: number) {
+      if (!candidateIconEl) return;
+
+      const dist = Math.hypot(clientX - iconDragStartX, clientY - iconDragStartY);
+      if (!didMoveBeyondThreshold && dist > 5) {
+        didMoveBeyondThreshold = true;
+        isIconDragActive = true;
+        candidateIconEl.classList.add('is-dragging');
+
+        // Create Drag Ghost
+        dragGhostEl = document.createElement('div');
+        dragGhostEl.className = 'win95-drag-ghost';
+        const img = candidateIconEl.querySelector('img') as HTMLImageElement | null;
+        const divIcon = candidateIconEl.querySelector('.size-9') as HTMLElement | null;
+        const label = candidateIconEl.querySelector('.win95-desktop-icon-label')?.textContent || '';
+
+        if (img) {
+          const gImg = document.createElement('img');
+          gImg.src = img.src;
+          dragGhostEl.appendChild(gImg);
+        } else if (divIcon) {
+          const cloneDiv = divIcon.cloneNode(true) as HTMLElement;
+          dragGhostEl.appendChild(cloneDiv);
+        }
+        const gLabel = document.createElement('span');
+        gLabel.textContent = label;
+        dragGhostEl.appendChild(gLabel);
+        document.body.appendChild(dragGhostEl);
+      }
+
+      if (isIconDragActive && dragGhostEl) {
+        dragGhostEl.style.left = `${clientX}px`;
+        dragGhostEl.style.top = `${clientY}px`;
+
+        const overDrop = isHoveringDropTarget(candidateIconEl, clientX, clientY);
+        if (recycleBinEl) {
+          if (overDrop) {
+            recycleBinEl.classList.add('is-drop-target');
+          } else {
+            recycleBinEl.classList.remove('is-drop-target');
+          }
+        }
+      }
+    }
+
+    function handleIconPointerUp(clientX: number, clientY: number) {
+      if (!candidateIconEl) return;
+
+      const draggedEl = candidateIconEl;
+      const wasActiveDrag = isIconDragActive;
+      const overDrop = isHoveringDropTarget(draggedEl, clientX, clientY);
+
+      // Clean up ghost and visual indicators
+      if (dragGhostEl) {
+        dragGhostEl.remove();
+        dragGhostEl = null;
+      }
+      draggedEl.classList.remove('is-dragging');
+      if (recycleBinEl) recycleBinEl.classList.remove('is-drop-target');
+
+      candidateIconEl = null;
+      isIconDragActive = false;
+      didMoveBeyondThreshold = false;
+
+      if (!wasActiveDrag) return;
+
+      didJustCompleteDrag = true;
+      setTimeout(() => { didJustCompleteDrag = false; }, 150);
+
+      if (overDrop) {
+        recycleIcon(draggedEl);
+      } else {
+        // Dropped on desktop surface: reposition icon
+        if (surface) {
+          const sRect = surface.getBoundingClientRect();
+          const left = Math.max(8, Math.min(clientX - sRect.left - 42, sRect.width - 94));
+          const top = Math.max(8, Math.min(clientY - sRect.top - 42, sRect.height - 90));
+          draggedEl.style.position = 'absolute';
+          draggedEl.style.left = `${left}px`;
+          draggedEl.style.top = `${top}px`;
+          try { audio.playTick(); } catch (_) {}
+        }
+      }
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      handleIconPointerMove(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('mouseup', (e) => {
+      handleIconPointerUp(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        handleIconPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      if (e.changedTouches.length > 0) {
+        handleIconPointerUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+      }
+    });
+
+    // Keyboard Delete key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Delete') {
+        const selected = document.querySelector('.win95-desktop-icon.is-selected') as HTMLElement | null;
+        if (selected && selected.id !== 'd-icon-recycle') {
+          recycleIcon(selected);
+        }
+      }
+    });
+
     // Icon click, double-click, touch & keyboard interactions
     document.querySelectorAll('.win95-desktop-icon').forEach((icon) => {
       const el = icon as HTMLElement;
       let lastTapTime = 0;
 
+      el.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        candidateIconEl = el;
+        iconDragStartX = e.clientX;
+        iconDragStartY = e.clientY;
+      });
+
+      el.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        candidateIconEl = el;
+        iconDragStartX = e.touches[0].clientX;
+        iconDragStartY = e.touches[0].clientY;
+      }, { passive: true });
+
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         closeAllContextMenus();
+        if (didJustCompleteDrag) return;
+
         const now = Date.now();
         const isQuickTap = now - lastTapTime < 450;
         const wasSelected = el.classList.contains('is-selected');
@@ -1525,6 +2054,7 @@ Double-click "My Portfolio" or click the taskbar button below.
 
       el.addEventListener('dblclick', (e) => {
         e.stopPropagation();
+        if (didJustCompleteDrag) return;
         activateIcon(el);
       });
 
@@ -1591,6 +2121,12 @@ Double-click "My Portfolio" or click the taskbar button below.
     document.getElementById('ctx-d-lineup')?.addEventListener('click', () => {
       closeAllContextMenus();
       playClick();
+      document.querySelectorAll('.win95-desktop-icon').forEach((icon) => {
+        const htmlIcon = icon as HTMLElement;
+        htmlIcon.style.position = '';
+        htmlIcon.style.left = '';
+        htmlIcon.style.top = '';
+      });
     });
     document.getElementById('ctx-d-new-txt')?.addEventListener('click', () => {
       closeAllContextMenus();
@@ -1619,8 +2155,13 @@ Double-click "My Portfolio" or click the taskbar button below.
     });
     document.getElementById('ctx-i-delete')?.addEventListener('click', () => {
       closeAllContextMenus();
-      audio.playChord();
-      alert('This object is a protected system item and cannot be removed.');
+      if (!targetIconEl) return;
+      if (targetIconEl.id === 'd-icon-recycle') {
+        try { audio.playChord(); } catch (_) {}
+        alert('The Recycle Bin cannot be deleted.');
+      } else {
+        recycleIcon(targetIconEl);
+      }
     });
     document.getElementById('ctx-i-rename')?.addEventListener('click', () => {
       closeAllContextMenus();
@@ -2068,15 +2609,6 @@ Double-click "My Portfolio" or click the taskbar button below.
     networkClose?.addEventListener('click', () => {
       playClick();
       networkWindow?.classList.add('hidden');
-    });
-
-    recycleClose?.addEventListener('click', () => {
-      playClick();
-      recycleWindow?.classList.add('hidden');
-    });
-    recycleOkBtn?.addEventListener('click', () => {
-      playClick();
-      recycleWindow?.classList.add('hidden');
     });
 
     smDocReadme?.addEventListener('click', () => {

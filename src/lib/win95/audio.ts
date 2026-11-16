@@ -236,6 +236,52 @@ class Win95AudioEngine {
     } catch (_) {}
   }
 
+  public playRecycle() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+    try {
+      // Paper crumple swoosh followed by wastebasket thud
+      const bufferSize = Math.floor(ctx.sampleRate * 0.22);
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.08));
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1400, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.2);
+      filter.Q.value = 3;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.22 * this.masterVolume, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(ctx.currentTime);
+      noise.stop(ctx.currentTime + 0.22);
+
+      // Thud at end
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, ctx.currentTime + 0.08);
+      osc.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 0.22);
+      oscGain.gain.setValueAtTime(0.18 * this.masterVolume, ctx.currentTime + 0.08);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+      osc.start(ctx.currentTime + 0.08);
+      osc.stop(ctx.currentTime + 0.22);
+    } catch (_) {}
+  }
+
   public playTick() {
     if (!this.soundEffectsEnabled) return;
     const ctx = this.getContext();
