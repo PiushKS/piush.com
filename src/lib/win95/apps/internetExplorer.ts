@@ -22,6 +22,7 @@ interface GuestbookEntry {
 }
 
 const DEFAULT_BOOKMARKS: Bookmark[] = [
+  { title: 'Google! Search Engine (1998)', url: 'https://google.com/', category: 'Search Engines', dateAdded: 0 },
   { title: 'Piush KS - Official Portfolio (Default)', url: 'https://piush.com/', category: 'Piush Network', dateAdded: 1 },
   { title: 'Engineering Projects Portfolio', url: 'https://piush.com/work/', category: 'Piush Network', dateAdded: 2 },
   { title: 'Technical Articles & Blog', url: 'https://piush.com/blog/', category: 'Piush Network', dateAdded: 3 },
@@ -145,6 +146,7 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
       const key = raw.replace('retro:', '').toLowerCase();
       let retroUrl = 'http://piush.com/';
       if (key.includes('yahoo')) retroUrl = 'http://www.yahoo.com/';
+      else if (key.includes('google')) retroUrl = 'https://www.google.com/';
       else if (key.includes('altavista')) retroUrl = 'http://www.altavista.com/';
       else if (key.includes('geocities')) retroUrl = 'http://www.geocities.com/';
       else if (key.includes('spacejam')) retroUrl = 'http://www.spacejam.com/';
@@ -163,6 +165,56 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
     }
 
     const lower = raw.toLowerCase();
+
+    // 2. Google Search Engine (1998 Retro Simulation & Live Search Engine)
+    const isGoogleTarget =
+      lower === 'google' ||
+      lower === 'google.com' ||
+      lower === 'www.google.com' ||
+      lower === 'http://google.com' ||
+      lower === 'https://google.com' ||
+      lower === 'http://google.com/' ||
+      lower === 'https://google.com/' ||
+      lower === 'http://www.google.com' ||
+      lower === 'https://www.google.com' ||
+      lower === 'http://www.google.com/' ||
+      lower === 'https://www.google.com/' ||
+      lower.startsWith('http://google.') ||
+      lower.startsWith('https://google.') ||
+      lower.startsWith('http://www.google.') ||
+      lower.startsWith('https://www.google.') ||
+      lower.includes('google.com/search') ||
+      lower.includes('google.co');
+
+    if (isGoogleTarget) {
+      let displayUrl = raw;
+      if (!displayUrl.startsWith('http://') && !displayUrl.startsWith('https://')) {
+        displayUrl = 'https://' + displayUrl;
+      }
+      return {
+        displayUrl,
+        isRetro: true,
+        retroKey: raw,
+        isExternal: false,
+      };
+    }
+
+    // 3. Search queries entered directly into the Address Bar (e.g. "windows 95 games" or "? query")
+    const isSearchQuery =
+      raw.startsWith('? ') ||
+      raw.startsWith('?') ||
+      (!raw.includes('.') && !raw.includes('/') && !raw.includes(':'));
+
+    if (isSearchQuery) {
+      const q = raw.replace(/^\?\s*/, '').trim();
+      const displayUrl = `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+      return {
+        displayUrl,
+        isRetro: true,
+        retroKey: displayUrl,
+        isExternal: false,
+      };
+    }
 
     // 2. Check if the URL refers to piush.com or local routes
     const isLocalOrPiush =
@@ -218,6 +270,141 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
   // Retro Simulated Web Database
   function getRetroPageContent(url: string): { title: string; html: string } {
     const cleanUrl = url.trim().toLowerCase();
+
+    // Retro 1998 Google Search Engine
+    if (cleanUrl.includes('google')) {
+      const queryMatch = url.match(/[?&](?:q|p)=([^&]+)/i);
+      const query = queryMatch ? decodeURIComponent(queryMatch[1]).replace(/\+/g, ' ') : '';
+
+      if (query) {
+        const results = searchWebDatabase(query);
+        return {
+          title: `Google Search: ${query}`,
+          html: `
+            <div class="space-y-3 font-sans text-black leading-relaxed max-w-4xl p-1 select-text">
+              <!-- Google Search Header -->
+              <div class="flex items-center gap-3 border-b border-gray-300 pb-2.5">
+                <a href="#" class="ie-link select-none shrink-0" data-url="https://google.com/" title="Google Home">
+                  <span class="text-2xl font-bold tracking-tighter font-serif">
+                    <span style="color:#3366cc">G</span><span style="color:#cc0000">o</span><span style="color:#e6b800">o</span><span style="color:#3366cc">g</span><span style="color:#009933">l</span><span style="color:#cc0000">e</span><span style="color:#cc0000">!</span>
+                  </span>
+                </a>
+                <div class="flex-1 flex items-center gap-2 max-w-xl">
+                  <input type="text" id="google-query-box" value="${query.replace(/"/g, '&quot;')}" class="retro-inset flex-1 px-2.5 py-1 text-xs font-sans bg-white border border-[#808080]" />
+                  <button type="button" id="google-search-btn" class="retro-btn !py-1 !px-3 text-xs font-bold shrink-0">Google Search</button>
+                </div>
+                <div class="ml-auto text-[11px] text-gray-500 font-mono hidden sm:block">
+                  1998 Search Engine
+                </div>
+              </div>
+
+              <!-- Search Stats Bar -->
+              <div class="text-[11px] text-gray-600 font-mono pb-1 border-b border-gray-100 flex justify-between">
+                <span>Showing 1 - 10 results for <strong>${query.replace(/</g, '&lt;')}</strong> (0.05 seconds)</span>
+                <span class="text-green-800">Search Engine: Active</span>
+              </div>
+
+              <!-- Results List Container -->
+              <div class="space-y-4 pt-1" id="google-results-list">
+                ${
+                  results.length === 0
+                    ? `<div class="p-4 border border-dashed border-[#808080] text-center text-xs text-gray-600 space-y-1">
+                        <div>No exact local directory matches for <strong>${query.replace(/</g, '&lt;')}</strong>.</div>
+                        <div class="text-gray-500">Querying live online encyclopedia database...</div>
+                       </div>`
+                    : results
+                        .map(
+                          (res) => `
+                            <div class="border-b border-gray-100 pb-2.5 text-xs space-y-0.5">
+                              <div><a href="#" class="ie-link text-blue-800 underline font-bold text-sm hover:text-blue-600" data-url="${res.url}">${res.title}</a></div>
+                              <div class="text-gray-800 leading-normal">${res.snippet}</div>
+                              <div class="text-[11px] text-green-800 font-mono flex items-center gap-2">
+                                <span>${res.url}</span>
+                                <span class="text-gray-400">-</span>
+                                <span class="text-gray-500 text-[10px] cursor-pointer hover:underline">[Cached]</span>
+                              </div>
+                            </div>
+                          `
+                        )
+                        .join('')
+                }
+              </div>
+
+              <!-- Search Bottom Bar -->
+              <div class="border-t border-gray-300 pt-3 mt-4 text-center">
+                <div class="inline-flex items-center gap-2 max-w-md mx-auto">
+                  <span class="text-xs font-serif font-bold">Search again:</span>
+                  <input type="text" id="google-query-bottom" value="${query.replace(/"/g, '&quot;')}" class="retro-inset px-2.5 py-0.5 text-xs font-sans bg-white border border-[#808080]" />
+                  <button type="button" id="google-search-bottom-btn" class="retro-btn !py-0.5 !px-3 text-xs font-bold">Search</button>
+                </div>
+              </div>
+            </div>
+          `,
+        };
+      }
+
+      return {
+        title: 'Google!',
+        html: `
+          <div class="min-h-full flex flex-col items-center justify-between text-black font-sans p-4 select-text">
+            <div class="w-full max-w-xl text-center space-y-4 pt-4 sm:pt-6">
+              <!-- 1998 Google! Serif Logo -->
+              <div class="select-none py-2">
+                <span class="text-6xl sm:text-7xl font-extrabold tracking-tight font-serif drop-shadow-sm inline-block">
+                  <span style="color:#3366cc">G</span><span style="color:#cc0000">o</span><span style="color:#e6b800">o</span><span style="color:#3366cc">g</span><span style="color:#009933">l</span><span style="color:#cc0000">e</span><span style="color:#cc0000">!</span>
+                </span>
+              </div>
+
+              <!-- Search Box Card -->
+              <div class="bg-[#e8ecef] border-2 border-[#808080] p-4 text-center space-y-3 shadow-[inset_1px_1px_0px_#ffffff,2px_2px_0px_#000000]">
+                <div class="text-xs font-serif font-bold text-gray-800">
+                  Search the web using Google!
+                </div>
+                <div class="flex justify-center max-w-md mx-auto">
+                  <input type="text" id="google-query-box" placeholder="Type a search query or web address..." autofocus class="retro-inset w-full px-3 py-1.5 bg-white text-xs font-sans text-black border border-[#808080]" />
+                </div>
+                <div class="flex items-center justify-center gap-2 pt-1">
+                  <button type="button" id="google-search-btn" class="retro-btn !py-1 !px-4 text-xs font-bold font-sans">Google Search</button>
+                  <button type="button" id="google-lucky-btn" class="retro-btn !py-1 !px-4 text-xs font-bold font-sans">I'm feeling lucky</button>
+                </div>
+                <div class="text-[11px] text-gray-600 font-mono pt-1">
+                  <span>Results per page: </span>
+                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="radio" name="google-num" value="10" checked /> 10</label>
+                  <label class="inline-flex items-center gap-1 ml-2 cursor-pointer"><input type="radio" name="google-num" value="20" /> 20</label>
+                  <label class="inline-flex items-center gap-1 ml-2 cursor-pointer"><input type="radio" name="google-num" value="30" /> 30</label>
+                </div>
+              </div>
+
+              <!-- Quick Navigation Links -->
+              <div class="border border-[#c0c0c0] bg-[#fafafa] p-3 text-xs space-y-2 text-left shadow-sm">
+                <div class="font-bold text-gray-800 border-b border-gray-200 pb-1 flex justify-between">
+                  <span>Special Searches & Featured Destinations:</span>
+                  <span class="text-[10px] text-gray-500 font-mono">1998 Web</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                  <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="https://piush.com/">Piush KS Portfolio (Default)</a></div>
+                  <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="https://piush.com/work/">Engineering Work & Case Studies</a></div>
+                  <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="https://piush.com/quiz/">550-Question Developer Quiz</a></div>
+                  <div>👉 <a href="#" class="ie-link text-blue-800 underline font-bold" data-url="https://piush.com/tools/">Interactive Developer Tools</a></div>
+                  <div>👉 <a href="#" class="ie-retro-link text-blue-800 underline" data-url="retro:spacejam">Space Jam (1996 Official Site)</a></div>
+                  <div>👉 <a href="#" class="ie-retro-link text-blue-800 underline" data-url="retro:yahoo">Yahoo! (1995 Web Directory)</a></div>
+                </div>
+              </div>
+
+              <!-- Classic Footer -->
+              <div class="pt-4 text-center text-[11px] text-gray-500 font-mono space-y-1">
+                <div>
+                  <a href="#" class="ie-link text-blue-700 underline" data-url="https://piush.com/about/">About Google / Piush KS</a> |
+                  <a href="#" class="ie-retro-link text-blue-700 underline" data-url="retro:yahoo">Search Directory</a> |
+                  <a href="#" class="ie-link text-blue-700 underline" data-url="https://en.wikipedia.org/wiki/Google">Google History</a>
+                </div>
+                <div>Copyright (C) 1998 Google Inc. (Windows 95 Cyberspace Simulation)</div>
+              </div>
+            </div>
+          </div>
+        `,
+      };
+    }
 
     // Retro 1995 Yahoo! Portal
     if (cleanUrl.includes('yahoo')) {
@@ -358,6 +545,12 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
     const term = q.toLowerCase().trim();
     const database = [
       {
+        title: 'Google (1998 Search Engine)',
+        url: 'https://google.com/',
+        keywords: ['google', 'search', 'engine', 'web', 'internet', 'larry', 'sergey', 'stanford'],
+        snippet: 'Search the web using Google! Featuring Stanford PageRank and 100% retro 1998 user interface.',
+      },
+      {
         title: 'Piush KS - Official Portfolio (Default)',
         url: 'https://piush.com/',
         keywords: ['piush', 'architect', 'mobile', 'cloud', 'cyber', 'home', 'engineer', 'lead'],
@@ -374,6 +567,18 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
         url: 'https://piush.com/quiz/',
         keywords: ['quiz', 'test', 'questions', 'skills', 'developer', 'questions', 'fullstack', 'react', 'flutter'],
         snippet: 'Rigorous 550-question developer challenge spanning 23 technical categories with complete verification rationales.',
+      },
+      {
+        title: 'Developer Tools Suite',
+        url: 'https://piush.com/tools/',
+        keywords: ['tools', 'json', 'svg', 'color', 'colors', 'playground', 'code', 'converter', 'palette'],
+        snippet: 'In-browser suite of developer utilities: JSON schema inspector, OKLCH color studio, SVG canvas editor, and live code runner.',
+      },
+      {
+        title: 'About Piush KS & Resume',
+        url: 'https://piush.com/about/',
+        keywords: ['about', 'bio', 'resume', 'experience', 'contact', 'career', 'education', 'skills'],
+        snippet: 'Professional biography, technical leadership background, speaking, and contact information for Piush KS.',
       },
       {
         title: 'Wikipedia: The Free Encyclopedia',
@@ -393,9 +598,15 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
         keywords: ['space', 'jam', 'jordan', 'bugs', 'looney', 'tunes', 'warner', 'movie', 'b-ball'],
         snippet: 'The iconic 1996 movie website. Features The Lineup, Jam Central, planetary navigation, and soundtrack tracks.',
       },
+      {
+        title: 'Yahoo! (1995 Web Directory)',
+        url: 'retro:yahoo',
+        keywords: ['yahoo', 'directory', 'portal', '1995', 'categories', 'jerry', 'david'],
+        snippet: 'Original 1995 Yahoo! human-curated directory of the World Wide Web.',
+      },
     ];
 
-    if (!term) return database.slice(0, 4);
+    if (!term) return database.slice(0, 5);
 
     return database.filter((item) => {
       if (item.title.toLowerCase().includes(term)) return true;
@@ -650,11 +861,16 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
           <div id="ie-info-bar" class="hidden px-2 py-1 bg-[#ffffcc] border-b border-[#808080] text-[11px] font-sans flex items-center justify-between text-gray-800 z-10">
             <div class="flex items-center gap-1.5 truncate">
               <span>ℹ️</span>
-              <span class="truncate">If an external website restricts embedding (X-Frame-Options), click to open in a new tab.</span>
+              <span class="truncate">External site. If blocked by browser frame security (X-Frame-Options):</span>
             </div>
-            <button id="ie-info-bar-open" class="retro-btn !py-0 !px-2 text-[10px] font-bold shrink-0">
-              Open in New Tab ↗
-            </button>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" id="ie-info-bar-reader" class="retro-btn !py-0 !px-2 text-[10px] font-bold" title="View in clean Reader Mode">
+                📖 Reader Mode
+              </button>
+              <button type="button" id="ie-info-bar-open" class="retro-btn !py-0 !px-2 text-[10px] font-bold shrink-0" title="Open in new browser tab">
+                Open in New Tab ↗
+              </button>
+            </div>
           </div>
 
           <!-- Live Web IFrame: Renders ANY website and piush.com as default -->
@@ -774,6 +990,91 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
     openExternal();
   });
   container.querySelector('#ie-info-bar-open')?.addEventListener('click', () => openExternal());
+
+  const openReaderMode = async (urlToRead?: string) => {
+    const targetUrl = urlToRead || currentUrl;
+    if (targetUrl.startsWith('retro:') || !targetUrl.startsWith('http')) return;
+
+    if (pageContainer) {
+      if (webIframe) webIframe.classList.add('hidden');
+      pageContainer.classList.remove('hidden');
+      if (statusText) statusText.textContent = `Fetching reader mode for ${targetUrl}...`;
+      if (globeSvg) globeSvg.classList.add('animate-pulse');
+      if (globeOrbit) globeOrbit.classList.remove('hidden');
+
+      pageContainer.innerHTML = `
+        <div class="p-6 text-center space-y-3 font-sans">
+          <div class="text-base font-bold text-gray-800">📖 Loading Reader Mode...</div>
+          <div class="text-xs text-gray-500 font-mono">${targetUrl}</div>
+          <div class="text-xs text-gray-600">Bypassing iframe frame-ancestor restriction via reader proxy...</div>
+        </div>
+      `;
+
+      try {
+        const res = await fetch(`https://r.jina.ai/${targetUrl}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+
+        const escaped = text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
+        const formatted = escaped
+          .split('\n\n')
+          .slice(0, 30)
+          .map((para) => {
+            const trimmed = para.trim();
+            if (trimmed.startsWith('# ')) {
+              return `<h1 class="text-xl font-bold text-blue-900 border-b border-gray-300 pb-1 mt-3 mb-2">${trimmed.slice(2)}</h1>`;
+            } else if (trimmed.startsWith('## ')) {
+              return `<h2 class="text-lg font-bold text-blue-900 mt-3 mb-1">${trimmed.slice(3)}</h2>`;
+            } else if (trimmed.startsWith('### ')) {
+              return `<h3 class="text-base font-bold text-gray-900 mt-2 mb-1">${trimmed.slice(4)}</h3>`;
+            }
+            return `<p class="my-2 leading-relaxed text-xs text-gray-800">${trimmed.replace(/\n/g, '<br/>')}</p>`;
+          })
+          .join('');
+
+        pageContainer.innerHTML = `
+          <div class="space-y-3 font-sans text-black leading-relaxed max-w-3xl p-2 select-text">
+            <div class="bg-[#e8ecef] border border-[#808080] p-2.5 flex items-center justify-between text-xs">
+              <div>
+                <span class="font-bold text-blue-900">📖 Internet Explorer Reader Mode</span>
+                <span class="text-gray-500 font-mono ml-2 text-[10px]">${targetUrl}</span>
+              </div>
+              <button type="button" id="ie-exit-reader-btn" class="retro-btn !py-0.5 !px-2 text-xs font-bold">Return to Iframe</button>
+            </div>
+            <div class="prose text-xs text-gray-900 space-y-2 font-serif">
+              ${formatted}
+            </div>
+          </div>
+        `;
+
+        pageContainer.querySelector('#ie-exit-reader-btn')?.addEventListener('click', () => {
+          pageContainer.classList.add('hidden');
+          webIframe.classList.remove('hidden');
+        });
+      } catch (_) {
+        pageContainer.innerHTML = `
+          <div class="p-6 text-center space-y-3 font-sans">
+            <div class="text-base font-bold text-red-700">⚠️ Reader view unavailable</div>
+            <p class="text-xs text-gray-600">The remote host blocked access or network proxy was unreachable.</p>
+            <div>
+              <button type="button" id="ie-open-newtab-fallback" class="retro-btn !py-1 !px-3 font-bold text-xs">Open in New Tab ↗</button>
+            </div>
+          </div>
+        `;
+        pageContainer.querySelector('#ie-open-newtab-fallback')?.addEventListener('click', () => openExternal(targetUrl));
+      } finally {
+        if (statusText) statusText.textContent = 'Done (Reader Mode)';
+        if (globeSvg) globeSvg.classList.remove('animate-pulse');
+        if (globeOrbit) globeOrbit.classList.add('hidden');
+      }
+    }
+  };
+
+  container.querySelector('#ie-info-bar-reader')?.addEventListener('click', () => openReaderMode());
 
   // Apply font scale
   const applyFontScale = () => {
@@ -995,6 +1296,141 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
       yahooInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') doYahoo();
       });
+    }
+
+    // Google 1998 Search Engine Wiring
+    const googleInput = pageContainer.querySelector('#google-query-box') as HTMLInputElement | null;
+    const googleSearchBtn = pageContainer.querySelector('#google-search-btn') as HTMLButtonElement | null;
+    const googleLuckyBtn = pageContainer.querySelector('#google-lucky-btn') as HTMLButtonElement | null;
+    const googleBottomInput = pageContainer.querySelector('#google-query-bottom') as HTMLInputElement | null;
+    const googleBottomBtn = pageContainer.querySelector('#google-search-bottom-btn') as HTMLButtonElement | null;
+
+    if (googleInput) {
+      setTimeout(() => {
+        try {
+          googleInput.focus();
+        } catch (_) {}
+      }, 60);
+    }
+
+    const executeGoogleSearch = (queryText: string) => {
+      const q = queryText.trim();
+      if (!q) {
+        navigateTo('https://google.com/');
+        return;
+      }
+
+      // Check if user entered a direct web destination
+      const isDirectUrl =
+        q.startsWith('http://') ||
+        q.startsWith('https://') ||
+        (q.includes('.') && !q.includes(' ') && !q.startsWith('?'));
+
+      if (isDirectUrl) {
+        navigateTo(q);
+      } else {
+        navigateTo(`https://www.google.com/search?q=${encodeURIComponent(q)}`);
+      }
+    };
+
+    if (googleSearchBtn && googleInput) {
+      googleSearchBtn.addEventListener('click', () => {
+        executeGoogleSearch(googleInput.value);
+      });
+      googleInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          executeGoogleSearch(googleInput.value);
+        }
+      });
+    }
+
+    if (googleLuckyBtn && googleInput) {
+      googleLuckyBtn.addEventListener('click', () => {
+        const q = googleInput.value.trim();
+        if (!q) {
+          navigateTo('https://piush.com/');
+          return;
+        }
+        const matches = searchWebDatabase(q);
+        if (matches.length > 0) {
+          navigateTo(matches[0].url);
+        } else {
+          navigateTo(`https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(q)}`);
+        }
+      });
+    }
+
+    if (googleBottomBtn && googleBottomInput) {
+      googleBottomBtn.addEventListener('click', () => {
+        executeGoogleSearch(googleBottomInput.value);
+      });
+      googleBottomInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          executeGoogleSearch(googleBottomInput.value);
+        }
+      });
+    }
+
+    // Dynamic Live Wikipedia / OpenSearch Enrichment for Google Search Results
+    const googleResultsList = pageContainer.querySelector('#google-results-list');
+    if (googleResultsList) {
+      const queryMatch = currentUrl.match(/[?&](?:q|p)=([^&]+)/i);
+      const query = queryMatch ? decodeURIComponent(queryMatch[1]).replace(/\+/g, ' ').trim() : '';
+
+      if (query) {
+        const wikiApiUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=6&namespace=0&format=json&origin=*`;
+        fetch(wikiApiUrl)
+          .then((res) => {
+            if (!res.ok) throw new Error('Live search unavailable');
+            return res.json();
+          })
+          .then((data) => {
+            if (!Array.isArray(data) || data.length < 4) return;
+            const titles: string[] = data[1] || [];
+            const descriptions: string[] = data[2] || [];
+            const links: string[] = data[3] || [];
+
+            if (titles.length === 0) return;
+
+            // Remove placeholder if present
+            const placeholder = googleResultsList.querySelector('.border-dashed');
+            if (placeholder) {
+              placeholder.remove();
+            }
+
+            const liveHtml = titles
+              .map((title, idx) => {
+                const link = links[idx] || `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`;
+                const desc = descriptions[idx] || `Online encyclopedic reference article for ${title}.`;
+                return `
+                  <div class="border-b border-gray-100 pb-2.5 text-xs space-y-0.5">
+                    <div><a href="#" class="ie-link text-blue-800 underline font-bold text-sm hover:text-blue-600" data-url="${link}">${title}</a></div>
+                    <div class="text-gray-800 leading-normal">${desc}</div>
+                    <div class="text-[11px] text-green-800 font-mono flex items-center gap-2">
+                      <span>${link}</span>
+                      <span class="text-gray-400">-</span>
+                      <span class="text-gray-500 text-[10px] cursor-pointer hover:underline">[Live Web]</span>
+                    </div>
+                  </div>
+                `;
+              })
+              .join('');
+
+            googleResultsList.insertAdjacentHTML('beforeend', liveHtml);
+
+            // Wire up newly injected links
+            googleResultsList.querySelectorAll('.ie-link').forEach((link) => {
+              link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const dest = (link as HTMLElement).getAttribute('data-url');
+                if (dest) navigateTo(dest);
+              });
+            });
+          })
+          .catch(() => {
+            // Silently retain static directory matches if offline or blocked
+          });
+      }
     }
   };
 
