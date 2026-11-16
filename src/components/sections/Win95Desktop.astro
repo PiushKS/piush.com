@@ -1235,6 +1235,11 @@ Double-click "My Portfolio" or click the taskbar button below.
   import { audio } from '../../lib/win95/audio';
 
   function setupWin95Desktop() {
+    if (window.self !== window.top) {
+      // Inside an iframe, do not initialize the outer desktop environment
+      return;
+    }
+
     const desktopScreen = document.getElementById('win95-desktop-screen');
     if (desktopScreen && desktopScreen.parentElement !== document.body) {
       document.body.appendChild(desktopScreen);

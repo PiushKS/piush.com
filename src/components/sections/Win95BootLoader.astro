@@ -149,6 +149,13 @@
 
     if (!screen || !logBox) return;
 
+    // Never show boot loader if embedded inside an iframe (e.g. Internet Explorer preview)
+    if (window.self !== window.top) {
+      screen.classList.add('win95-boot-hidden');
+      screen.setAttribute('aria-hidden', 'true');
+      return;
+    }
+
     // Check if user already booted this session
     const hasBooted = sessionStorage.getItem(BOOT_KEY);
     if (hasBooted === '1') {
