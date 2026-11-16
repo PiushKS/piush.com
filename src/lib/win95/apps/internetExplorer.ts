@@ -51,7 +51,11 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
   let homePage = 'https://piush.com/';
   try {
     const savedHome = localStorage.getItem(STORAGE_HOMEPAGE);
-    if (savedHome) homePage = savedHome;
+    if (savedHome && savedHome !== 'about:blank' && !savedHome.includes('google.com')) {
+      homePage = savedHome;
+    } else {
+      localStorage.setItem(STORAGE_HOMEPAGE, 'https://piush.com/');
+    }
   } catch (_) {}
 
   let fontScale: 'small' | 'medium' | 'large' = 'medium';
@@ -122,6 +126,56 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
   let historyIndex = 0;
   let isLoading = false;
   let activeFindTerm = '';
+
+  
+const FRAME_BLOCKED_DOMAINS = [
+  'google.com',
+  'google.co',
+  'youtube.com',
+  'youtu.be',
+  'github.com',
+  'twitter.com',
+  'x.com',
+  'facebook.com',
+  'instagram.com',
+  'reddit.com',
+  'linkedin.com',
+  'amazon.com',
+  'apple.com',
+  'microsoft.com',
+  'netflix.com',
+  'yahoo.com',
+  'bing.com',
+  'duckduckgo.com',
+  'twitch.tv',
+  'spotify.com',
+  'discord.com',
+  'medium.com',
+  'quora.com',
+  'pinterest.com',
+  'tiktok.com',
+  'nytimes.com',
+  'cnn.com',
+  'bbc.com',
+  'bbc.co.uk',
+  'paypal.com',
+  'ebay.com',
+  'stackoverflow.com',
+  'gitlab.com',
+  'cloudflare.com',
+];
+
+function isBlockedByFrameSecurity(url: string): boolean {
+  try {
+    const parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
+    const host = parsed.hostname.toLowerCase();
+    return FRAME_BLOCKED_DOMAINS.some(
+      (d) => host === d || host.endsWith('.' + d)
+    );
+  } catch (_) {
+    return false;
+  }
+}
 
   // URL Target Parsing & Resolution
   function parseTargetUrl(input: string): {
@@ -259,6 +313,17 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
       fullUrl = 'https://' + fullUrl;
     }
 
+    // Check if the target site blocks iframe embedding
+    const isFrameBlocked = isBlockedByFrameSecurity(fullUrl);
+    if (isFrameBlocked) {
+      return {
+        displayUrl: fullUrl,
+        isRetro: true,
+        retroKey: `security:${fullUrl}`,
+        isExternal: true,
+      };
+    }
+
     return {
       displayUrl: fullUrl,
       isRetro: false,
@@ -270,6 +335,76 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
   // Retro Simulated Web Database
   function getRetroPageContent(url: string): { title: string; html: string } {
     const cleanUrl = url.trim().toLowerCase();
+
+    
+    // Security Advisory Gateway for Frame-Restricted Sites
+    if (cleanUrl.startsWith('security:')) {
+      const targetUrl = url.replace(/^security:/i, '').trim();
+      let hostname = targetUrl;
+      try {
+        hostname = new URL(targetUrl).hostname;
+      } catch (_) {}
+
+      return {
+        title: `Security Advisory - ${hostname}`,
+        html: `
+          <div class="space-y-4 font-serif text-black leading-relaxed p-4 max-w-xl mx-auto select-text">
+            <div class="flex items-center gap-3 border-b-2 border-[#000080] pb-2">
+              <span class="text-3xl select-none">🛡️</span>
+              <div>
+                <h2 class="text-base font-bold text-[#000080] font-sans">Internet Explorer Security Advisory</h2>
+                <p class="text-xs text-gray-600 font-mono">${targetUrl}</p>
+              </div>
+            </div>
+
+            <div class="border-2 border-[#808080] bg-[#ffffea] p-3 text-xs space-y-2 shadow-[inset_1px_1px_0px_#ffffff]">
+              <p>
+                The destination website (<strong>${hostname}</strong>) restricts embedding inside desktop application windows using modern browser frame security policies (<code>X-Frame-Options: SAMEORIGIN</code> / <code>CSP frame-ancestors</code>).
+              </p>
+              <p class="text-gray-700">
+                To view this website without browser security blocks, please choose how you would like to proceed:
+              </p>
+            </div>
+
+            <div class="space-y-2.5 pt-1">
+              <div class="p-3 border-2 border-[#808080] bg-white flex items-center justify-between gap-3 shadow-[1px_1px_0px_#000000]">
+                <div class="text-xs">
+                  <div class="font-bold text-blue-900 font-sans">📖 Vintage Reader Mode (Recommended)</div>
+                  <div class="text-gray-600 text-[11px] font-sans">Renders live text and articles from ${hostname} directly inside Internet Explorer.</div>
+                </div>
+                <button type="button" class="ie-action-reader retro-btn !py-1 !px-3 text-xs font-bold shrink-0 font-sans" data-url="${targetUrl}">
+                  Read Now
+                </button>
+              </div>
+
+              <div class="p-3 border-2 border-[#808080] bg-white flex items-center justify-between gap-3 shadow-[1px_1px_0px_#000000]">
+                <div class="text-xs">
+                  <div class="font-bold text-blue-900 font-sans">↗ Open in New Browser Tab</div>
+                  <div class="text-gray-600 text-[11px] font-sans">Launches ${hostname} in a full external browser tab with complete interactivity.</div>
+                </div>
+                <button type="button" class="ie-action-newtab retro-btn !py-1 !px-3 text-xs font-bold shrink-0 font-sans" data-url="${targetUrl}">
+                  Open Tab ↗
+                </button>
+              </div>
+
+              <div class="p-2.5 border border-gray-300 bg-gray-50 flex items-center justify-between gap-3">
+                <div class="text-xs">
+                  <div class="font-bold text-gray-700 font-sans">🌐 Attempt Direct Frame Embed</div>
+                  <div class="text-gray-500 text-[11px] font-sans">Try loading in raw iframe (may show browser security error).</div>
+                </div>
+                <button type="button" class="ie-action-embed retro-btn !py-0.5 !px-2.5 text-xs shrink-0 font-sans" data-url="${targetUrl}">
+                  Try Embed
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-3 text-center text-[11px] text-gray-500 font-mono border-t border-gray-300">
+              <a href="#" class="ie-link text-blue-800 underline" data-url="https://piush.com/">Return to Piush KS Portfolio (Default Home)</a>
+            </div>
+          </div>
+        `,
+      };
+    }
 
     // Retro 1998 Google Search Engine
     if (cleanUrl.includes('google')) {
@@ -1277,6 +1412,37 @@ export function renderInternetExplorer(container: HTMLElement, win: Win95Window)
 
   // Wire Retro simulated page interactions
   const wireRetroPageInteractions = () => {
+
+    // Security Advisory Action Wiring
+    pageContainer.querySelectorAll('.ie-action-reader').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dest = (btn as HTMLElement).getAttribute('data-url');
+        if (dest) openReaderMode(dest);
+      });
+    });
+
+    pageContainer.querySelectorAll('.ie-action-newtab').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dest = (btn as HTMLElement).getAttribute('data-url');
+        if (dest) openExternal(dest);
+      });
+    });
+
+    pageContainer.querySelectorAll('.ie-action-embed').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dest = (btn as HTMLElement).getAttribute('data-url');
+        if (dest) {
+          if (pageContainer) pageContainer.classList.add('hidden');
+          if (webIframe) {
+            webIframe.classList.remove('hidden');
+            webIframe.src = dest;
+          }
+          if (infoBar) infoBar.classList.remove('hidden');
+          win.setTitle(`The Microsoft Internet Explorer - ${dest}`);
+        }
+      });
+    });
+
     pageContainer.querySelectorAll('.ie-link, .ie-retro-link').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
