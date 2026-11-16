@@ -30,6 +30,8 @@ export class Win95Window {
   public zIndex = 100;
   private prevBounds: { x: number; y: number; w: number; h: number } | null = null;
   private onCloseCallback?: () => void;
+  private closeCallbacks: Array<() => void> = [];
+  private isDestroyed = false;
   private manager: Win95WindowManager;
 
   constructor(options: WindowOptions, manager: Win95WindowManager) {
@@ -252,13 +254,50 @@ export class Win95Window {
     }
   }
 
-  public close() {
-    audio.playClick();
+  public onClose(callback: () => void): () => void {
+    this.closeCallbacks.push(callback);
+    return () => {
+      this.closeCallbacks = this.closeCallbacks.filter((cb) => cb !== callback);
+    };
+  }
+
+  public onDestroy(callback: () => void): () => void {
+    return this.onClose(callback);
+  }
+
+  public cleanup() {
+    if (this.isDestroyed) return;
+    this.isDestroyed = true;
+
+    // Dispatch legacy removal events for backward compatibility
+    try {
+      this.element.dispatchEvent(new CustomEvent('win95:close'));
+      this.element.dispatchEvent(new CustomEvent('DOMNodeRemovedFromDocument'));
+    } catch (_) {}
+
+    // Execute registered lifecycle handlers
+    while (this.closeCallbacks.length > 0) {
+      const cb = this.closeCallbacks.shift();
+      try {
+        cb?.();
+      } catch (err) {
+        console.error('Error executing window close callback:', err);
+      }
+    }
+
     if (this.onCloseCallback) {
       try {
         this.onCloseCallback();
-      } catch (_) {}
+      } catch (err) {
+        console.error('Error in window onCloseCallback:', err);
+      }
+      this.onCloseCallback = undefined;
     }
+  }
+
+  public close() {
+    audio.playClick();
+    this.cleanup();
     this.manager.destroyWindow(this.id);
   }
 
@@ -329,6 +368,7 @@ export class Win95WindowManager {
   public destroyWindow(id: string) {
     const win = this.windows.get(id);
     if (!win) return;
+    win.cleanup();
     if (win.element.parentNode) {
       win.element.parentNode.removeChild(win.element);
     }

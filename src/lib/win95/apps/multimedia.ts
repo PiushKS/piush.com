@@ -6,76 +6,232 @@ import { vfs } from '../fs';
 import type { Win95Window } from '../windowManager';
 
 /**
- * 1. Media Player - Full Multi-Track Audio/Video Simulator
+ * 1. Media Player - Full Multi-Track Audio/Video & MIDI Synthesis Engine
  */
 export function renderMediaPlayer(container: HTMLElement, win: Win95Window) {
   win.setTitle('Media Player - [CANYON.MID] (Stopped)');
 
+  interface SynthNote {
+    f: number;
+    d: number;
+    type?: OscillatorType;
+    vol?: number;
+  }
+
+  interface SynthStep {
+    lead?: SynthNote;
+    bass?: SynthNote;
+    chords?: number[];
+    perc?: 'kick' | 'snare' | 'hihat';
+  }
+
   interface Track {
+    id: string;
     name: string;
     file: string;
     duration: number; // in seconds
-    type: 'midi' | 'wave' | 'chiptune';
-    notes: Array<{ f: number; d: number }>;
+    type: 'midi' | 'wave' | 'chiptune' | 'custom';
+    stepMs: number;
+    description: string;
+    sequence: SynthStep[];
   }
+
+  // Built-in classic Windows 95 tracks with polyphonic arrangements
+  const canyonSeq: SynthStep[] = [
+    // Bar 1
+    { lead: { f: 523.25, d: 0.18, type: 'sawtooth' }, bass: { f: 130.81, d: 0.2 }, chords: [261.63, 329.63, 392.00], perc: 'kick' },
+    { lead: { f: 587.33, d: 0.18, type: 'sawtooth' }, bass: { f: 130.81, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 659.25, d: 0.18, type: 'sawtooth' }, bass: { f: 196.00, d: 0.2 }, chords: [261.63, 329.63, 392.00], perc: 'snare' },
+    { lead: { f: 783.99, d: 0.35, type: 'sawtooth' }, bass: { f: 130.81, d: 0.15 }, perc: 'hihat' },
+    // Bar 2
+    { lead: { f: 659.25, d: 0.18, type: 'sawtooth' }, bass: { f: 174.61, d: 0.2 }, chords: [349.23, 440.00, 523.25], perc: 'kick' },
+    { lead: { f: 783.99, d: 0.35, type: 'sawtooth' }, bass: { f: 174.61, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 1046.5, d: 0.45, type: 'sawtooth' }, bass: { f: 196.00, d: 0.2 }, chords: [392.00, 493.88, 587.33], perc: 'snare' },
+    { bass: { f: 196.00, d: 0.15 }, perc: 'hihat' },
+    // Bar 3
+    { lead: { f: 880.00, d: 0.18, type: 'sawtooth' }, bass: { f: 220.00, d: 0.2 }, chords: [440.00, 523.25, 659.25], perc: 'kick' },
+    { lead: { f: 783.99, d: 0.18, type: 'sawtooth' }, bass: { f: 220.00, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 659.25, d: 0.35, type: 'sawtooth' }, bass: { f: 196.00, d: 0.2 }, chords: [392.00, 493.88, 587.33], perc: 'snare' },
+    { lead: { f: 523.25, d: 0.50, type: 'sawtooth' }, bass: { f: 130.81, d: 0.2 }, chords: [261.63, 329.63, 392.00], perc: 'hihat' },
+    // Bar 4
+    { lead: { f: 587.33, d: 0.22, type: 'sawtooth' }, bass: { f: 146.83, d: 0.2 }, chords: [293.66, 369.99, 440.00], perc: 'kick' },
+    { lead: { f: 659.25, d: 0.22, type: 'sawtooth' }, bass: { f: 146.83, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 587.33, d: 0.30, type: 'sawtooth' }, bass: { f: 196.00, d: 0.2 }, chords: [392.00, 493.88, 587.33], perc: 'snare' },
+    { lead: { f: 523.25, d: 0.60, type: 'sawtooth' }, bass: { f: 130.81, d: 0.3 }, chords: [261.63, 329.63, 392.00], perc: 'hihat' },
+  ];
+
+  const passportSeq: SynthStep[] = [
+    { lead: { f: 440.00, d: 0.2, type: 'square' }, bass: { f: 110.00, d: 0.25 }, chords: [220.00, 277.18, 329.63], perc: 'kick' },
+    { bass: { f: 110.00, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 554.37, d: 0.2, type: 'square' }, bass: { f: 164.81, d: 0.2 }, chords: [220.00, 277.18, 329.63], perc: 'snare' },
+    { lead: { f: 659.25, d: 0.2, type: 'square' }, bass: { f: 110.00, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 880.00, d: 0.4, type: 'square' }, bass: { f: 146.83, d: 0.25 }, chords: [293.66, 369.99, 440.00], perc: 'kick' },
+    { lead: { f: 740.00, d: 0.2, type: 'square' }, bass: { f: 146.83, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 659.25, d: 0.2, type: 'square' }, bass: { f: 164.81, d: 0.2 }, chords: [329.63, 415.30, 493.88], perc: 'snare' },
+    { lead: { f: 554.37, d: 0.4, type: 'square' }, bass: { f: 110.00, d: 0.25 }, chords: [220.00, 277.18, 329.63], perc: 'hihat' },
+  ];
+
+  const chiptuneSeq: SynthStep[] = [
+    { lead: { f: 261.63, d: 0.12, type: 'square' }, bass: { f: 130.81, d: 0.18, type: 'triangle' }, perc: 'kick' },
+    { lead: { f: 329.63, d: 0.12, type: 'square' }, bass: { f: 130.81, d: 0.12, type: 'triangle' }, perc: 'hihat' },
+    { lead: { f: 392.00, d: 0.12, type: 'square' }, bass: { f: 196.00, d: 0.18, type: 'triangle' }, perc: 'snare' },
+    { lead: { f: 523.25, d: 0.22, type: 'square' }, bass: { f: 130.81, d: 0.12, type: 'triangle' }, perc: 'hihat' },
+    { lead: { f: 659.25, d: 0.12, type: 'square' }, bass: { f: 174.61, d: 0.18, type: 'triangle' }, perc: 'kick' },
+    { lead: { f: 783.99, d: 0.12, type: 'square' }, bass: { f: 174.61, d: 0.12, type: 'triangle' }, perc: 'hihat' },
+    { lead: { f: 1046.5, d: 0.25, type: 'square' }, bass: { f: 196.00, d: 0.18, type: 'triangle' }, perc: 'snare' },
+    { lead: { f: 783.99, d: 0.12, type: 'square' }, bass: { f: 196.00, d: 0.12, type: 'triangle' }, perc: 'hihat' },
+  ];
+
+  const beethovenSeq: SynthStep[] = [
+    { lead: { f: 659.25, d: 0.3, type: 'sine' }, bass: { f: 164.81, d: 0.35, type: 'triangle' }, chords: [329.63, 392.00, 523.25] },
+    { lead: { f: 659.25, d: 0.3, type: 'sine' }, bass: { f: 164.81, d: 0.35, type: 'triangle' }, chords: [329.63, 392.00, 523.25] },
+    { lead: { f: 698.46, d: 0.3, type: 'sine' }, bass: { f: 174.61, d: 0.35, type: 'triangle' }, chords: [349.23, 440.00, 523.25] },
+    { lead: { f: 783.99, d: 0.3, type: 'sine' }, bass: { f: 196.00, d: 0.35, type: 'triangle' }, chords: [392.00, 493.88, 587.33] },
+    { lead: { f: 783.99, d: 0.3, type: 'sine' }, bass: { f: 196.00, d: 0.35, type: 'triangle' }, chords: [392.00, 493.88, 587.33] },
+    { lead: { f: 698.46, d: 0.3, type: 'sine' }, bass: { f: 174.61, d: 0.35, type: 'triangle' }, chords: [349.23, 440.00, 523.25] },
+    { lead: { f: 659.25, d: 0.3, type: 'sine' }, bass: { f: 164.81, d: 0.35, type: 'triangle' }, chords: [329.63, 392.00, 523.25] },
+    { lead: { f: 587.33, d: 0.3, type: 'sine' }, bass: { f: 146.83, d: 0.35, type: 'triangle' }, chords: [293.66, 369.99, 440.00] },
+    { lead: { f: 523.25, d: 0.3, type: 'sine' }, bass: { f: 130.81, d: 0.35, type: 'triangle' }, chords: [261.63, 329.63, 392.00] },
+    { lead: { f: 523.25, d: 0.3, type: 'sine' }, bass: { f: 130.81, d: 0.35, type: 'triangle' }, chords: [261.63, 329.63, 392.00] },
+    { lead: { f: 587.33, d: 0.3, type: 'sine' }, bass: { f: 146.83, d: 0.35, type: 'triangle' }, chords: [293.66, 369.99, 440.00] },
+    { lead: { f: 659.25, d: 0.3, type: 'sine' }, bass: { f: 164.81, d: 0.35, type: 'triangle' }, chords: [329.63, 392.00, 523.25] },
+    { lead: { f: 659.25, d: 0.45, type: 'sine' }, bass: { f: 164.81, d: 0.45, type: 'triangle' }, chords: [329.63, 392.00, 523.25] },
+    { lead: { f: 587.33, d: 0.15, type: 'sine' }, bass: { f: 146.83, d: 0.20, type: 'triangle' } },
+    { lead: { f: 587.33, d: 0.60, type: 'sine' }, bass: { f: 146.83, d: 0.60, type: 'triangle' }, chords: [293.66, 369.99, 440.00] },
+  ];
+
+  const welcomeSeq: SynthStep[] = [
+    { lead: { f: 311.13, d: 0.4, type: 'triangle' }, bass: { f: 77.78, d: 0.9, type: 'sine' }, chords: [155.56, 233.08, 311.13] },
+    { lead: { f: 466.16, d: 0.4, type: 'triangle' }, chords: [233.08, 311.13, 388.91] },
+    { lead: { f: 622.25, d: 0.6, type: 'sine' }, bass: { f: 155.56, d: 1.2, type: 'sine' }, chords: [311.13, 388.91, 466.16, 622.25] },
+    { lead: { f: 932.33, d: 0.8, type: 'sine' }, chords: [466.16, 622.25, 777.82, 932.33] },
+    { lead: { f: 1244.5, d: 1.5, type: 'sine' }, bass: { f: 77.78, d: 1.8, type: 'sine' }, chords: [311.13, 466.16, 622.25, 932.33, 1244.5] },
+  ];
+
+  const themicSeq: SynthStep[] = [
+    { lead: { f: 440.00, d: 0.2, type: 'sawtooth' }, bass: { f: 110.00, d: 0.25 }, perc: 'kick' },
+    { lead: { f: 523.25, d: 0.2, type: 'sawtooth' }, bass: { f: 110.00, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 659.25, d: 0.2, type: 'sawtooth' }, bass: { f: 130.81, d: 0.25 }, chords: [261.63, 329.63, 440.00], perc: 'snare' },
+    { lead: { f: 587.33, d: 0.2, type: 'sawtooth' }, bass: { f: 110.00, d: 0.15 }, perc: 'hihat' },
+    { lead: { f: 523.25, d: 0.35, type: 'sawtooth' }, bass: { f: 87.31, d: 0.3 }, chords: [174.61, 261.63, 349.23], perc: 'kick' },
+    { lead: { f: 440.00, d: 0.4, type: 'sawtooth' }, bass: { f: 110.00, d: 0.3 }, chords: [220.00, 261.63, 329.63], perc: 'snare' },
+  ];
 
   const tracks: Track[] = [
     {
-      name: 'CANYON.MID (Windows 95 Overture)',
+      id: 'canyon',
+      name: 'CANYON.MID',
       file: 'C:\\WINDOWS\\MEDIA\\CANYON.MID',
       duration: 120,
       type: 'midi',
-      notes: [
-        { f: 523.25, d: 0.2 }, { f: 587.33, d: 0.2 }, { f: 659.25, d: 0.2 }, { f: 783.99, d: 0.4 },
-        { f: 659.25, d: 0.2 }, { f: 783.99, d: 0.4 }, { f: 1046.5, d: 0.6 },
-        { f: 880.00, d: 0.2 }, { f: 783.99, d: 0.2 }, { f: 659.25, d: 0.4 }, { f: 523.25, d: 0.6 },
-      ],
+      stepMs: 250,
+      description: 'Windows 95 Overture - George Stone',
+      sequence: canyonSeq,
     },
     {
-      name: 'PASSPORT.MID (World Grooves)',
+      id: 'passport',
+      name: 'PASSPORT.MID',
       file: 'C:\\WINDOWS\\MEDIA\\PASSPORT.MID',
       duration: 95,
       type: 'midi',
-      notes: [
-        { f: 440.0, d: 0.25 }, { f: 554.37, d: 0.25 }, { f: 659.25, d: 0.25 }, { f: 880.0, d: 0.5 },
-        { f: 740.0, d: 0.25 }, { f: 659.25, d: 0.25 }, { f: 554.37, d: 0.5 },
-      ],
+      stepMs: 240,
+      description: 'World Grooves Funk Jam',
+      sequence: passportSeq,
     },
     {
-      name: 'CHIPTUNE.MID (Retro 8-Bit Arcade)',
+      id: 'chiptune',
+      name: 'CHIPTUNE.MID',
       file: 'C:\\WINDOWS\\MEDIA\\CHIPTUNE.MID',
       duration: 80,
       type: 'chiptune',
-      notes: [
-        { f: 261.63, d: 0.15 }, { f: 329.63, d: 0.15 }, { f: 392.00, d: 0.15 }, { f: 523.25, d: 0.3 },
-        { f: 392.00, d: 0.15 }, { f: 523.25, d: 0.45 },
-      ],
+      stepMs: 180,
+      description: 'Retro 8-Bit Arcade Soundtrack',
+      sequence: chiptuneSeq,
     },
     {
-      name: 'WELCOME.WAV (Windows Orchestral Fanfare)',
+      id: 'beethoven',
+      name: 'BEETHOVEN.MID',
+      file: 'C:\\WINDOWS\\MEDIA\\BEETHOVEN.MID',
+      duration: 105,
+      type: 'midi',
+      stepMs: 380,
+      description: 'Symphony No. 9 - Ode to Joy',
+      sequence: beethovenSeq,
+    },
+    {
+      id: 'themic',
+      name: 'THEMIC.MID',
+      file: 'C:\\WINDOWS\\MEDIA\\THEMIC.MID',
+      duration: 75,
+      type: 'midi',
+      stepMs: 220,
+      description: 'The Microsoft Network Groove',
+      sequence: themicSeq,
+    },
+    {
+      id: 'welcome',
+      name: 'WELCOME.WAV',
       file: 'C:\\WINDOWS\\MEDIA\\WELCOME.WAV',
       duration: 12,
       type: 'wave',
-      notes: [
-        { f: 392.00, d: 0.2 }, { f: 523.25, d: 0.2 }, { f: 659.25, d: 0.2 }, { f: 783.99, d: 0.5 },
-        { f: 1046.5, d: 0.8 },
-      ],
+      stepMs: 700,
+      description: 'Windows 95 Orchestral Fanfare',
+      sequence: welcomeSeq,
     },
   ];
 
   let currentTrackIdx = 0;
   let isPlaying = false;
+  let isPaused = false;
   let currentTime = 0;
-  let noteIdx = 0;
-  let animId = 0;
-  let audioTimer: number | null = null;
+  let stepIndex = 0;
+  let synthTimer: number | null = null;
+  let animId: number | null = null;
+  let isLooping = false;
+  let volume = audio.getMasterVolume();
+  let isMuted = false;
+  let visMode: 'equalizer' | 'oscilloscope' | 'vumeter' = 'equalizer';
+
+  // Custom audio playback
   let customAudioBlobUrl: string | null = null;
   let customAudioElement: HTMLAudioElement | null = null;
+  let customFileName: string | null = null;
+  let customDuration = 0;
+
+  // Web Audio Nodes for synthesis & visualization
+  let analyserNode: AnalyserNode | null = null;
+  let masterGainNode: GainNode | null = null;
+  let activeOscillators: OscillatorNode[] = [];
+
+  // Setup Web Audio graph
+  function setupWebAudio() {
+    const ctx = audio.getAudioContext();
+    if (!ctx) return;
+    try {
+      if (!analyserNode) {
+        analyserNode = ctx.createAnalyser();
+        analyserNode.fftSize = 64;
+        analyserNode.smoothingTimeConstant = 0.8;
+      }
+      if (!masterGainNode) {
+        masterGainNode = ctx.createGain();
+        masterGainNode.gain.setValueAtTime(isMuted ? 0 : volume, ctx.currentTime);
+        analyserNode.connect(masterGainNode);
+        masterGainNode.connect(ctx.destination);
+      }
+    } catch (_) {}
+  }
+
+  // Peak hold data for equalizer
+  const peakValues: number[] = new Array(32).fill(0);
+  const peakDecay: number[] = new Array(32).fill(0);
+  let vuLeft = 0;
+  let vuRight = 0;
 
   container.innerHTML = `
-    <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none">
+    <div class="flex flex-col h-full bg-[#c0c0c0] text-black font-mono select-none overflow-hidden">
       <!-- Menubar -->
-      <div class="flex gap-4 px-2 py-0.5 text-xs bg-[#c0c0c0] border-b border-black">
+      <div class="flex gap-4 px-2 py-0.5 text-xs bg-[#c0c0c0] border-b border-black shrink-0">
         <span class="hover:underline cursor-pointer" id="mp-menu-file">File</span>
         <span class="hover:underline cursor-pointer" id="mp-menu-edit">Edit</span>
         <span class="hover:underline cursor-pointer" id="mp-menu-device">Device</span>
@@ -83,245 +239,920 @@ export function renderMediaPlayer(container: HTMLElement, win: Win95Window) {
         <span class="hover:underline cursor-pointer" id="mp-menu-help">Help</span>
       </div>
 
-      <!-- Video / Visualization Surface -->
-      <div class="flex-1 bg-black p-2 flex items-center justify-center relative min-h-[160px] overflow-hidden">
-        <canvas id="mp-visualizer" width="380" height="180" class="block w-full h-full max-h-[220px]"></canvas>
-        <div id="mp-title-overlay" class="absolute top-2 left-2 text-green-400 text-xs font-bold drop-shadow-[0_1px_2px_black]">
-          ▶ Track: CANYON.MID (Windows 95 Classic)
-        </div>
-        <div id="mp-mode-overlay" class="absolute top-2 right-2 text-cyan-300 text-[10px] font-mono">
-          [MIDI SEQUENCER 16-VOICE]
-        </div>
-      </div>
+      <!-- Main Visual Display Area -->
+      <div class="p-2 bg-[#c0c0c0] flex-1 flex flex-col min-h-0">
+        <div class="relative flex-1 bg-[#05050d] border-2 border-black border-t-[#404040] border-l-[#404040] border-b-white border-r-white overflow-hidden flex items-center justify-center cursor-pointer group" id="mp-canvas-container" title="Click visualizer to cycle modes (Equalizer / Oscilloscope / VU Meters)">
+          <canvas id="mp-visualizer" width="440" height="190" class="block w-full h-full"></canvas>
 
-      <!-- Controls & Seekbar -->
-      <div class="p-2 space-y-2 bg-[#c0c0c0] border-t border-white">
-        <!-- Progress slider -->
-        <div class="flex items-center gap-2">
-          <span id="mp-current-time" class="text-[11px] text-gray-800 w-12 font-bold">00:00</span>
-          <input type="range" id="mp-seekbar" min="0" max="100" value="0" class="flex-1 cursor-pointer" />
-          <span id="mp-total-time" class="text-[11px] text-gray-800 w-12 text-right font-bold">02:00</span>
-        </div>
-
-        <!-- Player Buttons -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1">
-            <button id="mp-play-btn" class="retro-btn !p-1.5 size-7 flex items-center justify-center text-xs font-bold" title="Play">▶</button>
-            <button id="mp-pause-btn" class="retro-btn !p-1.5 size-7 flex items-center justify-center text-xs font-bold" title="Pause">❚❚</button>
-            <button id="mp-stop-btn" class="retro-btn !p-1.5 size-7 flex items-center justify-center text-xs font-bold" title="Stop">◼</button>
-            <div class="w-px h-5 bg-black/40 mx-1"></div>
-            <button id="mp-prev-btn" class="retro-btn !p-1.5 size-7 flex items-center justify-center text-xs font-bold" title="Previous Track">|◀</button>
-            <button id="mp-next-btn" class="retro-btn !p-1.5 size-7 flex items-center justify-center text-xs font-bold" title="Next Track">▶|</button>
+          <!-- Top Overlay: Track Name -->
+          <div id="mp-title-overlay" class="absolute top-2 left-2 text-[#00ff66] text-xs font-bold drop-shadow-[0_1px_2px_black] truncate max-w-[70%]">
+            ▶ Track: CANYON.MID (Windows 95 Overture)
           </div>
 
-          <!-- Track selection & Open file -->
-          <div class="flex items-center gap-1.5">
-            <select id="mp-track-select" class="retro-select !py-0.5 !px-1 text-[11px] font-mono max-w-[170px]">
+          <!-- Top-Right Overlay: Mode Switcher -->
+          <button type="button" id="mp-mode-overlay" class="absolute top-2 right-2 text-cyan-300 text-[10px] font-mono bg-black/60 px-1.5 py-0.5 border border-cyan-500/40 hover:bg-cyan-900/40 cursor-pointer">
+            [MODE: 32-EQ]
+          </button>
+
+          <!-- Bottom Time Overlay -->
+          <div id="mp-time-overlay" class="absolute bottom-2 right-2 text-yellow-300 text-[11px] font-bold font-mono bg-black/70 px-1.5 py-0.5 border border-yellow-500/40">
+            00:00 / 02:00
+          </div>
+        </div>
+
+        <!-- Progress Timeline & Seekbar -->
+        <div class="mt-2 px-1 flex items-center gap-2 shrink-0">
+          <span id="mp-current-time" class="text-xs text-gray-900 w-12 font-bold font-mono">00:00</span>
+          <input type="range" id="mp-seekbar" min="0" max="100" value="0" step="0.5" class="flex-1 cursor-pointer" title="Scrub Playback Position" />
+          <span id="mp-total-time" class="text-xs text-gray-900 w-12 text-right font-bold font-mono">02:00</span>
+        </div>
+
+        <!-- Primary Transport Controls Bar -->
+        <div class="mt-2 pt-2 border-t border-white flex flex-wrap items-center justify-between gap-1.5 shrink-0">
+          <!-- Buttons Strip -->
+          <div class="flex items-center gap-1">
+            <button id="mp-play-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs font-bold" title="Play">▶</button>
+            <button id="mp-pause-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs font-bold" title="Pause">❚❚</button>
+            <button id="mp-stop-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs font-bold" title="Stop">◼</button>
+            <div class="w-px h-5 bg-black/40 mx-0.5"></div>
+            <button id="mp-prev-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs font-bold" title="Previous Track">|◀</button>
+            <button id="mp-rewind-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs font-bold" title="Rewind 5s">◀◀</button>
+            <button id="mp-forward-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs font-bold" title="Fast Forward 5s">▶▶</button>
+            <button id="mp-next-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs font-bold" title="Next Track">▶|</button>
+            <div class="w-px h-5 bg-black/40 mx-0.5"></div>
+            <button id="mp-loop-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs" title="Repeat Track">🔁</button>
+            <button id="mp-eject-btn" class="retro-btn !p-1 size-7 flex items-center justify-center text-xs text-red-700" title="Open Local Audio File">⏏</button>
+          </div>
+
+          <!-- Track Selection & Volume Strip -->
+          <div class="flex items-center gap-2">
+            <!-- Track Dropdown -->
+            <select id="mp-track-select" class="retro-select !py-0.5 !px-1 text-xs font-mono max-w-[155px]" title="Select Audio Track">
               ${tracks.map((t, idx) => `<option value="${idx}">${t.name}</option>`).join('')}
             </select>
-            <label class="retro-btn !py-0.5 !px-2 text-xs cursor-pointer flex items-center gap-1">
+
+            <!-- Open File Button & Hidden Input -->
+            <label class="retro-btn !py-0.5 !px-1.5 text-xs cursor-pointer flex items-center gap-1 shrink-0" title="Open MP3, WAV, MID, OGG from your computer">
               <span>📂 Open...</span>
-              <input type="file" id="mp-file-input" accept="audio/*" class="hidden" />
+              <input type="file" id="mp-file-input" accept="audio/*,.mid,.midi" class="hidden" />
             </label>
+
+            <!-- Volume Slider & Mute -->
+            <div class="flex items-center gap-1 border-l border-white/60 pl-1.5 shrink-0">
+              <button id="mp-mute-btn" class="retro-btn !p-0.5 size-6 flex items-center justify-center text-xs" title="Mute / Unmute">🔊</button>
+              <input type="range" id="mp-volume-slider" min="0" max="100" value="${Math.round(volume * 100)}" class="w-14 cursor-pointer" title="Volume" />
+              <span id="mp-vol-label" class="text-[10px] w-6 text-gray-700 font-mono">${Math.round(volume * 100)}%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="mt-2 pt-1 border-t border-black/30 flex items-center justify-between text-[11px] text-gray-800 shrink-0">
+          <div class="flex items-center gap-2">
+            <span id="mp-status-badge" class="font-bold text-gray-700">● Stopped</span>
+            <span class="text-gray-500">|</span>
+            <span id="mp-device-name">MIDI Sequencer (16 Voices)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="mp-format-info" class="text-[10px] text-gray-600">Stereo 44.1 kHz 16-Bit</span>
+            <button id="mp-cycle-vis-btn" class="hover:underline text-blue-900 cursor-pointer text-[10px]" title="Change visualization mode">
+              [Visualizer: Equalizer]
+            </button>
           </div>
         </div>
       </div>
     </div>
   `;
 
+  // Grab DOM elements
   const canvas = container.querySelector('#mp-visualizer') as HTMLCanvasElement;
   const ctx = canvas?.getContext('2d');
+  const canvasContainer = container.querySelector('#mp-canvas-container');
   const playBtn = container.querySelector('#mp-play-btn');
   const pauseBtn = container.querySelector('#mp-pause-btn');
   const stopBtn = container.querySelector('#mp-stop-btn');
   const prevBtn = container.querySelector('#mp-prev-btn');
   const nextBtn = container.querySelector('#mp-next-btn');
+  const rewindBtn = container.querySelector('#mp-rewind-btn');
+  const forwardBtn = container.querySelector('#mp-forward-btn');
+  const loopBtn = container.querySelector('#mp-loop-btn');
+  const ejectBtn = container.querySelector('#mp-eject-btn');
   const seekbar = container.querySelector('#mp-seekbar') as HTMLInputElement;
   const curTimeEl = container.querySelector('#mp-current-time') as HTMLElement;
   const totalTimeEl = container.querySelector('#mp-total-time') as HTMLElement;
   const fileInput = container.querySelector('#mp-file-input') as HTMLInputElement;
-  const overlay = container.querySelector('#mp-title-overlay') as HTMLElement;
+  const titleOverlay = container.querySelector('#mp-title-overlay') as HTMLElement;
   const modeOverlay = container.querySelector('#mp-mode-overlay') as HTMLElement;
+  const timeOverlay = container.querySelector('#mp-time-overlay') as HTMLElement;
   const trackSelect = container.querySelector('#mp-track-select') as HTMLSelectElement;
+  const volumeSlider = container.querySelector('#mp-volume-slider') as HTMLInputElement;
+  const muteBtn = container.querySelector('#mp-mute-btn');
+  const volLabel = container.querySelector('#mp-vol-label') as HTMLElement;
+  const statusBadge = container.querySelector('#mp-status-badge') as HTMLElement;
+  const deviceNameEl = container.querySelector('#mp-device-name') as HTMLElement;
+  const formatInfoEl = container.querySelector('#mp-format-info') as HTMLElement;
+  const cycleVisBtn = container.querySelector('#mp-cycle-vis-btn');
 
   function formatTime(sec: number): string {
-    const m = String(Math.floor(sec / 60)).padStart(2, '0');
-    const s = String(Math.floor(sec % 60)).padStart(2, '0');
-    return `${m}:${s}`;
+    const s = Math.max(0, Math.floor(sec));
+    const m = String(Math.floor(s / 60)).padStart(2, '0');
+    const remS = String(s % 60).padStart(2, '0');
+    return `${m}:${remS}`;
   }
 
-  function updateTrackInfo() {
-    const t = tracks[currentTrackIdx];
-    if (overlay) overlay.textContent = `▶ Track: ${t.name}`;
-    if (modeOverlay) modeOverlay.textContent = `[${t.type.toUpperCase()} AUDIO]`;
-    if (totalTimeEl) totalTimeEl.textContent = formatTime(t.duration);
-    win.setTitle(`Media Player - [${t.name}] (${isPlaying ? 'Playing' : 'Stopped'})`);
-  }
-
-  function playSynthNote() {
-    if (!isPlaying) return;
-    const t = tracks[currentTrackIdx];
-    if (t.notes.length > 0) {
-      const note = t.notes[noteIdx % t.notes.length];
-      const waveType = t.type === 'chiptune' ? 'square' : t.type === 'wave' ? 'sawtooth' : 'triangle';
-      audio.playTone(note.f, note.d, waveType, 0.12);
-      noteIdx++;
+  function getActiveTrackDuration(): number {
+    if (customAudioElement && !isNaN(customAudioElement.duration) && customAudioElement.duration > 0) {
+      return customAudioElement.duration;
     }
+    return tracks[currentTrackIdx]?.duration || 120;
   }
 
-  function renderVisualizer() {
-    if (!ctx || !canvas) return;
-    ctx.fillStyle = '#080814';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  function getActiveTrackName(): string {
+    if (customFileName) return customFileName;
+    return tracks[currentTrackIdx]?.name || 'CANYON.MID';
+  }
 
-    if (isPlaying) {
-      // 32-bar graphic equalizer with peak hold
-      const bars = 32;
-      const barW = canvas.width / bars;
-      const time = Date.now() / 150;
-      for (let i = 0; i < bars; i++) {
-        const h = Math.abs(Math.sin(time + i * 0.35)) * (canvas.height * 0.75);
-        const grad = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - h);
-        grad.addColorStop(0, '#00ff44');
-        grad.addColorStop(0.7, '#ffff00');
-        grad.addColorStop(1, '#ff0033');
-        ctx.fillStyle = grad;
-        ctx.fillRect(i * barW + 1, canvas.height - h, barW - 2, h);
+  function updateTrackDisplay() {
+    const dur = getActiveTrackDuration();
+    const name = getActiveTrackName();
+    const curStr = formatTime(currentTime);
+    const totStr = formatTime(dur);
 
-        // Peak indicator
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(i * barW + 1, canvas.height - h - 3, barW - 2, 2);
-      }
+    if (curTimeEl) curTimeEl.textContent = curStr;
+    if (totalTimeEl) totalTimeEl.textContent = totStr;
+    if (timeOverlay) timeOverlay.textContent = `${curStr} / ${totStr}`;
+
+    if (customFileName) {
+      if (titleOverlay) titleOverlay.textContent = `▶ File: ${customFileName}`;
+      if (deviceNameEl) deviceNameEl.textContent = 'ActiveMovie Audio Stream';
+      if (formatInfoEl) formatInfoEl.textContent = 'MP3/WAV 44.1 kHz DirectSound';
     } else {
-      ctx.fillStyle = '#444455';
-      ctx.font = '12px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('[ Media Player Stopped ]', canvas.width / 2, canvas.height / 2);
+      const cur = tracks[currentTrackIdx];
+      if (titleOverlay) titleOverlay.textContent = `▶ Track: ${cur.name} (${cur.description})`;
+      if (deviceNameEl) deviceNameEl.textContent = cur.type === 'chiptune' ? 'Sound Blaster OPL3 Chip' : 'MIDI Sequencer (General MIDI)';
+      if (formatInfoEl) formatInfoEl.textContent = cur.type === 'wave' ? 'PCM WaveAudio 16-Bit' : '16-Voice MIDI Synthesizer';
+    }
+
+    const stateStr = isPlaying ? 'Playing' : isPaused ? 'Paused' : 'Stopped';
+    win.setTitle(`Media Player - [${name}] (${stateStr})`);
+
+    if (statusBadge) {
+      if (isPlaying) {
+        statusBadge.innerHTML = '<span class="text-green-700">● Playing</span>';
+      } else if (isPaused) {
+        statusBadge.innerHTML = '<span class="text-yellow-700">❚❚ Paused</span>';
+      } else {
+        statusBadge.innerHTML = '<span class="text-gray-600">◼ Stopped</span>';
+      }
+    }
+
+    if (dur > 0 && seekbar) {
+      seekbar.value = String((currentTime / dur) * 100);
     }
   }
 
+  // Stop active oscillators
+  function stopActiveOscillators() {
+    for (const osc of activeOscillators) {
+      try {
+        osc.stop();
+        osc.disconnect();
+      } catch (_) {}
+    }
+    activeOscillators = [];
+  }
+
+  // Play a synthesized polyphonic step
+  function playSynthStep(step: SynthStep) {
+    if (!isPlaying || isPaused) return;
+    setupWebAudio();
+    const ctx = audio.getAudioContext();
+    if (!ctx || !analyserNode || !masterGainNode) return;
+
+    const now = ctx.currentTime;
+    const volScale = isMuted ? 0 : volume;
+
+    // 1. Lead Melody Note
+    if (step.lead && step.lead.f > 0) {
+      try {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = step.lead.type || 'sawtooth';
+        osc.frequency.setValueAtTime(step.lead.f, now);
+
+        const v = (step.lead.vol || 0.16) * volScale;
+        gain.gain.setValueAtTime(v, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + step.lead.d);
+
+        osc.connect(gain);
+        gain.connect(analyserNode);
+
+        osc.start(now);
+        osc.stop(now + step.lead.d);
+        activeOscillators.push(osc);
+        osc.onended = () => {
+          activeOscillators = activeOscillators.filter((o) => o !== osc);
+        };
+      } catch (_) {}
+    }
+
+    // 2. Bassline Note
+    if (step.bass && step.bass.f > 0) {
+      try {
+        const bassOsc = ctx.createOscillator();
+        const bassGain = ctx.createGain();
+        bassOsc.type = step.bass.type || 'triangle';
+        bassOsc.frequency.setValueAtTime(step.bass.f, now);
+
+        const bv = (step.bass.vol || 0.22) * volScale;
+        bassGain.gain.setValueAtTime(bv, now);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, now + step.bass.d);
+
+        bassOsc.connect(bassGain);
+        bassGain.connect(analyserNode);
+
+        bassOsc.start(now);
+        bassOsc.stop(now + step.bass.d);
+        activeOscillators.push(bassOsc);
+        bassOsc.onended = () => {
+          activeOscillators = activeOscillators.filter((o) => o !== bassOsc);
+        };
+      } catch (_) {}
+    }
+
+    // 3. Harmony Chords
+    if (step.chords && step.chords.length > 0) {
+      step.chords.forEach((freq) => {
+        try {
+          const chordOsc = ctx.createOscillator();
+          const chordGain = ctx.createGain();
+          chordOsc.type = 'sine';
+          chordOsc.frequency.setValueAtTime(freq, now);
+
+          const cv = 0.06 * volScale;
+          chordGain.gain.setValueAtTime(cv, now);
+          chordGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          chordOsc.connect(chordGain);
+          chordGain.connect(analyserNode!);
+
+          chordOsc.start(now);
+          chordOsc.stop(now + 0.35);
+          activeOscillators.push(chordOsc);
+          chordOsc.onended = () => {
+            activeOscillators = activeOscillators.filter((o) => o !== chordOsc);
+          };
+        } catch (_) {}
+      });
+    }
+
+    // 4. Rhythm Percussion (Simulated Snare / Kick / Hihat)
+    if (step.perc) {
+      try {
+        if (step.perc === 'kick') {
+          const kickOsc = ctx.createOscillator();
+          const kickGain = ctx.createGain();
+          kickOsc.type = 'sine';
+          kickOsc.frequency.setValueAtTime(140, now);
+          kickOsc.frequency.exponentialRampToValueAtTime(45, now + 0.09);
+
+          kickGain.gain.setValueAtTime(0.25 * volScale, now);
+          kickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+          kickOsc.connect(kickGain);
+          kickGain.connect(analyserNode);
+          kickOsc.start(now);
+          kickOsc.stop(now + 0.09);
+        } else if (step.perc === 'snare' || step.perc === 'hihat') {
+          const dur = step.perc === 'snare' ? 0.12 : 0.04;
+          const bufSize = Math.floor(ctx.sampleRate * dur);
+          const noiseBuf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+          const data = noiseBuf.getChannelData(0);
+          for (let i = 0; i < bufSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.03));
+          }
+
+          const noise = ctx.createBufferSource();
+          noise.buffer = noiseBuf;
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = step.perc === 'snare' ? 'bandpass' : 'highpass';
+          filter.frequency.setValueAtTime(step.perc === 'snare' ? 1200 : 7000, now);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime((step.perc === 'snare' ? 0.18 : 0.1) * volScale, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(analyserNode);
+
+          noise.start(now);
+          noise.stop(now + dur);
+        }
+      } catch (_) {}
+    }
+  }
+
+  // Start Playback
   function startPlayback() {
-    isPlaying = true;
-    win.setTitle(`Media Player - [${tracks[currentTrackIdx].name}] (Playing)`);
+    setupWebAudio();
+    const ctx = audio.getAudioContext();
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
     audio.playClick();
+
+    if (isPaused) {
+      isPaused = false;
+      isPlaying = true;
+    } else {
+      isPlaying = true;
+      isPaused = false;
+    }
 
     if (customAudioElement) {
       customAudioElement.play().catch(() => {});
     } else {
-      if (audioTimer) clearInterval(audioTimer);
-      audioTimer = window.setInterval(() => {
-        if (!isPlaying) return;
-        playSynthNote();
-        currentTime += 1;
-        const dur = tracks[currentTrackIdx].duration;
-        if (currentTime > dur) {
-          currentTime = 0;
-          noteIdx = 0;
+      if (synthTimer) clearInterval(synthTimer);
+      const curTrack = tracks[currentTrackIdx];
+      const stepMs = curTrack.stepMs || 250;
+
+      synthTimer = window.setInterval(() => {
+        if (!isPlaying || isPaused) return;
+        const curSeq = curTrack.sequence;
+        if (curSeq.length > 0) {
+          const step = curSeq[stepIndex % curSeq.length];
+          playSynthStep(step);
+          stepIndex++;
         }
-        if (seekbar) seekbar.value = String((currentTime / dur) * 100);
-        if (curTimeEl) curTimeEl.textContent = formatTime(currentTime);
-      }, 350);
+
+        currentTime += stepMs / 1000;
+        const dur = curTrack.duration;
+        if (currentTime >= dur) {
+          if (isLooping) {
+            currentTime = 0;
+            stepIndex = 0;
+          } else {
+            // Advance to next track
+            nextTrack();
+            return;
+          }
+        }
+        updateTrackDisplay();
+      }, stepMs);
     }
+
+    updateTrackDisplay();
   }
 
+  // Pause Playback
+  function pausePlayback() {
+    audio.playClick();
+    if (!isPlaying) return;
+    isPlaying = false;
+    isPaused = true;
+
+    if (synthTimer) {
+      clearInterval(synthTimer);
+      synthTimer = null;
+    }
+    stopActiveOscillators();
+
+    if (customAudioElement) {
+      customAudioElement.pause();
+    }
+
+    updateTrackDisplay();
+  }
+
+  // Stop Playback
   function stopPlayback() {
     isPlaying = false;
+    isPaused = false;
     currentTime = 0;
-    noteIdx = 0;
-    if (audioTimer) {
-      clearInterval(audioTimer);
-      audioTimer = null;
+    stepIndex = 0;
+
+    if (synthTimer) {
+      clearInterval(synthTimer);
+      synthTimer = null;
     }
+    stopActiveOscillators();
+
     if (customAudioElement) {
       customAudioElement.pause();
-      customAudioElement.currentTime = 0;
+      try {
+        customAudioElement.currentTime = 0;
+      } catch (_) {}
     }
+
     if (seekbar) seekbar.value = '0';
-    if (curTimeEl) curTimeEl.textContent = '00:00';
-    updateTrackInfo();
-    audio.playClick();
+    updateTrackDisplay();
   }
 
-  function pausePlayback() {
-    isPlaying = false;
-    if (audioTimer) {
-      clearInterval(audioTimer);
-      audioTimer = null;
+  function prevTrack() {
+    stopPlayback();
+    if (customFileName) {
+      customFileName = null;
+      if (customAudioElement) {
+        customAudioElement.src = '';
+        customAudioElement = null;
+      }
+    }
+    currentTrackIdx = (currentTrackIdx - 1 + tracks.length) % tracks.length;
+    if (trackSelect) trackSelect.value = String(currentTrackIdx);
+    updateTrackDisplay();
+    startPlayback();
+  }
+
+  function nextTrack() {
+    stopPlayback();
+    if (customFileName) {
+      customFileName = null;
+      if (customAudioElement) {
+        customAudioElement.src = '';
+        customAudioElement = null;
+      }
+    }
+    currentTrackIdx = (currentTrackIdx + 1) % tracks.length;
+    if (trackSelect) trackSelect.value = String(currentTrackIdx);
+    updateTrackDisplay();
+    startPlayback();
+  }
+
+  function rewind5s() {
+    audio.playClick();
+    seekTo(Math.max(0, currentTime - 5));
+  }
+
+  function forward5s() {
+    audio.playClick();
+    const dur = getActiveTrackDuration();
+    seekTo(Math.min(dur, currentTime + 5));
+  }
+
+  function seekTo(targetSec: number) {
+    currentTime = targetSec;
+    const dur = getActiveTrackDuration();
+
+    if (customAudioElement && !isNaN(customAudioElement.duration)) {
+      try {
+        customAudioElement.currentTime = targetSec;
+      } catch (_) {}
+    } else {
+      const curTrack = tracks[currentTrackIdx];
+      const stepMs = curTrack.stepMs || 250;
+      stepIndex = Math.floor((targetSec * 1000) / stepMs);
+    }
+
+    if (seekbar && dur > 0) {
+      seekbar.value = String((currentTime / dur) * 100);
+    }
+    updateTrackDisplay();
+  }
+
+  function setVolume(newVol: number) {
+    volume = Math.max(0, Math.min(1, newVol));
+    if (volLabel) volLabel.textContent = `${Math.round(volume * 100)}%`;
+    if (masterGainNode) {
+      const ctx = audio.getAudioContext();
+      if (ctx) {
+        masterGainNode.gain.setValueAtTime(isMuted ? 0 : volume, ctx.currentTime);
+      }
     }
     if (customAudioElement) {
-      customAudioElement.pause();
+      customAudioElement.volume = isMuted ? 0 : volume;
     }
-    win.setTitle(`Media Player - [${tracks[currentTrackIdx].name}] (Paused)`);
+  }
+
+  function toggleMute() {
+    isMuted = !isMuted;
+    if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    setVolume(volume);
+  }
+
+  function cycleVisMode() {
     audio.playClick();
+    if (visMode === 'equalizer') {
+      visMode = 'oscilloscope';
+      if (modeOverlay) modeOverlay.textContent = '[MODE: OSCILLOSCOPE]';
+      if (cycleVisBtn) cycleVisBtn.textContent = '[Visualizer: Oscilloscope]';
+    } else if (visMode === 'oscilloscope') {
+      visMode = 'vumeter';
+      if (modeOverlay) modeOverlay.textContent = '[MODE: VU METERS]';
+      if (cycleVisBtn) cycleVisBtn.textContent = '[Visualizer: VU Meters]';
+    } else {
+      visMode = 'equalizer';
+      if (modeOverlay) modeOverlay.textContent = '[MODE: 32-EQ]';
+      if (cycleVisBtn) cycleVisBtn.textContent = '[Visualizer: Equalizer]';
+    }
   }
 
-  function tick() {
-    renderVisualizer();
-    animId = requestAnimationFrame(tick);
+  // Load Custom File
+  function loadCustomFile(file: File) {
+    stopPlayback();
+    if (customAudioBlobUrl) {
+      URL.revokeObjectURL(customAudioBlobUrl);
+      customAudioBlobUrl = null;
+    }
+
+    customFileName = file.name;
+    customAudioBlobUrl = URL.createObjectURL(file);
+    customAudioElement = new Audio(customAudioBlobUrl);
+    customAudioElement.volume = isMuted ? 0 : volume;
+
+    customAudioElement.addEventListener('loadedmetadata', () => {
+      customDuration = customAudioElement?.duration || 0;
+      updateTrackDisplay();
+    });
+
+    customAudioElement.addEventListener('timeupdate', () => {
+      if (customAudioElement) {
+        currentTime = customAudioElement.currentTime;
+        updateTrackDisplay();
+      }
+    });
+
+    customAudioElement.addEventListener('ended', () => {
+      if (isLooping) {
+        currentTime = 0;
+        customAudioElement?.play().catch(() => {});
+      } else {
+        stopPlayback();
+      }
+    });
+
+    // Attempt connecting customAudioElement to Web Audio Analyser
+    setupWebAudio();
+    const ctx = audio.getAudioContext();
+    if (ctx && analyserNode) {
+      try {
+        const source = ctx.createMediaElementSource(customAudioElement);
+        source.connect(analyserNode);
+      } catch (_) {
+        // Ignored if already connected or browser policy restricts
+      }
+    }
+
+    audio.playChord();
+    updateTrackDisplay();
+    startPlayback();
   }
 
+  // Visualizer Animation Loop
+  function renderVisualizer() {
+    if (!ctx || !canvas) return;
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // Dark screen background with subtle CRT tint
+    ctx.fillStyle = '#060810';
+    ctx.fillRect(0, 0, w, h);
+
+    if (visMode === 'equalizer') {
+      // 32-Band Stereo Graphic Equalizer
+      const bars = 32;
+      const barSpacing = 2;
+      const barW = Math.floor((w - barSpacing * (bars + 1)) / bars);
+
+      let freqData: Uint8Array | null = null;
+      let hasRealAudio = false;
+      if (analyserNode && isPlaying) {
+        freqData = new Uint8Array(analyserNode.frequencyBinCount);
+        analyserNode.getByteFrequencyData(freqData);
+        for (let j = 0; j < freqData.length; j++) {
+          if (freqData[j] > 4) {
+            hasRealAudio = true;
+            break;
+          }
+        }
+      }
+
+      const time = Date.now() / 140;
+      for (let i = 0; i < bars; i++) {
+        let val = 0;
+        if (isPlaying) {
+          if (hasRealAudio && freqData) {
+            const dataIdx = Math.floor((i / bars) * freqData.length);
+            val = Math.min(1, (freqData[dataIdx] / 255) * 1.25);
+          } else {
+            // Synthetic dynamic EQ waveform that pulses with rhythm and frequency curve
+            const pulse = (Math.sin(time * 2.5) + 1) * 0.18;
+            const wave = Math.abs(Math.sin(time * 1.5 + i * 0.35)) * 0.52 + Math.abs(Math.cos(time * 0.8 + i * 0.18)) * 0.32;
+            const curve = Math.sin((i / (bars - 1)) * Math.PI) * 0.3 + 0.7;
+            val = Math.min(0.96, (wave + pulse) * curve);
+          }
+        }
+
+        const barH = Math.max(3, val * (h - 25));
+
+        // Peak Hold logic
+        if (val > (peakValues[i] || 0)) {
+          peakValues[i] = val;
+          peakDecay[i] = 16;
+        } else {
+          if (peakDecay[i] > 0) {
+            peakDecay[i]--;
+          } else {
+            peakValues[i] = Math.max(0, (peakValues[i] || 0) - 0.035);
+          }
+        }
+
+        const x = barSpacing + i * (barW + barSpacing);
+        const y = h - barH;
+
+        // Gradient: Green -> Yellow -> Red
+        const grad = ctx.createLinearGradient(0, h, 0, h - (h - 25));
+        grad.addColorStop(0, '#00ff44');
+        grad.addColorStop(0.65, '#ffdd00');
+        grad.addColorStop(0.95, '#ff2233');
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, barW, barH);
+
+        // Segmented LED lines (classic hardware hi-fi look)
+        ctx.fillStyle = '#060810';
+        for (let segY = h; segY > y; segY -= 4) {
+          ctx.fillRect(x, segY, barW, 1);
+        }
+
+        // Peak indicator bar
+        const peakY = h - (peakValues[i] || 0) * (h - 25);
+        if (peakY < h - 4) {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x, peakY, barW, 2);
+        }
+      }
+    } else if (visMode === 'oscilloscope') {
+      // CRT Phosphor Waveform
+      // Background Grid
+      ctx.strokeStyle = '#0d2215';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 24) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 24) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Center crosshair
+      ctx.strokeStyle = '#1a4428';
+      ctx.beginPath();
+      ctx.moveTo(0, h / 2);
+      ctx.lineTo(w, h / 2);
+      ctx.moveTo(w / 2, 0);
+      ctx.lineTo(w / 2, h);
+      ctx.stroke();
+
+      let timeData: Uint8Array | null = null;
+      let hasRealOsc = false;
+      if (analyserNode && isPlaying) {
+        timeData = new Uint8Array(analyserNode.fftSize);
+        analyserNode.getByteTimeDomainData(timeData);
+        for (let j = 0; j < timeData.length; j++) {
+          if (Math.abs(timeData[j] - 128) > 3) {
+            hasRealOsc = true;
+            break;
+          }
+        }
+      }
+
+      // Draw glowing oscilloscope beam
+      ctx.strokeStyle = '#39ff14';
+      ctx.shadowColor = '#00ff66';
+      ctx.shadowBlur = isPlaying ? 8 : 2;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      const sliceW = w / (timeData ? timeData.length : 64);
+      const time = Date.now() / 80;
+
+      for (let i = 0; i < (timeData ? timeData.length : 64); i++) {
+        let v = 0.5;
+        if (isPlaying) {
+          if (hasRealOsc && timeData) {
+            v = timeData[i] / 255.0;
+          } else {
+            v = 0.5 + Math.sin(time + i * 0.42) * 0.22 + Math.sin(time * 2.1 + i * 0.85) * 0.11;
+          }
+        } else {
+          v = 0.5 + Math.sin(i * 0.1) * 0.01; // gentle flat line
+        }
+
+        const x = i * sliceW;
+        const y = v * h;
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0; // reset
+    } else if (visMode === 'vumeter') {
+      // Stereo Analog Needle VU Meters (Left & Right)
+      const meterW = Math.floor((w - 20) / 2);
+      const meterH = h - 20;
+
+      const time = Date.now() / 150;
+      let leftAmp = 0;
+      let rightAmp = 0;
+
+      if (isPlaying) {
+        if (analyserNode) {
+          const data = new Uint8Array(analyserNode.frequencyBinCount);
+          analyserNode.getByteFrequencyData(data);
+          let sumL = 0;
+          let sumR = 0;
+          for (let i = 0; i < data.length / 2; i++) sumL += data[i];
+          for (let i = Math.floor(data.length / 2); i < data.length; i++) sumR += data[i];
+          leftAmp = (sumL / (data.length / 2)) / 255;
+          rightAmp = (sumR / (data.length / 2)) / 255;
+        } else {
+          leftAmp = Math.abs(Math.sin(time * 1.2)) * 0.75;
+          rightAmp = Math.abs(Math.sin(time * 1.4 + 0.4)) * 0.8;
+        }
+      }
+
+      vuLeft = vuLeft * 0.7 + leftAmp * 0.3;
+      vuRight = vuRight * 0.7 + rightAmp * 0.3;
+
+      const drawVUMeter = (x: number, y: number, mw: number, mh: number, val: number, label: string) => {
+        // Meter background dial face
+        ctx.fillStyle = '#1c1f24';
+        ctx.strokeStyle = '#606470';
+        ctx.lineWidth = 2;
+        ctx.fillRect(x, y, mw, mh);
+        ctx.strokeRect(x, y, mw, mh);
+
+        // Arc scale
+        const cx = x + mw / 2;
+        const cy = y + mh * 0.95;
+        const radius = mh * 0.75;
+
+        ctx.strokeStyle = '#808898';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, Math.PI * 1.2, Math.PI * 1.8);
+        ctx.stroke();
+
+        // Red danger zone
+        ctx.strokeStyle = '#ff3344';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, Math.PI * 1.65, Math.PI * 1.8);
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = '#00ff88';
+        ctx.font = 'bold 10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`VU - ${label}`, cx, y + mh * 0.72);
+
+        // Tick marks & dB text
+        ctx.fillStyle = '#9098a8';
+        ctx.font = '9px monospace';
+        ctx.fillText('-20', cx - radius * 0.7, y + mh * 0.48);
+        ctx.fillText('0 dB', cx, y + mh * 0.28);
+        ctx.fillStyle = '#ff4455';
+        ctx.fillText('+3', cx + radius * 0.7, y + mh * 0.48);
+
+        // Needle angle
+        const minAngle = Math.PI * 1.2;
+        const maxAngle = Math.PI * 1.8;
+        const angle = minAngle + Math.max(0, Math.min(1, val)) * (maxAngle - minAngle);
+
+        const nx = cx + Math.cos(angle) * (radius * 0.92);
+        const ny = cy + Math.sin(angle) * (radius * 0.92);
+
+        // Needle line
+        ctx.strokeStyle = val > 0.85 ? '#ff2233' : '#ffdd44';
+        ctx.shadowColor = '#000000';
+        ctx.shadowBlur = 3;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(nx, ny);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Needle pivot
+        ctx.fillStyle = '#silver';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Peak warning LED
+        ctx.fillStyle = val > 0.82 ? '#ff1122' : '#33080c';
+        ctx.beginPath();
+        ctx.arc(x + mw - 12, y + 12, 4, 0, Math.PI * 2);
+        ctx.fill();
+      };
+
+      drawVUMeter(8, 10, meterW, meterH, vuLeft, 'CH 1 (LEFT)');
+      drawVUMeter(12 + meterW, 10, meterW, meterH, vuRight, 'CH 2 (RIGHT)');
+    }
+
+    if (!isPlaying && !isPaused) {
+      // Stopped screen message overlay
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#8899aa';
+      ctx.font = '12px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('[ Media Player Stopped ]', w / 2, h / 2 - 6);
+      ctx.font = '10px monospace';
+      ctx.fillStyle = '#556677';
+      ctx.fillText('Click Play ▶ or Open File 📂 to start', w / 2, h / 2 + 12);
+    }
+
+    animId = requestAnimationFrame(renderVisualizer);
+  }
+
+  // Connect Button Event Listeners
   playBtn?.addEventListener('click', startPlayback);
   pauseBtn?.addEventListener('click', pausePlayback);
   stopBtn?.addEventListener('click', stopPlayback);
+  prevBtn?.addEventListener('click', prevTrack);
+  nextBtn?.addEventListener('click', nextTrack);
+  rewindBtn?.addEventListener('click', rewind5s);
+  forwardBtn?.addEventListener('click', forward5s);
 
-  prevBtn?.addEventListener('click', () => {
-    stopPlayback();
-    currentTrackIdx = (currentTrackIdx - 1 + tracks.length) % tracks.length;
-    if (trackSelect) trackSelect.value = String(currentTrackIdx);
-    updateTrackInfo();
-    startPlayback();
+  loopBtn?.addEventListener('click', () => {
+    isLooping = !isLooping;
+    audio.playClick();
+    if (loopBtn) {
+      loopBtn.classList.toggle('!bg-blue-900', isLooping);
+      loopBtn.classList.toggle('text-white', isLooping);
+      loopBtn.title = isLooping ? 'Repeat: ON (Click to toggle)' : 'Repeat: OFF (Click to toggle)';
+    }
   });
 
-  nextBtn?.addEventListener('click', () => {
-    stopPlayback();
-    currentTrackIdx = (currentTrackIdx + 1) % tracks.length;
-    if (trackSelect) trackSelect.value = String(currentTrackIdx);
-    updateTrackInfo();
-    startPlayback();
+  ejectBtn?.addEventListener('click', () => {
+    audio.playClick();
+    fileInput?.click();
   });
 
   trackSelect?.addEventListener('change', () => {
     stopPlayback();
+    if (customFileName) {
+      customFileName = null;
+      if (customAudioElement) {
+        customAudioElement.src = '';
+        customAudioElement = null;
+      }
+    }
     currentTrackIdx = parseInt(trackSelect.value, 10);
-    updateTrackInfo();
+    updateTrackDisplay();
     startPlayback();
   });
 
   seekbar?.addEventListener('input', () => {
     const pct = parseFloat(seekbar.value);
-    const dur = tracks[currentTrackIdx].duration;
-    currentTime = (pct / 100) * dur;
-    if (curTimeEl) curTimeEl.textContent = formatTime(currentTime);
-    if (customAudioElement && !isNaN(customAudioElement.duration)) {
-      customAudioElement.currentTime = (pct / 100) * customAudioElement.duration;
-    }
+    const dur = getActiveTrackDuration();
+    seekTo((pct / 100) * dur);
   });
+
+  volumeSlider?.addEventListener('input', () => {
+    setVolume(parseInt(volumeSlider.value, 10) / 100);
+  });
+
+  muteBtn?.addEventListener('click', toggleMute);
+  modeOverlay?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    cycleVisMode();
+  });
+  cycleVisBtn?.addEventListener('click', cycleVisMode);
+  canvasContainer?.addEventListener('click', cycleVisMode);
 
   fileInput?.addEventListener('change', () => {
     const file = fileInput.files?.[0];
     if (file) {
-      stopPlayback();
-      customAudioBlobUrl = URL.createObjectURL(file);
-      customAudioElement = new Audio(customAudioBlobUrl);
-      if (overlay) overlay.textContent = `▶ File: ${file.name}`;
-      if (modeOverlay) modeOverlay.textContent = '[CUSTOM AUDIO FILE]';
-      win.setTitle(`Media Player - [${file.name}] (Playing)`);
+      loadCustomFile(file);
+    }
+  });
 
-      customAudioElement.addEventListener('loadedmetadata', () => {
-        if (totalTimeEl) totalTimeEl.textContent = formatTime(customAudioElement?.duration || 0);
-      });
-      customAudioElement.addEventListener('timeupdate', () => {
-        if (curTimeEl && customAudioElement) {
-          curTimeEl.textContent = formatTime(customAudioElement.currentTime);
-          if (seekbar && customAudioElement.duration) {
-            seekbar.value = String((customAudioElement.currentTime / customAudioElement.duration) * 100);
-          }
-        }
-      });
-      customAudioElement.addEventListener('ended', stopPlayback);
-      isPlaying = true;
-      customAudioElement.play().catch(() => {});
-      audio.playChord();
+  // Drag and drop audio files directly into Media Player!
+  container.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  container.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('audio/') || file.name.match(/\.(mid|midi|mp3|wav|ogg|m4a|weba|flac)$/i)) {
+        loadCustomFile(file);
+      }
     }
   });
 
@@ -331,25 +1162,85 @@ export function renderMediaPlayer(container: HTMLElement, win: Win95Window) {
     fileInput?.click();
   });
 
+  container.querySelector('#mp-menu-edit')?.addEventListener('click', () => {
+    audio.playClick();
+    cycleVisMode();
+  });
+
+  container.querySelector('#mp-menu-device')?.addEventListener('click', () => {
+    audio.playClick();
+    const ctx = audio.getAudioContext();
+    const sr = ctx ? `${ctx.sampleRate} Hz` : '44100 Hz';
+    alert(`Windows 95 Multimedia Audio Subsystem\n\nDevice: Web Audio Synthesis & Stream Engine\nSample Rate: ${sr}\nBit Depth: 16-Bit Stereo\nMIDI Hardware: Sound Blaster 16 Compatible\nActive Drivers: MMSystem.dll, WaveOut.drv`);
+  });
+
+  container.querySelector('#mp-menu-scale')?.addEventListener('click', () => {
+    audio.playClick();
+    alert('Scale Mode: Time (Minutes : Seconds)\nTimeline resolution: 100ms precision');
+  });
+
   container.querySelector('#mp-menu-help')?.addEventListener('click', () => {
     audio.playClick();
-    alert('Windows 95 Media Player\n\nSupports standard MIDI synthesizer sequences, waveform audio files, and local audio streaming with 32-bar visualizer.');
+    alert('Microsoft Windows 95 Media Player\nVersion 4.00.950\n\nPlays standard MIDI sequences, waveform audio files, and local audio streaming with 32-band real-time visualizer.');
   });
 
-  updateTrackInfo();
-  tick();
+  // Lifecycle Cleanup on Window Close / Destroy
+  const cleanupMediaPlayer = () => {
+    isPlaying = false;
+    isPaused = false;
 
-  win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
-    cancelAnimationFrame(animId);
-    if (audioTimer) clearInterval(audioTimer);
+    if (animId !== null) {
+      cancelAnimationFrame(animId);
+      animId = null;
+    }
+
+    if (synthTimer !== null) {
+      clearInterval(synthTimer);
+      synthTimer = null;
+    }
+
+    stopActiveOscillators();
+
     if (customAudioElement) {
       customAudioElement.pause();
+      try {
+        customAudioElement.currentTime = 0;
+        customAudioElement.src = '';
+      } catch (_) {}
       customAudioElement = null;
     }
+
     if (customAudioBlobUrl) {
-      URL.revokeObjectURL(customAudioBlobUrl);
+      try {
+        URL.revokeObjectURL(customAudioBlobUrl);
+      } catch (_) {}
+      customAudioBlobUrl = null;
     }
-  });
+
+    if (masterGainNode) {
+      try {
+        masterGainNode.gain.setValueAtTime(0, audio.getAudioContext()?.currentTime || 0);
+        masterGainNode.disconnect();
+      } catch (_) {}
+      masterGainNode = null;
+    }
+
+    if (analyserNode) {
+      try {
+        analyserNode.disconnect();
+      } catch (_) {}
+      analyserNode = null;
+    }
+  };
+
+  // Register with Window lifecycle
+  win.onClose(cleanupMediaPlayer);
+  win.element.addEventListener('win95:close', cleanupMediaPlayer);
+  win.element.addEventListener('DOMNodeRemovedFromDocument', cleanupMediaPlayer);
+
+  // Initialize
+  updateTrackDisplay();
+  animId = requestAnimationFrame(renderVisualizer);
 }
 
 /**
@@ -589,9 +1480,17 @@ export function renderCDPlayer(container: HTMLElement, win: Win95Window) {
 
   updateDisplay();
 
-  win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
-    if (intervalId) clearInterval(intervalId);
-  });
+  const cleanupCDPlayer = () => {
+    stopPlay();
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  };
+
+  win.onClose(cleanupCDPlayer);
+  win.element.addEventListener('win95:close', cleanupCDPlayer);
+  win.element.addEventListener('DOMNodeRemovedFromDocument', cleanupCDPlayer);
 }
 
 /**
@@ -810,9 +1709,15 @@ export function renderSoundRecorder(container: HTMLElement, win: Win95Window) {
 
   loop();
 
-  win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
+  const cleanupSoundRecorder = () => {
+    isRecording = false;
+    isPlaying = false;
     cancelAnimationFrame(animId);
-  });
+  };
+
+  win.onClose(cleanupSoundRecorder);
+  win.element.addEventListener('win95:close', cleanupSoundRecorder);
+  win.element.addEventListener('DOMNodeRemovedFromDocument', cleanupSoundRecorder);
 }
 
 /**
@@ -1242,8 +2147,15 @@ export function renderMIDIPlayer(container: HTMLElement, win: Win95Window) {
     audio.playClick();
   });
 
-  win.element.addEventListener('DOMNodeRemovedFromDocument', () => {
+  const cleanupMIDIPlayer = () => {
     isPlayingSong = false;
-    if (songTimer) clearTimeout(songTimer);
-  });
+    if (songTimer) {
+      clearTimeout(songTimer);
+      songTimer = null;
+    }
+  };
+
+  win.onClose(cleanupMIDIPlayer);
+  win.element.addEventListener('win95:close', cleanupMIDIPlayer);
+  win.element.addEventListener('DOMNodeRemovedFromDocument', cleanupMIDIPlayer);
 }

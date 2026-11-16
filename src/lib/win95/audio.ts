@@ -34,6 +34,10 @@ class Win95AudioEngine {
     }
   }
 
+  public getAudioContext(): AudioContext | null {
+    return this.getContext();
+  }
+
   public setSoundEnabled(enabled: boolean) {
     this.soundEffectsEnabled = enabled;
     try {

@@ -1428,6 +1428,9 @@ Double-click "My Portfolio" or click the taskbar button below.
       if (startMenu) startMenu.classList.add('hidden');
     };
 
+    (window as unknown as { launchWin95App?: (appId: string) => void; win95WindowManager?: typeof windowManager }).launchWin95App = launchApp;
+    (window as unknown as { win95WindowManager?: typeof windowManager }).win95WindowManager = windowManager;
+
     function closeAllContextMenus() {
       desktopCtx?.classList.add('hidden');
       iconCtx?.classList.add('hidden');
