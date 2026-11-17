@@ -307,27 +307,18 @@ function isBlockedByFrameSecurity(url: string): boolean {
       };
     }
 
-    // 3. Any external web site (Wikipedia, Hacker News, Google, Example, etc.)
+    // 3. Any external web site (Wikipedia, Hacker News, GitHub, etc.)
     let fullUrl = raw;
     if (!fullUrl.startsWith('http://') && !fullUrl.startsWith('https://')) {
       fullUrl = 'https://' + fullUrl;
     }
 
-    // Check if the target site blocks iframe embedding
-    const isFrameBlocked = isBlockedByFrameSecurity(fullUrl);
-    if (isFrameBlocked) {
-      return {
-        displayUrl: fullUrl,
-        isRetro: true,
-        retroKey: `security:${fullUrl}`,
-        isExternal: true,
-      };
-    }
-
+    // Route all external web destinations through the seamless Live Web Reader
+    // to prevent browser frame security blocks (X-Frame-Options / CSP frame-ancestors)
     return {
       displayUrl: fullUrl,
-      isRetro: false,
-      iframeSrc: fullUrl,
+      isRetro: true,
+      retroKey: `live:${fullUrl}`,
       isExternal: true,
     };
   }
@@ -898,65 +889,60 @@ function isBlockedByFrameSecurity(url: string): boolean {
         </div>
       </div>
 
-      <!-- Windows 95 Standard 3D Toolbar -->
+      <!-- Windows 95 Standard 3D Toolbar with Authentic Pixel-Art Icons -->
       <div class="flex items-center gap-1 p-1 bg-[#c0c0c0] border-b border-[#808080] text-xs relative z-20">
-        <button id="ie-tb-back" class="retro-btn !py-1 !px-2 flex items-center gap-1 font-bold text-[11px]" title="Back (Alt+Left)">
-          <span>⬅️</span>
+        <button id="ie-tb-back" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 font-bold text-[11px]" title="Back (Alt+Left)">
+          <img src="/images/win95-icons/back-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden sm:inline">Back</span>
         </button>
-        <button id="ie-tb-forward" class="retro-btn !py-1 !px-2 flex items-center gap-1 font-bold text-[11px]" title="Forward (Alt+Right)">
-          <span>➡️</span>
+        <button id="ie-tb-forward" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 font-bold text-[11px]" title="Forward (Alt+Right)">
+          <img src="/images/win95-icons/forward-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden sm:inline">Forward</span>
         </button>
-        <button id="ie-tb-stop" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px]" title="Stop (Esc)">
-          <span>🛑</span>
+        <button id="ie-tb-stop" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px]" title="Stop (Esc)">
+          <img src="/images/win95-icons/stop-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden sm:inline">Stop</span>
         </button>
-        <button id="ie-tb-refresh" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px]" title="Refresh (F5)">
-          <span>🔄</span>
+        <button id="ie-tb-refresh" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px]" title="Refresh (F5)">
+          <img src="/images/win95-icons/refresh-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden sm:inline">Refresh</span>
         </button>
-        <button id="ie-tb-home" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px]" title="Home (Alt+Home)">
-          <span>🏠</span>
+        <button id="ie-tb-home" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px]" title="Home (Alt+Home)">
+          <img src="/images/win95-icons/computer-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden sm:inline">Home</span>
         </button>
 
         <div class="h-5 w-[1px] bg-[#808080] border-r border-white mx-0.5"></div>
 
-        <button id="ie-tb-search" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px]" title="Search the Web">
-          <span>🔍</span>
+        <button id="ie-tb-search" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px]" title="Search the Web">
+          <img src="/images/win95-icons/find-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden md:inline">Search</span>
         </button>
-        <button id="ie-tb-favorites" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px]" title="Favorites">
-          <span>⭐</span>
+        <button id="ie-tb-favorites" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px]" title="Favorites">
+          <img src="/images/win95-icons/favorites-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden md:inline">Favorites</span>
         </button>
-        <button id="ie-tb-print" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px]" title="Print">
-          <span>🖨️</span>
+        <button id="ie-tb-print" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px]" title="Print">
+          <img src="/images/win95-icons/print-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden md:inline">Print</span>
         </button>
-        <button id="ie-tb-font" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px] font-bold" title="Cycle Font Size">
-          <span>🔤</span>
+        <button id="ie-tb-font" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px] font-bold" title="Cycle Font Size">
+          <img src="/images/win95-icons/font-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
           <span class="hidden md:inline">Font</span>
         </button>
-        <button id="ie-tb-ext" class="retro-btn !py-1 !px-2 flex items-center gap-1 text-[11px] font-bold text-blue-900" title="Open current URL in a new browser tab">
-          <span>↗</span>
-          <span class="hidden md:inline">New Tab</span>
+        <button id="ie-tb-ext" class="retro-btn !py-1 !px-2 flex items-center gap-1.5 text-[11px] font-bold text-blue-900" title="Open current URL in a new browser tab">
+          <img src="/images/win95-icons/document-16.png?v=1995.2" alt="" width="16" height="16" class="size-4 shrink-0 [image-rendering:pixelated]" />
+          <span class="hidden md:inline">New Tab ↗</span>
         </button>
 
-        <!-- Animated Spinning Windows 95 / IE Earth Globe -->
+        <!-- Animated Windows 95 / IE Earth Globe -->
         <div class="ml-auto flex items-center pl-1">
           <div
             id="ie-globe-spinner"
             class="w-7 h-7 bg-[#000080] border-2 border-white shadow-[inset_1px_1px_0px_#000000,1px_1px_0px_#ffffff] flex items-center justify-center cursor-pointer relative overflow-hidden group"
             title="Microsoft Internet Explorer - Click to visit piush.com"
           >
-            <!-- Earth Globe SVG with Longitude/Latitude lines -->
-            <svg id="ie-globe-svg" class="w-5 h-5 text-white transition-transform duration-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="12" r="10" stroke="#00ffff" fill="#000080" />
-              <line x1="2" y1="12" x2="22" y2="12" stroke="#ffffff" />
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="#ffffff" />
-            </svg>
+            <img id="ie-globe-img" src="/images/win95-icons/globe.png?v=1995.2" width="20" height="20" class="size-5 shrink-0 [image-rendering:pixelated] transition-transform duration-700" alt="Internet Explorer" />
             <div id="ie-globe-orbit" class="hidden absolute inset-0 rounded-full border border-dashed border-[#ffff00] animate-spin"></div>
           </div>
         </div>
@@ -1060,7 +1046,7 @@ function isBlockedByFrameSecurity(url: string): boolean {
   const statusText = container.querySelector('#ie-status-text') as HTMLElement;
   const progressFill = container.querySelector('#ie-progress-fill') as HTMLElement;
   const globeSpinner = container.querySelector('#ie-globe-spinner') as HTMLElement;
-  const globeSvg = container.querySelector('#ie-globe-svg') as HTMLElement;
+  const globeSvg = (container.querySelector('#ie-globe-img') || container.querySelector('#ie-globe-svg')) as HTMLElement;
   const globeOrbit = container.querySelector('#ie-globe-orbit') as HTMLElement;
   const backBtn = container.querySelector('#ie-tb-back') as HTMLButtonElement;
   const forwardBtn = container.querySelector('#ie-tb-forward') as HTMLButtonElement;
@@ -1126,90 +1112,212 @@ function isBlockedByFrameSecurity(url: string): boolean {
   });
   container.querySelector('#ie-info-bar-open')?.addEventListener('click', () => openExternal());
 
-  const openReaderMode = async (urlToRead?: string) => {
-    const targetUrl = urlToRead || currentUrl;
+  const openLiveWebPage = async (urlToOpen?: string) => {
+    const targetUrl = urlToOpen || currentUrl;
     if (targetUrl.startsWith('retro:') || !targetUrl.startsWith('http')) return;
+
+    let hostname = targetUrl;
+    try {
+      hostname = new URL(targetUrl).hostname;
+    } catch (_) {}
 
     if (pageContainer) {
       if (webIframe) webIframe.classList.add('hidden');
       pageContainer.classList.remove('hidden');
-      if (statusText) statusText.textContent = `Fetching reader mode for ${targetUrl}...`;
+      if (statusText) statusText.textContent = `Connecting to ${hostname}...`;
+      if (progressFill) progressFill.style.width = '35%';
       if (globeSvg) globeSvg.classList.add('animate-pulse');
       if (globeOrbit) globeOrbit.classList.remove('hidden');
 
+      win.setTitle(`The Microsoft Internet Explorer - ${hostname}`);
+
       pageContainer.innerHTML = `
-        <div class="p-6 text-center space-y-3 font-sans">
-          <div class="text-base font-bold text-gray-800">📖 Loading Reader Mode...</div>
-          <div class="text-xs text-gray-500 font-mono">${targetUrl}</div>
-          <div class="text-xs text-gray-600">Bypassing iframe frame-ancestor restriction via reader proxy...</div>
+        <div class="min-h-[300px] flex flex-col items-center justify-center p-6 text-black font-sans space-y-3 select-none">
+          <img src="/images/win95-icons/globe.png?v=1995.2" class="size-8 animate-spin [image-rendering:pixelated]" alt="" />
+          <div class="text-xs font-bold font-sans">Connecting to Web Server...</div>
+          <div class="text-[11px] font-mono text-gray-600 bg-gray-100 px-3 py-1 border border-gray-400 max-w-md truncate">${targetUrl}</div>
+          <div class="text-[10px] text-gray-500 font-sans">Accessing live page content via Internet Explorer Gateway...</div>
         </div>
       `;
 
       try {
+        if (progressFill) progressFill.style.width = '60%';
         const res = await fetch(`https://r.jina.ai/${targetUrl}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const text = await res.text();
 
-        const escaped = text
+        // Extract title if present in Jina Reader output (Title: ...)
+        let pageTitle = hostname;
+        const titleMatch = text.match(/^Title:\s*([^\n]+)/i);
+        if (titleMatch && titleMatch[1]) {
+          pageTitle = titleMatch[1].trim();
+        }
+
+        win.setTitle(`The Microsoft Internet Explorer - ${pageTitle}`);
+
+        // Markdown to HTML conversion
+        const bodyContent = text
+          .replace(/^Title:[^\n]*\n+/i, '')
+          .replace(/^URL Source:[^\n]*\n+/i, '')
+          .replace(/^Markdown Content:[^\n]*\n+/i, '');
+
+        let escaped = bodyContent
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;');
 
-        const formatted = escaped
-          .split('\n\n')
-          .slice(0, 30)
+        // Code blocks
+        escaped = escaped.replace(/```([a-z0-9_-]*)\n([\s\S]*?)```/gi, (_, lang, codeBlock) => {
+          return `<pre class="my-3 p-2.5 bg-gray-100 border border-gray-400 font-mono text-xs overflow-x-auto text-black"><code>${codeBlock}</code></pre>`;
+        });
+
+        // Inline code
+        escaped = escaped.replace(/`([^`]+)`/g, '<code class="bg-gray-100 px-1 border border-gray-300 font-mono text-[11px]">$1</code>');
+
+        // Images
+        escaped = escaped.replace(/!\[([^\]]*)\]\((https?:\/\/[^\s\)]+)\)/g, (_, alt, src) => {
+          return `<div class="my-3 text-center"><img src="${src}" alt="${alt}" class="max-w-full max-h-96 mx-auto border border-gray-400 p-0.5 bg-white shadow-sm inline-block" loading="lazy" />${alt ? `<div class="text-[11px] text-gray-500 italic mt-1 font-sans">${alt}</div>` : ''}</div>`;
+        });
+
+        // Markdown links: [text](url)
+        escaped = escaped.replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+|\/[^\s\)]*)\)/g, (_, label, href) => {
+          let dest = href;
+          if (dest.startsWith('/')) {
+            try {
+              dest = new URL(dest, targetUrl).href;
+            } catch (_) {}
+          }
+          return `<a href="${dest}" class="ie-live-link text-blue-800 underline font-medium hover:text-red-700 cursor-pointer" data-dest="${dest}">${label}</a>`;
+        });
+
+        // Paragraphs and Headings
+        const blocks = escaped.split(/\n\n+/);
+        const formatted = blocks
           .map((para) => {
             const trimmed = para.trim();
+            if (!trimmed) return '';
             if (trimmed.startsWith('# ')) {
-              return `<h1 class="text-xl font-bold text-blue-900 border-b border-gray-300 pb-1 mt-3 mb-2">${trimmed.slice(2)}</h1>`;
-            } else if (trimmed.startsWith('## ')) {
-              return `<h2 class="text-lg font-bold text-blue-900 mt-3 mb-1">${trimmed.slice(3)}</h2>`;
-            } else if (trimmed.startsWith('### ')) {
-              return `<h3 class="text-base font-bold text-gray-900 mt-2 mb-1">${trimmed.slice(4)}</h3>`;
+              return `<h1 class="text-xl sm:text-2xl font-bold text-blue-900 border-b border-gray-300 pb-1 mt-4 mb-2 font-serif">${trimmed.slice(2)}</h1>`;
             }
-            return `<p class="my-2 leading-relaxed text-xs text-gray-800">${trimmed.replace(/\n/g, '<br/>')}</p>`;
+            if (trimmed.startsWith('## ')) {
+              return `<h2 class="text-lg sm:text-xl font-bold text-blue-900 mt-3 mb-1 font-serif">${trimmed.slice(3)}</h2>`;
+            }
+            if (trimmed.startsWith('### ')) {
+              return `<h3 class="text-base font-bold text-gray-900 mt-2 mb-1 font-serif">${trimmed.slice(4)}</h3>`;
+            }
+            if (trimmed.startsWith('#### ')) {
+              return `<h4 class="text-sm font-bold text-gray-800 mt-2 mb-1 font-sans">${trimmed.slice(5)}</h4>`;
+            }
+            if (trimmed.startsWith('&gt; ')) {
+              return `<blockquote class="border-l-4 border-[#000080] pl-3 py-1 my-2 bg-gray-50 italic text-gray-800">${trimmed.slice(5)}</blockquote>`;
+            }
+            if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+              const items = trimmed.split('\n').map((li) => `<li class="my-0.5">${li.replace(/^[-*]\s+/, '')}</li>`).join('');
+              return `<ul class="list-disc pl-5 my-2 text-xs sm:text-sm text-gray-900 space-y-0.5 font-serif">${items}</ul>`;
+            }
+            if (/^\d+\.\s/.test(trimmed)) {
+              const items = trimmed.split('\n').map((li) => `<li class="my-0.5">${li.replace(/^\d+\.\s+/, '')}</li>`).join('');
+              return `<ol class="list-decimal pl-5 my-2 text-xs sm:text-sm text-gray-900 space-y-0.5 font-serif">${items}</ol>`;
+            }
+            return `<p class="my-2 leading-relaxed text-xs sm:text-sm text-gray-900 font-serif">${trimmed.replace(/\n/g, '<br/>')}</p>`;
           })
           .join('');
 
         pageContainer.innerHTML = `
-          <div class="space-y-3 font-sans text-black leading-relaxed max-w-3xl p-2 select-text">
-            <div class="bg-[#e8ecef] border border-[#808080] p-2.5 flex items-center justify-between text-xs">
-              <div>
-                <span class="font-bold text-blue-900">📖 Internet Explorer Reader Mode</span>
-                <span class="text-gray-500 font-mono ml-2 text-[10px]">${targetUrl}</span>
+          <div class="flex flex-col min-h-full bg-white text-black font-sans select-text">
+            <!-- Windows 95 Information Bar -->
+            <div class="bg-[#ffffcc] border-b border-[#808080] px-3 py-1.5 text-xs flex items-center justify-between font-sans shadow-sm text-black shrink-0 sticky top-0 z-20">
+              <div class="flex items-center gap-2 truncate">
+                <img src="/images/win95-icons/globe-16.png?v=1995.2" class="size-4 shrink-0 [image-rendering:pixelated]" alt="" />
+                <span class="font-bold text-blue-900 truncate">Internet Explorer Live Web Reader</span>
+                <span class="text-gray-500 font-mono text-[10px] truncate max-w-xs">${targetUrl}</span>
               </div>
-              <button type="button" id="ie-exit-reader-btn" class="retro-btn !py-0.5 !px-2 text-xs font-bold">Return to Iframe</button>
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" class="ie-action-newtab retro-btn !py-0.5 !px-2 text-xs font-bold font-sans flex items-center gap-1" data-url="${targetUrl}" title="Open original site in full external browser tab">
+                  <span>Open in New Window</span>
+                  <span class="text-blue-900 font-bold">↗</span>
+                </button>
+                <button type="button" class="ie-action-home retro-btn !py-0.5 !px-2 text-xs font-bold font-sans" title="Return to Piush KS Portfolio (Default Home)">
+                  Home
+                </button>
+              </div>
             </div>
-            <div class="prose text-xs text-gray-900 space-y-2 font-serif">
+
+            <!-- Page Article Content -->
+            <div class="p-4 sm:p-6 max-w-4xl mx-auto w-full space-y-3 font-serif leading-relaxed" style="color: #000000; background-color: #ffffff;">
+              <h1 class="text-2xl font-bold text-blue-900 border-b border-gray-300 pb-2 mb-3 font-serif">${pageTitle}</h1>
+              <div class="text-[11px] text-gray-500 font-mono pb-2 border-b border-gray-100 flex justify-between">
+                <span>Source: ${targetUrl}</span>
+                <span class="text-green-800">Status: Verified 200 OK</span>
+              </div>
               ${formatted}
             </div>
           </div>
         `;
 
-        pageContainer.querySelector('#ie-exit-reader-btn')?.addEventListener('click', () => {
-          pageContainer.classList.add('hidden');
-          webIframe.classList.remove('hidden');
+        // Wire link clicks
+        pageContainer.querySelectorAll('.ie-live-link').forEach((link) => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const dest = (link as HTMLElement).getAttribute('data-dest');
+            if (dest) navigateTo(dest);
+          });
         });
+
+        // Wire New Tab and Home buttons
+        pageContainer.querySelectorAll('.ie-action-newtab').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const dest = (btn as HTMLElement).getAttribute('data-url') || targetUrl;
+            openExternal(dest);
+          });
+        });
+
+        pageContainer.querySelectorAll('.ie-action-home').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            navigateTo('https://piush.com/');
+          });
+        });
+
+        applyFontScale();
       } catch (_) {
         pageContainer.innerHTML = `
-          <div class="p-6 text-center space-y-3 font-sans">
-            <div class="text-base font-bold text-red-700">⚠️ Reader view unavailable</div>
-            <p class="text-xs text-gray-600">The remote host blocked access or network proxy was unreachable.</p>
-            <div>
-              <button type="button" id="ie-open-newtab-fallback" class="retro-btn !py-1 !px-3 font-bold text-xs">Open in New Tab ↗</button>
+          <div class="min-h-[300px] flex flex-col items-center justify-center p-6 text-black font-sans space-y-3 select-none">
+            <div class="border-2 border-white shadow-[2px_2px_0px_#000000] bg-[#c0c0c0] p-4 max-w-md w-full space-y-3">
+              <div class="flex items-center gap-2 border-b border-[#808080] pb-2 font-bold text-xs">
+                <img src="/images/win95-icons/stop-16.png?v=1995.2" class="size-4 [image-rendering:pixelated]" alt="" />
+                <span>Internet Explorer – Connection Error</span>
+              </div>
+              <p class="text-xs text-gray-900 leading-normal font-sans">
+                Internet Explorer cannot open the Internet site <strong>${targetUrl}</strong>.<br/>
+                The server was not found or was unavailable.
+              </p>
+              <div class="flex justify-end gap-2 pt-2 border-t border-white">
+                <button type="button" class="ie-action-retry retro-btn !py-1 !px-3 text-xs font-bold font-sans">Retry</button>
+                <button type="button" class="ie-action-newtab retro-btn !py-1 !px-3 text-xs font-bold font-sans flex items-center gap-1" data-url="${targetUrl}">
+                  <span>Open Tab</span>
+                  <span>↗</span>
+                </button>
+                <button type="button" class="ie-action-home retro-btn !py-1 !px-3 text-xs font-bold font-sans">Home</button>
+              </div>
             </div>
           </div>
         `;
-        pageContainer.querySelector('#ie-open-newtab-fallback')?.addEventListener('click', () => openExternal(targetUrl));
+
+        pageContainer.querySelector('.ie-action-retry')?.addEventListener('click', () => openLiveWebPage(targetUrl));
+        pageContainer.querySelector('.ie-action-newtab')?.addEventListener('click', () => openExternal(targetUrl));
+        pageContainer.querySelector('.ie-action-home')?.addEventListener('click', () => navigateTo('https://piush.com/'));
       } finally {
-        if (statusText) statusText.textContent = 'Done (Reader Mode)';
+        if (statusText) statusText.textContent = 'Done';
         if (globeSvg) globeSvg.classList.remove('animate-pulse');
         if (globeOrbit) globeOrbit.classList.add('hidden');
+        if (progressFill) progressFill.style.width = '0%';
+        isLoading = false;
       }
     }
   };
 
-  container.querySelector('#ie-info-bar-reader')?.addEventListener('click', () => openReaderMode());
+  const openReaderMode = openLiveWebPage;
+  container.querySelector('#ie-info-bar-reader')?.addEventListener('click', () => openLiveWebPage());
 
   // Apply font scale
   const applyFontScale = () => {
@@ -1327,11 +1435,18 @@ function isBlockedByFrameSecurity(url: string): boolean {
     updateNavButtons();
     updateUrlHistoryDropdown();
 
-    // Route A: 1995 Cyberspace Retro Simulation
+    // Route A: 1995 Cyberspace Retro Simulation & Live Web Reader
     if (target.isRetro && target.retroKey) {
       if (infoBar) infoBar.classList.add('hidden');
       if (webIframe) webIframe.classList.add('hidden');
       if (pageContainer) pageContainer.classList.remove('hidden');
+
+      // Live External Web Destination
+      if (target.retroKey.startsWith('live:')) {
+        const liveDest = target.retroKey.replace(/^live:/, '');
+        openLiveWebPage(liveDest);
+        return;
+      }
 
       setTimeout(() => {
         const retroData = getRetroPageContent(target.retroKey!);

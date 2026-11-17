@@ -1810,8 +1810,8 @@ export function renderImageViewer(container: HTMLElement, win: Win95Window, init
   const sampleImages = [
     { name: 'Windows 95 Clouds', src: '/images/windows-95-clouds.jpg' },
     { name: 'Piush KS Profile', src: '/images/piush-avatar.jpg' },
-    { name: 'My Computer', src: '/images/win95-icons/computer.png?v=1995' },
-    { name: 'Network MSN', src: '/images/win95-icons/msn.png?v=1995' },
+    { name: 'My Computer', src: '/images/win95-icons/computer.png?v=1995.2' },
+    { name: 'Network MSN', src: '/images/win95-icons/msn.png?v=1995.2' },
   ];
 
   container.innerHTML = `
@@ -1844,7 +1844,7 @@ export function renderImageViewer(container: HTMLElement, win: Win95Window, init
 
       <!-- Canvas / Image Display -->
       <div class="flex-1 bg-[#808080] p-4 flex items-center justify-center overflow-auto relative">
-        <img id="iv-image" src="${initialImagePath || '/images/win95-icons/computer.png?v=1995'}" alt="Preview" class="max-w-full max-h-full object-contain shadow-[4px_4px_0px_#000000] border-2 border-white transition-transform duration-100" />
+        <img id="iv-image" src="${initialImagePath || '/images/win95-icons/computer.png?v=1995.2'}" alt="Preview" class="max-w-full max-h-full object-contain shadow-[4px_4px_0px_#000000] border-2 border-white transition-transform duration-100" />
       </div>
 
       <!-- Statusbar -->

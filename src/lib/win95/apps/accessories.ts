@@ -691,7 +691,7 @@ export function renderWordPad(container: HTMLElement, win: Win95Window, initialF
       <!-- About WordPad Dialog -->
       <div id="wp-about-dialog" class="hidden absolute top-20 left-1/2 -translate-x-1/2 bg-[#c0c0c0] border-2 border-white shadow-[4px_4px_0px_#000000] p-4 z-50 w-80 text-black text-xs space-y-3">
         <div class="flex items-center gap-3">
-          <img src="/images/win95-icons/wordpad.png?v=1995" alt="WordPad" width="36" height="36" class="size-9 shrink-0 [image-rendering:pixelated]" />
+          <img src="/images/win95-icons/wordpad.png?v=1995.2" alt="WordPad" width="36" height="36" class="size-9 shrink-0 [image-rendering:pixelated]" />
           <div>
             <div class="font-bold text-sm text-[#000080]">Microsoft WordPad 95</div>
             <div class="text-[11px] text-gray-700 font-mono">Release 2026.11 (Desktop Edition)</div>

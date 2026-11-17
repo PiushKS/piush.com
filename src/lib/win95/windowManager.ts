@@ -282,7 +282,7 @@ export class Win95Window {
     try {
       this.element.dispatchEvent(new CustomEvent('win95:close'));
       this.element.dispatchEvent(new CustomEvent('DOMNodeRemovedFromDocument'));
-    } catch (_) {}
+    } catch (_) { }
 
     // Execute registered lifecycle handlers
     while (this.closeCallbacks.length > 0) {
